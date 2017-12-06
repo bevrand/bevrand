@@ -1,0 +1,13 @@
+/home/joerivrij/RiderProjects/bevrand.authenticationapi/bevrand.authenticationapi.tests/obj/Debug/netcoreapp2.0/bevrand.authenticationapi.tests.csproj.CoreCompileInputs.cache
+/home/joerivrij/RiderProjects/bevrand.authenticationapi/bevrand.authenticationapi.tests/obj/Debug/netcoreapp2.0/bevrand.authenticationapi.tests.AssemblyInfoInputs.cache
+/home/joerivrij/RiderProjects/bevrand.authenticationapi/bevrand.authenticationapi.tests/obj/Debug/netcoreapp2.0/bevrand.authenticationapi.tests.AssemblyInfo.cs
+/home/joerivrij/RiderProjects/bevrand.authenticationapi/bevrand.authenticationapi.tests/bin/Debug/netcoreapp2.0/xunit.runner.visualstudio.dotnetcore.testadapter.dll
+/home/joerivrij/RiderProjects/bevrand.authenticationapi/bevrand.authenticationapi.tests/bin/Debug/netcoreapp2.0/xunit.runner.utility.netstandard15.dll
+/home/joerivrij/RiderProjects/bevrand.authenticationapi/bevrand.authenticationapi.tests/bin/Debug/netcoreapp2.0/xunit.runner.reporters.netstandard15.dll
+/home/joerivrij/RiderProjects/bevrand.authenticationapi/bevrand.authenticationapi.tests/bin/Debug/netcoreapp2.0/bevrand.authenticationapi.tests.deps.json
+/home/joerivrij/RiderProjects/bevrand.authenticationapi/bevrand.authenticationapi.tests/bin/Debug/netcoreapp2.0/bevrand.authenticationapi.tests.runtimeconfig.json
+/home/joerivrij/RiderProjects/bevrand.authenticationapi/bevrand.authenticationapi.tests/bin/Debug/netcoreapp2.0/bevrand.authenticationapi.tests.runtimeconfig.dev.json
+/home/joerivrij/RiderProjects/bevrand.authenticationapi/bevrand.authenticationapi.tests/bin/Debug/netcoreapp2.0/bevrand.authenticationapi.tests.dll
+/home/joerivrij/RiderProjects/bevrand.authenticationapi/bevrand.authenticationapi.tests/bin/Debug/netcoreapp2.0/bevrand.authenticationapi.tests.pdb
+/home/joerivrij/RiderProjects/bevrand.authenticationapi/bevrand.authenticationapi.tests/obj/Debug/netcoreapp2.0/bevrand.authenticationapi.tests.dll
+/home/joerivrij/RiderProjects/bevrand.authenticationapi/bevrand.authenticationapi.tests/obj/Debug/netcoreapp2.0/bevrand.authenticationapi.tests.pdb
