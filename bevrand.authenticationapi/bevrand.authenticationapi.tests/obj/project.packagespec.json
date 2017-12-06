@@ -1,0 +1,45 @@
+﻿{
+  "version": "1.0.0",
+  "restore": {
+    "projectUniqueName": "/home/joerivrij/RiderProjects/bevrand.authenticationapi/bevrand.authenticationapi.tests/bevrand.authenticationapi.tests.csproj",
+    "projectName": "bevrand.authenticationapi.tests",
+    "projectPath": "/home/joerivrij/RiderProjects/bevrand.authenticationapi/bevrand.authenticationapi.tests/bevrand.authenticationapi.tests.csproj",
+    "outputPath": "/home/joerivrij/RiderProjects/bevrand.authenticationapi/bevrand.authenticationapi.tests/obj/",
+    "projectStyle": "PackageReference",
+    "originalTargetFrameworks": [
+      "netcoreapp2.0"
+    ],
+    "frameworks": {
+      "netcoreapp2.0": {
+        "projectReferences": {}
+      }
+    }
+  },
+  "frameworks": {
+    "netcoreapp2.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "target": "Package",
+          "version": "2.0.0"
+        },
+        "Microsoft.NET.Test.Sdk": {
+          "target": "Package",
+          "version": "15.3.0-preview-20170628-02"
+        },
+        "xunit": {
+          "target": "Package",
+          "version": "2.2.0"
+        },
+        "xunit.runner.visualstudio": {
+          "target": "Package",
+          "version": "2.2.0"
+        }
+      },
+      "imports": [
+        "net461"
+      ],
+      "assetTargetFallback": true,
+      "warn": true
+    }
+  }
+}

@@ -1,0 +1,16 @@
+click==6.7
+flasgger==0.8.0
+Flask==0.12.2
+Flask-Script==2.0.5
+Flask-Testing==0.6.2
+itsdangerous==0.24
+Jinja2==2.9.6
+jsonschema==2.6.0
+MarkupSafe==1.0
+mistune==0.8.1
+py==1.4.34
+pymongo==3.5.1
+pytest==3.2.3
+PyYAML==3.12
+six==1.11.0
+Werkzeug==0.12.2

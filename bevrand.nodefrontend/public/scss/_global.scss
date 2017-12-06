@@ -1,0 +1,121 @@
+// Global styling for this template
+body,
+html {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  @include serif-font;
+}
+
+hr {
+  max-width: 50px;
+  border-width: 3px;
+  border-color: $theme-primary;
+}
+
+hr.light {
+  border-color: white;
+}
+
+a {
+  color: $theme-primary;
+  @include transition-all;
+  &:focus,
+  &:hover {
+    color: darken($theme-primary, .1);
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @include sans-serif-font;
+}
+
+p {
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.bg-primary {
+  background-color: $gray-charcoal !important;
+}
+
+.bg-dark {
+  color: white;
+  background-color: $gray-darker !important;
+}
+
+// Added row to the #about section 
+
+.list-group {
+  margin-bottom: 50px;
+  margin-top: 50px;
+}
+
+.list-group-item {
+  @include sans-serif-font;
+  background-color: white;
+  font-weight: 700;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 20px;
+}
+
+.alert-success {
+  background-color: $theme-primary;
+  margin: auto; 
+  margin-top: 50px;
+  margin-bottom: 50px;
+  align-self: center !important;
+  text-align: center !important;
+  color: white;
+  border: none;
+  display: table;
+  border-radius: 300px;
+  @include sans-serif-font;
+}
+
+.text-faded {
+  color: fade-out(white, .3);
+}
+
+section {
+  padding: 100px 0;
+}
+
+.section-heading {
+  margin-top: 0;
+}
+
+::-moz-selection {
+  color: white;
+  background: $gray-darker;
+  text-shadow: none;
+}
+
+::selection {
+  color: white;
+  background: $gray-darker;
+  text-shadow: none;
+}
+
+img::selection {
+  color: white;
+  background: transparent;
+}
+
+img::-moz-selection {
+  color: white;
+  background: transparent;
+}
+
+body {
+  -webkit-tap-highlight-color: $gray-darker;
+}
