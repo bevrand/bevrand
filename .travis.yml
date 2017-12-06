@@ -19,14 +19,15 @@ before_install:
         - docker-compose build
         - docker-compose up -d
         - docker ps -a
-        - pip install -r requirements.txt
         - cd ./bevrand.mongoapi
+        - pip install -r requirements.txt
         - pwd
 
 script:
         - python manage.py test
         - cd ..a
         - cd ./bevrand.randomizerapi
+        - pip install -r requirements.txt
         - python manage.py test
           #install:
 
