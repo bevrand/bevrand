@@ -22,6 +22,7 @@ class TestUserService(BaseTestCase):
         self.assertIn('pong!', data['message'])
         self.assertIn('success', data['status'])
 
+
     def test_get_all_frontpage_users(self):
         """Ensure get frontpage users behaves correctly."""
         with self.client:
@@ -29,7 +30,7 @@ class TestUserService(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 200)
             self.assertTrue('TGIF' in data['front_page_lists'])
-            self.assertTrue('theendoftheworld' in data['front_page_lists'])
+            self.assertTrue('mancavemayhem' in data['front_page_lists'])
 
     def test_single_frontpage_user(self):
         """Ensure get frontpage user behaves correctly."""
@@ -43,3 +44,5 @@ class TestUserService(BaseTestCase):
                 self.assertEqual(response.status_code, 200)
                 length_of_list = data['beverages'].__len__()
                 self.assertTrue(length_of_list > 1)
+
+

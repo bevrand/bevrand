@@ -16,7 +16,7 @@ def ping_pong():
     })
 
 
-@users_blueprint.route('/api/frontpage/', methods=['GET'])
+@users_blueprint.route('/api/frontpage', methods=['GET'])
 def front_page():
     """
         This is an api to see lists and beverages
@@ -45,7 +45,7 @@ def front_page():
     #jsonify in the view, return a list from the repo
 
 
-@users_blueprint.route('/api/users/', methods=['GET'])
+@users_blueprint.route('/api/users', methods=['GET'])
 def users():
     """
         This is an api to see lists and beverages
@@ -84,7 +84,7 @@ def users():
         return "not a correct call", 400
 
 
-@users_blueprint.route('/api/users/', methods=['POST'])
+@users_blueprint.route('/api/users', methods=['POST'])
 def post_user():
     """
         This is an api to see lists and beverages
@@ -133,7 +133,7 @@ def post_user():
         return "List already exists unable to insert", 400
 
 
-@users_blueprint.route('/api/users/', methods=['DELETE'])
+@users_blueprint.route('/api/users', methods=['DELETE'])
 def remove_user_list():
     """
         Call to remove a list from a user
@@ -174,7 +174,7 @@ def remove_user_list():
         return "Unable to delete user, user does not exist", 400
 
 
-@users_blueprint.route('/api/users/', methods=['PUT'])
+@users_blueprint.route('/api/users', methods=['PUT'])
 def update_user_list():
     """
          Call to update a list from a user

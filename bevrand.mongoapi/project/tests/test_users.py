@@ -11,7 +11,9 @@ def add_user(user, list):
     user.beverages = [{"name" : "coffee", "name": " tea"}]
     return user
 
+
 class TestUserService(BaseTestCase):
+
     def test_get_all_users(self):
         """Ensure get all users behaves correctly."""
         with self.client:
@@ -31,7 +33,7 @@ class TestUserService(BaseTestCase):
         userlist = users['users']
         for user in userlist:
             with self.client:
-                response = self.client.get(f'/api/users&user={user}')
+                response = self.client.get(f'/api/users?user={user}')
                 data = json.loads(response.data.decode())
                 self.assertEqual(response.status_code, 200)
                 length_of_list = data['descriptions'].__len__()
@@ -43,7 +45,7 @@ class TestUserService(BaseTestCase):
         users = json.loads(response.data.decode())
         userlist = users['users']
         for user in userlist:
-            response = self.client.get(f'/api/users&user={user}')
+            response = self.client.get(f'/api/users?user={user}')
             data = json.loads(response.data.decode())
             descriptions = data['descriptions']
             for desc in descriptions:
@@ -53,3 +55,6 @@ class TestUserService(BaseTestCase):
                     self.assertEqual(response.status_code, 200)
                     length_of_list = data['beverages'].__len__()
                     self.assertTrue(length_of_list > 0)
+
+
+
