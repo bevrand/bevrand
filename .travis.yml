@@ -6,7 +6,7 @@ services:
         - docker
 
 env:
-        - DOCKER_COMPOSE_VERSION=2
+        - DOCKER_COMPOSE_VERSION=2.0
 
 before_install:
         - sudo rm /usr/local/bin/docker-compose
