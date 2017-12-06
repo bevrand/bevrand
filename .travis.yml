@@ -25,10 +25,10 @@ before_install:
 
 script:
         - python manage.py test
-        - cd ..a
-        - cd ./bevrand.randomizerapi
-        - pip install -r requirements.txt
-        - python manage.py test
+          # - cd ..a
+          # - cd ./bevrand.randomizerapi
+          # - pip install -r requirements.txt
+          # - python manage.py test
           #install:
 
 
