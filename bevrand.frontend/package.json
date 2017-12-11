@@ -1,16 +1,30 @@
 {
-  "name": "bevrand.frontend",
+  "name": "bevrand.nodefrontend",
   "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "react-scripts": "1.0.17"
-  },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "node server.js",
+    "client": "node start-client.js",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "body-parser": "~1.17.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.3",
+    "dotenv": "^4.0.0",
+    "express": "~4.15.2",
+    "joi": "^13.0.2",
+    "morgan": "~1.8.1",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.2"
+  },
+  "devDependencies": {
+    "concurrently": "^3.1.0",
+    "eslint": "^4.5.0",
+    "eslint-config-airbnb": "14.1.0",
+    "eslint-plugin-import": "2.2.0",
+    "eslint-plugin-jsx-a11y": "4.0.0",
+    "eslint-plugin-react": "6.9.0"
   }
 }
