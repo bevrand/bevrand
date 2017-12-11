@@ -1,8 +1,6 @@
 sudo: required
 
-language: python
-python:
-        - "3.6" 
+language: java
 
 services:
         - docker
@@ -19,18 +17,8 @@ before_install:
         - docker-compose build
         - docker-compose up -d
         - docker ps -a
-        - cd ./bevrand.mongoapi
-        - pip install -r requirements.txt
+        - cd ./bevrand.intregrationtest
         - pwd
 
 script:
-        - python manage.py test
-          # - cd ..a
-          # - cd ./bevrand.randomizerapi
-          # - pip install -r requirements.txt
-          # - python manage.py test
-          #install:
-
-
-          # python manage.py test
-          #
+        - ./gradlew test
