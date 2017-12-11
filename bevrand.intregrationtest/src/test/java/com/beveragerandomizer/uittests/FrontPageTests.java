@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(SeleniumExtension.class)
 public class FrontPageTests {
 
+    /*
     @Test
     public void testWithChrome()
     {
@@ -37,6 +38,7 @@ public class FrontPageTests {
         chrome.manage().window().maximize();
         assertTrue(chrome.getTitle().startsWith("The Beverage Randomizer"));
     }
+    */
 
     @Test
     public void thenPageComesUp(PhantomJSDriver phantom) {
