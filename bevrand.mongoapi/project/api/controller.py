@@ -33,16 +33,21 @@ def front_page():
           400:
             description: Incorrect dbs used
           200:
-            description: Your stuff has been moved bro
+            description: Your list is correct see response
     """
     listname = request.args.get('list', default=None)
     if listname is None:
         front_page_list = db_frontpage_filler.get_all_frontpage_lists()
-        return front_page_list
+        return front_page_list, 200
     else:
-        front_page_beverages = db_frontpage_filler.get_frontpage_beverages(listname)
-        return front_page_beverages
-    #jsonify in the view, return a list from the repo
+        list_is_correct = db_frontpage_filler.check_if_frontpage_list_exists(listname)
+        if list_is_correct:
+            front_page_beverages = db_frontpage_filler.get_frontpage_beverages(listname)
+            return jsonify({'beverages': front_page_beverages}), 200
+        else:
+            error = ReturnModel('frontpage', listname, 'The frontpagelist you queried does not exists', '')
+            errorMessage = json.dumps(error.__dict__)
+            return errorMessage, 401
 
 
 @users_blueprint.route('/api/users', methods=['GET'])
@@ -67,7 +72,7 @@ def users():
           400:
             description: Incorrect dbs used
           200:
-            description: Your stuff has been moved bro
+            description: Your list is correct see response
     """
     username = request.args.get('user', default=None)
     descriptionlist = request.args.get('list', default=None)
@@ -117,11 +122,14 @@ def post_user():
           400:
             description: Incorrect dbs used
           200:
-            description: Your stuff has been moved bro
+            description: Your list has been inserted
     """
-
     user = request.json['user']
     list = request.json['list']
+    if user is 'frontpage':
+        frontpage_object = ReturnModel(user, list, 'frontpage is an invalid user - reserverd', '')
+        res = json.dumps(frontpage_object.__dict__)
+        return res, 401
     list_exists = db_worker.check_if_userlist_already_exists(user, list)
     if not list_exists:
         data_to_insert = request.json
@@ -155,7 +163,7 @@ def remove_user_list():
           400:
             description: Incorrect dbs used
           200:
-            description: Your stuff has been moved bro
+            description: Your list was deleted
     """
 
     to_remove_user = request.args.get('user')
@@ -196,19 +204,28 @@ def update_user_list():
             in: body
             required: true
             schema:
-              id: Product
+              id: user
               required:
-                - name
+                - user
+                - list
+                - beverages
               properties:
-                name:
+                user:
+                    type: string
+                    description: The user to insert
+                list:
                   type: string
-                  description: The product's name.
-                  default: "Guarana"
+                  description: The list to insert
+                beverages:
+                  type: array
+                  items:
+                    schema:
+                        type: string
         responses:
           400:
             description: Incorrect dbs used
           200:
-            description: Your stuff has been moved bro
+            description: Your list was deleted
     """
 
     old_user = request.args.get('user')
