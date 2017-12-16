@@ -5,7 +5,7 @@ COPY . /frontend
 COPY package.json /frontend/package.json
 
 #TODO: add a way to install both client and api modules
-#TODO: Build the client
+#TODO: Build the client on production way
 #TODO: Bundle build client to the public folder of the nodejs api
 
 # set working directory
