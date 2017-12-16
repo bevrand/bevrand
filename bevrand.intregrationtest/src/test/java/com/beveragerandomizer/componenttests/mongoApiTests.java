@@ -8,11 +8,14 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.json.JSONArray;
+import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.jupiter.api.*;
 import com.google.gson.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,6 +34,29 @@ public class mongoApiTests {
     @BeforeAll
     static void setParams() {
         reqUrl = "http://0.0.0.0:4550/api/";
+    }
+
+    @Test
+    @DisplayName("Ping to see if service is on")
+    void serviceIsOn() throws UnirestException {
+        String url = "http://0.0.0.0:4550/ping";
+        JsonNode response = Unirest.get(url).asJson().getBody();
+        JSONObject json = response.getObject();
+        Iterator<?> keys = json.keys();
+        while (keys.hasNext()){
+            String key = keys.next().toString();
+            String resString = response.getObject().getString(key);
+            boolean message = key.equals("message");
+            if (message) {
+                Assert.assertEquals("pong!", resString);
+
+            }
+            else {
+                Assert.assertEquals("success", resString);
+            }
+        }
+
+
     }
 
     @Nested
@@ -55,7 +81,6 @@ public class mongoApiTests {
             @DisplayName("Then I check that there are beverage")
             void getAllInnerLists() throws UnirestException {
                 for (int j = 0; j < frontpageList.length(); j++) {
-                    System.out.println(frontpageList.getString(j));
                     String bevUrl = reqUrl + "frontpage?list=" + frontpageList.getString(j);
                     JsonNode beveragesResponse = Unirest.get(bevUrl).asJson().getBody();
                     Object beverageKey = beveragesResponse.getObject().keys().next();
@@ -173,7 +198,6 @@ public class mongoApiTests {
 
                 List<String> addedUserList = new ArrayList<>();
                 for (int i = 0; i < jsonResponse.length(); i++) {
-                    System.out.println(jsonResponse.getString(i));
                     addedUserList.add(jsonResponse.getString(i));
                 }
 
@@ -308,7 +332,6 @@ public class mongoApiTests {
 
         @AfterEach
         void deleteUser() {
-            System.out.println("this should only be printed once");
         }
 
         @Test
@@ -333,7 +356,6 @@ public class mongoApiTests {
 
     @AfterAll
     static void deleteUserModel() throws UnirestException {
-        System.out.println(" not to be seen!!!!");
         String url = reqUrl + "users?user=" + MongoModel.user + "&list=" + MongoModel.list;
         JsonNode response = Unirest.delete(url).asJson().getBody();
         Gson gson = new Gson();

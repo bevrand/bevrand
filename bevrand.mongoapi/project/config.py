@@ -8,17 +8,17 @@ class BaseConfig:
     CONNECTION = os.environ.get('MONGO_URL')
 
 
-class Development(BaseConfig):
+class development(BaseConfig):
     """Development configuration"""
     DEBUG = True
 
 
-class Testing(BaseConfig):
+class testing(BaseConfig):
     """Testing configuration"""
     DEBUG = True
     TESTING = True
 
 
-class Production(BaseConfig):
+class production(BaseConfig):
     """Production configuration"""
     DEBUG = False
