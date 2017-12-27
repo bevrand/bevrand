@@ -22,7 +22,7 @@ def create_app():
 
     app = Flask(__name__)
     app.config['SWAGGER'] = {
-        'title': 'Flask RandomizeApi',
+        'title': 'Flask RandomizerApi',
         'uiversion': 3
     }
     Swagger(app, config=swagger_config)
