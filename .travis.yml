@@ -31,7 +31,8 @@ script:
   - ./gradlew test
 
 after_script:
-  - "curl -H \"Content-Type: application/json\" --data '{\"build\": true}' -X POST https://registry.hub.docker.com/u/bevrand/mongoapi/trigger/cba069ab-0913-485a-842d-d3fff67fc3ee/"
-  - $MONGOAPI_TRIGGER
+        # - "curl -H \"Content-Type: application/json\" --data '{\"build\": true}' -X POST https://registry.hub.docker.com/u/bevrand/mongoapi/trigger/cba069ab-0913-485a-842d-d3fff67fc3ee/"
+  - "$MONGOAPI_TRIGGER"
+  - "$MONGOAPI_TRIGGER2"
   - "curl -H $RANDOMIZERAPI_TRIGGER"
   - "curl -H $NODEFRONTEND_TRIGGER"
