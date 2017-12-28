@@ -29,6 +29,6 @@ script:
   - ./gradlew test
 
 after_script:
-  - $MONGOAPI_TRIGGER
-  - $RANDOMIZERAPI_TRIGGER
-  - $NODEFRONTEND_TRIGGER
+  - curl -H $MONGOAPI_TRIGGER
+  - curl -H $RANDOMIZERAPI_TRIGGER
+  - curl -H $NODEFRONTEND_TRIGGER
