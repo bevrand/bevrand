@@ -1,36 +1,36 @@
 sudo: required
 
-language: python
-python:
-        - "3.6" 
+dist: trusty
+
+language: java
+
+#safelist
+branches:
+  only:
+  - master
 
 services:
-        - docker
+  - docker
 
 env:
-        - DOCKER_COMPOSE_VERSION=1.8.0
+  - DOCKER_COMPOSE_VERSION=1.8.0
 
 before_install:
-        - sudo rm /usr/local/bin/docker-compose
-        - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-        - chmod +x docker-compose
-        - sudo mv docker-compose /usr/local/bin
-        - docker-compose --version
-        - docker-compose build
-        - docker-compose up -d
-        - docker ps -a
-        - cd ./bevrand.mongoapi
-        - pip install -r requirements.txt
-        - pwd
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+  - docker-compose --version
+  - docker-compose build
+  - docker-compose up -d
+  - docker ps -a
+  - cd ./bevrand.integrationtest
+  - pwd
 
 script:
-        - python manage.py test
-          # - cd ..a
-          # - cd ./bevrand.randomizerapi
-          # - pip install -r requirements.txt
-          # - python manage.py test
-          #install:
+  - ./gradlew test
 
-
-          # python manage.py test
-          #
+after_script:
+  - "$MONGOAPI_TRIGGER"
+  - "$RANDOMIZERAPI_TRIGGER"
+  - "$NODEFRONTEND_TRIGGER"
