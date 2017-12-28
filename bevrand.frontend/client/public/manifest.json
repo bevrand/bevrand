@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Beverage Randomizer",
+  "name": "The Beverage Randomizer",
   "icons": [
     {
       "src": "favicon.ico",
