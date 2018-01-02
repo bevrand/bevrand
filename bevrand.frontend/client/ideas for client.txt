@@ -1,0 +1,7 @@
+1. Make the app fully cover the page (with a background image).
+example: https://getbootstrap.com/docs/4.0/examples/cover/
+
+2. Add a fully covering carrousel for selection of playlists, 
+with to the side the corresponding playlist items.
+example: https://getbootstrap.com/docs/4.0/components/carousel/#with-captions
+

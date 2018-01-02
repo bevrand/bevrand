@@ -1,7 +1,4 @@
 // Styling for the navbar
-@import "scss-globals/_variables.scss";
-@import "scss-globals/_mixins.scss";
-
 #mainNav {
   border-color: fade-out($gray-darker, .95);
   background-color: white;

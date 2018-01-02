@@ -52,22 +52,6 @@ p {
   background-color: $gray-darker !important;
 }
 
-// Added row to the #about section 
-
-.list-group {
-  margin-bottom: 50px;
-  margin-top: 50px;
-}
-
-.list-group-item {
-  @include sans-serif-font;
-  background-color: white;
-  font-weight: 700;
-  text-transform: uppercase;
-  border: none;
-  border-radius: 20px;
-}
-
 .alert-success {
   background-color: $theme-primary;
   margin: auto; 
