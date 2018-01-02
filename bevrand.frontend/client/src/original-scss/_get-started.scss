@@ -1,0 +1,18 @@
+//Styling for the Get-Started area
+.list-group {
+  padding-bottom: 30px;
+  padding-top: 20px;
+}
+
+  
+.list-group-item {
+  @include sans-serif-font;
+  background-color: $gray;
+  font-weight: 700;
+  color: white;
+  margin: 2px;
+  text-transform: uppercase;
+  border-width: 1px;
+  border-color: $gray-light;
+  border-radius: 5px;
+}

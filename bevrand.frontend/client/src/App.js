@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
-import Navbar from './components/navbar';
-import Header from './components/masthead';
-import logo from './logo.svg';
-import './App.css';
+import Randomizer from './components/randomizer';
+import Playlists from './components/playlists';
 
 //TODO: add REST method to api for retrieving data with 1 call
-const playlistData = [
+let playlistData = [
   {
     id: 0,
-    name: "TGIF",
-    image: "default.jpg",
-    playlistItems: [
+    name: "Girls night out",
+    fullImageUrl: "img/portfolio/fullsize/Girls night out - small.jpg",
+    thumbImageUrl: "img/portfolio/thumbnails/Girls night out - small.jpg",
+    beverages: [
       "melk",
       "bier",
       "wijn",
@@ -19,9 +18,10 @@ const playlistData = [
   },
   {
     id: 1,
-    name: "Bier",
-    image: "bier.jpg",
-    playlistItems: [
+    name: "Highland Games",
+    fullImageUrl: "img/portfolio/fullsize/Highland Games - small.jpg",
+    thumbImageUrl: "img/portfolio/thumbnails/Highland Games - small.jpg",
+    beverages: [
       "Palm",
       "Tripel",
       "wijn",
@@ -30,39 +30,92 @@ const playlistData = [
   },
   {
     id: 2,
-    name: "Van Wijn wordt je geen chagerijn",
-    image: "wijn.jpg",
-    playlistItems: [
+    name: "Mancave mayhem",
+    fullImageUrl: "img/portfolio/fullsize/Mancave mayhem - small.jpg",
+    thumbImageUrl: "img/portfolio/thumbnails/Mancave mayhem - small.jpg",
+    beverages: [
       "Champagne",
       "Rode wijn",
       "Witte wijn"
     ]
+  },
+  {
+    id: 3,
+    name: "Office madness",
+    fullImageUrl: "img/portfolio/fullsize/Office madness - small.jpg",
+    thumbImageUrl: "img/portfolio/thumbnails/Office madness - small.jpg",
+    beverages: [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6"
+    ]
+  },
+  {
+    id: 4,
+    name: "Thank god it's friday",
+    fullImageUrl: "img/portfolio/fullsize/Thank god it's friday - small.jpg",
+    thumbImageUrl: "img/portfolio/thumbnails/Thank god it's friday - small.jpg",
+    beverages: [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6"
+    ]
+  },
+  {
+    id: 5,
+    name: "Kut kerst",
+    fullImageUrl: "img/portfolio/fullsize/The most wonderful time - small.jpg",
+    thumbImageUrl: "img/portfolio/thumbnails/The most wonderful time - small.jpg",
+    beverages: [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6"
+    ]
   }
 ];
 
-function renderHeader(){
-  return (
-    <header className="App-header">
-      <img src={logo} className="App-logo" alt="logo" />
-      <h1 className="App-title">The Beverage Randomizer</h1>
-    </header>
-  );
-}
-
-
 class App extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      currentPlaylist: 0,
+      history: []
+    };
 
+    this.changePlaylist = this.changePlaylist.bind(this);
+  }
 
+  changePlaylist(id){
+    this.setState({
+      currentPlaylist: id
+    });
+  }
+
+  handleRandomize(key){
+    //Add stuff to the playlist, key should be index of array and value of array
+    console.info('Randomized Button was clicked');
+  }
+  //TODO: Add component didmount and willUnmount to the app class
 
   render() {
+    const currentPlaylist = playlistData.filter((elem) => {
+      return elem.id === this.state.currentPlaylist;
+    });
+
     return (
       <div className="App">
-        <Navbar />
-        <Header />
-        {/* { renderHeader() } */}
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <Randomizer playlist={currentPlaylist[0]} onClick={this.handleRandomize}/>
+        {/* TODO: why onClick as anonymous function */}
+        <Playlists playlists={playlistData} onClick={this.changePlaylist} />
       </div>
     );
   }
