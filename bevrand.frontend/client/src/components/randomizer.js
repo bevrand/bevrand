@@ -86,7 +86,8 @@ class Randomizer extends Component {
     
 
     //Randomize the beverage
-    const randomizedBeverage = randomizeBeverageMock(this.props.playlist);
+    // const randomizedBeverage = randomizeBeverageMock(this.props.playlist);
+    const randomizedBeverage = getRandomize(this.props.playlist);
     
     //Set Result, so Component will be updated
     this.setState({
