@@ -1,12 +1,12 @@
 #!/usr/bin/env node
-var app = require('./api/app');
+var app = require('./api/server');
 var debug = require('debug')('bevrand.frontend:server');
 var http = require('http');
 
 /**
  * Get port from environment and store in Express.
  */
-var port = normalizePort(process.env.PORT || '4540');
+var port = normalizePort(process.env.PORT || '3001');
 app.set('port', port);
 
 /**

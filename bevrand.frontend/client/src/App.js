@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Randomizer from './components/randomizer';
 import Playlists from './components/playlists';
-// import axios from 'axios';
+import axios from 'axios';
 
 let playlistData = [
   {
@@ -69,7 +69,7 @@ let playlistData = [
   },
   {
     id: 5,
-    name: "Kut kerst",
+    name: "Happy Holidays",
     fullImageUrl: "img/portfolio/fullsize/The most wonderful time - small.jpg",
     thumbImageUrl: "img/portfolio/thumbnails/The most wonderful time - small.jpg",
     beverages: [
@@ -84,9 +84,12 @@ let playlistData = [
 ];
 
 class App extends Component {
+
+
   constructor(props){
     super(props);
 
+    this.playlists = this.getFrontpagePlaylists()
 
     this.state = {
       currentPlaylist: 0,
@@ -94,6 +97,18 @@ class App extends Component {
     };
 
     this.changePlaylist = this.changePlaylist.bind(this);
+  }
+
+  getFrontpagePlaylists(){
+    axios.get('http://mongoapi:4550/api/frontpage')
+      .then(response => {
+        console.log(response);
+        return response.data;
+      })
+      .catch(error => {
+        console.error(error);
+        return playlistData;
+      });
   }
 
   componentWillMount(){
@@ -111,17 +126,16 @@ class App extends Component {
       result: null
     });
   }
-  //TODO: Add component didmount and willUnmount to the app class
 
   render() {
-    const currentPlaylist = playlistData.filter((elem) => {
+    const currentPlaylist = this.playlists.find((elem) => {
       return elem.id === this.state.currentPlaylist;
     });
 
     return (
       <div className="App">
-        <Randomizer playlist={currentPlaylist[0]} />
-        <Playlists playlists={playlistData} onClick={this.changePlaylist} />
+        <Randomizer playlist={currentPlaylist} />
+        <Playlists playlists={this.playlists} onClick={this.changePlaylist} />
       </div>
     );
   }

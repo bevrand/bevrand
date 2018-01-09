@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 const PreviewItemRow = (props) => {
   const beverage = props.value;
@@ -30,6 +31,21 @@ const RandomizeButton = (props) => {
       <a className="btn btn-primary btn-xl js-scroll-trigger" href="#portfolio">Choose list</a>
     </div>
   )
+}
+
+const getRandomize = (playlist) => {
+  let name = playlist.name;
+  let playlistItems = playlist.beverages;
+  axios.post(`http://randomizeapi:4560/api/randomize?user=frontpage&list=${name}`, {
+    ...playlistItems
+  })
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      console.error(error);
+      return null;
+    })
 }
 
 
