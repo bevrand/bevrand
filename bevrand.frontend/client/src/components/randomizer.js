@@ -3,9 +3,9 @@ import React, { Component } from 'react';
 const PreviewItemRow = (props) => {
   const beverage = props.value;
   return (
-    <li className="list-group-item justify-content-between">
+    <li className="list-group-item text-center justify-content-between">
       {beverage}
-      <span className="badge badge-default badge-pill pull-right">0</span>
+      {/* <span className="badge badge-default badge-pill pull-right">0</span> */}
     </li>
   );
 }
@@ -78,7 +78,6 @@ class Randomizer extends Component {
     });
   }
 
-  //TODO: make the rendering based on the supplied data
   //TODO: split this component up in several smaller components
   render() {
     const playlist = this.props.playlist;
