@@ -5,23 +5,20 @@ class BaseConfig:
     """Base configuration"""
     DEBUG = False
     TESTING = False
-    CONNECTION = 'mongodb://localhost:27017'
+    CONNECTION = os.environ.get('MONGO_URL')
 
 
-class DevelopmentConfig(BaseConfig):
+class development(BaseConfig):
     """Development configuration"""
     DEBUG = True
-    CONNECTION = 'mongodb://0.0.0.0:27017'
 
 
-class TestingConfig(BaseConfig):
+class testing(BaseConfig):
     """Testing configuration"""
     DEBUG = True
     TESTING = True
-    CONNECTION = 'mongodb://0.0.0.0:27017'
 
 
-class ProductionConfig(BaseConfig):
+class production(BaseConfig):
     """Production configuration"""
     DEBUG = False
-    CONNECTION = 'mongodb://dockermongo:27017'

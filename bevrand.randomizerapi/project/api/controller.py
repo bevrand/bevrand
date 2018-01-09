@@ -77,13 +77,58 @@ def randomize():
             return "Bad request, no valid status returned"
 
 
-@randomize_blueprint.route('/api/redisuser', methods=['GET'])
-def show_top_rolled_beverages():
+@randomize_blueprint.route('/api/randomize', methods=['POST'])
+def post_list():
     """
         This is an api to randomize lists and add data to redis
         ---
         tags:
           - Api to randomize
+        parameters:
+          - name: body
+            in: body
+            required: true
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                list:
+                  type: string
+                beverages:
+                  type: array
+                  items:
+                    type: string
+              example:
+                user: "joeri"
+                list: "joerislist"
+                beverages: ["beer", "wine"]
+        responses:
+          400:
+            description: Incorrect user, list or beverages
+          200:
+            description: Your list has been randomized
+    """
+    username = request.json['user']
+    description_list = request.json['list']
+    beverages = request.json['beverages']
+    if username is None or description_list is None:
+        return "User and list required", 400
+    elif len(beverages) < 1:
+        return "Number of beverages is 0 cannot randomize", 400
+    else:
+        user_list = username + description_list
+        random_drink = api_handler.random_list_creator_from_post(beverages, user_list)
+        return random_drink, 200
+
+
+@randomize_blueprint.route('/api/redis', methods=['GET'])
+def redis_topfive():
+    """
+        This is an api to Randomize drinks
+        ---
+        tags:
+          - Show top rolled drinks
         parameters:
           - name: user
             type: string

@@ -21,7 +21,7 @@ def get_all_frontpage_lists():
     lists = []
     query = fpusers.find()
     if query.count() == 0:
-        raise error_handler.InvalidUsage('Mongoquery invalid no results', status_code=410)
+        return error_handler.InvalidUsage('Mongoquery invalid no results', status_code=410)
     else:
         for result in query:
             lists.append(result['list'])
@@ -34,12 +34,18 @@ def get_frontpage_beverages(list):
     fpusers = db.frontpagestandard
     beverages = []
     specified_document = fpusers.find_one({'list': list})
-    if specified_document is not None:
+    try:
         for drinks in specified_document['beverages']:
             beverages.append(drinks['name'])
+    except:
+        return "Unknown error"
+    return beverages
+
+
+def check_if_frontpage_list_exists(list):
+    fpusers = db.frontpagestandard
+    specified_document = fpusers.find_one({'list': list})
+    if specified_document is None:
+        return False
     else:
-        raise error_handler.InvalidUsage('Mongoquery invalid no results', status_code=410)
-    return jsonify({'beverages': beverages})
-
-
-
+        return True

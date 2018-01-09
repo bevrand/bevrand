@@ -12,6 +12,14 @@ def random_list_creator(responsejson, user_list):
         error_handler.InvalidUsage('Invalid Json - url not correct', status_code=410)
 
 
+def random_list_creator_from_post(beveragelist, user_list):
+    try:
+        random_drink = random_selection(beveragelist, user_list)
+        return random_drink
+    except:
+        error_handler.InvalidUsage('Invalid Json - url not correct', status_code=410)
+
+
 def random_selection(rand_list, redis_col):
     listed_drink = random.choice(rand_list)
     redis_connection.rediscontroller(redis_col, listed_drink)
