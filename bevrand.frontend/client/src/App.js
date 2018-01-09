@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Randomizer from './components/randomizer';
 import Playlists from './components/playlists';
+// import axios from 'axios';
 
-//TODO: add REST method to api for retrieving data with 1 call
 let playlistData = [
   {
     id: 0,
@@ -86,23 +86,30 @@ let playlistData = [
 class App extends Component {
   constructor(props){
     super(props);
+
+
     this.state = {
       currentPlaylist: 0,
-      history: []
+      playlists: {}
     };
 
     this.changePlaylist = this.changePlaylist.bind(this);
   }
 
-  changePlaylist(id){
+  componentWillMount(){
+    const retrievedPlaylists = playlistData;
+
+    // Set the current set of Playlists
     this.setState({
-      currentPlaylist: id
+      playlists: retrievedPlaylists
     });
   }
 
-  handleRandomize(key){
-    //Add stuff to the playlist, key should be index of array and value of array
-    console.info('Randomized Button was clicked');
+  changePlaylist(id){
+    this.setState({
+      currentPlaylist: id,
+      result: null
+    });
   }
   //TODO: Add component didmount and willUnmount to the app class
 
@@ -113,8 +120,7 @@ class App extends Component {
 
     return (
       <div className="App">
-        <Randomizer playlist={currentPlaylist[0]} onClick={this.handleRandomize}/>
-        {/* TODO: why onClick as anonymous function */}
+        <Randomizer playlist={currentPlaylist[0]} />
         <Playlists playlists={playlistData} onClick={this.changePlaylist} />
       </div>
     );
