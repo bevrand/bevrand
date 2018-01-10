@@ -36,10 +36,16 @@ const RandomizeButton = (props) => {
 const getRandomize = (playlist) => {
   let name = playlist.name;
   let playlistItems = playlist.beverages;
-  axios.post(`http://randomizeapi:4560/api/randomize?user=frontpage&list=${name}`, {
-    ...playlistItems
-  })
+  let postData = {
+    user: "frontpage",
+    list: `${name}`,
+    beverages: playlistItems
+  }
+  console.log(postData);
+
+  axios.post(`http://randomizeapi:5000/api/randomize?user=frontpage&list=${name}`, postData)
     .then(response => {
+      console.log(response.data);
       return response.data;
     })
     .catch(error => {
@@ -82,8 +88,7 @@ class Randomizer extends Component {
   }
 
   handleRandomize(){
-    //TODO:Update history of Randomized Beverages
-    
+    //TODO:Retrieve new Redis randomize information for the active playlist
 
     //Randomize the beverage
     // const randomizedBeverage = randomizeBeverageMock(this.props.playlist);
