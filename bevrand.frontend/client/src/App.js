@@ -92,7 +92,7 @@ class App extends Component {
     this.playlists = this.getFrontpagePlaylists()
 
     this.state = {
-      currentPlaylist: 0,
+      currentPlaylist: 0, //TODO: make the default the TGIF playlist, with find function to retrieve key of this playlist
       playlists: {}
     };
 
@@ -100,7 +100,9 @@ class App extends Component {
   }
 
   getFrontpagePlaylists(){
-    axios.get('http://mongoapi:4550/api/frontpage')
+
+    //TODO: loop through all returned beverages serverside
+    axios.get('http://mongoapi:5000/api/frontpage')
       .then(response => {
         console.log(response);
         return response.data;
@@ -109,6 +111,7 @@ class App extends Component {
         console.error(error);
         return playlistData;
       });
+    // return playlistData;
   }
 
   componentWillMount(){
