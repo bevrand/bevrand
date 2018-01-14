@@ -23,8 +23,10 @@ RUN npm install --quiet
 
 WORKDIR ../
 
+
 # port to expose
 EXPOSE 5000
 
 # Run the app
 CMD ["npm","run", "server"]
+
