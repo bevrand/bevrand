@@ -30,6 +30,7 @@ if (error) {
 }
 
 const config = {
+  env: envVars.NODE_ENV,
   mongoApi: envVars.MONGO_API,
   randomizerApi: envVars.MONGO_API,
   server: {
