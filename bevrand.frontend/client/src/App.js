@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Randomizer from './components/randomizer';
 import Playlists from './components/playlists';
-import axios from 'axios';
 
 let playlistData = [
   {
