@@ -31,33 +31,32 @@ const RandomizeButton = (props) => {
       <a className="btn btn-primary btn-xl js-scroll-trigger" href="#portfolio">Choose list</a>
     </div>
   )
-}
+};
 
-const getRandomize = (playlist) => {
-  let name = playlist.name;
-  let playlistItems = playlist.beverages;
-  axios.post(`http://randomizeapi:4560/api/randomize?user=frontpage&list=${name}`, {
-    ...playlistItems
+const getRandomize = async (playlist) => {
+  let url = `/api/randomize?user=frontpage&list=${playlist.name}`;
+  let data = {
+    user: "frontpage",
+    list: `${playlist.name}`,
+    beverages: playlist.beverages
+  };
+
+  const response = await fetch(url, {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: new Headers({
+      'Content-Type': 'application/json'
+    })
   })
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
-      console.error(error);
-      return null;
-    })
-}
+  const body = await response.json();
 
+  //TODO: delete console statement if tested properly
+  console.log(body);
 
-/**
- * Uses the provided Playlist to randomize a beverage
- * @param {object} playlist 
- */
-const randomizeBeverageMock = (playlist) => {
-  const amountOfBeverages = playlist.beverages.length;
-  const randomizedIndex = Math.floor(Math.random() * (amountOfBeverages));
-  return playlist.beverages[randomizedIndex];
-}
+  if(response.status !== 200) throw Error(body.message);
+
+  return body;
+};
 
 /**
  * Randomizer, needs 1 playlist as prop input
@@ -82,11 +81,11 @@ class Randomizer extends Component {
   }
 
   handleRandomize(){
-    //TODO:Update history of Randomized Beverages
-    
+    //TODO:Retrieve new Redis randomize information for the active playlist
 
     //Randomize the beverage
-    const randomizedBeverage = randomizeBeverageMock(this.props.playlist);
+    // const randomizedBeverage = randomizeBeverageMock(this.props.playlist);
+    const randomizedBeverage = getRandomize(this.props.playlist);
     
     //Set Result, so Component will be updated
     this.setState({

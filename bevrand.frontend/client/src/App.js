@@ -89,36 +89,39 @@ class App extends Component {
   constructor(props){
     super(props);
 
-    this.playlists = this.getFrontpagePlaylists()
+    // this.playlists = this.getFrontpagePlaylists()
 
     this.state = {
-      currentPlaylist: 0,
+      currentPlaylist: 0, //TODO: make the default the TGIF playlist, with find function to retrieve key of this playlist
       playlists: {}
     };
 
     this.changePlaylist = this.changePlaylist.bind(this);
   }
 
-  getFrontpagePlaylists(){
-    axios.get('http://mongoapi:4550/api/frontpage')
-      .then(response => {
-        console.log(response);
-        return response.data;
-      })
-      .catch(error => {
-        console.error(error);
-        return playlistData;
-      });
+  componentDidMount(){
+    this.getFrontpagePlaylists()
+      .then(res => this.setState({ playlists: res.playlists }))
+      .catch(err => console.log(err));
   }
 
-  componentWillMount(){
-    const retrievedPlaylists = playlistData;
+  getFrontpagePlaylists = async () => {
+    const response = await fetch('/api/frontpagelists');
+    const body = await response.json();
 
-    // Set the current set of Playlists
-    this.setState({
-      playlists: retrievedPlaylists
-    });
+    if(response.status !== 200) throw Error(body.message);
+
+    return body;
   }
+
+  // componentWillMount(){
+  //   const retrievedPlaylists = playlistData;
+  //
+  //   // Set the current set of Playlists
+  //   this.setState({
+  //     playlists: retrievedPlaylists
+  //   });
+  // }
 
   changePlaylist(id){
     this.setState({

@@ -31,9 +31,9 @@ services:
   
   nodefrontend:
     container_name: nodefrontend
-    build: ./bevrand.nodefrontend
+    build: ./bevrand.frontend
     ports:
-      - 4540:4540
+      - 4540:5000
     depends_on:
       - randomizerapi
       - mongoapi
