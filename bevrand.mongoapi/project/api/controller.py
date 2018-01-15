@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from project.api.models import ReturnModel
+from project.api.models import ReturnModelPost
 import json
 
 from project.db import db_frontpage_filler, db_worker
@@ -42,10 +42,11 @@ def front_page():
     else:
         list_is_correct = db_frontpage_filler.check_if_frontpage_list_exists(listname)
         if list_is_correct:
-            front_page_beverages = db_frontpage_filler.get_frontpage_beverages(listname)
-            return jsonify({'beverages': front_page_beverages}), 200
+            front_page_mongo = db_frontpage_filler.get_frontpage_beverages(listname)
+            front_page_model = json.dumps(front_page_mongo.__dict__, indent=4)
+            return front_page_model, 200
         else:
-            error = ReturnModel('frontpage', listname, 'The frontpagelist you queried does not exists', '')
+            error = ReturnModelPost('frontpage', listname, 'The frontpagelist you queried does not exists', '')
             errorMessage = json.dumps(error.__dict__)
             return errorMessage, 401
 
@@ -113,6 +114,9 @@ def post_user():
                 list:
                   type: string
                   description: The list to insert
+                imageUrl:
+                  type: string
+                  description: The image to upload
                 beverages:
                   type: array
                   items:
@@ -127,14 +131,14 @@ def post_user():
     user = request.json['user']
     list = request.json['list']
     if user is 'frontpage':
-        frontpage_object = ReturnModel(user, list, 'frontpage is an invalid user - reserverd', '')
+        frontpage_object = ReturnModelPost(user, list, 'frontpage is an invalid user - reserverd', '')
         res = json.dumps(frontpage_object.__dict__)
         return res, 401
     list_exists = db_worker.check_if_userlist_already_exists(user, list)
     if not list_exists:
         data_to_insert = request.json
         insert_list_res = db_worker.insert_new_list(data_to_insert, user, list)
-        temp_object = ReturnModel(user, list, insert_list_res, data_to_insert)
+        temp_object = ReturnModelPost(user, list, insert_list_res, data_to_insert)
         response = json.dumps(temp_object.__dict__)
         return response, 200
     else:
@@ -173,7 +177,7 @@ def remove_user_list():
         list_exists = db_worker.check_if_userlist_already_exists(to_remove_user, to_remove_list)
         if list_exists:
             deleted_list = db_worker.delete_specific_list(to_remove_user, to_remove_list)
-            temp_object = ReturnModel(to_remove_user, to_remove_list, deleted_list, "No more data")
+            temp_object = ReturnModelPost(to_remove_user, to_remove_list, deleted_list, "No more data")
             response = json.dumps(temp_object.__dict__)
             return response, 200
         else:
@@ -216,6 +220,9 @@ def update_user_list():
                 list:
                   type: string
                   description: The list to insert
+                imageUrl:
+                  type: string
+                  description: The image to upload
                 beverages:
                   type: array
                   items:
@@ -236,7 +243,7 @@ def update_user_list():
         if list_exists:
             list_to_update = request.json
             updated_list = db_worker.update_specific_list(list_to_update, old_user, old_list)
-            temp_object = ReturnModel(old_user, old_list, updated_list, list_to_update)
+            temp_object = ReturnModelPost(old_user, old_list, updated_list, list_to_update)
             response = json.dumps(temp_object.__dict__)
             return response, 200
         else:
