@@ -23,6 +23,7 @@ RUN npm install --quiet
 
 WORKDIR ../
 
+RUN npm install --quiet
 
 # port to expose
 EXPOSE 5000
