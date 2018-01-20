@@ -8,6 +8,7 @@ language: java
 branches:
   only:
   - master
+  - react-app
 
 services:
   - docker
@@ -31,6 +32,6 @@ script:
   - ./gradlew test
 
 after_script:
+  - "$REACTFRONTEND_TRIGGER"
   - "$MONGOAPI_TRIGGER"
   - "$RANDOMIZERAPI_TRIGGER"
-  - "$NODEFRONTEND_TRIGGER"
