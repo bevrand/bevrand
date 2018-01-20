@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: io.github.bonigarcia:selenium-jupiter:1.1.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.github.bonigarcia/selenium-jupiter/1.1.0/f9a6ac73a65ea44f55c00acf6bb9146806c40c75/selenium-jupiter-1.1.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.github.bonigarcia/selenium-jupiter/1.1.0/b1f8818c2240cdfab9337499eca50b7de46679a2/selenium-jupiter-1.1.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
