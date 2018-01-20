@@ -16,8 +16,8 @@
     <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.2" level="project" />
     <orderEntry type="library" name="Gradle: org.opentest4j:opentest4j:1.0.0" level="project" />
     <orderEntry type="library" name="Gradle: org.junit.platform:junit-platform-commons:1.0.1" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.junit.jupiter:junit-jupiter-engine:5.0.1" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpasyncclient:4.0.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.junit.jupiter:junit-jupiter-engine:5.0.1" level="project" />
     <orderEntry type="library" name="Gradle: org.json:json:20140107" level="project" />
     <orderEntry type="library" name="Gradle: org.seleniumhq.selenium:selenium-java:3.4.0" level="project" />
     <orderEntry type="library" name="Gradle: io.github.bonigarcia:webdrivermanager:1.7.1" level="project" />
@@ -26,8 +26,8 @@
     <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpcore-nio:4.3.2" level="project" />
     <orderEntry type="library" name="Gradle: org.seleniumhq.selenium:selenium-chrome-driver:3.4.0" level="project" />
     <orderEntry type="library" name="Gradle: org.seleniumhq.selenium:selenium-edge-driver:3.4.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.seleniumhq.selenium:selenium-firefox-driver:3.4.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: org.junit.platform:junit-platform-engine:1.0.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.seleniumhq.selenium:selenium-firefox-driver:3.4.0" level="project" />
     <orderEntry type="library" name="Gradle: org.seleniumhq.selenium:selenium-ie-driver:3.4.0" level="project" />
     <orderEntry type="library" name="Gradle: org.seleniumhq.selenium:selenium-opera-driver:3.4.0" level="project" />
     <orderEntry type="library" name="Gradle: org.seleniumhq.selenium:selenium-safari-driver:3.4.0" level="project" />
