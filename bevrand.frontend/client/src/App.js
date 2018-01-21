@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Randomizer from './components/randomizer';
-import Playlists from './components/playlists';
+import Randomizer from './components/Randomizer';
+import Playlists from './components/Playlists';
 
 class App extends Component {
 
@@ -8,11 +8,9 @@ class App extends Component {
   constructor(props){
     super(props);
 
-    // this.playlists = this.getFrontpagePlaylists()
-
     this.state = {
-      currentPlaylist: 0, //TODO: make the default the TGIF playlist, with find function to retrieve key of this playlist
-      playlists: {}
+      isLoading: true,
+      idCurrentPlaylist: 0
     };
 
     this.changePlaylist = this.changePlaylist.bind(this);
@@ -21,9 +19,17 @@ class App extends Component {
   componentDidMount(){
     this.getFrontpagePlaylists()
       .then(res => {
-        this.setState({ playlists: res.playlists })
+        const currentPlaylist = res.playlists.find((elem) => {
+          return elem.name.toLowerCase() === 'tgif';
+        });
+
+        this.setState({
+          isLoading: false,
+          playlists: res.playlists,
+          currentPlaylist: currentPlaylist
+        })
       })
-      .catch(err => console.log(err));
+      .catch(err => console.log(err.message));
   }
 
   getFrontpagePlaylists = async () => {
@@ -33,24 +39,27 @@ class App extends Component {
     if(response.status !== 200) throw Error(body.message);
 
     return body;
-  }
+  };
 
-  changePlaylist(id){
+  changePlaylist(playlist){
+    const newPlaylist = playlist;
     this.setState({
-      currentPlaylist: id,
-      result: null
+      currentPlaylist: newPlaylist
     });
-  }
+  };
 
   render() {
-    const currentPlaylist = this.playlists.find((elem) => {
-      return elem.id === this.state.currentPlaylist;
-    });
-
+    if(this.state.isLoading){
+      return (
+        <div className="App">
+          <p>App is still loading, please wait....</p>
+        </div>
+      )
+    }
     return (
       <div className="App">
-        <Randomizer playlist={currentPlaylist} />
-        <Playlists playlists={this.playlists} onClick={this.changePlaylist} />
+        <Randomizer playlist={this.state.currentPlaylist} />
+        <Playlists playlists={this.state.playlists} onClick={this.changePlaylist} />
       </div>
     );
   }

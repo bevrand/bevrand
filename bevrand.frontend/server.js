@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-var app = require('./api/server');
+var app = require('./api');
 var debug = require('debug')('bevrand.frontend:server');
 var http = require('http');
 
@@ -18,7 +18,7 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 server.listen(port, () => {
-  console.log(`App is running at all available interfaces on Port:${port} in ${process.env.NODE_ENV} mode`, app.get('port'), app.get('env'));
+  console.log(`Backend-api is running at all available interfaces on Port:${port} in ${app.get('env')} mode`);
 });
 server.on('error', onError);
 server.on('listening', onListening);

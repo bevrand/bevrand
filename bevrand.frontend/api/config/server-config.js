@@ -3,11 +3,10 @@ const joi = require('joi');
 /**
  * Load in Config based on NODE_ENV
  */
-console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'production') {
-  require('dotenv').config({ path: './api/config/.env.production' });
+  require('dotenv').config({ path: './api/config/.production.env' });
 } else {
-  require('dotenv').config({ path: './api/config/.env.development' });
+  require('dotenv').config({ path: './api/config/.development.env' });
 }
 
 /**
@@ -30,7 +29,7 @@ if (error) {
 }
 
 const config = {
-  env: envVars.NODE_ENV,
+  env: envVars.NODE_ENV || 'development',
   mongoApi: envVars.MONGO_API,
   randomizerApi: envVars.MONGO_API,
   server: {

@@ -3,7 +3,7 @@ import React from 'react';
 const Card = (props) => {
   return (
     <div className="col-lg-4 col-sm-6">
-      <a className="portfolio-box" /*href={props.playlist.fullImageUrl}*/ href="#randomize-area" onClick={() => props.onClick(props.playlist.id)}>
+      <a className="portfolio-box" href="#randomize-area" onClick={() => props.onClick(props.playlist)}>
         <img className="img-fluid" src={props.playlist.thumbImageUrl} alt="" />
         <div className="portfolio-box-caption">
           <div className="portfolio-box-caption-content">
