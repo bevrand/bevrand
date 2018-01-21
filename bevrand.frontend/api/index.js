@@ -14,7 +14,6 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-//TODO: check if this might not be needed anymore
 app.use(express.static(path.join(__dirname, 'public')));
 
 
@@ -85,7 +84,7 @@ app.get('/api/frontpagelists', (req, res, next) => {
     },
     {
       id: 4,
-      name: "Thank god it's friday",
+      name: "TGIF",
       fullImageUrl: "img/portfolio/fullsize/Thank god it's friday - small.jpg",
       thumbImageUrl: "img/portfolio/thumbnails/Thank god it's friday - small.jpg",
       beverages: [
@@ -121,7 +120,6 @@ app.get('/api/frontpagelists', (req, res, next) => {
   //     debug('Got error from frontpagelists' + err);
   //     return next(err);
   //   });
-
   res.send({ playlists: playlistData });
 });
 
@@ -168,6 +166,7 @@ app.post('api/randomize', (req, res, next) => {
     err.status = 400;
     return next(err);
   }
+
   let playlist = req.body.playlist;
   let list = req.query.list;
   let user = req.query.user;

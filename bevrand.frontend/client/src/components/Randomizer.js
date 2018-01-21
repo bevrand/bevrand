@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 
 const PreviewItemRow = (props) => {
   const beverage = props.value;
@@ -50,9 +49,6 @@ const getRandomize = async (playlist) => {
   })
   const body = await response.json();
 
-  //TODO: delete console statement if tested properly
-  console.log(body);
-
   if(response.status !== 200) throw Error(body.message);
 
   return body;
@@ -67,24 +63,16 @@ class Randomizer extends Component {
     super(props);
 
     this.state = {
-      result: null,
-      playlist: this.props.playlist
+      result: null
     }
 
     this.handleRandomize = this.handleRandomize.bind(this);
-  }
-
-  componentWillReceiveProps(nextProps){
-    this.setState({
-      playlist: this.props.playlist
-    });
   }
 
   handleRandomize(){
     //TODO:Retrieve new Redis randomize information for the active playlist
 
     //Randomize the beverage
-    // const randomizedBeverage = randomizeBeverageMock(this.props.playlist);
     const randomizedBeverage = getRandomize(this.props.playlist);
     
     //Set Result, so Component will be updated
@@ -92,7 +80,6 @@ class Randomizer extends Component {
       result: randomizedBeverage
     });
   }
-
   //TODO: split this component up in several smaller components
   render() {
     const playlist = this.props.playlist;
