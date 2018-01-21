@@ -46,7 +46,7 @@ def front_page():
             front_page_model = json.dumps(front_page_mongo.__dict__, indent=4)
             return front_page_model, 200
         else:
-            error = ReturnModelPost('frontpage', listname, 'The frontpagelist you queried does not exists', '')
+            error = ReturnModelPost('frontpage', listname, 'The frontpagelist you queried does not exist', '')
             errorMessage = json.dumps(error.__dict__)
             return errorMessage, 401
 
