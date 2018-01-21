@@ -3,6 +3,7 @@ package com.beveragerandomizer.uittests;
 
 import io.github.bonigarcia.SeleniumExtension;
 import org.junit.Assert;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.By;
@@ -48,6 +49,7 @@ public class FrontPageTests {
         assertTrue(driver.getTitle().startsWith("The Beverage Randomizer"));
     }
 
+    @Disabled
     @Test
     public void thenScrollButtonWorks(PhantomJSDriver driver) throws InterruptedException {
         driver.get("http://0.0.0.0:4540");
@@ -59,8 +61,9 @@ public class FrontPageTests {
         driver.findElement(By.id("randomize-button")).click();
     }
 
+    @Disabled
     @Test
-    public void listIsPresentAndRandomizedDrinkIsInList(PhantomJSDriver driver) throws InterruptedException {
+    public void listIsPresentAndRandomizedDrinkIsInList(ChromeDriver driver) throws InterruptedException {
         driver.get("http://0.0.0.0:4540");
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
@@ -69,7 +72,7 @@ public class FrontPageTests {
         TimeUnit.SECONDS.sleep(2);
         driver.findElement(By.id("randomize-button")).click();
 
-        WebElement listOfDrinks = driver.findElement(By.cssSelector("#about > div > div:nth-child(4) > div > ul"));
+        WebElement listOfDrinks = driver.findElement(By.cssSelector("#getstarted > div > div:nth-child(4) > div > ul"));
         List<WebElement> webDrinks = listOfDrinks.findElements(By.tagName("li"));
         List<String> drinks = new ArrayList<>();
         for (int i = 0; i < webDrinks.size(); i++)
@@ -85,4 +88,5 @@ public class FrontPageTests {
         boolean contains = drinks.contains(formattedDrink);
         assertTrue(contains, "Drink not in list");
     }
+
 }

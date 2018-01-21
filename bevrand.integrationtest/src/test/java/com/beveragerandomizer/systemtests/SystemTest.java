@@ -8,6 +8,7 @@ import io.github.bonigarcia.SeleniumExtension;
 import org.apache.xpath.SourceTree;
 import org.json.JSONArray;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.By;
@@ -44,7 +45,7 @@ public class SystemTest {
         assertEquals(2, 1 + 1);
     }
 
-
+    @Disabled
     @Test
     void getAllDrinksFromWebsiteAndCheckMongoApi(PhantomJSDriver driver){
         driver.get("http://0.0.0.0:4540");
