@@ -14,7 +14,7 @@ RUN npm rebuild node-sass-chokidar
 RUN npm run build
 
 # Copy build results to public folder of api
-RUN cp -r build ../api/public
+RUN cp -rn build/* ../api/public
 
 WORKDIR ../api
 
