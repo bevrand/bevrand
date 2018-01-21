@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8f72cb2b-68ba-40db-9aae-0320f0af6b4e" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/../.travis.yml" afterPath="$PROJECT_DIR$/../.travis.yml" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/../bevrand.mongoapi/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../bevrand.mongoapi/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/../bevrand.randomizerapi/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../bevrand.randomizerapi/.idea/workspace.xml" />
@@ -89,7 +90,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="randomizeApiTests.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="randomizeApiTests.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/com/beveragerandomizer/componenttests/randomizeApiTests.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="306">
@@ -116,11 +117,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FrontPageTests.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="FrontPageTests.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/java/com/beveragerandomizer/uittests/FrontPageTests.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1008">
-              <caret line="56" column="71" lean-forward="false" selection-start-line="56" selection-start-column="71" selection-end-line="56" selection-end-column="71" />
+            <state relative-caret-position="445">
+              <caret line="49" column="0" lean-forward="true" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -610,10 +611,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="67" />
-    <option name="y" value="25" />
-    <option name="width" value="1853" />
-    <option name="height" value="1055" />
+    <option name="x" value="2093" />
+    <option name="y" value="27" />
+    <option name="width" value="1717" />
+    <option name="height" value="982" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -631,10 +632,9 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
-      <pane id="AndroidView" />
       <pane id="Scratches" />
+      <pane id="AndroidView" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -642,73 +642,11 @@
               <item name="bevrand.integrationtest" type="b2602c69:ProjectViewProjectNode" />
               <item name="bevrand.integrationtest" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
             </path>
-            <path>
-              <item name="bevrand.integrationtest" type="b2602c69:ProjectViewProjectNode" />
-              <item name="bevrand.integrationtest" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="bevrand.integrationtest" type="b2602c69:ProjectViewProjectNode" />
-              <item name="bevrand.integrationtest" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-            </path>
-            <path>
-              <item name="bevrand.integrationtest" type="b2602c69:ProjectViewProjectNode" />
-              <item name="bevrand.integrationtest" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="bevrand.integrationtest" type="b2602c69:ProjectViewProjectNode" />
-              <item name="bevrand.integrationtest" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="beveragerandomizer" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="bevrand.integrationtest" type="b2602c69:ProjectViewProjectNode" />
-              <item name="bevrand.integrationtest" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="beveragerandomizer" type="462c0819:PsiDirectoryNode" />
-              <item name="componenttests" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="bevrand.integrationtest" type="b2602c69:ProjectViewProjectNode" />
-              <item name="bevrand.integrationtest" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="beveragerandomizer" type="462c0819:PsiDirectoryNode" />
-              <item name="componenttests" type="462c0819:PsiDirectoryNode" />
-              <item name="Models" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="bevrand.integrationtest" type="b2602c69:ProjectViewProjectNode" />
-              <item name="bevrand.integrationtest" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="beveragerandomizer" type="462c0819:PsiDirectoryNode" />
-              <item name="systemtests" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="bevrand.integrationtest" type="b2602c69:ProjectViewProjectNode" />
-              <item name="bevrand.integrationtest" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="beveragerandomizer" type="462c0819:PsiDirectoryNode" />
-              <item name="uittests" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -1015,7 +953,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="67" y="25" width="1920" height="1082" extended-state="6" />
+    <frame x="1987" y="25" width="2493" height="1415" extended-state="6" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32937366" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -1029,7 +967,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32937366" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25729167" sideWeight="0.49360147" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19815484" sideWeight="0.49360147" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32982844" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1452,21 +1390,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/com/beveragerandomizer/uittests/FrontPageTests.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1008">
-          <caret line="56" column="71" lean-forward="false" selection-start-line="56" selection-start-column="71" selection-end-line="56" selection-end-column="71" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/com/beveragerandomizer/componenttests/randomizeApiTests.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
           <caret line="32" column="48" lean-forward="false" selection-start-line="32" selection-start-column="48" selection-end-line="32" selection-end-column="48" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/com/beveragerandomizer/uittests/FrontPageTests.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="445">
+          <caret line="49" column="0" lean-forward="true" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
