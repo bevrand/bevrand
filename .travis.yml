@@ -24,13 +24,14 @@ before_install:
   - docker-compose build
   - docker-compose up -d
   - docker ps -a
+  - ls -al
   - cd ./bevrand.integrationtest
   - pwd
 
 script:
   - ./gradlew test
 
-after_script:
+after_success:
+  - "$REACTFRONTEND_TRIGGER"
   - "$MONGOAPI_TRIGGER"
   - "$RANDOMIZERAPI_TRIGGER"
-  - "$NODEFRONTEND_TRIGGER"
