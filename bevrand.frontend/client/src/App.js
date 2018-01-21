@@ -19,6 +19,7 @@ class App extends Component {
   componentDidMount(){
     this.getFrontpagePlaylists()
       .then(res => {
+        console.log(res);
         const currentPlaylist = res.playlists.find((elem) => {
           return elem.name.toLowerCase() === 'tgif';
         });

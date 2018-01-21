@@ -19,6 +19,8 @@ const envVarsSchema = joi.object({
     .required(),
   PORT: joi.any()
     .optional(),
+  USEMOCK: joi.boolean()
+    .optional(),
   DEFAULT_FRONTPAGE_LIST: joi.string()
     .optional()
 }).unknown(true);
@@ -31,7 +33,8 @@ if (error) {
 const config = {
   env: envVars.NODE_ENV || 'development',
   mongoApi: envVars.MONGO_API,
-  randomizerApi: envVars.MONGO_API,
+  randomizerApi: envVars.RANDOMIZER_API,
+  useMock: envVars.USEMOCK,
   server: {
     port: envVars.PORT,
   },

@@ -4,7 +4,8 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const rp = require('request-promise');
-const debug = require('debug')('bevrand.frontend:app');
+const Promise = require('bluebird');
+const debug = require('debug')('bevrand.frontend:api');
 
 const config = require('./config');
 
@@ -16,122 +17,60 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
 /**
  * Uses the provided Playlist to randomize a beverage
  * @param {object} playlist
  */
 const randomizeBeverageMock = (playlist) => {
-  const amountOfBeverages = playlist.beverages.length;
+  const amountOfBeverages = playlist.length;
   const randomizedIndex = Math.floor(Math.random() * (amountOfBeverages));
-  return playlist.beverages[randomizedIndex];
+  return playlist[randomizedIndex];
 };
 
 /**
  * API routes
  */
 app.get('/api/frontpagelists', (req, res, next) => {
-  const playlistData = [
-    {
-      id: 0,
-      name: "Girls night out",
-      fullImageUrl: "img/portfolio/fullsize/Girls night out - small.jpg",
-      thumbImageUrl: "img/portfolio/thumbnails/Girls night out - small.jpg",
-      beverages: [
-        "melk",
-        "bier",
-        "wijn",
-        "fruitsapje",
-        "test succesful"
-      ]
-    },
-    {
-      id: 1,
-      name: "Highland Games",
-      fullImageUrl: "img/portfolio/fullsize/Highland Games - small.jpg",
-      thumbImageUrl: "img/portfolio/thumbnails/Highland Games - small.jpg",
-      beverages: [
-        "Palm",
-        "Tripel",
-        "wijn",
-        "fruitsapje"
-      ]
-    },
-    {
-      id: 2,
-      name: "Mancave mayhem",
-      fullImageUrl: "img/portfolio/fullsize/Mancave mayhem - small.jpg",
-      thumbImageUrl: "img/portfolio/thumbnails/Mancave mayhem - small.jpg",
-      beverages: [
-        "Champagne",
-        "Rode wijn",
-        "Witte wijn"
-      ]
-    },
-    {
-      id: 3,
-      name: "Office madness",
-      fullImageUrl: "img/portfolio/fullsize/Office madness - small.jpg",
-      thumbImageUrl: "img/portfolio/thumbnails/Office madness - small.jpg",
-      beverages: [
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6"
-      ]
-    },
-    {
-      id: 4,
-      name: "TGIF",
-      fullImageUrl: "img/portfolio/fullsize/Thank god it's friday - small.jpg",
-      thumbImageUrl: "img/portfolio/thumbnails/Thank god it's friday - small.jpg",
-      beverages: [
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6"
-      ]
-    },
-    {
-      id: 5,
-      name: "Happy Holidays",
-      fullImageUrl: "img/portfolio/fullsize/The most wonderful time - small.jpg",
-      thumbImageUrl: "img/portfolio/thumbnails/The most wonderful time - small.jpg",
-      beverages: [
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6"
-      ]
-    }
-  ];
-  // rp(`${config.mongoApi}/api/frontpage`)
-  //   .then(result => {
-  //     debug('Got successful result from /frontpagelists: ' + result);
-  //     return res.send(result);
-  //   })
-  //   .catch(err => {
-  //     debug('Got error from frontpagelists' + err);
-  //     return next(err);
-  //   });
-  res.send({ playlists: playlistData });
+  //Optional usage of mock if config specifies it
+  if(config.useMock){
+    const mockData = require('./mockdata');
+    return res.send({playlists: mockData});
+  }
+
+  rp(`${config.mongoApi}/api/frontpage`)
+    .then(result => {
+      debug('Got successful result from /frontpagelists: ' + result);
+      let parsedResult = JSON.parse(result);
+      return parsedResult.front_page_lists;
+    })
+    .then((result) => {
+      let promises = result.map(value => {
+        return rp(`${config.mongoApi}/api/frontpage?list=${value}`)
+          .then(response => { 
+            return JSON.parse(response); 
+          });
+      });
+
+      Promise.all(promises).then(results => {
+        debug('Sending results', results);
+        res.send({playlists: results});
+      })
+    })
+    .catch(err => {
+      debug('Got error from frontpagelists' + err);
+      return next(err);
+    });
 });
 
 app.get('/api/frontpagelist', (req, res, next) => {
-  if(!req.query.list){
-    let err = new Error('Required parameter list was not specified');
+  if(!req.query.list || !req.query.user){
+    let err = new Error('Required parameter list or user was not specified');
     debug('Error: required parameter list not specified');
     err.status = 400;
     return next(err);
   }
 
-  rp(`${config.mongoApi}/api/frontpage?list=${req.query.list}`)
+  rp(`${config.mongoApi}/api/frontpage?list=${req.query.list}&user=${req.query.user}`)
     .then(result => {
       debug('Got successful result from /frontpageList: ' + result);
       return res.send(result);
@@ -142,40 +81,28 @@ app.get('/api/frontpagelist', (req, res, next) => {
     });
 });
 
-app.get('/api/randomize', (req, res, next) => {
+app.post('/api/randomize', (req, res, next) => {
   if(!req.query.user || !req.query.list){
-    let err = new Error('Required parameters are user and list');
+    let err = new Error('Required query parameters are not present');
     err.status = 400;
     return next(err);
   }
 
-  rp(`${config.randomizerApi}/api/randomize?user=${req.query.user}&list=${req.query.list}`)
-    .then(result => {
-      debug('Got successful result from /randomize: ' + result);
-      return res.send(result);
-    })
-    .catch(err => {
-      debug('Got error from frontpageLists' + err);
-      return next(err);
-    });
-});
-
-app.post('api/randomize', (req, res, next) => {
-  if(!req.query.user || !req.query.list){
-    let err = new Error('Required Parameters are user and list');
+  if(!Array.isArray(req.body.beverages)){
+    let err = new Error('The POST body does not contain a beverages array');
     err.status = 400;
     return next(err);
   }
 
-  let playlist = req.body.playlist;
-  let list = req.query.list;
-  let user = req.query.user;
-  debug(`api/randomize: Received parameters, playlist: ${playlist}, list: ${list}, user:${user}`);
+  const beverages = req.body.beverages;
+  const list = req.query.list;
+  const user = req.query.user;
+  debug(`api/randomize: Received parameters, playlist: ${beverages}, list: ${list}, user:${user}`);
 
-  if(config.env !== 'production'){
-    let beverage = randomizeBeverageMock(playlist);
+  if(config.useMock){
+    let beverage = randomizeBeverageMock(beverages);
     debug('Used Mock to randomize the beverage');
-    return res.send({ result: beverage});
+    return res.send(beverage);
   }
   debug('Using api to randomize beverage');
 
@@ -185,14 +112,16 @@ app.post('api/randomize', (req, res, next) => {
     body: {
       user: user,
       list: list,
-      beverages: playlist
+      beverages: beverages
     },
     json: true
   };
 
+  //TODO: add redis api results to the result
   rp(options)
     .then(result => res.send({ result: result}))
     .catch(err => {
+      // console.log(err);
       debug(`Error: ${err.message}`);
       return next(err);
     });
@@ -227,11 +156,15 @@ app.use(function(req, res, next) {
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.locals.error = req.app.get('env') !== 'production' ? err : {};
 
   // render the error page
-  res.status(err.status || 500);
-  res.send(err);
+  let responseStatus = err.status || 500;
+  res.status(responseStatus).send({
+    result: 'error',
+    message: err.message,
+    httpstatus: responseStatus
+  });
 });
 
 module.exports = app;

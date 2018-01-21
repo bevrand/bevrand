@@ -46,12 +46,13 @@ const getRandomize = async (playlist) => {
     headers: new Headers({
       'Content-Type': 'application/json'
     })
-  })
+  });
+  
   const body = await response.json();
 
   if(response.status !== 200) throw Error(body.message);
 
-  return body;
+  return body.result;
 };
 
 /**
@@ -70,15 +71,18 @@ class Randomizer extends Component {
   }
 
   handleRandomize(){
-    //TODO:Retrieve new Redis randomize information for the active playlist
+    //TODO:Retrieve new Redis randomize information for the active playlist, this can be done by the backend api
 
     //Randomize the beverage
-    const randomizedBeverage = getRandomize(this.props.playlist);
+    getRandomize(this.props.playlist)
+      .then((resultBody) => {
+        console.log(resultBody)
+        //Set Result, so Component will be updated
+        this.setState({
+          result: resultBody
+        });
+      });  
     
-    //Set Result, so Component will be updated
-    this.setState({
-      result: randomizedBeverage
-    });
   }
   //TODO: split this component up in several smaller components
   render() {
