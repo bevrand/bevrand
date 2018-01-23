@@ -16,21 +16,6 @@ def get_db():
 
 db = LocalProxy(get_db)
 
-
-def get_all_frontpage_lists():
-    fpusers = db.frontpagestandard
-    lists = []
-    query = fpusers.find()
-    if query.count() == 0:
-        return error_handler.InvalidUsage('Mongoquery invalid no results', status_code=410)
-    else:
-        for result in query:
-            lists.append(result['list'])
-    set_list = set(lists)
-    desc_list = list(set_list)
-    return jsonify({'front_page_lists': desc_list})
-
-
 def get_frontpage_beverages(list):
     fpusers = db.frontpagestandard
     beverages = []
@@ -54,4 +39,19 @@ def check_if_frontpage_list_exists(list):
     if specified_document is None:
         return False
     else:
+
+
+def get_all_frontpage_lists():
+    fpusers = db.frontpagestandard
+    lists = []
+    query = fpusers.find()
+    if query.count() == 0:
+        return error_handler.InvalidUsage('Mongoquery invalid no results', status_code=410)
+    else:
+        for result in query:
+            lists.append(result['list'])
+    set_list = set(lists)
+    desc_list = list(set_list)
+    return jsonify({'front_page_lists': desc_list})
+
         return True
