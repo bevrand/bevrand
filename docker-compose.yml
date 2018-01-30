@@ -13,8 +13,8 @@ services:
        - mongoapi
        - redis
     environment:
-       - CONNECTION=redis
-       - REQURL=http://mongoapi:5000/
+       - APP_SETTINGS=production
+       - REDIS_URL=redis
    
   mongoapi:
     container_name: mongoapi
@@ -62,3 +62,29 @@ services:
        - dockermongo
     links:
        - dockermongo
+
+         # selenium-hub:
+         #    image: selenium/hub
+         #  ports:
+         #      - 4444:4444
+
+  chrome:
+    image: selenium/standalone-chrome
+    ports:
+      - 4444:4444
+    links:
+      - nodefrontend
+
+        #  chrome:
+        #    image: selenium/node-chrome
+        #    links:
+        #      - selenium-hub:hub
+        #   volumes:
+        #      - /dev/shm:/dev/shm # Mitigates the Chromium issue described at https://code.google.com/p/chromium/issues/detail?id=519952a
+
+        #  firefox:
+        #   image: selenium/node-firefox
+        #    environment:
+        #     - "HUB_PORT_4444_TCP_ADDR: hub"
+        #    links:
+        #     - selenium-hub:hub
