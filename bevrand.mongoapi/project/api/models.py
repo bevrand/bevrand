@@ -1,29 +1,45 @@
 from datetime import datetime
 
-class Mongoobject:
-   'Common base class for all mongoobjects'
 
-   def __init__(self, user, list, image_url=None):
-      self.user = user
-      self.list = list
-      self.imageUrl = image_url
-      self.dateinserted = datetime.utcnow()
-      self.dateupdated = None
-      self.beverages = []
+class MongoObject:
+    # Common base class for all mongo objects
 
-class ReturnModelPost(object):
-   def __init__(self, user_to_return, list_to_return, message, body):
-      self.user = user_to_return
-      self.list = list_to_return
-      self.message = message
-      self.newdata = body
+    def __init__(self, user_name, list_name, image_url=None):
+        self.user = user_name
+        self.list = list_name
+        self.imageUrl = image_url
+        self.dateinserted = datetime.utcnow()
+        self.dateupdated = None
+        self.beverages = []
 
 
-class ReturnModelGet:
+class ReturnModel(object):
 
-   def __init__(self, id, user_name, list_name, beverage_list, image_url=None):
-      self.id = id
-      self.user = user_name
-      self.name = list_name
-      self.imageUrl = image_url
-      self.beverages = beverage_list
+    def __init__(self, user_to_return, list_to_return, message):
+        self.user = user_to_return
+        self.list = list_to_return
+        self.message = message
+
+
+class ReturnModelGet():
+
+    def __init__(self, id_name, user_name, list_name, beverage_list, image_url=None):
+        self.id = id_name
+        self.user = user_name
+        self.name = list_name
+        self.imageUrl = image_url
+        self.beverages = beverage_list
+
+
+class ReturnModelPut(ReturnModel):
+
+    def __init__(self, user_to_return, list_to_return, message, body):
+        ReturnModel.__init__(self, user_to_return, list_to_return, message)
+        self.body = body
+
+
+class ReturnModelPost(ReturnModel):
+
+    def __init__(self, user_to_return, list_to_return, message, body):
+        ReturnModel.__init__(self, user_to_return, list_to_return, message)
+        self.body = body
