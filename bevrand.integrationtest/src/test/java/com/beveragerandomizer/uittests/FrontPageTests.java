@@ -31,8 +31,7 @@ public class FrontPageTests {
     Capabilities chromeCapabilities = DesiredCapabilities.chrome();
     Capabilities firefoxCapabilities = DesiredCapabilities.firefox();
 
-
-    @Disabled
+    
     @Test
     public void pageComesUpAndHasCorrectTitle() throws MalformedURLException {
         // run against chrome
