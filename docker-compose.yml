@@ -15,7 +15,7 @@ services:
     environment:
        - APP_SETTINGS=production
        - REDIS_URL=redis
-   
+
   mongoapi:
     container_name: mongoapi
     build: ./bevrand.mongoapi
@@ -28,7 +28,7 @@ services:
     environment:
        - APP_SETTINGS=production
        - MONGO_URL=mongodb://dockermongo:27017
-  
+
   nodefrontend:
     container_name: nodefrontend
     build: ./bevrand.frontend
@@ -63,28 +63,25 @@ services:
     links:
        - dockermongo
 
-         # selenium-hub:
-         #    image: selenium/hub
-         #  ports:
-         #      - 4444:4444
-
-  chrome:
-    image: selenium/standalone-chrome
+  selenium-hub:
+    image: selenium/hub
     ports:
       - 4444:4444
+    environment:
+      - GRID_TIMEOUT=10
+
+  chrome:
+    image: selenium/node-chrome
     links:
-      - nodefrontend
+      - selenium-hub:hub
+    environment:
+      - HUB_HOST=selenium-hub
+    volumes:
+      - /dev/shm:/dev/shm # Mitigates the Chromium issue described at https://code.google.com/p/chromium/issues/detail?id=519952a
 
-        #  chrome:
-        #    image: selenium/node-chrome
-        #    links:
-        #      - selenium-hub:hub
-        #   volumes:
-        #      - /dev/shm:/dev/shm # Mitigates the Chromium issue described at https://code.google.com/p/chromium/issues/detail?id=519952a
-
-        #  firefox:
-        #   image: selenium/node-firefox
-        #    environment:
-        #     - "HUB_PORT_4444_TCP_ADDR: hub"
-        #    links:
-        #     - selenium-hub:hub
+  firefox:
+    image: selenium/node-firefox
+    environment:
+      - HUB_HOST=selenium-hub
+    links:
+      - selenium-hub:hub
