@@ -13,6 +13,9 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -28,95 +31,89 @@ public class FrontPageTests {
     Capabilities chromeCapabilities = DesiredCapabilities.chrome();
     Capabilities firefoxCapabilities = DesiredCapabilities.firefox();
 
-    @Test
-    public void remoteTest() throws MalformedURLException {
-        RemoteWebDriver chrome = new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), chromeCapabilities);
-      //  RemoteWebDriver firefox = new RemoteWebDriver(new URL("http://0.0.0.0:4444/wd/hub"), firefoxCapabilities);
 
+    @Disabled
+    @Test
+    public void pageComesUpAndHasCorrectTitle() throws MalformedURLException {
         // run against chrome
-        chrome.get("http://nodefrontend:5000");
-        System.out.println(chrome.getTitle());
-        chrome.get("http://www.beveragerandomizer.com");
-        System.out.println(chrome.getTitle());
+        RemoteWebDriver chrome = new RemoteWebDriver(new URL("http://0.0.0.0:4444/wd/hub"), chromeCapabilities);
+        RemoteWebDriver firefox = new RemoteWebDriver(new URL("http://0.0.0.0:4444/wd/hub"), firefoxCapabilities);
 
-        // run against firefox
-  //      firefox.get("https://www.google.com");
-   //     System.out.println(firefox.getTitle());
+        List<RemoteWebDriver> drivers = new ArrayList<>();
+        drivers.add(chrome);
+        drivers.add(firefox);
 
-        chrome.quit();
-   //     firefox.quit();
-    }
-
-
-    /*
-    @Test
-    public void testWithChrome()
-    {
-        final ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.setBinary("/path/to/google-chrome-stable");
-        chromeOptions.addArguments("--headless");
-        chromeOptions.addArguments("--disable-gpu");
-
-        final DesiredCapabilities dc = new DesiredCapabilities();
-        dc.setJavascriptEnabled(true);
-        dc.setCapability(
-                ChromeOptions.CAPABILITY, chromeOptions
-        );
-
-        WebDriver chrome = new ChromeDriver(dc);
-        chrome.get("http://0.0.0.0:4540");
-        chrome.manage().window().maximize();
-        assertTrue(chrome.getTitle().startsWith("The Beverage Randomizer"));
-    }
-    */
-
-    @Test
-    public void pageComesUpAndHasCorrectTitle(PhantomJSDriver driver) {
-        driver.get("http://0.0.0.0:4540");
-        driver.manage().window().maximize();
-        assertTrue(driver.getTitle().startsWith("The Beverage Randomizer"));
-    }
-
-    @Disabled
-    @Test
-    public void thenScrollButtonWorks(PhantomJSDriver drivert) throws InterruptedException, MalformedURLException {
-        RemoteWebDriver driver = new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), chromeCapabilities);
-        //driver.get("http://0.0.0.0:4540");
-        driver.get("http://nodefrontend:5000");
-        driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-        driver.findElement(By.xpath("//*[@id='page-top']/header/div/div/a[1]")).click();
-        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-        TimeUnit.SECONDS.sleep(2);
-        driver.findElement(By.id("randomize-button")).click();
-    }
-
-    @Disabled
-    @Test
-    public void listIsPresentAndRandomizedDrinkIsInList(ChromeDriver driver) throws InterruptedException {
-        driver.get("http://0.0.0.0:4540");
-        driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-        driver.findElement(By.xpath("//*[@id='page-top']/header/div/div/a[1]")).click();
-        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-        TimeUnit.SECONDS.sleep(2);
-        driver.findElement(By.id("randomize-button")).click();
-
-        WebElement listOfDrinks = driver.findElement(By.cssSelector("#getstarted > div > div:nth-child(4) > div > ul"));
-        List<WebElement> webDrinks = listOfDrinks.findElements(By.tagName("li"));
-        List<String> drinks = new ArrayList<>();
-        for (int i = 0; i < webDrinks.size(); i++)
-        {
-            drinks.add(webDrinks.get(i).getText().toLowerCase());
+        for (RemoteWebDriver driver : drivers) {
+            driver.get("http://nodefrontend:5000");
+            assertTrue(driver.getTitle().startsWith("The Beverage Randomizer"));
+            driver.quit();
         }
+    }
 
-        TimeUnit.SECONDS.sleep(2);
-        String randomizedDrink = driver.findElement(By.cssSelector("#random-output > div")).getText();
-        String[] splittedString = randomizedDrink.split(":");
-        Assert.assertEquals("You randomized", splittedString[0]);
-        String formattedDrink = splittedString[1].toLowerCase().trim();
-        boolean contains = drinks.contains(formattedDrink);
-        assertTrue(contains, "Drink not in list");
+
+    @Test
+    public void thenScrollButtonWorks() throws MalformedURLException, InterruptedException {
+        RemoteWebDriver chrome = new RemoteWebDriver(new URL("http://0.0.0.0:4444/wd/hub"), chromeCapabilities);
+        RemoteWebDriver firefox = new RemoteWebDriver(new URL("http://0.0.0.0:4444/wd/hub"), firefoxCapabilities);
+
+        List<RemoteWebDriver> drivers = new ArrayList<>();
+        drivers.add(chrome);
+        drivers.add(firefox);
+
+        // run this test for firefox and for chrome
+        for (RemoteWebDriver driver : drivers) {
+            driver.get("http://nodefrontend:5000");
+            driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+            driver.findElement(By.xpath("//*[@id='page-top']/header/div/div/a[1]")).click();
+            TimeUnit.SECONDS.sleep(2);
+
+            //look for the randomize button
+            WebElement randomizeButton = driver.findElement(By.id("randomize-button"));
+            WebDriverWait wait = new WebDriverWait(driver, 10);
+            wait.until(ExpectedConditions.elementToBeClickable(randomizeButton));
+            randomizeButton.click();
+
+            //get the output of a randomize action and see if this contains randomized
+            String buttonText = driver.findElementByXPath("//*[@id=\"random-output\"]/div").getText();
+            System.out.println(buttonText);
+            boolean contains = buttonText.contains("randomized");
+            assertTrue(contains, "Button press not successful");
+
+            driver.quit();
+        }
+    }
+
+    @Test
+    public void listIsPresentAndRandomizedDrinkIsInList() throws InterruptedException, MalformedURLException {
+        RemoteWebDriver chrome = new RemoteWebDriver(new URL("http://0.0.0.0:4444/wd/hub"), chromeCapabilities);
+        RemoteWebDriver firefox = new RemoteWebDriver(new URL("http://0.0.0.0:4444/wd/hub"), firefoxCapabilities);
+
+        List<RemoteWebDriver> drivers = new ArrayList<>();
+        drivers.add(chrome);
+        drivers.add(firefox);
+
+        for (RemoteWebDriver driver : drivers) {
+            driver.get("http://nodefrontend:5000");
+            driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+            driver.findElement(By.xpath("//*[@id='page-top']/header/div/div/a[1]")).click();
+            TimeUnit.SECONDS.sleep(2);
+            driver.findElement(By.id("randomize-button")).click();
+
+            WebElement listOfDrinks = driver.findElement(By.xpath("//*[@id=\"getstarted\"]/div/div[4]/div/div/ul"));
+            List<WebElement> webDrinks = listOfDrinks.findElements(By.tagName("li"));
+            List<String> drinks = new ArrayList<>();
+            for (int i = 0; i < webDrinks.size(); i++) {
+                drinks.add(webDrinks.get(i).getText().toLowerCase());
+            }
+
+            TimeUnit.SECONDS.sleep(2);
+            String randomizedDrink = driver.findElementByXPath("//*[@id=\"random-output\"]/div").getText();
+            String[] splittedString = randomizedDrink.split(":");
+            Assert.assertEquals("You have randomized", splittedString[0]);
+            String formattedDrink = splittedString[1].toLowerCase().trim();
+            boolean contains = drinks.contains(formattedDrink);
+            assertTrue(contains, "Drink not in list");
+        }
     }
 
 }

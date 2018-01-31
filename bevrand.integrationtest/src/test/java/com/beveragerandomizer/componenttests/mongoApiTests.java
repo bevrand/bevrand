@@ -161,7 +161,6 @@ public class mongoApiTests {
                 ReponseMongoApi res = gson.fromJson(moreJson, ReponseMongoApi.class);
                 assertEquals(MongoModel.user, res.user);
                 assertEquals(MongoModel.list, res.list);
-                assertEquals(MongoModel.list, res.newdata.list);
                 assertTrue(res.message.contains("Your list with id:"));
             } catch (UnirestException e) {
                 e.printStackTrace();
@@ -256,12 +255,11 @@ public class mongoApiTests {
 
         @AfterEach
         void deleteUserModel() throws UnirestException {
-            String url = reqUrl + "users?user=" + updateMongoModel.user + "&list=" + updateMongoModel.list;
+            String url = reqUrl + "users?user=" + updateMongoModel.user + "update" + "&list=" + updateMongoModel.list + "update";
             JsonNode response = Unirest.delete(url).asJson().getBody();
             Gson gson = new Gson();
             String json = response.toString();
             DeleteResponseMongoApi res = gson.fromJson(json, DeleteResponseMongoApi.class);
-            assertEquals("No more data", res.newdata );
             assertEquals("Delete of 1 mongoobject(s) was successful", res.message);
         }
 
@@ -277,7 +275,7 @@ public class mongoApiTests {
             updateMongo.setBeverages(beverages);
             Gson gson = new Gson();
             String json = gson.toJson(updateMongo);
-            String url = reqUrl + "users?user=" + updateMongo.user + "&list=" + updateMongo.list;
+            String url = reqUrl + "users?user=" + updateMongoModel.user + "&list=" + updateMongoModel.list;
             try {
                 HttpResponse<JsonNode> response = Unirest.put(url).header("accept", "application/json")
                         .header("Content-Type", "application/json").body(json).asJson();
@@ -345,7 +343,6 @@ public class mongoApiTests {
                 DeleteResponseMongoApi res = gson.fromJson(json, DeleteResponseMongoApi.class);
                 assertEquals(deleteMongoModel.user, res.user);
                 assertEquals(deleteMongoModel.list, res.list);
-                assertEquals("No more data", res.newdata );
                 assertEquals("Delete of 1 mongoobject(s) was successful", res.message);
             } catch (UnirestException e) {
                 e.printStackTrace();
@@ -361,7 +358,6 @@ public class mongoApiTests {
         Gson gson = new Gson();
         String json = response.toString();
         DeleteResponseMongoApi res = gson.fromJson(json, DeleteResponseMongoApi.class);
-        assertEquals("No more data", res.newdata );
         assertEquals("Delete of 1 mongoobject(s) was successful", res.message);
 
     }
