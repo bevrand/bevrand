@@ -37,11 +37,25 @@ services:
     depends_on:
       - randomizerapi
       - mongoapi
+      - authenticationapi
     environment:
       - NODE_ENV=production
     links:
       - randomizerapi
       - mongoapi
+      - authenticationapi
+
+  authenticationapi:
+    container_name: authenticationapi
+    build: ./bevrand.authenticationapi/bevrand.authenticationapi
+    ports:
+      - 4570:5000
+    depends_on:
+      - dockergres
+    links:
+      - dockergres
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
 
   redis:
     container_name: redis
@@ -55,13 +69,24 @@ services:
     ports:
        - 27017:27017
 
+  dockergres:
+     container_name: dockergres
+     build: ./bevrand.mongoseeder/db
+     ports:
+       - 5432:5432
+     environment:
+       - POSTGRES_PASSWORD=postgres
+       - POSTGRES_USER=postgres
+
   mongoseeder:
     container_name: mongoseeder
     build: ./bevrand.mongoseeder
     depends_on:
        - dockermongo
+       - dockergres
     links:
        - dockermongo
+       - dockergres
 
   selenium-hub:
     image: selenium/hub
