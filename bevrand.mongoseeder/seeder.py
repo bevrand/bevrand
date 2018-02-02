@@ -1,12 +1,29 @@
 #!/usr/bin/env python
 
 from pymongo import MongoClient
+import psycopg2
 import glob
 import json
 
 
 #CONNECTION = 'mongodb://localhost:27017'
 CONNECTION = 'mongodb://dockermongo:27017'
+
+
+def connect_postgres():
+    conn = psycopg2.connect("user='postgres' dbname='postgres' host='dockergres' password='postgres' port='5432'")
+    conn.autocommit = True
+
+    cur = conn.cursor()
+    cur.execute("CREATE TABLE users(id BIGSERIAL PRIMARY KEY NOT NULL, "
+                "username VARCHAR(50) NOT NULL, "
+                "password VARCHAR(250) NOT NULL,"
+                "email VARCHAR(60),"
+                "active BOOLEAN NOT NULL,"
+                "datecreated TIMESTAMP,"
+                "dateupdated TIMESTAMP)")
+    cur.execute("CREATE UNIQUE INDEX users_username_uindex ON users (username)")
+
 
 
 def insert_collections():
@@ -49,6 +66,7 @@ for file in jsonfiles:
     print("Going to import the following file: " + file)
 ids = insert_collections()
 print(ids)
+connect_postgres()
 print("finished run")
 
 
