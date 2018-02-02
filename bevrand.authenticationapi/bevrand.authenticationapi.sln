@@ -5,7 +5,7 @@ VisualStudioVersion = 12.0.0.0
 MinimumVisualStudioVersion = 10.0.0.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bevrand.authenticationapi", "bevrand.authenticationapi/bevrand.authenticationapi.csproj", "{EF0C0D00-01ED-41E6-81E6-03CA68ED0287}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bevrand.authenticationapi.tests", "bevrand.authenticationapi.tests\bevrand.authenticationapi.tests.csproj", "{6B8B7C36-A27C-432D-A2DC-F50883479B20}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bevrand.authenticationapi.tests", "bevrand.authenticationapi.tests\bevrand.authenticationapi.tests.csproj", "{2177EC39-C2FC-4926-8846-6FDF803E0E1A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{EF0C0D00-01ED-41E6-81E6-03CA68ED0287}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF0C0D00-01ED-41E6-81E6-03CA68ED0287}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF0C0D00-01ED-41E6-81E6-03CA68ED0287}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6B8B7C36-A27C-432D-A2DC-F50883479B20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6B8B7C36-A27C-432D-A2DC-F50883479B20}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6B8B7C36-A27C-432D-A2DC-F50883479B20}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6B8B7C36-A27C-432D-A2DC-F50883479B20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2177EC39-C2FC-4926-8846-6FDF803E0E1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2177EC39-C2FC-4926-8846-6FDF803E0E1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2177EC39-C2FC-4926-8846-6FDF803E0E1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2177EC39-C2FC-4926-8846-6FDF803E0E1A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
