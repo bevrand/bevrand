@@ -8,7 +8,6 @@ language: java
 branches:
   only:
   - master
-  - develop
 
 services:
   - docker
@@ -35,3 +34,4 @@ after_success:
   - "$REACTFRONTEND_TRIGGER"
   - "$MONGOAPI_TRIGGER"
   - "$RANDOMIZERAPI_TRIGGER"
+  - "$AUTHENTICATIONAPI_TRIGGER"
