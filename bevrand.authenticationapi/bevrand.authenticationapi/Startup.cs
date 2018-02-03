@@ -8,6 +8,7 @@ using bevrand.authenticationapi.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,7 +30,7 @@ namespace bevrand.authenticationapi
                 
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
-            
+            Console.WriteLine(env.EnvironmentName);
         }
         
 
@@ -39,7 +40,7 @@ namespace bevrand.authenticationapi
         public void ConfigureServices(IServiceCollection services)
         {
             var sqlConnectionString = Configuration.GetConnectionString("PostGres");
-
+            Console.WriteLine(sqlConnectionString);
             services.AddDbContext<UserContext>(options =>
                 options.UseNpgsql(sqlConnectionString));
                 

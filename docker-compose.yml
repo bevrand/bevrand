@@ -1,6 +1,39 @@
 version: "2"
 services:
 
+  redis:
+    container_name: redis
+    image: redis
+    ports: #6379
+      - 6379:6379
+
+  dockermongo:
+    container_name: dockermongo
+    image: mongo
+    ports:
+       - 27017:27017
+
+  dockergres:
+     container_name: dockergres
+     build: ./bevrand.mongoseeder/db
+     ports:
+       - 5432:5432
+     environment:
+       - POSTGRES_PASSWORD=postgres
+       - POSTGRES_USER=postgres
+
+  authenticationapi:
+    container_name: authenticationapi
+    build: ./bevrand.authenticationapi/bevrand.authenticationapi
+    ports:
+      - 4570:5000
+    depends_on:
+      - dockergres
+    links:
+      - dockergres
+    environment:
+      - ASPNETCORE_ENVIRONMENT="Development"
+
   randomizerapi:
     container_name: randomizerapi
     build: ./bevrand.randomizerapi
@@ -44,39 +77,6 @@ services:
       - randomizerapi
       - mongoapi
       - authenticationapi
-
-  authenticationapi:
-    container_name: authenticationapi
-    build: ./bevrand.authenticationapi/bevrand.authenticationapi
-    ports:
-      - 4570:5000
-    depends_on:
-      - dockergres
-    links:
-      - dockergres
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-
-  redis:
-    container_name: redis
-    image: redis
-    ports: #6379
-      - 6379:6379
-
-  dockermongo:
-    container_name: dockermongo
-    image: mongo
-    ports:
-       - 27017:27017
-
-  dockergres:
-     container_name: dockergres
-     build: ./bevrand.mongoseeder/db
-     ports:
-       - 5432:5432
-     environment:
-       - POSTGRES_PASSWORD=postgres
-       - POSTGRES_USER=postgres
 
   mongoseeder:
     container_name: mongoseeder
