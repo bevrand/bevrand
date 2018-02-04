@@ -25,12 +25,12 @@ namespace bevrand.authenticationapi
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
             
-                
+            Console.WriteLine(env.EnvironmentName);    
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
-            Console.WriteLine(env.EnvironmentName);
         }
         
 
