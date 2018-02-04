@@ -17,26 +17,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-/**
- * Uses the provided Playlist to randomize a beverage
- * @param {object} playlist
- */
-const randomizeBeverageMock = (playlist) => {
-  const amountOfBeverages = playlist.length;
-  const randomizedIndex = Math.floor(Math.random() * (amountOfBeverages));
-  return playlist[randomizedIndex];
-};
+//TODO: Refactor into seperate modules
 
 /**
  * API routes
  */
 app.get('/api/frontpagelists', (req, res, next) => {
-  //Optional usage of mock if config specifies it
-  if(config.useMock){
-    const mockData = require('./mockdata');
-    return res.send({playlists: mockData});
-  }
-
+  //TODO: Concat the results from the redis api for the default playlist
   rp(`${config.mongoApi}/api/frontpage`)
     .then(result => {
       debug('Got successful result from /frontpagelists: ' + result);
@@ -54,7 +41,7 @@ app.get('/api/frontpagelists', (req, res, next) => {
       Promise.all(promises).then(results => {
         debug('Sending results', results);
         res.send({playlists: results});
-      })
+      });
     })
     .catch(err => {
       debug('Got error from frontpagelists' + err);
@@ -62,7 +49,9 @@ app.get('/api/frontpagelists', (req, res, next) => {
     });
 });
 
-app.get('/api/frontpagelist', (req, res, next) => {
+//TODO: add route to retrieve playlists of other users
+
+app.get('/api/redis', (req, res, next) => {
   if(!req.query.list || !req.query.user){
     let err = new Error('Required parameter list or user was not specified');
     debug('Error: required parameter list not specified');
@@ -70,16 +59,16 @@ app.get('/api/frontpagelist', (req, res, next) => {
     return next(err);
   }
 
-  rp(`${config.mongoApi}/api/frontpage?list=${req.query.list}&user=${req.query.user}`)
+  rp(`${config.randomizerApi}/api/redis?user=${req.query.user}&list=${req.query.list}&topfive=false`)
     .then(result => {
-      debug('Got successful result from /frontpageList: ' + result);
+      debug('Got succesful result from /redis: ' + result);
       return res.send(result);
     })
     .catch(err => {
-      debug('Got error from frontpageLists' + err);
+      debug('Got error from randomizer api, redis route' + err);
       return next(err);
     });
-});
+})
 
 app.post('/api/randomize', (req, res, next) => {
   if(!req.query.user || !req.query.list){
@@ -98,15 +87,9 @@ app.post('/api/randomize', (req, res, next) => {
   const list = req.query.list;
   const user = req.query.user;
   debug(`api/randomize: Received parameters, playlist: ${beverages}, list: ${list}, user:${user}`);
-
-  if(config.useMock){
-    let beverage = randomizeBeverageMock(beverages);
-    debug('Used Mock to randomize the beverage');
-    return res.send(beverage);
-  }
-  debug('Using api to randomize beverage');
-
-  let options = {
+  
+  let randomizedBeverage;
+  rp({
     method: 'POST',
     uri: `${config.randomizerApi}/api/randomize?user=${user}&list=${list}`,
     body: {
@@ -115,34 +98,18 @@ app.post('/api/randomize', (req, res, next) => {
       beverages: beverages
     },
     json: true
-  };
-
-  //TODO: add redis api results to the result
-  rp(options)
-    .then(result => res.send({ result: result}))
-    .catch(err => {
-      // console.log(err);
-      debug(`Error: ${err.message}`);
-      return next(err);
+  }).then(result => {
+    randomizedBeverage = result;
+    return rp(`${config.randomizerApi}/api/redis?user=${user}&list=${list}&topfive=false`);
+  }).then(result => {
+    return res.send({ 
+      result: randomizedBeverage,
+      history: JSON.parse(result)
     });
-});
-
-app.get('/api/redisuser', (req, res, next) => {
-  if(!req.query.user || !req.query.list){
-    let err = new Error('Required parameters are user and list');
-    err.status = 400;
+  }).catch(err => {
+    debug(`Error: ${err.message}`);
     return next(err);
-  }
-
-  rp(`${config.randomizerApi}/api/redisuser?user=${req.query.user}&list=${req.query.list}`)
-    .then(result => {
-      debug('Got successful result from /redisuser: ' + result);
-      return res.send(result);
-    })
-    .catch(err => {
-      debug('Got error from redisuser request' + err);
-      return next(err);
-    });
+  });
 });
 
 // catch 404 and forward to error handler
