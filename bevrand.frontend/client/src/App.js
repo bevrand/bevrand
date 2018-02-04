@@ -3,8 +3,6 @@ import Randomizer from './components/Randomizer';
 import Playlists from './components/Playlists';
 
 class App extends Component {
-
-
   constructor(props){
     super(props);
 
@@ -19,7 +17,6 @@ class App extends Component {
   componentDidMount(){
     this.getFrontpagePlaylists()
       .then(res => {
-        console.log(res);
         const currentPlaylist = res.playlists.find((elem) => {
           return elem.name.toLowerCase() === 'tgif';
         });
@@ -42,7 +39,15 @@ class App extends Component {
     return body;
   };
 
+  getRedisHistory = async (playlist) => {
+    const response = await fetch(`/api/redis/user=${playlist.user}&list=${playlist.name}`);
+    const body = await response.json();
+
+    return body;
+  }
+
   changePlaylist(playlist){
+    //TODO: Retrieve redis history for the playlist, on every change of playlist
     const newPlaylist = playlist;
     this.setState({
       currentPlaylist: newPlaylist
