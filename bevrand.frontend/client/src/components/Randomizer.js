@@ -4,7 +4,7 @@ const PreviewItemRow = (props) => {
   return (
     <li className="list-group-item text-center justify-content-between">
       {props.name}
-      {/* <span className="badge badge-default badge-pill pull-right">0</span> */}
+      <span className="badge badge-default badge-pill pull-right">{props.rolled}</span>
     </li>
   );
 }
@@ -15,7 +15,7 @@ const PlaylistPreview = (props) => {
     <div>
       <ul className="list-group">
         {listOfBeverages.map((beverage, index) =>
-          <PreviewItemRow key={index} name={beverage} />
+          <PreviewItemRow key={index} name={beverage.drink} rolled={beverage.rolled} />
         )}
       </ul>
     </div>
@@ -32,6 +32,7 @@ const RandomizeButton = (props) => {
 };
 
 const getRandomize = async (playlist) => {
+  //TODO: normalize beverages back to being a non object, or add array of object next to original array
   let data = {
     user: "frontpage",
     list: `${playlist.name}`,
@@ -80,11 +81,6 @@ class Randomizer extends Component {
         history: resultBody.history[`${this.props.playlist.user.toLowerCase()}:${this.props.playlist.name}`]
       });
     } catch (error) { console.log(error); }
-  }
-
-  mergeRedisData(playlist){
-    const history = this.state.history;
-    return history.map()
   }
 
   //TODO: split this component up in several smaller components
