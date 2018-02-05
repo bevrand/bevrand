@@ -28,6 +28,7 @@ app.get('/api/frontpagelists', (req, res, next) => {
     .then(result => {
       debug('Got successful result from /frontpagelists: ' + result);
       let parsedResult = JSON.parse(result);
+      
       return parsedResult.front_page_lists;
     })
     .then((result) => {
@@ -38,10 +39,11 @@ app.get('/api/frontpagelists', (req, res, next) => {
           });
       });
 
-      Promise.all(promises).then(results => {
-        debug('Sending results', results);
-        res.send({playlists: results});
-      });
+      return Promise.all(promises);
+    })
+    .then(results => {
+      debug('Sending results', results);
+      return res.send({playlists: results});
     })
     .catch(err => {
       debug('Got error from frontpagelists' + err);
