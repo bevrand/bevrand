@@ -16,24 +16,18 @@ const getFrontpagePlaylists = async () => {
 const getRedisHistory = async (playlist) => {
   let body;
   try {
-    const response = await fetch(`/api/redis?user=${playlist.user.toLowerCase()}&list=${playlist.name}`);
+    const response = await fetch(`/api/redis?user=${playlist.user.toLowerCase()}&list=${playlist.name}`, {
+        method: 'POST',
+        body: JSON.stringify(playlist),
+        headers: new Headers({
+          'Content-Type': 'application/json'
+        })
+      });
     body = await response.json();
   } catch (err) {
     console.error('Error: ', err);
   }
   return body;
-}
-
-const mergeRedisData = (currentPlaylist, redisHistory) => {
-  const redisArrayName = `${currentPlaylist.user.toLowerCase()}:${currentPlaylist.name}`;
-  currentPlaylist.beverages = currentPlaylist.beverages.map(beverage => {
-    const matchedElem = redisHistory[redisArrayName].find(elem => {
-      return elem.drink === beverage;
-    });
-    const rolled = matchedElem ? matchedElem.rolled : 0;
-    return { drink: beverage, rolled: rolled };
-  });
-  return currentPlaylist;
 }
 
 class App extends Component {
@@ -46,11 +40,11 @@ class App extends Component {
     };
 
     this.changePlaylist = this.changePlaylist.bind(this);
+    this.updateBeverageHistory = this.updateBeverageHistory.bind(this);
   }
 
   componentDidMount() {
     let playlists;
-    let currentPlaylist;
     getFrontpagePlaylists()
       .then(result => {
         playlists = result.playlists
@@ -58,13 +52,7 @@ class App extends Component {
           return elem.name.toLowerCase() === 'tgif';
         });
       })
-      .then(retrievedPlaylist => {
-        currentPlaylist = retrievedPlaylist;
-        return getRedisHistory(retrievedPlaylist);
-      })
-      .then(redisHistory => {
-        currentPlaylist = mergeRedisData(currentPlaylist, redisHistory);
-        console.log(currentPlaylist);
+      .then(currentPlaylist => {
         this.setState({
           isLoading: false,
           playlists: playlists,
@@ -75,17 +63,23 @@ class App extends Component {
   }
 
   changePlaylist(playlist) {
-    //TODO: Retrieve redis history for the playlist, on every change of playlist
-    let newPlaylist;
     getRedisHistory(playlist)
-      .then(redisHistory => {
-        newPlaylist = mergeRedisData(playlist, redisHistory);
+      .then(newBeverages => {
+        playlist.beverages = newBeverages
         this.setState({
-          currentPlaylist: newPlaylist
+          currentPlaylist: playlist
         });
       })
       .catch(err => console.error('Error: ', err));
   };
+
+  updateBeverageHistory(newBeverages){
+    let newCurrentPlaylist = this.state.currentPlaylist;
+    newCurrentPlaylist.beverages = newBeverages;
+    this.setState({
+      currentPlaylist: newCurrentPlaylist
+    });
+  }
 
   render() {
     if (this.state.isLoading) {
@@ -97,7 +91,7 @@ class App extends Component {
     }
     return (
       <div className="App">
-        <Randomizer playlist={this.state.currentPlaylist} />
+        <Randomizer playlist={this.state.currentPlaylist} updateBeverages={this.updateBeverageHistory}/>
         <Playlists playlists={this.state.playlists} onClick={this.changePlaylist} />
       </div>
     );

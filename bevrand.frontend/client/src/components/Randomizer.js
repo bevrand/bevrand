@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 const PreviewItemRow = (props) => {
   return (
     <li className="list-group-item text-center justify-content-between">
-      {props.name}
-      <span className="badge badge-default badge-pill pull-right">{props.rolled}</span>
+      {props.name.toString()}
+      <span className="badge badge-default badge-pill pull-right">{props.rolled.toString()}</span>
     </li>
   );
 }
@@ -32,7 +32,6 @@ const RandomizeButton = (props) => {
 };
 
 const getRandomize = async (playlist) => {
-  //TODO: normalize beverages back to being a non object, or add array of object next to original array
   let data = {
     user: "frontpage",
     list: `${playlist.name}`,
@@ -75,10 +74,9 @@ class Randomizer extends Component {
     //Randomize the beverage
     try {
       let resultBody = await getRandomize(this.props.playlist);
-      console.log(resultBody);
+      this.props.updateBeverages(resultBody.history)
       this.setState({
-        result: resultBody.result,
-        history: resultBody.history[`${this.props.playlist.user.toLowerCase()}:${this.props.playlist.name}`]
+        result: resultBody.result
       });
     } catch (error) { console.log(error); }
   }
@@ -86,10 +84,6 @@ class Randomizer extends Component {
   //TODO: split this component up in several smaller components
   render() {
     let playlist = this.props.playlist;
-    {console.log(playlist)}
-    if(this.state.history){
-      // playlist = this.mergeRedisData(playlist);
-    }
 
     return (
       <section className="bg-primary" id="getstarted">
