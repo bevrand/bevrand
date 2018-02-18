@@ -1,8 +1,5 @@
 from flask import jsonify, request, Blueprint
 from flask_restplus import inputs
-from project.api import REQURL
-
-import requests
 
 from project.service import api_handler
 from project.service import redis_connection
@@ -17,64 +14,6 @@ def ping_pong():
         'status': 'success',
         'message': 'pong!'
     })
-
-
-@randomize_blueprint.route('/api/randomize', methods=['GET'])
-def randomize():
-    """
-        This is an api to randomize lists and add data to redis
-        ---
-        tags:
-          - Api to randomize
-        parameters:
-          - name: user
-            type: string
-            in: query
-            required: false
-            description: user you want to query
-          - name: list
-            type: string
-            in: query
-            required: false
-            description: specific list that belong to a user
-        responses:
-          400:
-            description: Incorrect dbs used
-          200:
-            description: Your call was made with success
-    """
-    username = request.args.get('user')
-    description_list = request.args.get('list')
-    if username is None and description_list is None:
-        url = REQURL + 'api/frontpage?list=TGIF'
-        response = requests.get(url)
-        if response.status_code == 200:
-            json_response = response.json()
-            user_list = "frontpageTgif"
-            random_drink = api_handler.random_list_creator(json_response, user_list)
-            return str(random_drink)
-        else:
-            return "Bad request, no valid status returned"
-    if username == 'frontpage':
-        url = REQURL + 'api/frontpage?list=' + description_list
-        response = requests.get(url)
-        if response.status_code == 200:
-            json_response = response.json()
-            user_list = "frontpage" + description_list
-            random_drink = api_handler.random_list_creator(json_response, user_list)
-            return str(random_drink)
-        else:
-            return "Bad request, no valid status returned"
-    else:
-        url = REQURL + 'api/users?user=' + username + '&list=' + description_list
-        response = requests.get(url)
-        if response.status_code == 200:
-            json_response = response.json()
-            user_list = username + description_list
-            random_drink = api_handler.random_list_creator(json_response, user_list)
-            return random_drink
-        else:
-            return "Bad request, no valid status returned"
 
 
 @randomize_blueprint.route('/api/randomize', methods=['POST'])
@@ -176,3 +115,63 @@ def clean_current_session():
     else:
         return 'No command given please use : { "command" : "clean" } '
 
+
+'''
+@randomize_blueprint.route('/api/randomize', methods=['GET'])
+def randomize():
+    """
+        This is an api to randomize lists and add data to redis
+        ---
+        tags:
+          - Api to randomize
+        parameters:
+          - name: user
+            type: string
+            in: query
+            required: false
+            description: user you want to query
+          - name: list
+            type: string
+            in: query
+            required: false
+            description: specific list that belong to a user
+        responses:
+          400:
+            description: Incorrect dbs used
+          200:
+            description: Your call was made with success
+    """
+    username = request.args.get('user')
+    description_list = request.args.get('list')
+    if username is None and description_list is None:
+        url = REQURL + 'api/frontpage?list=TGIF'
+        response = requests.get(url)
+        if response.status_code == 200:
+            json_response = response.json()
+            user_list = "frontpageTgif"
+            random_drink = api_handler.random_list_creator(json_response, user_list)
+            return str(random_drink)
+        else:
+            return "Bad request, no valid status returned"
+    if username == 'frontpage':
+        url = REQURL + 'api/frontpage?list=' + description_list
+        response = requests.get(url)
+        if response.status_code == 200:
+            json_response = response.json()
+            user_list = "frontpage" + description_list
+            random_drink = api_handler.random_list_creator(json_response, user_list)
+            return str(random_drink)
+        else:
+            return "Bad request, no valid status returned"
+    else:
+        url = REQURL + 'api/users?user=' + username + '&list=' + description_list
+        response = requests.get(url)
+        if response.status_code == 200:
+            json_response = response.json()
+            user_list = username + description_list
+            random_drink = api_handler.random_list_creator(json_response, user_list)
+            return random_drink
+        else:
+            return "Bad request, no valid status returned"
+
+'''

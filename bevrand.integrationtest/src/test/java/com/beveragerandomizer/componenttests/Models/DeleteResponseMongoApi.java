@@ -25,16 +25,8 @@ public class DeleteResponseMongoApi {
         this.message = message;
     }
 
-    public String getNewdata() {
-        return newdata;
-    }
-
-    public void setNewdata(String newdata) {
-        this.newdata = newdata;
-    }
 
     public String user;
     public String list;
     public String message;
-    public String newdata;
 }

@@ -1,28 +1,35 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace bevrand.authenticationapi.Models
+namespace bevrand.authenticationapi.DAL.Models
 {
+    [Table("users")]
     public class UserModel
     {
         [Key]
-        [Column]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("id")]
         public int Id { get; set; }
         
-        [Column]
+        [Column("username")]
         public string UserName { get; set; }
         
-        [Column]
+        [Column("email")]
+        public string EmailAddress { get; set; }
+        
+        [Column("password")]
         public string PassWord { get; set; }
         
-        [Column]
-        public string Session { get; set; }
+        [Column("active")]
+        public bool? Active { get; set; }
         
-        [Column]
-        public DateTime Created { get; set; } = DateTime.UtcNow;
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("datecreated")]
+        public DateTime Created { get; set; }
         
-        [Column]
+        
+        [Column("dateupdated")]
         public DateTime Updated { get; set; } = DateTime.UtcNow;
     }
 }

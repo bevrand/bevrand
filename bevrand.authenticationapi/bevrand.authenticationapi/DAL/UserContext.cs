@@ -1,4 +1,4 @@
-﻿using bevrand.authenticationapi.Models;
+﻿using bevrand.authenticationapi.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 
@@ -13,6 +13,10 @@ namespace bevrand.authenticationapi.DAL
 
         public DbSet<UserModel> UserModel { get; set; }
         
+
+
     }
+
+
 }
 
