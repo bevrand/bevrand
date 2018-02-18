@@ -1,11 +1,11 @@
 import json
 from datetime import datetime
-from project.api.models import Mongoobject
+from project.api.models import MongoObject
 
 from project.tests.base import BaseTestCase
 
 def add_user(user, list):
-    user = Mongoobject(user=user, list=list)
+    user = MongoObject(user=user, list=list)
     user.dateinserted = datetime.utcnow()
     user.dateupdated = datetime.utcnow()
     user.beverages = [{"name" : "coffee", "name": " tea"}]

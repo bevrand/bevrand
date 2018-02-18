@@ -4,7 +4,6 @@ from pymongo import MongoClient
 import glob
 import json
 
-
 #CONNECTION = 'mongodb://localhost:27017'
 CONNECTION = 'mongodb://dockermongo:27017'
 

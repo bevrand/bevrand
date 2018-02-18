@@ -26,17 +26,10 @@ public class ReponseMongoApi {
         this.message = message;
     }
 
-    public PostMongoApi getNewdata() {
-        return newdata;
-    }
-
-    public void setNewdata(PostMongoApi newdata) {
-        this.newdata = newdata;
-    }
 
     public String user;
     public String list;
     public String message;
-    public PostMongoApi newdata;
+
 
 }

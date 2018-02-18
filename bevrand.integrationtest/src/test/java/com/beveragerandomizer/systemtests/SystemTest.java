@@ -12,10 +12,15 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -34,26 +39,23 @@ public class SystemTest {
     private static PostMongoApi updateMongoModel;
     private static PostMongoApi deleteMongoModel;
 
+    Capabilities chromeCapabilities = DesiredCapabilities.chrome();
+
     @BeforeAll
     static void setParams() {
         reqUrlMongo = "http://0.0.0.0:4550/api/";
         reqUrlRandom = "http://0.0.0.0:4560/api/";
     }
 
-    @Test
-    void myFirstTest() {
-        assertEquals(2, 1 + 1);
-    }
 
-    @Disabled
     @Test
-    void getAllDrinksFromWebsiteAndCheckMongoApi(PhantomJSDriver driver){
-        driver.get("http://0.0.0.0:4540");
-        driver.manage().window().maximize();
+    void getAllDrinksFromWebsiteAndCheckMongoApi() throws MalformedURLException {
+        RemoteWebDriver driver = new RemoteWebDriver(new URL("http://0.0.0.0:4444/wd/hub"), chromeCapabilities);
+        driver.get("http://nodefrontend:5000");
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         driver.findElement(By.xpath("//*[@id='page-top']/header/div/div/a[1]")).click();
 
-        WebElement listOfDrinks = driver.findElement(By.cssSelector("#about > div > div:nth-child(4) > div > ul"));
+        WebElement listOfDrinks = driver.findElement(By.xpath("//*[@id=\"getstarted\"]/div/div[4]/div/div/ul"));
         List<WebElement> webDrinks = listOfDrinks.findElements(By.tagName("li"));
         List<String> drinks = new ArrayList<>();
         for (int i = 0; i < webDrinks.size(); i++)

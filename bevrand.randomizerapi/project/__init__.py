@@ -4,6 +4,7 @@ from flasgger import Swagger
 
 
 def create_app():
+    # instantiate the app
     swagger_config = {
         "headers": [
         ],
@@ -26,15 +27,13 @@ def create_app():
         'uiversion': 3
     }
     Swagger(app, config=swagger_config)
-    # instantiate the app
+
     # set config
-   # app_settings = os.getenv('APP_SETTINGS')
-   # print(app_settings)
-   # app.config.from_object(app_settings)
+    app_settings = 'project.config.' + os.getenv('APP_SETTINGS')
+    app.config.from_object(app_settings)
 
     # register blueprints
     from project.api.controller import randomize_blueprint
     app.register_blueprint(randomize_blueprint)
-
 
     return app
