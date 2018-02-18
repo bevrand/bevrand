@@ -3,7 +3,6 @@ const path = require('path');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const rp = require('request-promise');
 const debug = require('debug')('bevrand.frontend:api');
 
 const config = require('./config');
