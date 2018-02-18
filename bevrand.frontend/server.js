@@ -3,6 +3,8 @@ var app = require('./api');
 var debug = require('debug')('bevrand.frontend:server');
 var http = require('http');
 
+//TODO: refactor this script into the api module
+
 /**
  * Get port from environment and store in Express.
  */
