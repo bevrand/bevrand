@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using bevrand.authenticationapi.DAL;
 using bevrand.authenticationapi.Models;
+using bevrand.authenticationapi.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace bevrand.authenticationapi.Controllers
@@ -10,6 +11,13 @@ namespace bevrand.authenticationapi.Controllers
     [Route("api/[controller]")]
     public class UsersController : Controller
     {
+
+       // private readonly IUserData _userData;
+
+    //    public UsersController(IUserData userData)
+    //    {
+    //        _userData = userData;
+     //   }
         private readonly UserContext _Usercontext;
 
         public UsersController(UserContext userContext)
@@ -22,19 +30,21 @@ namespace bevrand.authenticationapi.Controllers
         {
             try
             {
+               // var models = _userData.GetAllUsers();
+
+                var models =  _Usercontext.UserModel.ToList(); //.OrderBy(u => u.Id);
                 var returnModels = new List<GetAllUsersModels>();
-                var models = _Usercontext.UserModel.AsEnumerable();
                 foreach (var model in models)
                 {
-                    var innerModel = new GetAllUsersModels
+                    returnModels.Add(new GetAllUsersModels
                     {
                         Id = model.Id,
                         Username = model.UserName,
                         Active = model.Active
-                    };
-                returnModels.Add(innerModel);
+                    });
 
                 }
+
                 return Ok(returnModels);
             }
             catch (Exception)
@@ -52,3 +62,6 @@ namespace bevrand.authenticationapi.Controllers
         }
     }
 }
+
+
+
