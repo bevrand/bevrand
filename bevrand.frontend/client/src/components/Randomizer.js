@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 
 const PreviewItemRow = (props) => {
-  const beverage = props.value;
   return (
     <li className="list-group-item text-center justify-content-between">
-      {beverage}
-      {/* <span className="badge badge-default badge-pill pull-right">0</span> */}
+      {props.name.toString()}
+      <span className="badge badge-default badge-pill pull-right">{props.rolled.toString()}</span>
     </li>
   );
 }
@@ -16,7 +15,7 @@ const PlaylistPreview = (props) => {
     <div>
       <ul className="list-group">
         {listOfBeverages.map((beverage, index) =>
-          <PreviewItemRow key={index} value={beverage} />
+          <PreviewItemRow key={index} name={beverage.drink} rolled={beverage.rolled} />
         )}
       </ul>
     </div>
@@ -33,26 +32,27 @@ const RandomizeButton = (props) => {
 };
 
 const getRandomize = async (playlist) => {
-  let url = `/api/randomize?user=frontpage&list=${playlist.name}`;
   let data = {
     user: "frontpage",
     list: `${playlist.name}`,
     beverages: playlist.beverages
   };
 
-  const response = await fetch(url, {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: new Headers({
-      'Content-Type': 'application/json'
-    })
-  });
-  
-  const body = await response.json();
+  let body;
+  try {
+    let response = await fetch(`/api/randomize?user=frontpage&list=${playlist.name}`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      })
+    });
+    body = await response.json();
+  } catch (e) {
+    console.log(e);
+  }
 
-  if(response.status !== 200) throw Error(body.message);
-
-  return body.result;
+  return body;
 };
 
 /**
@@ -70,23 +70,20 @@ class Randomizer extends Component {
     this.handleRandomize = this.handleRandomize.bind(this);
   }
 
-  handleRandomize(){
-    //TODO:Retrieve new Redis randomize information for the active playlist, this can be done by the backend api
-
+  async handleRandomize() {
     //Randomize the beverage
-    getRandomize(this.props.playlist)
-      .then((resultBody) => {
-        console.log(resultBody)
-        //Set Result, so Component will be updated
-        this.setState({
-          result: resultBody
-        });
-      });  
-    
+    try {
+      let resultBody = await getRandomize(this.props.playlist);
+      this.props.updateBeverages(resultBody.history)
+      this.setState({
+        result: resultBody.result
+      });
+    } catch (error) { console.log(error); }
   }
+
   //TODO: split this component up in several smaller components
   render() {
-    const playlist = this.props.playlist;
+    let playlist = this.props.playlist;
 
     return (
       <section className="bg-primary" id="getstarted">
@@ -101,7 +98,8 @@ class Randomizer extends Component {
             <RandomizeButton onClick={this.handleRandomize} />
           </div>
           <div id="random-output" className="row">
-          {this.state.result != null &&
+            {/* TODO: add animation to this section */}
+            {this.state.result != null &&
               <div className="alert alert-success" role="alert">
                 You have randomized: {this.state.result}
               </div>
