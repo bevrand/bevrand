@@ -100,7 +100,7 @@ def redis_topfive():
     if topfive is None:
         return "please supply the bool topfive", 400
     redis_top_five = redis_connection.get_five_from_list(user, desc_list, topfive)
-    return redis_top_five
+    return redis_top_five, 200
 
 
 @randomize_blueprint.route('/api/redis', methods=['POST'])

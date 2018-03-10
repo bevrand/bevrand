@@ -19,6 +19,7 @@ namespace bevrand.authenticationapi.DAL
              var sqlResult = _userContext.UserModel.All(u => u.UserName == name);
              return sqlResult;
         }
+        
 
     }
 }

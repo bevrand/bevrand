@@ -148,6 +148,7 @@ def post_user():
     """
     user_name = request.json['user'].lower()
     list_name = request.json['list'].lower()
+    l_name = list_name.tolower()
     if user_name is 'frontpage':
         front_page_object = ReturnModel(user_name, list_name, 'frontpage is an invalid user - reserved')
         res = json.dumps(front_page_object.__dict__, indent=4)
