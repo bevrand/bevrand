@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using bevrand.authenticationapi.BLL;
+using bevrand.authenticationapi.Data;
 using bevrand.authenticationapi.DAL;
 using bevrand.authenticationapi.DAL.Models;
 using bevrand.authenticationapi.Models;
+using bevrand.authenticationapi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite.Internal.UrlActions;
 using Microsoft.EntityFrameworkCore;
@@ -15,11 +17,11 @@ namespace bevrand.authenticationapi.Controllers
     public class UserController : Controller
     {
         
-        private readonly UserContext _Usercontext;
+        private readonly IUserData _userData;
 
-        public UserController(UserContext userContext)
+        public UserController(IUserData userData)
         {
-            _Usercontext = userContext;
+            _userData = userData;
         }
 
 
@@ -30,19 +32,20 @@ namespace bevrand.authenticationapi.Controllers
             {
                 var model = new UserModel();
                 
-                if (username != null)
+                if (id != null)
                 {
-                     model = _Usercontext.UserModel.FirstOrDefault(u => u.UserName == username);
+                    model = _userData.GetSingleUser((int)id);
                 }
-                else if (id != null)
+                else if (emailaddress != null && username == null)
                 {
-                    model = _Usercontext.UserModel.FirstOrDefault(u => u.Id == id);
+                    model = _userData.GetSingleUser(emailaddress, false);
                 }
-                else
+                else if (username != null)
                 {
-                    model = _Usercontext.UserModel.FirstOrDefault(u => u.EmailAddress == emailaddress);
+                    model = _userData.GetSingleUser(username, true);
                 }
-                
+
+
                 var getModel = new GetUserModel
                 {
                     Active = model.Active,
@@ -70,7 +73,7 @@ namespace bevrand.authenticationapi.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] PostUserModel user)
         {
-            if (user == null || user.PassWord == null || user.Username == null)
+            if (user?.PassWord == null || user.Username == null)
             {
                 var req = new BadRequestModel
                 {
@@ -81,7 +84,7 @@ namespace bevrand.authenticationapi.Controllers
                 return BadRequest(req);
             }
 
-            var userExists = _Usercontext.UserModel.Any(i => i.UserName == user.Username);
+            var userExists = _userData.CheckIfUserExists(user.Username);
             if(userExists)
             {
                 var req = new BadRequestModel
@@ -120,8 +123,14 @@ namespace bevrand.authenticationapi.Controllers
 
             try
             {
-                _Usercontext.UserModel.Add(userToPost);
-                _Usercontext.SaveChanges();
+                var returnModel = _userData.Add(userToPost);
+                var croppedReturnModel = new BaseModel
+                {
+                    Id = returnModel.Id,
+                    Username = returnModel.UserName
+                };
+            
+                return Ok(croppedReturnModel);
             }
             catch (Exception e)
             {
@@ -135,15 +144,6 @@ namespace bevrand.authenticationapi.Controllers
                 return BadRequest(req);
             }
 
-            
-            var returnModel = _Usercontext.UserModel.FirstOrDefault(u => u.UserName == user.Username);
-            var croppedReturnModel = new BaseModel
-            {
-                Id = returnModel.Id,
-                Username = returnModel.UserName
-            };
-            
-            return Ok(croppedReturnModel);
         }
 
         [HttpPut]
@@ -151,7 +151,7 @@ namespace bevrand.authenticationapi.Controllers
         {
             try
             {
-                var selectedUser = _Usercontext.UserModel.AsNoTracking().FirstOrDefault(x => x.Id == id);
+                var selectedUser = _userData.GetSingleUser(id);
                 if (selectedUser != null)
                 {
                     if (user.Active == null)
@@ -168,7 +168,6 @@ namespace bevrand.authenticationapi.Controllers
                     {
                         user.Username = selectedUser.UserName;
                     }
-                
                     
                     var userToPut = new UserModel
                     {
@@ -180,11 +179,7 @@ namespace bevrand.authenticationapi.Controllers
                         Updated = DateTime.UtcNow
                         
                     };
-                    
-                   // selectedUser = userToPut;
-                    
-                    _Usercontext.UserModel.Update(userToPut);
-                    _Usercontext.SaveChanges();
+                    _userData.Update(userToPut);
                 }
 
                 return Ok();
@@ -207,11 +202,10 @@ namespace bevrand.authenticationapi.Controllers
         {
             try
             {
-                var user = _Usercontext.UserModel.FirstOrDefault(x => x.Id == id);
+                var user = _userData.GetSingleUser(id);
                 if (user != null)
                 {
-                    _Usercontext.UserModel.Remove(user);
-                    _Usercontext.SaveChanges();
+                    _userData.Delete(user);
                 }
                 else
                 {

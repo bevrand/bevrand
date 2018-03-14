@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using bevrand.authenticationapi.Data;
 using bevrand.authenticationapi.DAL;
 using bevrand.authenticationapi.DAL.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace bevrand.authenticationapi.Services
 {
@@ -13,17 +15,47 @@ namespace bevrand.authenticationapi.Services
         {
             _context = context;
         }
+
+        public UserModel Add(UserModel user)
+        {
+            _context.Users.Add(user);
+            _context.SaveChanges();
+            return user;
+        }
+
+        public void Update(UserModel user)
+        {
+            _context.Users.Update(user);
+            _context.SaveChanges();
+        }
+
+        public void Delete(UserModel user)
+        {
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+        }
         
         public bool CheckIfUserExists(string name)
         {
-            var sqlResult = _context.UserModel.All(u => u.UserName == name);
-            return sqlResult;
+            return _context.Users.All(u => u.UserName == name);
         }
 
         public IEnumerable<UserModel> GetAllUsers()
         {
-            return _context.UserModel.OrderBy(u => u.Id);
+            return _context.Users.OrderBy(u => u.Id);
         }
+
+        public UserModel GetSingleUser(int id)
+        {
+            return _context.Users.AsNoTracking().FirstOrDefault(u => u.Id == id);
+        }
+        
+        public UserModel GetSingleUser(string queryField, bool user)
+        {
+            return user ? _context.Users.FirstOrDefault(u => u.UserName == queryField) : _context.Users.FirstOrDefault(u => u.EmailAddress == queryField);
+        }
+        
+
 
     }
 }
