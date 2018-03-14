@@ -11,6 +11,7 @@ namespace bevrand.authenticationapi.Services
         bool CheckIfUserExists(string name);
         IEnumerable<UserModel> GetAllUsers();
         UserModel GetSingleUser(int id);
-        UserModel GetSingleUser(string query, bool user);
+        UserModel GetSingleUser(string userName);
+        UserModel GetSingleUserEmail(string emailAddress);
     }
 }
