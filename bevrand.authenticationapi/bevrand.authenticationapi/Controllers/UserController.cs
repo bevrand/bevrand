@@ -36,13 +36,23 @@ namespace bevrand.authenticationapi.Controllers
                 {
                     model = _userData.GetSingleUser((int)id);
                 }
-                else if (emailaddress != null && username == null)
+                else if (!string.IsNullOrWhiteSpace(username))
                 {
-                    model = _userData.GetSingleUser(emailaddress, false);
+                    model = _userData.GetSingleUser(username);
                 }
-                else if (username != null)
+                else if (!string.IsNullOrWhiteSpace(emailaddress) && string.IsNullOrWhiteSpace(username))
                 {
-                    model = _userData.GetSingleUser(username, true);
+                    model = _userData.GetSingleUserEmail(emailaddress);
+                }
+                else
+                {
+                    var req = new BadRequestModel
+                    {
+                        Id = id,
+                        Username = username,
+                        Message = "Nothing to query"
+                    };
+                    return BadRequest(req);
                 }
 
 
@@ -73,7 +83,8 @@ namespace bevrand.authenticationapi.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] PostUserModel user)
         {
-            if (user?.PassWord == null || user.Username == null)
+           
+            if (string.IsNullOrWhiteSpace(user.PassWord) || string.IsNullOrWhiteSpace(user.Username))
             {
                 var req = new BadRequestModel
                 {
@@ -159,14 +170,26 @@ namespace bevrand.authenticationapi.Controllers
                         user.Active = selectedUser.Active;
                     }
 
-                    if (user.EmailAddress == null)
+                    if (string.IsNullOrWhiteSpace(user.EmailAddress))
                     {
                         user.EmailAddress = selectedUser.EmailAddress;
                     }
 
-                    if (user.Username == null)
+                    if (string.IsNullOrWhiteSpace(user.Username))
                     {
                         user.Username = selectedUser.UserName;
+                    }
+                    
+                    var validateEmail = EmailValidator.EmailIsValid(user.EmailAddress);
+                    if (!validateEmail)
+                    {
+                        var req = new BadRequestModel
+                        {
+                            Id = null,
+                            Username = user.Username,
+                            Message = $"{user.EmailAddress} was not a valid mailaddress"
+                        };
+                        return BadRequest(req);
                     }
                     
                     var userToPut = new UserModel

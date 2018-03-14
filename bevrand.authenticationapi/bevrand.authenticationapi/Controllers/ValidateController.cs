@@ -26,7 +26,7 @@ namespace bevrand.authenticationapi.Controllers
             try
             {
                 var dbPassword = validate.Id != null ? _userData.GetSingleUser((int)validate.Id).PassWord 
-                    : _userData.GetSingleUser(validate.Username, true).PassWord;
+                    : _userData.GetSingleUser(validate.Username).PassWord;
                 var validPassword = PasswordHasher.DoesPasswordMatch(validate.PassWord, dbPassword);
                 return Ok(validPassword);
             }

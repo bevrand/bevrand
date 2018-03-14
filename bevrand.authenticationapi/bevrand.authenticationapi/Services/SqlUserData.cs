@@ -37,7 +37,7 @@ namespace bevrand.authenticationapi.Services
         
         public bool CheckIfUserExists(string name)
         {
-            return _context.Users.All(u => u.UserName == name);
+            return _context.Users.Any(u => u.UserName == name);
         }
 
         public IEnumerable<UserModel> GetAllUsers()
@@ -50,11 +50,15 @@ namespace bevrand.authenticationapi.Services
             return _context.Users.AsNoTracking().FirstOrDefault(u => u.Id == id);
         }
         
-        public UserModel GetSingleUser(string queryField, bool user)
+        public UserModel GetSingleUser(string userName)
         {
-            return user ? _context.Users.FirstOrDefault(u => u.UserName == queryField) : _context.Users.FirstOrDefault(u => u.EmailAddress == queryField);
+            return _context.Users.FirstOrDefault(u => u.UserName == userName);
         }
-        
+
+        public UserModel GetSingleUserEmail(string emailAddress)
+        {
+            return _context.Users.FirstOrDefault(u => u.EmailAddress == emailAddress);
+        }
 
 
     }
