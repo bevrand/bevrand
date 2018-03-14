@@ -8,7 +8,6 @@ language: java
 branches:
   only:
   - master
-  - develop
 
 services:
   - docker
