@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Linq;
 using bevrand.authenticationapi.BLL;
+using bevrand.authenticationapi.Data;
 using bevrand.authenticationapi.DAL;
 using bevrand.authenticationapi.Models;
+using bevrand.authenticationapi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,11 +13,11 @@ namespace bevrand.authenticationapi.Controllers
     [Route("api/[controller]")]
     public class ValidateController : Controller
     {
-        private readonly UserContext _Usercontext;
-        
-        public ValidateController(UserContext userContext)
+        private readonly IUserData _userData;
+
+        public ValidateController(IUserData userData)
         {
-            _Usercontext = userContext;
+            _userData = userData;
         }
         
         [HttpPost]
@@ -23,8 +25,8 @@ namespace bevrand.authenticationapi.Controllers
         {
             try
             {
-                var dbPassword = validate.Id != null ? _Usercontext.UserModel.FirstOrDefault(u => u.Id == validate.Id).PassWord 
-                    : _Usercontext.UserModel.FirstOrDefault(u => u.UserName == validate.Username).PassWord;
+                var dbPassword = validate.Id != null ? _userData.GetSingleUser((int)validate.Id).PassWord 
+                    : _userData.GetSingleUser(validate.Username, true).PassWord;
                 var validPassword = PasswordHasher.DoesPasswordMatch(validate.PassWord, dbPassword);
                 return Ok(validPassword);
             }
@@ -46,7 +48,7 @@ namespace bevrand.authenticationapi.Controllers
         {
             try
             {
-                var sqlResult = _Usercontext.UserModel.FirstOrDefault(v => v.Id == id);
+                var sqlResult = _userData.GetSingleUser(id);
                 var validPassword = PasswordHasher.DoesPasswordMatch(validate.OldPassWord, sqlResult.PassWord);
                 if (!validPassword)
                 {
@@ -60,10 +62,9 @@ namespace bevrand.authenticationapi.Controllers
 
                 var newlyHashedPassword = PasswordHasher.SetPassword(validate.NewPassWord);
                 sqlResult.PassWord = newlyHashedPassword;
-                
-                _Usercontext.UserModel.Update(sqlResult);
-                _Usercontext.SaveChanges();
 
+                _userData.Update(sqlResult);
+                
                 return Ok();
             }
             catch (Exception e)

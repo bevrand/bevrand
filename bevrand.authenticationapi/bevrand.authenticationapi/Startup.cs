@@ -1,5 +1,7 @@
 ﻿using System;
+using bevrand.authenticationapi.Data;
 using bevrand.authenticationapi.DAL;
+using bevrand.authenticationapi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -35,7 +37,7 @@ namespace bevrand.authenticationapi
             Console.WriteLine(sqlConnectionString);
             services.AddDbContext<UserContext>(options =>
                 options.UseNpgsql(sqlConnectionString));
-                
+            services.AddScoped<IUserData, SqlUserData>();
   
             services.AddMvc();
             
