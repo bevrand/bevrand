@@ -146,9 +146,14 @@ def post_user():
           200:
             description: Your list has been inserted
     """
-    user_name = request.json['user'].lower()
-    list_name = request.json['list'].lower()
-    l_name = list_name.tolower()
+    try:
+        user_name = request.json['user'].lower()
+        list_name = request.json['list'].lower()
+    except:
+        return_object = ReturnModel(user_name, list_name,
+                                    'Unable to cast user_name or list_name no action will be taken')
+        res = json.dumps(return_object.__dict__, indent=4)
+        return res, 400
     if user_name is 'frontpage':
         front_page_object = ReturnModel(user_name, list_name, 'frontpage is an invalid user - reserved')
         res = json.dumps(front_page_object.__dict__, indent=4)
@@ -190,9 +195,14 @@ def remove_user_list():
           200:
             description: Your list was deleted
     """
-
-    to_remove_user = request.args.get('user').lower()
-    to_remove_list = request.args.get('list').lower()
+    try:
+        to_remove_user = request.args.get('user').lower()
+        to_remove_list = request.args.get('list').lower()
+    except:
+        return_object = ReturnModel(to_remove_user, to_remove_list,
+                                    'Unable to cast user_name or list_name no action will be taken')
+        res = json.dumps(return_object.__dict__, indent=4)
+        return res, 400
     user_exists = db_users.check_if_user_exists(to_remove_user)
     if user_exists:
         list_exists = db_users.check_if_userlist_exists(to_remove_user, to_remove_list)
@@ -261,10 +271,14 @@ def update_user_list():
           200:
             description: Your list was deleted
     """
-
-    old_user = request.args.get('user').lower()
-    old_list = request.args.get('list').lower()
-
+    try:
+        old_user = request.args.get('user').lower()
+        old_list = request.args.get('list').lower()
+    except:
+        return_object = ReturnModel(old_user, old_list,
+                                    'Unable to cast user_name or list_name no action will be taken')
+        res = json.dumps(return_object.__dict__, indent=4)
+        return res, 400
     # check to see if user exists if it does user is updated
     user_exists = db_users.check_if_user_exists(old_user)
     if user_exists:

@@ -49,6 +49,7 @@ public class SystemTest {
 
 
     @Test
+    @Disabled
     void getAllDrinksFromWebsiteAndCheckMongoApi() throws MalformedURLException {
         RemoteWebDriver driver = new RemoteWebDriver(new URL("http://0.0.0.0:4444/wd/hub"), chromeCapabilities);
         driver.get("http://nodefrontend:5000");

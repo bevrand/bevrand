@@ -19,7 +19,7 @@ db = LocalProxy(get_db)
 def get_frontpage_beverages(list):
     fpusers = db.frontpagestandard
     beverages = []
-    specified_document = fpusers.find_one({'list': list})
+    specified_document = fpusers.find_one({'list': list.lower()})
     try:
         for drinks in specified_document['beverages']:
             beverages.append(drinks['name'])
@@ -35,7 +35,7 @@ def get_frontpage_beverages(list):
 
 def check_if_frontpage_list_exists(list_name):
     fp_users = db.frontpagestandard
-    specified_document = fp_users.find_one({'list': list_name})
+    specified_document = fp_users.find_one({'list': list_name.lower()})
     if specified_document is None:
         return False
     else:

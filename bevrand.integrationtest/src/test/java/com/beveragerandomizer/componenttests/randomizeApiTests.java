@@ -54,8 +54,8 @@ public class randomizeApiTests {
         }
     }
 
-    @Disabled
     @Test
+    @Disabled
     @DisplayName("Post a number of drinks")
     void randomizeList()
     {

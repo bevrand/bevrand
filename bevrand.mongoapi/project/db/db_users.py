@@ -38,7 +38,7 @@ def get_all_users():
 def get_all_descriptions(username):
     description_list = db.users
     description_lists = []
-    query = description_list.find({'user': username})
+    query = description_list.find({'user': username.lower()})
     if query.count() != 0:
         for desc_list in query:
             description_lists.append(desc_list['list'])
@@ -50,7 +50,7 @@ def get_all_descriptions(username):
 def get_specific_drinklist(username, desclist):
     user = db.users
     beverages = []
-    specified_document = user.find_one({'user': username, 'list': desclist})
+    specified_document = user.find_one({'user': username.lower(), 'list': desclist.lower()})
     if specified_document is not None:
         for drinks in specified_document['beverages']:
             beverages.append(drinks['name'])
@@ -99,8 +99,8 @@ def update_specific_list(request_json, old_user, old_list):
     try:
         result = user.update_one({'_id': id_to_be_used},
                                  {'$set':
-                                      {"user": to_update.user,
-                                       "list": to_update.list,
+                                      {"user": to_update.user.lower(),
+                                       "list": to_update.list.lower(),
                                        "dateupdated": to_update.dateupdated,
                                        "beverages": to_update.beverages
                                        }}, upsert=False)
@@ -113,7 +113,7 @@ def update_specific_list(request_json, old_user, old_list):
 
 def check_if_user_exists(username):
     user = db.users
-    specified_document = user.find_one({'user': username})
+    specified_document = user.find_one({'user': username.lower()})
     if specified_document is None:
         return False
     else:
@@ -122,7 +122,7 @@ def check_if_user_exists(username):
 
 def check_if_userlist_exists(user_name, user_list):
     user = db.users
-    specified_document = user.find_one({'user': user_name, 'list': user_list})
+    specified_document = user.find_one({'user': user_name.lower(), 'list': user_list.lower()})
     if specified_document is None:
         return False
     else:
