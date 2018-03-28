@@ -1,8 +1,189 @@
 [
-{ "dateinserted" : { "date" : "2017-08-26T10:25:58.665+0000" }, "dateupdated" : "2017-09-17T08:37:56.083990", "imagename" : "Thank god it's friday - small.jpg", "beverages" : [ { "name" : "Gin-Tonic" }, { "name" : "Beer" }, { "name" : "Vodka" }, { "name" : "Jenever" }, { "name" : "Joker" }, { "name" : "Tripel Beer" }, { "name" : "Mojito" }, { "name" : "White Wine" }, { "name" : "Tequila" }, { "name" : "Whiskey" }, { "name" : "Red Wine" } ], "list" : "tgif" },
-{ "dateinserted" : "2017-09-03T09:46:41.062424", "imagename" : "Girls night out - small.jpg", "beverages" : [ { "name" : "Sex on the beach" }, { "name" : "Blowjob" }, { "name" : "Manhatten" }, { "name" : "Cosmopolitan" }, { "name" : "Daiquiri" }, { "name" : "Mojito" }, { "name" : "Screaming Orgasm" } ], "dateupdated" : "2017-09-03T09:46:41.062432", "list" : "girlsnightout" },
-{ "dateupdated" : "2017-09-01T21:57:10.613009", "dateinserted" : "2017-09-01T21:57:10.612999", "imagename" : "Mancave mayhem - small.jpg", "beverages" : [ { "name" : "Beer" }, { "name" : "Dark Ale" }, { "name" : "Pale Ale" }, { "name" : "Blonde Ale" }, { "name" : "Lager" }, { "name" : "Stout" } ], "list" : "mancavemayhem" },
-{ "imagename" : "Highland Games - small.jpg", "beverages" : [ { "name" : "Johnny Walker" }, { "name" : "Aberlour" }, { "name" : "Glenfiddich" }, { "name" : "Lagavulin" }, { "name" : "Talisker" }, { "name" : "Glen Garioch" }, { "name" : "Bowmore" }, { "name" : "Bunnahabhain" } ], "dateinserted" : { "date" : "2017-09-01T21:09:13.187+0000" }, "dateupdated" : { "date" : "2017-09-01T21:09:13.592+0000" }, "list" : "highlandgames" },
-{ "dateinserted" : { "date" : "2017-08-26T10:25:58.665+0000" }, "dateupdated" : { "date" : "2017-08-26T10:25:58.665+0000" }, "imagename" : "The most wonderful time - small.jpg", "beverages" : [ { "name" : "Gluhwein" }, { "name" : "Eggnog" }, { "name" : "Hot Choclate" }, { "name" : "Jagertea" }, { "name" : "Hot mead" } ], "list" : "mostwonderfultimeoftheyear" },
-{ "beverages" : [ { "name" : "Wiener Melange" }, { "name" : "Hot Chocolat" }, { "name" : "Mint Tea" }, { "name" : "Cafe au Lait" }, { "name" : "Cappuccino" }, { "name" : "Espresso" }, { "name" : "Lungo" } ], "dateinserted" : "2017-09-01T21:53:23.368620", "imagename" : "Office madness - small.jpg", "dateupdated" : "2017-09-01T21:53:23.368630", "list" : "officemadness" }
+  {
+    "dateinserted": "2017-08-26T10:25:58.665+0000",
+    "dateupdated": "2017-09-17T08:37:56.083990",
+    "beverages": [
+      {
+        "name": "Gin-Tonic"
+      },
+      {
+        "name": "Beer"
+      },
+      {
+        "name": "Vodka"
+      },
+      {
+        "name": "Jenever"
+      },
+      {
+        "name": "Joker"
+      },
+      {
+        "name": "Tripel Beer"
+      },
+      {
+        "name": "Mojito"
+      },
+      {
+        "name": "White Wine"
+      },
+      {
+        "name": "Tequila"
+      },
+      {
+        "name": "Whiskey"
+      },
+      {
+        "name": "Red Wine"
+      }
+    ],
+    "list": "tgif",
+    "imageUrl": "https://beveragerandomizer.ams3.digitaloceanspaces.com/images/frontpage/tgif.jpg",
+    "displayName": "Thanks God It's Friday!"
+  },
+{
+    "dateinserted" : "2017-09-03T09:46:41.062424", 
+    "beverages" : [
+        {
+            "name" : "Sex on the beach"
+        }, 
+        {
+            "name" : "Blowjob"
+        }, 
+        {
+            "name" : "Manhatten"
+        }, 
+        {
+            "name" : "Cosmopolitan"
+        }, 
+        {
+            "name" : "Daiquiri"
+        }, 
+        {
+            "name" : "Mojito"
+        }, 
+        {
+            "name" : "Screaming Orgasm"
+        }
+    ], 
+    "dateupdated" : "2017-09-03T09:46:41.062432", 
+    "list" : "girlsnightout", 
+    "imageUrl" : "https://beveragerandomizer.ams3.digitaloceanspaces.com/images/frontpage/girlsnightout.jpg", 
+    "displayName" : "Girl's night out"
+},
+{ 
+    "dateupdated" : "2017-09-01T21:57:10.613009", 
+    "dateinserted" : "2017-09-01T21:57:10.612999", 
+    "beverages" : [
+        {
+            "name" : "Beer"
+        }, 
+        {
+            "name" : "Dark Ale"
+        }, 
+        {
+            "name" : "Pale Ale"
+        }, 
+        {
+            "name" : "Blonde Ale"
+        }, 
+        {
+            "name" : "Lager"
+        }, 
+        {
+            "name" : "Stout"
+        }
+    ], 
+    "list" : "mancavemayhem", 
+    "imageUrl" : "https://beveragerandomizer.ams3.digitaloceanspaces.com/images/frontpage/mancavemayhem.jpg", 
+    "displayName" : "Mancave Mayhem"
+},
+{ 
+    "beverages" : [
+        {
+            "name" : "Johnny Walker"
+        }, 
+        {
+            "name" : "Aberlour"
+        }, 
+        {
+            "name" : "Glenfiddich"
+        }, 
+        {
+            "name" : "Lagavulin"
+        }, 
+        {
+            "name" : "Talisker"
+        }, 
+        {
+            "name" : "Glen Garioch"
+        }, 
+        {
+            "name" : "Bowmore"
+        }, 
+        {
+            "name" : "Bunnahabhain"
+        }
+    ], 
+    "dateinserted" : "2017-09-01T21:09:13.187+0000", 
+    "dateupdated" : "2017-09-01T21:09:13.592+0000", 
+    "list" : "highlandgames", 
+    "imageUrl" : "https://beveragerandomizer.ams3.digitaloceanspaces.com/images/frontpage/highlandgames.jpg", 
+    "displayName" : "Highland Games"
+},
+{ 
+
+    "dateinserted" : "2017-08-26T10:25:58.665+0000", 
+    "dateupdated" : "2017-08-26T10:25:58.665+0000", 
+    "beverages" : [
+        {
+            "name" : "Gluhwein"
+        }, 
+        {
+            "name" : "Eggnog"
+        }, 
+        {
+            "name" : "Hot Choclate"
+        }, 
+        {
+            "name" : "Jagertea"
+        }, 
+        {
+            "name" : "Hot mead"
+        }
+    ], 
+    "list" : "mostwonderfultimeoftheyear", 
+    "imageUrl" : "https://beveragerandomizer.ams3.digitaloceanspaces.com/images/frontpage/xmas.jpg", 
+    "displayName" : "It's the most wonderful time of the year"
+},
+{ 
+    "beverages" : [
+        {
+            "name" : "Wiener Melange"
+        }, 
+        {
+            "name" : "Hot Chocolat"
+        }, 
+        {
+            "name" : "Mint Tea"
+        }, 
+        {
+            "name" : "Cafe au Lait"
+        }, 
+        {
+            "name" : "Cappuccino"
+        }, 
+        {
+            "name" : "Espresso"
+        }, 
+        {
+            "name" : "Lungo"
+        }
+    ], 
+    "dateinserted" : "2017-09-01T21:53:23.368620", 
+    "dateupdated" : "2017-09-01T21:53:23.368630", 
+    "list" : "officemadness", 
+    "imageUrl" : "https://beveragerandomizer.ams3.digitaloceanspaces.com/images/frontpage/officemadness.jpg", 
+    "displayName" : "Office Madness"
+}
 ]
