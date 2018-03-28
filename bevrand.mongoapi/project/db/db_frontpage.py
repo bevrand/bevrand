@@ -1,7 +1,7 @@
 from werkzeug.local import LocalProxy
 
 from project.db import db_connection
-from project.api.models import ReturnModelGet
+from ..db.database_models import MongoObject
 
 from flask import jsonify, g
 
@@ -18,24 +18,14 @@ db = LocalProxy(get_db)
 
 def get_frontpage_beverages(list):
     fpusers = db.frontpagestandard
-    beverages = []
-    specified_document = fpusers.find_one({'list': list.lower()})
-    try:
-        for drinks in specified_document['beverages']:
-            beverages.append(drinks['name'])
-    except:
-        return "Unknown error"
-    id = str(specified_document['_id'])
-    user_name = 'frontPage'
-    list_name = list
-    image_url = specified_document['imagename']
-    front_page_model = ReturnModelGet(id, user_name, list_name, beverages, image_url)
+    specified_document = fpusers.find_one({'list': list})
+    front_page_model = map_cursor_to_object(specified_document)
     return front_page_model
 
 
 def check_if_frontpage_list_exists(list_name):
     fp_users = db.frontpagestandard
-    specified_document = fp_users.find_one({'list': list_name.lower()})
+    specified_document = fp_users.find_one({'list': list_name})
     if specified_document is None:
         return False
     else:
@@ -44,14 +34,27 @@ def check_if_frontpage_list_exists(list_name):
 
 def get_all_frontpage_lists():
     fp_users = db.frontpagestandard
-    lists = []
+    users = []
     query = fp_users.find()
     if query.count() == 0:
         return 'Mongo query did not return any results'
     else:
         for result in query:
-            lists.append(result['list'])
-    set_list = set(lists)
-    desc_list = list(set_list)
-    return jsonify({'front_page_lists': desc_list})
+            res = map_cursor_to_object(result)
+            users.append(res.__dict__)
+    return users
 
+
+def map_cursor_to_object(specified_document):
+    id = str(specified_document['_id'])
+    user_name = 'frontpage'
+    list_name = specified_document['list']
+    beverages = []
+    for drinks in specified_document['beverages']:
+        beverages.append(drinks['name'])
+    display_name = specified_document['displayName']
+    image_url = specified_document['imageUrl']
+    front_page_model = MongoObject(id, user_name, list_name, beverages, display_name, image_url)
+    front_page_model.dateinserted = str(specified_document['dateinserted'])
+    front_page_model.dateupdated = str(specified_document['dateupdated'])
+    return front_page_model
