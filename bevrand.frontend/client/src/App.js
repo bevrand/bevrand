@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Randomizer from './components/Randomizer';
 import Playlists from './components/Playlists';
+import TopRolledBeverages from './components/TopRolledBeverages';
 
 const getFrontpagePlaylists = async () => {
   let body;
@@ -61,6 +62,7 @@ class App extends Component {
       <div className="App">
         <Randomizer playlist={this.state.currentPlaylist} />
         <Playlists playlists={this.state.playlists} onClick={this.changePlaylist} />
+        <TopRolledBeverages playlist={this.state.currentPlaylist} />
       </div>
     );
   }

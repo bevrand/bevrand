@@ -1,20 +1,18 @@
 const rp = require('request-promise');
 const debug = require('debug')('controllers:redis');
-const { mergeHistoryWithBeverage } = require('../helpers/data');
 
 const getRedis = (randomizeApiUrl) => {
   return (req, res, next) => {
     const list = req.query.list;
     const user = req.query.user;
-    const beverages = req.body.beverages;
+    const topfive = req.query.topfive;
 
-    rp(`${randomizeApiUrl}/api/redis?user=${user}&list=${list}&topfive=false`)
+    rp(`${randomizeApiUrl}/api/redis?user=${user}&list=${list}&topfive=${topfive}`)
       .then(result => {
         const resultJson = JSON.parse(result);
-        const updatedBeveragesArray = mergeHistoryWithBeverage(beverages, resultJson[`${user}:${list}`])
         
-        debug('Got succesful result from /redis: ', updatedBeveragesArray);
-        return res.send(updatedBeveragesArray);
+        debug('Got succesful result from /redis: ', resultJson);
+        return res.send(resultJson);
       })
       .catch(err => {
         debug('Got error from randomizer api, redis route: ' + err);
