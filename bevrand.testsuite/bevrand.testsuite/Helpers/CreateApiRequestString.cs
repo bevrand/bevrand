@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Specialized;
 using System.Text;
+using AutoMapper;
 using Castle.Components.DictionaryAdapter;
 
 namespace bevrand.testsuite.Helpers
@@ -32,6 +33,7 @@ namespace bevrand.testsuite.Helpers
                 }
             }
 
+            Mapper.Reset();
             return requeststring.ToString();
         }
     }

@@ -30,7 +30,7 @@ namespace bevrand.testsuite.TestClasses
             dynamic assemblyType = typeof(TestSuiteFixture);
             string assemblyLocation = assemblyType.Assembly.Location;
             var solutionPath = Path.GetDirectoryName(assemblyLocation);
-            solutionPath = "/home/joerivrij/Projects/bevrand/bevrand.testsuite/bevrand.testsuite";
+         //   solutionPath = "/home/joerivrij/Projects/bevrand/bevrand.testsuite/bevrand.testsuite";
             var settingsPath = Path.Combine(solutionPath, BaseFilePath);
 
 
