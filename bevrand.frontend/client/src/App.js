@@ -13,34 +13,15 @@ const getFrontpagePlaylists = async () => {
   return body;
 };
 
-const getRedisHistory = async (playlist) => {
-  let body;
-  try {
-    const response = await fetch(`/api/redis?user=${playlist.user.toLowerCase()}&list=${playlist.name}`, {
-        method: 'POST',
-        body: JSON.stringify(playlist),
-        headers: new Headers({
-          'Content-Type': 'application/json'
-        })
-      });
-    body = await response.json();
-  } catch (err) {
-    console.error('Error: ', err);
-  }
-  return body;
-}
-
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      isLoading: true,
-      idCurrentPlaylist: 0
+      isLoading: true
     };
 
     this.changePlaylist = this.changePlaylist.bind(this);
-    this.updateBeverageHistory = this.updateBeverageHistory.bind(this);
   }
 
   componentDidMount() {
@@ -49,7 +30,7 @@ class App extends Component {
       .then(result => {
         playlists = result.playlists
         return result.playlists.find((elem) => {
-          return elem.name.toLowerCase() === 'tgif';
+          return elem.list.toLowerCase() === 'tgif';
         });
       })
       .then(currentPlaylist => {
@@ -63,23 +44,10 @@ class App extends Component {
   }
 
   changePlaylist(playlist) {
-    getRedisHistory(playlist)
-      .then(newBeverages => {
-        playlist.beverages = newBeverages
-        this.setState({
-          currentPlaylist: playlist
-        });
-      })
-      .catch(err => console.error('Error: ', err));
-  };
-
-  updateBeverageHistory(newBeverages){
-    let newCurrentPlaylist = this.state.currentPlaylist;
-    newCurrentPlaylist.beverages = newBeverages;
     this.setState({
-      currentPlaylist: newCurrentPlaylist
+      currentPlaylist: playlist
     });
-  }
+  };
 
   render() {
     if (this.state.isLoading) {
@@ -91,7 +59,7 @@ class App extends Component {
     }
     return (
       <div className="App">
-        <Randomizer playlist={this.state.currentPlaylist} updateBeverages={this.updateBeverageHistory}/>
+        <Randomizer playlist={this.state.currentPlaylist} />
         <Playlists playlists={this.state.playlists} onClick={this.changePlaylist} />
       </div>
     );
