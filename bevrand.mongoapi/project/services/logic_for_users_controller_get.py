@@ -49,6 +49,6 @@ def worker_for_all_lists_of_a_specific_user(user_name):
         return return_object
 
     user_lists = db_users.get_all_descriptions(user_name)
-    dict_to_return = {user_name : user_lists}
+    dict_to_return = {"lists": user_lists}
     return_object = {'status_code': 200, 'body': dict_to_return}
     return return_object

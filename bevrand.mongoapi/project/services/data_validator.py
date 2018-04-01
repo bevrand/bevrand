@@ -3,7 +3,7 @@ from cerberus import Validator
 
 def validate_json_for_post(dict_file):
     schema = {'user': {'type': 'string', 'required': True, 'minlength': 3},
-              'list': {'type': 'string', 'required': True, 'minlength': 1},
+              'list': {'type': 'string', 'required': True, 'minlength': 2},
               'displayName': {'type': 'string'},
               'imageUrl': {'type': 'string'},
               'beverages': {'type': 'list', 'required': True, 'minlength' : 2,'schema': {'type': 'string'}}}
@@ -11,7 +11,7 @@ def validate_json_for_post(dict_file):
 
 
 def validate_json_for_list(list):
-    schema = {'list': {'type': 'string', 'required': True, 'minlength': 1}}
+    schema = {'list': {'type': 'string', 'required': True, 'minlength': 2}}
     list_to_validate = {'list': list}
     return validate_schema(schema, list_to_validate)
 
