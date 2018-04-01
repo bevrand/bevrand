@@ -17,6 +17,8 @@ const envVarsSchema = joi.object({
     .required(),
   RANDOMIZER_API: joi.string()
     .required(),
+  AUTHENTICATION_API: joi.string()
+    .required(),
   PORT: joi.any()
     .optional(),
   USEMOCK: joi.boolean()
@@ -34,6 +36,7 @@ const config = {
   env: envVars.NODE_ENV || 'development',
   mongoApi: envVars.MONGO_API,
   randomizerApi: envVars.RANDOMIZER_API,
+  authenticationApi: envVars.AUTHENTICATION_API,
   useMock: envVars.USEMOCK,
   server: {
     port: envVars.PORT,
