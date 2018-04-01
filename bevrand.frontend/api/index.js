@@ -39,7 +39,8 @@ app.post('/api/redis', [(req, res, next) => {
 ]);
 
 app.post('/api/randomize', [(req, res, next) => {
-  if (!req.query.user || !req.query.list) {
+  console.log('dit is de body',req.body)
+  if (!req.body.user || !req.body.list) {
     let err = new Error('Required query parameters are not present');
     err.status = 400;
     return next(err);

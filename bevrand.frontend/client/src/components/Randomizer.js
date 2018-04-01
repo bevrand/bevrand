@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 
 const PreviewItemRow = (props) => {
   return (
-    <li className="list-group-item text-center justify-content-between">
+    <li id={`currentlySelectedBeverages${props.rowId}`} className="list-group-item text-center justify-content-between">
       {props.name.toString()}
-      <span className="badge badge-default badge-pill pull-right">{props.rolled.toString()}</span>
     </li>
   );
 }
@@ -15,7 +14,7 @@ const PlaylistPreview = (props) => {
     <div>
       <ul className="list-group">
         {listOfBeverages.map((beverage, index) =>
-          <PreviewItemRow key={index} name={beverage.drink} rolled={beverage.rolled} />
+          <PreviewItemRow key={index} rowId={index} name={beverage} />
         )}
       </ul>
     </div>
@@ -25,7 +24,7 @@ const PlaylistPreview = (props) => {
 const RandomizeButton = (props) => {
   return (
     <div className="col-lg-8 mx-auto text-center">
-      <a id="randomize-button" className="btn btn-primary btn-xl" onClick={props.onClick} href="#getstarted">Randomize!</a>
+      <a id="randomizeButton" className="btn btn-primary btn-xl" onClick={props.onClick} href="#getstarted">Randomize!</a>
       <a className="btn btn-primary btn-xl js-scroll-trigger" href="#portfolio">Choose list</a>
     </div>
   )
@@ -34,13 +33,13 @@ const RandomizeButton = (props) => {
 const getRandomize = async (playlist) => {
   let data = {
     user: "frontpage",
-    list: `${playlist.name}`,
+    list: `${playlist.list}`,
     beverages: playlist.beverages
   };
 
   let body;
   try {
-    let response = await fetch(`/api/randomize?user=frontpage&list=${playlist.name}`, {
+    let response = await fetch(`/api/randomize`, {
       method: 'POST',
       body: JSON.stringify(data),
       headers: new Headers({
@@ -74,7 +73,6 @@ class Randomizer extends Component {
     //Randomize the beverage
     try {
       let resultBody = await getRandomize(this.props.playlist);
-      this.props.updateBeverages(resultBody.history)
       this.setState({
         result: resultBody.result
       });
@@ -90,14 +88,14 @@ class Randomizer extends Component {
         <div className="container">
           <div className="row">
             <div className="col-lg-8 mx-auto text-center">
-              <h2 className="section-heading text-white">{playlist.name}</h2>
+              <h2 id="currentlySelectedPlaylist" className="section-heading text-white">{playlist.displayName}</h2>
               <hr className="light" />
             </div>
           </div>
           <div className="row">
             <RandomizeButton onClick={this.handleRandomize} />
           </div>
-          <div id="random-output" className="row">
+          <div id="randomizedOutput" className="row">
             {/* TODO: add animation to this section */}
             {this.state.result != null &&
               <div className="alert alert-success" role="alert">
