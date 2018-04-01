@@ -16,6 +16,22 @@ const getFrontpageLists = (mongoApiurl) => {
   }
 }
 
+const getUserList = (mongoApiurl) => {
+  return(req, res, next) => {
+    rp(`${mongoApiurl}/api/list?user=${req.query.user}&list=${req.query.list}`)
+      .then(result => {
+        debug('Got succesful result from / ')
+        const parsedResults = JSON.parse(result);
+        res.send({ playlists: parsedResults }) 
+      })
+      .catch(err => {
+        debug('Got error from frontpagelists' + err);
+        return next(err);
+      });
+  }
+}
+
 module.exports = {
-  getFrontpageLists: getFrontpageLists
+  getFrontpageLists: getFrontpageLists,
+  getUserList: getUserList
 };

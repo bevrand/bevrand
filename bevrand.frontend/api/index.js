@@ -53,6 +53,27 @@ app.post('/api/randomize', [(req, res, next) => {
 }, controllers.randomize.getRandomize(config.randomizerApi)
 ]);
 
+app.post('/api/login', [(req, res, next) => {
+  if(!req.body.username || !req.body.password) {
+    let err = new Error('Required body elements are not present');
+    err.status = 400;
+    return next(err);
+  }
+  return next();
+}, controllers.authentication.validateLogin(config.authenticationApi)
+//TODO: add JWK to the result
+]);
+
+app.post('/api/register', [(req, res, next) => {
+  if(!req.body.username || !req.body.passWord || !req.body.emailAddress) {
+    let err = new Error('Required body elements are not present');
+    err.status = 400;
+    return next(err);
+  }
+  return next();
+}, controllers.authentication.registerUser(config.authenticationApi)
+]);
+
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   let err = new Error('Not Found');
