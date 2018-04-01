@@ -57,5 +57,10 @@ namespace bevrand.testsuite.Clients
                 return null;
             }
         }
+
+        public List<string> GetUsers()
+        {
+            
+        }
     }
 }

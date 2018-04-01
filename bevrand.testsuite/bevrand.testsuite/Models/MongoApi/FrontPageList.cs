@@ -2,7 +2,7 @@
 
 namespace bevrand.testsuite.Models.MongoApi
 {
-    public class FrontPageList : BaseModel
+    public class FrontPageList : BaseResponseModel
     {
         public List<Frontpage> listOfFrontPages { get; set; }
     }
