@@ -1,13 +1,15 @@
 sudo: required
 
+language: csharp
+mono: none
+dotnet: 2.0.0
 dist: trusty
-
-language: java
 
 #safelist
 branches:
   only:
   - master
+  - develop
 
 services:
   - docker
@@ -26,9 +28,9 @@ before_install:
   - docker ps -a
 
 script:
-  - cd ./bevrand.integrationtest
+  - cd ./bevrand.testsuite
   - pwd
-  - ./gradlew test
+  - dotnet test
 
 after_success:
   - "$REACTFRONTEND_TRIGGER"
