@@ -3,6 +3,7 @@ using System.IO;
 using bevrand.testsuite.Clients;
 using bevrand.testsuite.SettingsObjects;
 using Microsoft.Extensions.Configuration;
+using OpenQA.Selenium.Remote;
 
 namespace bevrand.testsuite.TestClasses
 {
@@ -12,7 +13,8 @@ namespace bevrand.testsuite.TestClasses
         public MongoApiClient MongoApi { get; }
         public RandomizerApiClient RandomizerApi { get; }
         public AuthenticationApiClient AuthenticationApi { get; }
-        
+        public DesiredCapabilities DriverCapabilities { get; }
+
         public TestSuiteFixture()
         {
             ServiceCalls = new ServiceCalls();
@@ -20,8 +22,9 @@ namespace bevrand.testsuite.TestClasses
             MongoApi = new MongoApiClient(ServiceCalls.MongoApiService);
             RandomizerApi = new RandomizerApiClient(ServiceCalls.RandomizerApiService);
             AuthenticationApi = new AuthenticationApiClient(ServiceCalls.AuthenticationApiService);
+            DriverCapabilities = DesiredCapabilities.Chrome();
         }
-        
+
         private void EnvBuilder()
         {
             var environmentName = "development";

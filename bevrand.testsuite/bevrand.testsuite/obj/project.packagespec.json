@@ -72,6 +72,26 @@
           "target": "Package",
           "version": "[11.0.2, )"
         },
+        "Selenium.Chrome.WebDriver": {
+          "target": "Package",
+          "version": "[2.37.0, )"
+        },
+        "Selenium.Firefox.WebDriver": {
+          "target": "Package",
+          "version": "[0.20.0, )"
+        },
+        "Selenium.Mozilla.Firefox.Webdriver": {
+          "target": "Package",
+          "version": "[0.6.0.1, )"
+        },
+        "Selenium.Support": {
+          "target": "Package",
+          "version": "[3.11.0, )"
+        },
+        "Selenium.WebDriver": {
+          "target": "Package",
+          "version": "[3.11.0, )"
+        },
         "xunit": {
           "target": "Package",
           "version": "[2.3.1, )"

@@ -104,9 +104,3 @@ services:
     volumes:
       - /dev/shm:/dev/shm # Mitigates the Chromium issue described at https://code.google.com/p/chromium/issues/detail?id=519952a
 
-  firefox:
-    image: selenium/node-firefox
-    environment:
-      - HUB_HOST=selenium-hub
-    links:
-      - selenium-hub:hub

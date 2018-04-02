@@ -773,6 +773,45 @@
           "lib/netstandard1.0/_._": {}
         }
       },
+      "Selenium.Chrome.WebDriver/2.37.0": {
+        "type": "package",
+        "build": {
+          "build/Selenium.Chrome.WebDriver.targets": {}
+        }
+      },
+      "Selenium.Firefox.WebDriver/0.20.0": {
+        "type": "package",
+        "build": {
+          "build/Selenium.Firefox.WebDriver.targets": {}
+        }
+      },
+      "Selenium.Mozilla.Firefox.Webdriver/0.6.0.1": {
+        "type": "package"
+      },
+      "Selenium.Support/3.11.0": {
+        "type": "package",
+        "dependencies": {
+          "Selenium.WebDriver": "3.11.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/WebDriver.Support.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/WebDriver.Support.dll": {}
+        }
+      },
+      "Selenium.WebDriver/3.11.0": {
+        "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "10.0.3"
+        },
+        "compile": {
+          "lib/netstandard2.0/WebDriver.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/WebDriver.dll": {}
+        }
+      },
       "System.AppContext/4.1.0": {
         "type": "package",
         "dependencies": {
@@ -2900,6 +2939,75 @@
         "lib/netstandard1.0/_._",
         "runtime.native.system.4.3.0.nupkg.sha512",
         "runtime.native.system.nuspec"
+      ]
+    },
+    "Selenium.Chrome.WebDriver/2.37.0": {
+      "sha512": "wFJ+jijEbPcINIiZSjJkGv9Ir/pRs62o5Z3bpD7ws3hRrgk62jPld3vvoC+ktBq9oNqq4jZek4aj61OtJfifbA==",
+      "type": "package",
+      "path": "selenium.chrome.webdriver/2.37.0",
+      "files": [
+        "build/Selenium.Chrome.WebDriver.targets",
+        "driver/chromedriver.exe",
+        "selenium.chrome.webdriver.2.37.0.nupkg.sha512",
+        "selenium.chrome.webdriver.nuspec"
+      ]
+    },
+    "Selenium.Firefox.WebDriver/0.20.0": {
+      "sha512": "x4CPkfH8V0K+kSVJWlYSBoeNUCJYCBVjMYgcku2hJz2LEHmxW83U571aoXWc+jeKZlPeVNhJzRmWoA1Uw2NTvw==",
+      "type": "package",
+      "path": "selenium.firefox.webdriver/0.20.0",
+      "files": [
+        "build/Selenium.Firefox.WebDriver.targets",
+        "driver/geckodriver.exe",
+        "selenium.firefox.webdriver.0.20.0.nupkg.sha512",
+        "selenium.firefox.webdriver.nuspec"
+      ]
+    },
+    "Selenium.Mozilla.Firefox.Webdriver/0.6.0.1": {
+      "sha512": "gW7ODClQCQNr146qkcTx5RiOeSsrahQ4B5nUNk3NDXVQ4T1i9yPGd66NomRcuszOCJj3XNc/0xmUz27/0xYovA==",
+      "type": "package",
+      "path": "selenium.mozilla.firefox.webdriver/0.6.0.1",
+      "files": [
+        "Driver/wires-0.6.0-win.exe",
+        "content/Readme.txt",
+        "selenium.mozilla.firefox.webdriver.0.6.0.1.nupkg.sha512",
+        "selenium.mozilla.firefox.webdriver.nuspec",
+        "tools/install.ps1",
+        "tools/uninstall.ps1"
+      ]
+    },
+    "Selenium.Support/3.11.0": {
+      "sha512": "CtBf8PewhQrmJAXXL90oWmbTTFY2n9HymR9EvUyENc8ZU78b0TCC6lXqI8fCkSymCpfB9Juw2Q2NsEIZYZ0ayg==",
+      "type": "package",
+      "path": "selenium.support/3.11.0",
+      "files": [
+        "lib/net35/WebDriver.Support.dll",
+        "lib/net35/WebDriver.Support.xml",
+        "lib/net40/WebDriver.Support.dll",
+        "lib/net40/WebDriver.Support.xml",
+        "lib/net45/WebDriver.Support.dll",
+        "lib/net45/WebDriver.Support.xml",
+        "lib/netstandard2.0/WebDriver.Support.dll",
+        "lib/netstandard2.0/WebDriver.Support.xml",
+        "selenium.support.3.11.0.nupkg.sha512",
+        "selenium.support.nuspec"
+      ]
+    },
+    "Selenium.WebDriver/3.11.0": {
+      "sha512": "t7nq/oQbAdktyTq1ZgPjTJEGkgit161x4mla9FmBPp7j8HhzGE30w3rnS23JLW7/qtcaouv7VqDDuqB7ljM19Q==",
+      "type": "package",
+      "path": "selenium.webdriver/3.11.0",
+      "files": [
+        "lib/net35/WebDriver.dll",
+        "lib/net35/WebDriver.xml",
+        "lib/net40/WebDriver.dll",
+        "lib/net40/WebDriver.xml",
+        "lib/net45/WebDriver.dll",
+        "lib/net45/WebDriver.xml",
+        "lib/netstandard2.0/WebDriver.dll",
+        "lib/netstandard2.0/WebDriver.xml",
+        "selenium.webdriver.3.11.0.nupkg.sha512",
+        "selenium.webdriver.nuspec"
       ]
     },
     "System.AppContext/4.1.0": {
@@ -6084,6 +6192,11 @@
       "Microsoft.NET.Test.Sdk >= 15.5.0",
       "Microsoft.NETCore.App >= 2.0.0",
       "Newtonsoft.Json >= 11.0.2",
+      "Selenium.Chrome.WebDriver >= 2.37.0",
+      "Selenium.Firefox.WebDriver >= 0.20.0",
+      "Selenium.Mozilla.Firefox.Webdriver >= 0.6.0.1",
+      "Selenium.Support >= 3.11.0",
+      "Selenium.WebDriver >= 3.11.0",
       "xunit >= 2.3.1",
       "xunit.runner.visualstudio >= 2.3.1"
     ]
@@ -6105,7 +6218,7 @@
         "/usr/share/dotnet/sdk/NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "/home/joerivrij/.config/NuGet/NuGet.Config"
+        "/home/joerivrij/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.0"
@@ -6172,6 +6285,26 @@
           "Newtonsoft.Json": {
             "target": "Package",
             "version": "[11.0.2, )"
+          },
+          "Selenium.Chrome.WebDriver": {
+            "target": "Package",
+            "version": "[2.37.0, )"
+          },
+          "Selenium.Firefox.WebDriver": {
+            "target": "Package",
+            "version": "[0.20.0, )"
+          },
+          "Selenium.Mozilla.Firefox.Webdriver": {
+            "target": "Package",
+            "version": "[0.6.0.1, )"
+          },
+          "Selenium.Support": {
+            "target": "Package",
+            "version": "[3.11.0, )"
+          },
+          "Selenium.WebDriver": {
+            "target": "Package",
+            "version": "[3.11.0, )"
           },
           "xunit": {
             "target": "Package",
