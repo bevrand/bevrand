@@ -1,15 +1,27 @@
 const express = require('express');
 const path = require('path');
+const request = require('request');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const debug = require('debug')('bevrand.frontend:api');
+const exjwt = require('express-jwt');
 
 const config = require('./config');
 
 const controllers = require('./controllers');
 
 const app = express();
+
+app.use((req, res, next) => {
+  //Might only be needed for local testing and developing
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-type,Authorization');
+  next();
+});
+
+const jwtMW = exjwt({
+  secret: config.authenticationSecret
+});
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -18,67 +30,74 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 /**
+ * Util to pipe requests to another endpoint
+ * @param {string} endpoint 
+ */
+const requestPipe = (endpoint) => {
+  return (req, res) => {
+    const url = endpoint + req.url;
+    req.pipe(request({ qs: req.query, uri: url })).pipe(res);
+  }
+}
+
+/**
+ * Util to pipe requests to another endpoint
+ * Also pipes the post body
+ * @param {string} endpoint 
+ */
+const requestPipePost = (endpoint) => {
+  return (req, res) => {
+    request({
+      method: 'POST',
+      qs: req.query, 
+      uri: endpoint + req.url,
+      body: req.body,
+      json: true
+    }).pipe(res);
+  }
+}
+
+/**
  * API routes
  */
-app.get('/api/frontpagelists', 
-  controllers.playlists.getFrontpageLists(config.mongoApi, config.randomizerApi)
+app.get('/api/frontpage', requestPipe(config.mongoApi));
+
+app.get('/api/list', requestPipe(config.mongoApi));
+
+app.get('/api/redis', requestPipe(config.randomizerApi));
+
+app.post('/api/randomize', requestPipePost(config.randomizerApi));
+
+app.post('/api/login', 
+  controllers.authentication.handleLogin(
+    config.authenticationApi, 
+    config.authenticationSecret, 
+    config.authenticationExpirationTime
+  )
 );
-//TODO: add route to retrieve playlists of other users
 
-app.post('/api/redis', [(req, res, next) => {
-  //TODO: refactor query checks into seperate module
-  if (!req.query.list || !req.query.user) {
-    let err = new Error('Required parameter list or user was not specified');
-    debug('Error: required parameter list not specified');
-    err.status = 400;
-    return next(err);
-  } else {
-    return next();
-  }
-}, controllers.redis.getRedis(config.randomizerApi)
-]);
+app.post('/api/register', 
+  controllers.authentication.registerUser(config.authenticationApi)
+);
 
-app.post('/api/randomize', [(req, res, next) => {
-  if (!req.body.user || !req.body.list) {
-    let err = new Error('Required query parameters are not present');
-    err.status = 400;
-    return next(err);
-  } else if(!Array.isArray(req.body.beverages)){
-    let err = new Error('The POST body does not contain a beverages array');
-    err.status = 400;
-    return next(err);
-  } else {
-    return next();
-  }
-}, controllers.randomize.getRandomize(config.randomizerApi)
-]);
-
-app.post('/api/login', [(req, res, next) => {
-  if(!req.body.username || !req.body.password) {
-    let err = new Error('Required body elements are not present');
-    err.status = 400;
-    return next(err);
-  }
-  return next();
-}, controllers.authentication.validateLogin(config.authenticationApi)
-//TODO: add JWK to the result
-]);
-
-app.post('/api/register', [(req, res, next) => {
-  if(!req.body.username || !req.body.passWord || !req.body.emailAddress) {
-    let err = new Error('Required body elements are not present');
-    err.status = 400;
-    return next(err);
-  }
-  return next();
-}, controllers.authentication.registerUser(config.authenticationApi)
-]);
+app.get('/test/validateJWT', jwtMW, (req, res)=> {
+  res.send('You are authenticated');
+})
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   let err = new Error('Not Found');
   err.status = 404;
   next(err);
+});
+
+// error handler of 
+app.use((err, req, res, next) => {
+  if(err.name === 'UnauthorizedError') {
+    res.status(401).send(err);
+  } else {
+    next(err);
+  }
 });
 
 // error handler
@@ -89,7 +108,6 @@ app.use((err, req, res, next) => {
 
   // render the error page
   let responseStatus = err.status || 500;
-  console.error(err);
   res.status(responseStatus).send({
     result: 'error',
     message: err.message,

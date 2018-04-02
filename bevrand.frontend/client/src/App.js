@@ -8,7 +8,7 @@ import SignUp from './components/SignUp';
 const getFrontpagePlaylists = async () => {
   let body;
   try {
-    const response = await fetch('/api/frontpagelists');
+    const response = await fetch('/api/frontpage');
     body = await response.json();
   } catch (err) {
     console.error('Error: ', err);
@@ -31,8 +31,8 @@ class App extends Component {
     let playlists;
     getFrontpagePlaylists()
       .then(result => {
-        playlists = result.playlists
-        return result.playlists.find((elem) => {
+        playlists = result;
+        return result.find((elem) => {
           return elem.list.toLowerCase() === 'tgif';
         });
       })
