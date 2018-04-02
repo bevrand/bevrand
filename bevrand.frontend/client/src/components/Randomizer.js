@@ -25,7 +25,7 @@ const RandomizeButton = (props) => {
   return (
     <div className="col-lg-8 mx-auto text-center">
       <a id="randomizeButton" className="btn btn-primary btn-xl" onClick={props.onClick} href="#getstarted">Randomize!</a>
-      <a className="btn btn-primary btn-xl js-scroll-trigger" href="#portfolio">Choose list</a>
+      <a id="chooseListBottomButton" className="btn btn-primary btn-xl js-scroll-trigger" href="#portfolio">Choose list</a>
     </div>
   )
 };
