@@ -46,7 +46,7 @@ class TopRolledBeverages extends Component {
     this.handleRedisHistory()
     this.timerID = setInterval(
       () => this.handleRedisHistory(),
-      5000
+      60000
     );
   }
 
@@ -100,7 +100,7 @@ class TopRolledBeverages extends Component {
           </div>
           <div className="row">
             <div className="col-lg-8 mx-auto text-center">
-            <a id="topFiveSwitchButton" className="btn btn-primary btn-xl text-white" onClick={this.handleToggleForTopFive} >{textValue}</a>
+            <a id="topFiveSwitchButton" className="btn btn-primary btn-xl text-white" onClick={this.handleToggleForTopFive}>{textValue}</a>
             </div>
           </div>
           <div id="redisHistoryForList" className="row">

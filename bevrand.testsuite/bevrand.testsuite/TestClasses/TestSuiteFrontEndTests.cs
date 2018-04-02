@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using bevrand.testsuite.Helpers;
 using bevrand.testsuite.Models.MongoApi;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
 using Xunit;
@@ -28,7 +26,7 @@ namespace bevrand.testsuite.TestClasses
         [Trait("Category", "FrontEnd")]
         public void SeeIfTitleOfPageIsCorrect()
         {
-            using (RemoteWebDriver driver = new RemoteWebDriver(new Uri("http://0.0.0.0:4444/wd/hub"), _fixture.DriverCapabilities))
+            using (var driver = new RemoteWebDriver(new Uri("http://0.0.0.0:4444/wd/hub"), _fixture.DriverCapabilities))
             {
                 driver.Navigate().GoToUrl("http://nodefrontend:5000");
                 var title = driver.Title;
@@ -36,25 +34,228 @@ namespace bevrand.testsuite.TestClasses
             }
         }
         
+        [Theory]
+        [Trait("Category", "FrontEnd")]
+        [InlineData("letsGetStartedButton")]
+        [InlineData("currentlySelectedPlaylist")]
+        public void TopPageButtonsScrollDown(string button)
+        {
+            using (var driver = new RemoteWebDriver(new Uri("http://0.0.0.0:4444/wd/hub"), _fixture.DriverCapabilities))
+            {
+                driver.Navigate().GoToUrl("http://nodefrontend:5000");
+                var wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(5000));
+                var letsGetStarted =
+                    wait.Until(ExpectedConditions.ElementToBeClickable(By.Id(button)));
+                letsGetStarted.Click();
+                var displayName = driver.FindElementById("currentlySelectedPlaylist").Text;
+                Assert.NotNull(displayName);
+            }
+        }
+
+        
         [Fact]
         [Trait("Category", "FrontEnd")]
-        public void LetsGetStartedButtonShouldScrollDown()
+        public void HowDoesItWorButtonScollsDown()
         {
             using (RemoteWebDriver driver = new RemoteWebDriver(new Uri("http://0.0.0.0:4444/wd/hub"), _fixture.DriverCapabilities))
             {
                 driver.Navigate().GoToUrl("http://nodefrontend:5000");
                 var wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(5000));
-                var element =
-                    wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath(@"//*[@id=""page-top""]/header/div/div/a[1]")));
-                element.Click();
-                Thread.Sleep(1000);
-                var displayName = driver.FindElementById("currentlySelectedPlaylist").Text;
-                Console.WriteLine(displayName);
-                Assert.NotNull(displayName);
+                var chooseList =
+                    wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("howDoesItWorkButton")));
+                chooseList.Click();
+                
+                const string expectedText = "Let's get random! But how?";
+                var howDoesItWorkText = driver.FindElementByXPath(@"//*[@id=""services""]/div[1]/div/div/h2").Text;
+                
+                Assert.Equal(expectedText, howDoesItWorkText);
+            }
+        }
+
+        [Fact]
+        [Trait("Category", "FrontEnd")]
+        public void RandomizeButtonRandomizesADrink()
+        {
+            var beverages = new List<string>();
+            const string expectedText = "you have randomized:";
+
+            using (var driver =
+                new RemoteWebDriver(new Uri("http://0.0.0.0:4444/wd/hub"), _fixture.DriverCapabilities))
+            {
+                driver.Navigate().GoToUrl("http://nodefrontend:5000");
+                var wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(5000));
+                var chooseList =
+                    wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("letsGetStartedButton")));
+                chooseList.Click();
+
+                var listName = driver.FindElementByXPath(@"//*[@id=""getstarted""]/div/div[4]/div/div/ul");
+                var drinks = listName.FindElements(By.TagName("li"));
+                foreach (var drink in drinks)
+                {
+                    beverages.Add(drink.Text.ToLowerInvariant().Replace(" ", ""));
+                }
+
+                Thread.Sleep(500);
+                var randomizeButton = driver.FindElementById("randomizeButton");
+                randomizeButton.Click();
+
+                var randomizedOutput =
+                    wait.Until(ExpectedConditions.ElementIsVisible(By.XPath(@"//*[@id=""randomizedOutput""]/div")));
+                var randomizedDrink = randomizedOutput.Text.ToLowerInvariant();
+                var specificDrink = randomizedDrink.Substring(randomizedDrink.LastIndexOf(':') + 1).Replace(" ", "");
+
+                Console.WriteLine(randomizedDrink);
+                Assert.Contains(expectedText, randomizedDrink);
+                Assert.Contains(specificDrink, beverages);
             }
         }
         
-         [Fact]
+        [Fact]
+        [Trait("Category", "FrontEnd")]
+        public void RandomizeButtonShouldIncreaseTheTopFive()
+        {
+            
+            var beverages = new List<string>();
+            var rolledBeverages = new List<string>();
+
+            using (var driver =
+                new RemoteWebDriver(new Uri("http://0.0.0.0:4444/wd/hub"), _fixture.DriverCapabilities))
+            {
+                driver.Navigate().GoToUrl("http://nodefrontend:5000");
+                var wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(5000));
+                var chooseList =
+                    wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("letsGetStartedButton")));
+                chooseList.Click();
+
+                Thread.Sleep(1000);
+                var randomizeButton = driver.FindElementById("randomizeButton");
+                randomizeButton.Click();
+
+                for (var i = 0; i < 5; i++)
+                {
+                    randomizeButton.Click();
+                    var randomizedOutput =
+                        wait.Until(ExpectedConditions.ElementIsVisible(By.XPath(@"//*[@id=""randomizedOutput""]/div")));
+                    var randomizedDrink = randomizedOutput.Text.ToLowerInvariant();
+                    var specificDrink = randomizedDrink.Substring(randomizedDrink.LastIndexOf(':') + 1).Split();
+                    beverages.Add(specificDrink[1]);
+                }
+
+                var action = new Actions(driver);
+                action.SendKeys(Keys.PageDown).Build().Perform();
+
+                var listName = driver.FindElementByXPath(@"//*[@id=""redisHistoryForList""]/div/ul");
+                var rolled = listName.FindElements(By.TagName("li"));
+                foreach (var drink in rolled)
+                {
+                    var splittedWords = drink.Text.ToLowerInvariant().Split();
+                    var drinkToAdd = splittedWords[0];
+                    rolledBeverages.Add(drinkToAdd);
+                }
+
+                foreach (var rolledDrink in beverages)
+                {
+                    Assert.Contains(rolledDrink, rolledBeverages);
+                }
+            }
+        }
+        
+        
+        [Fact]
+        [Trait("Category", "FrontEnd")]
+        public void SwitchFromTopFiveToAllShouldIncreaseLengthOfArray()
+        {
+
+            using (var driver =
+                new RemoteWebDriver(new Uri("http://0.0.0.0:4444/wd/hub"), _fixture.DriverCapabilities))
+            {
+                driver.Navigate().GoToUrl("http://nodefrontend:5000");
+                var wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(5000));
+                var chooseList =
+                    wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("letsGetStartedButton")));
+                chooseList.Click();
+
+                var listName = driver.FindElementByXPath(@"//*[@id=""getstarted""]/div/div[4]/div/div/ul");
+                var drinks = listName.FindElements(By.TagName("li"));
+                if (drinks.Count > 5)
+                {
+                    Thread.Sleep(1000);
+                    var randomizeButton = driver.FindElementById("randomizeButton");
+                    randomizeButton.Click();
+
+                    for (var i = 0; i < 20; i++)
+                    {
+                        randomizeButton.Click();
+                        Thread.Sleep(200);
+                    }
+
+                    var action = new Actions(driver);
+                    action.SendKeys(Keys.PageDown).Build().Perform();
+                    
+                    Thread.Sleep(1000);
+
+                    
+                    var randomButton = driver.FindElementById("topFiveSwitchButton").Text.ToLowerInvariant();
+                    if (randomButton.Contains("all drinks"))
+                    {
+                        Console.WriteLine(randomButton);
+                        var rolledDrinks = driver.FindElementByXPath(@"//*[@id=""redisHistoryForList""]/div/ul");
+                        var rolledAll = rolledDrinks.FindElements(By.TagName("li"));
+                        Assert.True(rolledAll.Count <= drinks.Count); 
+
+                        driver.FindElementById("topFiveSwitchButton").Click();
+
+                        randomButton = driver.FindElementById("topFiveSwitchButton").Text.ToLowerInvariant();
+                        Assert.Contains("top five", randomButton);
+                        rolledDrinks = driver.FindElementByXPath(@"//*[@id=""redisHistoryForList""]/div/ul");
+                        var rolledTopFive = rolledDrinks.FindElements(By.TagName("li"));
+                        Assert.True(rolledTopFive.Count <= 5);
+                        
+                        Assert.True(rolledAll.Count >= rolledTopFive.Count);
+                    }
+
+                }
+            }
+        }
+
+        [Fact]
+        [Trait("Category", "FrontEnd")]
+        public void SwitchFromTopFiveButtonIsClickable()
+        {
+            using (var driver =
+                new RemoteWebDriver(new Uri("http://0.0.0.0:4444/wd/hub"), _fixture.DriverCapabilities))
+            {
+                //driver.Navigate().GoToUrl("http://0.0.0.0:4540/");
+                driver.Navigate().GoToUrl("http://nodefrontend:5000");
+                var wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(5000));
+
+                Thread.Sleep(1000);
+                
+                var action = new Actions(driver);
+                action.SendKeys(Keys.PageDown).Build().Perform();
+                
+
+                driver.FindElementById("topFiveSwitchButton").Click();
+
+                var randomButton = driver.FindElementById("topFiveSwitchButton").Text.ToLowerInvariant();
+                if (randomButton.Contains("all drinks"))
+                {
+                    Assert.Contains("all drinks", randomButton);
+                    driver.FindElementById("topFiveSwitchButton").Click();
+                    randomButton = driver.FindElementById("topFiveSwitchButton").Text.ToLowerInvariant();
+                    Assert.Contains("top five", randomButton);
+                }
+                else if (randomButton.Contains("top five"))
+                {
+                    Assert.Contains("top five", randomButton);
+                    driver.FindElementById("topFiveSwitchButton").Click();
+                    randomButton = driver.FindElementById("topFiveSwitchButton").Text.ToLowerInvariant();
+                    Assert.Contains("all drinks", randomButton);
+                }
+            }
+        }
+
+        [Fact]
         [Trait("Category", "FrontEnd")]
         public void GetAListFromMongoApiAndAssertAllDrinksArePresentStandardList()
         {            
@@ -65,16 +266,15 @@ namespace bevrand.testsuite.TestClasses
             var beverages = new List<string>();
             string displayName;
 
-            using (RemoteWebDriver driver = new RemoteWebDriver(new Uri("http://0.0.0.0:4444/wd/hub"), _fixture.DriverCapabilities))
+            using (var driver = new RemoteWebDriver(new Uri("http://0.0.0.0:4444/wd/hub"), _fixture.DriverCapabilities))
             {
                 driver.Navigate().GoToUrl("http://nodefrontend:5000");
                 var wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(5000));
               
                 var letsGetStarted =
-                    wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath(@"//*[@id=""page-top""]/header/div/div/a[1]")));
+                    wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("letsGetStartedButton")));
                 letsGetStarted.Click();
                 
-                Thread.Sleep(500);
                 displayName = driver.FindElementById("currentlySelectedPlaylist").Text;
                 var listName = driver.FindElementByXPath(@"//*[@id=""getstarted""]/div/div[4]/div/div/ul");
                 var drinks = listName.FindElements(By.TagName("li"));
@@ -84,7 +284,6 @@ namespace bevrand.testsuite.TestClasses
                 }
             }
             
-            Console.WriteLine(displayName);
             var selectedList = response.listOfFrontPages.First(n => n.displayName == displayName).list;
 
             var request = new RequestString
@@ -111,31 +310,26 @@ namespace bevrand.testsuite.TestClasses
             var beverages = new List<string>();
             string displayName;
 
-         //   using (RemoteWebDriver driver = new RemoteWebDriver(new Uri("http://0.0.0.0:4444/wd/hub"), _fixture.DriverCapabilities))
-            using(var driver = new ChromeDriver())
+            using (var driver = new RemoteWebDriver(new Uri("http://0.0.0.0:4444/wd/hub"), _fixture.DriverCapabilities))
+           // using(var driver = new ChromeDriver())
             {
-               // driver.Navigate().GoToUrl("http://nodefrontend:5000");
-                driver.Navigate().GoToUrl("http://0.0.0.0:4540");
+                driver.Navigate().GoToUrl("http://nodefrontend:5000");
+                //driver.Navigate().GoToUrl("http://0.0.0.0:4540/");
                 var wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(5000));
                 var letsGetStarted =
-                    wait.Until(ExpectedConditions.ElementExists(By.XPath(@"//*[@id=""page-top""]/header/div/div/a[1]")));
+                    wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("letsGetStartedButton")));
                 letsGetStarted.Click();
 
 
-                //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(5000);
+              //  driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(100);
+                Thread.Sleep(1000);
                 var chooseList =
                     wait.Until(ExpectedConditions.ElementToBeClickable(
-                        By.XPath(@"//*[@id=""getstarted""]/div/div[2]/div/a[2]")));
-                
-                #getstarted > div > div:nth-child(2) > div > a.btn.btn-primary.btn-xl.js-scroll-trigger
+                        By.Id("chooseListBottomButton")));
                 
                 chooseList.Click();
-
-
-               // driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(10000);
-                var portFolioElement =
-                    wait.Until(ExpectedConditions.ElementToBeClickable(
-                        By.XPath(@"//*[@id=""portfolio""]/div/div/div[5]/a/div/div")));
+                
+                var portFolioElement = driver.FindElementByXPath(@"//*[@id=""portfolio""]/div/div/div[5]/a/div/div");
                 portFolioElement.Click();
                 
                 displayName = driver.FindElementById("currentlySelectedPlaylist").Text;
