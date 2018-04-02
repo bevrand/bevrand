@@ -1,4 +1,4 @@
-FROM node:9.10-slim
+FROM node:8.11-slim
 
 #copy directory
 COPY . /frontend
@@ -30,4 +30,3 @@ EXPOSE 5000
 
 # Run the app
 CMD ["npm","run", "server"]
-

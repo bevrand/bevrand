@@ -6,11 +6,7 @@ const getRedisHistory = async (playlist, toggle) => {
   let body;
   try {
     const response = await fetch(`/api/redis?user=${playlist.user.toLowerCase()}&list=${playlist.list}&topfive=${toggle}`, {
-        method: 'POST',
-        body: JSON.stringify(playlist),
-        headers: new Headers({
-          'Content-Type': 'application/json'
-        })
+        method: 'GET'
       });
     body = await response.json();
   } catch (err) {
@@ -46,7 +42,7 @@ class TopRolledBeverages extends Component {
     this.handleRedisHistory()
     this.timerID = setInterval(
       () => this.handleRedisHistory(),
-      5000
+      50000
     );
   }
 
