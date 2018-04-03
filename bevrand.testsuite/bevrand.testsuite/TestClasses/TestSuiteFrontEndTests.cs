@@ -5,6 +5,7 @@ using System.Threading;
 using bevrand.testsuite.Helpers;
 using bevrand.testsuite.Models.MongoApi;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
@@ -311,7 +312,7 @@ namespace bevrand.testsuite.TestClasses
             string displayName;
 
             using (var driver = new RemoteWebDriver(new Uri("http://0.0.0.0:4444/wd/hub"), _fixture.DriverCapabilities))
-           // using(var driver = new ChromeDriver())
+       //     using(var driver = new ChromeDriver())
             {
                 driver.Navigate().GoToUrl("http://nodefrontend:5000");
                 //driver.Navigate().GoToUrl("http://0.0.0.0:4540/");
