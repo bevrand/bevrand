@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Route } from 'react-router-dom';
 import Randomizer from './components/Randomizer';
 import Playlists from './components/Playlists';
 import TopRolledBeverages from './components/TopRolledBeverages';
@@ -62,11 +63,11 @@ class App extends Component {
     }
     return (
       <div className="App">
-
-        <Login />
+        {/* TODO: add routing from react-router to the app component */}
         <Randomizer playlist={this.state.currentPlaylist} />
         <Playlists playlists={this.state.playlists} onClick={this.changePlaylist} />
         <TopRolledBeverages playlist={this.state.currentPlaylist} />
+        <Login />
         <SignUp />
       </div>
     );
