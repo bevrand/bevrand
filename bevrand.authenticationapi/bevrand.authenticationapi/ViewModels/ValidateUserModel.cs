@@ -1,11 +1,12 @@
 ﻿using System;
+using bevrand.authenticationapi.ViewModels;
 
 namespace bevrand.authenticationapi.Models
 {
 
-    public class ValidateUserModel : BaseModel
+    public class ValidateUserModel
     {
-        public override string Username { get; set; } = null;
+        public int Id { get; set; }
         
         public string PassWord { get; set; }
     }

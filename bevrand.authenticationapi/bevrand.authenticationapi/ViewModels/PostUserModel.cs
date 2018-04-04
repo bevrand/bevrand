@@ -5,7 +5,7 @@ namespace bevrand.authenticationapi.DAL.Models
 {
     public class PostUserModel
     {
-        public string Username { get; set; }
+        public string UserName { get; set; }
         
         public string EmailAddress { get; set; }
         

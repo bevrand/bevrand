@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using bevrand.authenticationapi.DAL.Models;
 
-namespace bevrand.authenticationapi.Services
+namespace bevrand.authenticationapi.Repository
 {
-    public interface IUserData
+    public interface IUserRepository
     {
         UserModel Add(UserModel user);
         void Update(UserModel user);
