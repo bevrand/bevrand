@@ -1,4 +1,4 @@
-﻿namespace bevrand.authenticationapi.Models
+﻿namespace bevrand.authenticationapi.ViewModels
 {
     public class BaseModel
     {

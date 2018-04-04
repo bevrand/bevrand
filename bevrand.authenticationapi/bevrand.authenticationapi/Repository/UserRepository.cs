@@ -1,17 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using bevrand.authenticationapi.Data;
-using bevrand.authenticationapi.DAL;
 using bevrand.authenticationapi.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace bevrand.authenticationapi.Services
+namespace bevrand.authenticationapi.Repository
 {
-    public class SqlUserData : IUserData
+    public class UserRepository : IUserRepository
     {
         private UserContext _context;
         
-        public SqlUserData(UserContext context)
+        public UserRepository(UserContext context)
         {
             _context = context;
         }
