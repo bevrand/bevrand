@@ -22,7 +22,7 @@ const Card = (props) => {
 
 const PlaylistCards = (props) => {
   return (
-    <section className="p-0" id="portfolio">
+    <section className="p-0" id="playlists">
       <div className="container-fluid">
         <div className="row no-gutter popup-gallery">
           {props.playlists.map(playlist => <Card playlist={playlist} key={playlist.id} rowId={playlist.id} onClick={props.onClick}/>)}

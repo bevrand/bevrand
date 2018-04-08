@@ -31,17 +31,15 @@ const RandomizeButton = (props) => {
 };
 
 const getRandomize = async (playlist) => {
-  let data = {
-    user: "frontpage",
-    list: `${playlist.list}`,
-    beverages: playlist.beverages
-  };
-
   let body;
   try {
     let response = await fetch(`/api/randomize`, {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        user: "frontpage",
+        list: `${playlist.list}`,
+        beverages: playlist.beverages
+      }),
       headers: new Headers({
         'Content-Type': 'application/json'
       })
