@@ -1,19 +1,22 @@
 import React from 'react';
+import { Link, animateScroll} from 'react-scroll';
 
-const Navigation = (props) => {
+const Header = (props) => {
   return (
-    <header class="masthead">
-      <div class="header-content">
-        <div class="header-content-inner">
+    <header className="masthead">
+      <div className="header-content">
+        <div className="header-content-inner">
           <h1 id="homeHeading">The Beverage Randomizer</h1>
           <hr />
           <p>All those Beverage choices bringing you down? Feeling lucky? Let fate quench your thirst with the Beverage Randomizer.
             Like you know, for randomizing your beverages.</p>
-          <a id="letsGetStartedButton" class="btn btn-primary btn-xl js-scroll-trigger" href="#getstarted">Let's get started!</a>
-          <a id="topChooseListButton" class="btn btn-primary btn-xl js-scroll-trigger" href="#portfolio">Choose list</a>
-          <a id="howDoesItWorkButton" class="btn btn-primary btn-xl js-scroll-trigger" href="#services">How does it work?</a>
+          <Link id="letsGetStartedButton" className="btn btn-primary btn-xl" smooth={true} duration={350} to="getstarted">Let's get started!</Link>
+          <Link id="topChooseListButton" className="btn btn-primary btn-xl" smooth={true} duration={350} to="playlists">Choose list</Link>
+          <Link id="topFiveLinkButton" className="btn btn-primary btn-xl" smooth={true} duration={350} to="topFiveSwitch">How much has been randomized?</Link>
         </div>
       </div>
     </header>
   )
 }
+
+export default Header;
