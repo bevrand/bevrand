@@ -9,7 +9,6 @@ namespace bevrand.authenticationapi.Middleware
 {
     public class ErrorHandlingMiddleware
     {
-        private static ILogger _logger;
         private readonly RequestDelegate _next;
 
         public ErrorHandlingMiddleware(RequestDelegate next)
@@ -17,12 +16,10 @@ namespace bevrand.authenticationapi.Middleware
             _next = next;
         }
 
-        public async Task Invoke(HttpContext context, ILoggerFactory loggerFactory)
+        public async Task Invoke(HttpContext context)
         {
             try
             {
-                if (_logger == null)
-                    _logger = loggerFactory.CreateLogger(null);
 
                 await _next(context);
             }
