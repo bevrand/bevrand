@@ -1,4 +1,4 @@
-FROM node:8.11-slim
+FROM node:9.10-slim
 
 #copy directory
 COPY . /frontend

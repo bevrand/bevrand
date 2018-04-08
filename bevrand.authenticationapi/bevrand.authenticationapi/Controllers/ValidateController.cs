@@ -4,7 +4,7 @@ using bevrand.authenticationapi.BLL;
 using bevrand.authenticationapi.Data;
 using bevrand.authenticationapi.DAL;
 using bevrand.authenticationapi.Models;
-using bevrand.authenticationapi.Services;
+using bevrand.authenticationapi.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,11 +13,11 @@ namespace bevrand.authenticationapi.Controllers
     [Route("api/[controller]")]
     public class ValidateController : Controller
     {
-        private readonly IUserData _userData;
+        private readonly IUserRepository _userRepository;
 
-        public ValidateController(IUserData userData)
+        public ValidateController(IUserRepository userRepository)
         {
-            _userData = userData;
+            _userRepository = userRepository;
         }
         
         [HttpPost]
@@ -25,9 +25,14 @@ namespace bevrand.authenticationapi.Controllers
         {
             try
             {
-                var dbPassword = validate.Id != null ? _userData.GetSingleUser((int)validate.Id).PassWord 
-                    : _userData.GetSingleUser(validate.Username).PassWord;
-                var validPassword = PasswordHasher.DoesPasswordMatch(validate.PassWord, dbPassword);
+                bool validPassword = false;
+                
+                if (validate.Id != null)
+                {
+                    var dbPassword =  _userRepository.GetSingleUser(validate.Id).PassWord; 
+                    validPassword = PasswordHasher.DoesPasswordMatch(validate.PassWord, dbPassword);
+                    
+                }
                 return Ok(validPassword);
             }
             catch (Exception)
@@ -35,11 +40,11 @@ namespace bevrand.authenticationapi.Controllers
                 var req = new BadRequestModel
                 {
                     Id = validate.Id,
-                    Username = validate.Username,
                     Message = "User not found"
                 };
                 return BadRequest(req);
             }
+
 
         }
 
@@ -48,7 +53,7 @@ namespace bevrand.authenticationapi.Controllers
         {
             try
             {
-                var sqlResult = _userData.GetSingleUser(id);
+                var sqlResult = _userRepository.GetSingleUser(id);
                 var validPassword = PasswordHasher.DoesPasswordMatch(validate.OldPassWord, sqlResult.PassWord);
                 if (!validPassword)
                 {
@@ -63,7 +68,7 @@ namespace bevrand.authenticationapi.Controllers
                 var newlyHashedPassword = PasswordHasher.SetPassword(validate.NewPassWord);
                 sqlResult.PassWord = newlyHashedPassword;
 
-                _userData.Update(sqlResult);
+                _userRepository.Update(sqlResult);
                 
                 return Ok();
             }
