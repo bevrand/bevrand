@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using bevrand.testsuite.Models;
 using bevrand.testsuite.Models.MongoApi;
 using bevrand.testsuite.Models.RandomizerApi;
@@ -9,24 +10,16 @@ namespace bevrand.testsuite.Clients
 {
     public class RandomizerApiClient
     {
-        protected static string ApiUrl;
-        
-        public RandomizerApiClient(string url)
-        {
-            ApiUrl = url;
-        }
-        
-        public BaseResponseModel PostASimpleList(RandomizePostRequest request)
+        public async Task<BaseResponseModel> PostASampleListWithBeverages(string requeststring, RandomizePostRequest request)
         {
             try
             {
-                var getStatusUrl = ApiUrl + "/api/randomize";
-                var res = getStatusUrl.PostJsonAsync(request).Result;
+                var res = requeststring.PostJsonAsync(request).Result;
                 var content = res.Content.ReadAsStringAsync().Result;
                 var responseModel = new RandomizePostResult
                 {
-                    beverage = content,
-                    statusCode = (int) res.StatusCode
+                    beverage = content.Replace("\"", ""),
+                    StatusCode = (int) res.StatusCode
                 };
 
                 return responseModel;
@@ -34,10 +27,11 @@ namespace bevrand.testsuite.Clients
             catch (AggregateException e)
             {
                 var flurlException = e.InnerException as FlurlHttpException;
-                var responseModel = new ErrorModel
+                var responseModel = new BaseErrorResponse
                 {
-                    message = flurlException.Message,
-                    statusCode = (int) flurlException.Call.Response.StatusCode
+                    StatusCode = (int) flurlException.Call.HttpStatus,
+                    ErrorMessage = flurlException.Message,
+                    UserError = flurlException.GetResponseString()
                 };
                 return responseModel;
             }

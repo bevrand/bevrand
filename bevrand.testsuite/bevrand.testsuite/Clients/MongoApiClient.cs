@@ -27,7 +27,7 @@ namespace bevrand.testsuite.Clients
                 var res = getStatusUrl.GetAsync().Result;
                 var content = res.Content.ReadAsStringAsync().Result;
                 var responseModel = JsonConvert.DeserializeObject<FrontpageResponse>(content);
-                responseModel.statusCode = (int) res.StatusCode;
+                responseModel.StatusCode = (int) res.StatusCode;
 
                 return responseModel;
             }
@@ -37,7 +37,7 @@ namespace bevrand.testsuite.Clients
                 var responseModel = new ErrorModel
                 {
                     message = flurlException.Message,
-                    statusCode = (int) flurlException.Call.Response.StatusCode
+                    StatusCode = (int) flurlException.Call.Response.StatusCode
                 };
                 return responseModel;
             }
@@ -53,7 +53,7 @@ namespace bevrand.testsuite.Clients
                 var jsonModel = JsonConvert.DeserializeObject<List<FrontpageResponse>>(content);
 
                 var responseModel = new FrontPageListResponse();
-                responseModel.statusCode = (int) res.StatusCode;
+                responseModel.StatusCode = (int) res.StatusCode;
                 responseModel.listOfFrontPages = jsonModel;
 
                 return responseModel;
@@ -64,7 +64,7 @@ namespace bevrand.testsuite.Clients
                 var responseModel = new ErrorModel
                 {
                     message = flurlException.Message,
-                    statusCode = (int) flurlException.Call.Response.StatusCode
+                    StatusCode = (int) flurlException.Call.Response.StatusCode
                 };
                 return responseModel;
             }
@@ -79,7 +79,7 @@ namespace bevrand.testsuite.Clients
                 var res = getStatusUrl.GetAsync().Result;
                 var content = res.Content.ReadAsStringAsync().Result;
                 var responseModel = JsonConvert.DeserializeObject<UsersResponse>(content);
-                responseModel.statusCode = (int) res.StatusCode;
+                responseModel.StatusCode = (int) res.StatusCode;
                 
                 return responseModel;
             }
@@ -89,7 +89,7 @@ namespace bevrand.testsuite.Clients
                 var responseModel = new ErrorModel
                 {
                     message = flurlException.Message,
-                    statusCode = (int) flurlException.Call.Response.StatusCode
+                    StatusCode = (int) flurlException.Call.Response.StatusCode
                 };
                 return responseModel;
             }
@@ -104,7 +104,7 @@ namespace bevrand.testsuite.Clients
                 var res = getStatusUrl.GetAsync().Result;
                 var content = res.Content.ReadAsStringAsync().Result;
                 var responseModel = JsonConvert.DeserializeObject<UserResponse>(content);  
-                responseModel.statusCode = (int) res.StatusCode;
+                responseModel.StatusCode = (int) res.StatusCode;
 
                 return responseModel;
             }
@@ -114,7 +114,7 @@ namespace bevrand.testsuite.Clients
                 var responseModel = new ErrorModel
                 {
                     message = flurlException.Message,
-                    statusCode = (int) flurlException.Call.Response.StatusCode
+                    StatusCode = (int) flurlException.Call.Response.StatusCode
                 };
                 return responseModel;
             }

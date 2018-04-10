@@ -11,17 +11,21 @@ namespace bevrand.testsuite.TestClasses
     {
         private ServiceCalls ServiceCalls { get; }
         public MongoApiClient MongoApi { get; }
+        public BaseApiClient BaseApiClient { get; }
+        public string AuthenticationUrl { get; }
         public RandomizerApiClient RandomizerApi { get; }
-        public AuthenticationApiClient AuthenticationApi { get; }
+        public string RandomizerUrl { get; }
         public DesiredCapabilities DriverCapabilities { get; }
 
         public TestSuiteFixture()
         {
             ServiceCalls = new ServiceCalls();
             EnvBuilder();
+            BaseApiClient = new BaseApiClient();
             MongoApi = new MongoApiClient(ServiceCalls.MongoApiService);
-            RandomizerApi = new RandomizerApiClient(ServiceCalls.RandomizerApiService);
-            AuthenticationApi = new AuthenticationApiClient(ServiceCalls.AuthenticationApiService);
+            RandomizerApi = new RandomizerApiClient();
+            RandomizerUrl = ServiceCalls.RandomizerApiService;
+            AuthenticationUrl = ServiceCalls.AuthenticationApiService;
             DriverCapabilities = DesiredCapabilities.Chrome();
         }
 

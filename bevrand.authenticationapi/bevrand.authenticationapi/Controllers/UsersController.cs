@@ -30,15 +30,21 @@ namespace bevrand.authenticationapi.Controllers
             try
             {
                 var models = _userRepository.GetAllUsers();
-                var returnModels = models.Select(model => new GetAllUsersModels
+                var returnModels = models.Select(model => new GetUserModel
                     {
                         Id = model.Id,
                         Username = model.UserName,
-                        Active = model.Active
+                        Active = model.Active,
+                        EmailAddress = model.EmailAddress
                     })
                     .ToList();
 
-                return Ok(returnModels);
+                var returnModel = new GetAllUsersModels
+                {
+                    AllUsers = returnModels
+                };
+                
+                return Ok(returnModel);
             }
             catch (Exception)
             {
@@ -62,10 +68,10 @@ namespace bevrand.authenticationapi.Controllers
 
                 var getModel = new GetUserModel
                 {
-                    Active = model.Active,
-                    EmailAddress = model.EmailAddress,
                     Id = model.Id,
-                    Username = model.UserName
+                    Username = model.UserName,
+                    Active = model.Active,
+                    EmailAddress = model.EmailAddress
                 };
                     
                 return Ok(getModel);
@@ -81,7 +87,7 @@ namespace bevrand.authenticationapi.Controllers
             }
         }
         
-        [HttpGet("by-email/{email}")]
+        [HttpGet("by-email/{emailaddress}", Name = "GetByEmail")]
         public IActionResult GetByEmail(string emailaddress)
         {
             try
@@ -90,10 +96,10 @@ namespace bevrand.authenticationapi.Controllers
                 
                 var getModel = new GetUserModel
                 {
-                    Active = model.Active,
-                    EmailAddress = model.EmailAddress,
                     Id = model.Id,
-                    Username = model.UserName
+                    Username = model.UserName,
+                    Active = model.Active,
+                    EmailAddress = model.EmailAddress
                 };
                     
                 return Ok(getModel);
@@ -119,10 +125,10 @@ namespace bevrand.authenticationapi.Controllers
                 
                 var getModel = new GetUserModel
                 {
-                    Active = model.Active,
-                    EmailAddress = model.EmailAddress,
                     Id = model.Id,
-                    Username = model.UserName
+                    Username = model.UserName,
+                    Active = model.Active,
+                    EmailAddress = model.EmailAddress
                 };
                     
                 return Ok(getModel);
@@ -190,7 +196,8 @@ namespace bevrand.authenticationapi.Controllers
 
             try
             {
-                var returnModel = _userRepository.Add(userToPost);
+                _userRepository.Add(userToPost);
+                var returnModel = _userRepository.GetSingleUser(user.UserName.ToLowerInvariant());
                 return CreatedAtRoute("GetByUserName", new {username = user.UserName}, returnModel);
             }
             catch (Exception e)
@@ -228,6 +235,21 @@ namespace bevrand.authenticationapi.Controllers
                     if (string.IsNullOrWhiteSpace(user.Username))
                     {
                         user.Username = selectedUser.UserName;
+                    }
+
+                    if (user.Username != selectedUser.UserName)
+                    {
+                        var userExists = _userRepository.CheckIfUserExists(user.Username);
+                        if(userExists)
+                        {
+                            var req = new BadRequestModel
+                            {
+                                Id = null,
+                                Username = user.Username,
+                                Message = "User already exists cannot put"
+                            };
+                            return BadRequest(req);
+                        }
                     }
                     
                     var validateEmail = EmailValidator.EmailIsValid(user.EmailAddress);

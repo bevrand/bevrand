@@ -45,7 +45,7 @@ namespace bevrand.authenticationapi.Middleware
             var errorModel = new ErrorModel {Error = exception.Message + " " + exception.InnerException?.Message};
             
             var result = JsonConvert.SerializeObject(errorModel,
-                new JsonSerializerSettings()
+                new JsonSerializerSettings
                 {
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                 });
@@ -56,7 +56,3 @@ namespace bevrand.authenticationapi.Middleware
     }
 }
 
-/*
-
-
- */

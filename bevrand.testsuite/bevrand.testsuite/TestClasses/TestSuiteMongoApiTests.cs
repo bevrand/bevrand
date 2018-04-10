@@ -30,7 +30,7 @@ namespace bevrand.testsuite.TestClasses
             var requestString = CreateApiRequestString.GetQueryStringFromModel<IRequestString, RequestString>(request);
             var response = _fixture.MongoApi.FrontPageGetWithList(requestString) as FrontpageResponse;
             
-            Assert.Equal(200, response.statusCode);
+            Assert.Equal(200, response.StatusCode);
             Assert.Equal(request.list, response.list);
             Assert.NotEmpty(response.beverages);
         }
@@ -44,7 +44,7 @@ namespace bevrand.testsuite.TestClasses
         {
             var response = _fixture.MongoApi.FrontPageGetWithoutList();
             
-            Assert.Equal(200, response.statusCode);
+            Assert.Equal(200, response.StatusCode);
 
         }
 
@@ -57,7 +57,7 @@ namespace bevrand.testsuite.TestClasses
         {
             var response = _fixture.MongoApi.FrontPageGetWithoutList() as FrontPageListResponse;
             
-            Assert.Equal(200, response.statusCode);
+            Assert.Equal(200, response.StatusCode);
 
             foreach (var resp in response.listOfFrontPages)
             {
@@ -69,7 +69,7 @@ namespace bevrand.testsuite.TestClasses
                 var requestString = CreateApiRequestString.GetQueryStringFromModel<IRequestString, RequestString>(request);
                 var innerResult = _fixture.MongoApi.FrontPageGetWithList(requestString) as FrontpageResponse;
             
-                Assert.Equal(200, innerResult.statusCode);
+                Assert.Equal(200, innerResult.StatusCode);
                 Assert.Equal(request.list, innerResult.list);
                 Assert.NotEmpty(innerResult.beverages);
             }
@@ -91,7 +91,7 @@ namespace bevrand.testsuite.TestClasses
             
             var requestString = CreateApiRequestString.GetQueryStringFromModel<IRequestString, RequestString>(request);
             var response = _fixture.MongoApi.FrontPageGetWithList(requestString) as ErrorModel;
-            Assert.Equal(errorcode, response.statusCode);
+            Assert.Equal(errorcode, response.StatusCode);
             Assert.Contains(errormessage, response.message);
         }
 
@@ -104,7 +104,7 @@ namespace bevrand.testsuite.TestClasses
         {
             var response = _fixture.MongoApi.GetUsers() as UsersResponse;
             
-            Assert.Equal(200, response.statusCode);
+            Assert.Equal(200, response.StatusCode);
             Assert.NotEmpty(response.ActiveUsers); 
 
         }
@@ -115,7 +115,7 @@ namespace bevrand.testsuite.TestClasses
         {
             var response = _fixture.MongoApi.GetUsers() as UsersResponse;
             
-            Assert.Equal(200, response.statusCode);
+            Assert.Equal(200, response.StatusCode);
             Assert.NotEmpty(response.ActiveUsers); 
             
             
@@ -129,7 +129,7 @@ namespace bevrand.testsuite.TestClasses
                 var requestString = CreateApiRequestString.GetQueryStringFromModel<IRequestString, RequestString>(request);
                 var innerResult = _fixture.MongoApi.GetUser(requestString) as UserResponse;
             
-                Assert.Equal(200, innerResult.statusCode);
+                Assert.Equal(200, innerResult.StatusCode);
                 Assert.NotEmpty(innerResult.Lists);
             }
         }
@@ -149,7 +149,7 @@ namespace bevrand.testsuite.TestClasses
             var requestString = CreateApiRequestString.GetQueryStringFromModel<IRequestString, RequestString>(request);
             var innerResult = _fixture.MongoApi.GetUser(requestString) as ErrorModel;
         
-            Assert.Equal(errorcode, innerResult.statusCode);
+            Assert.Equal(errorcode, innerResult.StatusCode);
             Assert.Contains(errormessage, innerResult.message);
         }
         
