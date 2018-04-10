@@ -1,6 +1,6 @@
 ﻿namespace bevrand.testsuite.Clients
 {
-    public class AuthenticationApiClient
+    public class AuthenticationApiClient : BaseApiClient
     {
         protected static string ApiUrl;
         

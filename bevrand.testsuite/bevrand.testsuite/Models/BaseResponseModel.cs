@@ -2,6 +2,6 @@
 {
     public class BaseResponseModel
     {
-        public int statusCode { get; set; }
+        public int StatusCode { get; set; }
     }
 }
