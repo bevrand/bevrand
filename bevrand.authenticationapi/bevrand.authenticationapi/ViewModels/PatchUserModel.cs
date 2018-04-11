@@ -2,7 +2,7 @@
 
 namespace bevrand.authenticationapi.DAL.Models
 {
-    public class PutUserModel
+    public class PatchUserModel
     {
         public string Username { get; set; }
         

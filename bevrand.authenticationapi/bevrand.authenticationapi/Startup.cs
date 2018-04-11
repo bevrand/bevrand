@@ -1,7 +1,9 @@
 ﻿using System;
 using bevrand.authenticationapi.Data;
 using bevrand.authenticationapi.DAL;
+using bevrand.authenticationapi.Middleware;
 using bevrand.authenticationapi.Repository;
+using bevrand.authenticationapi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +40,7 @@ namespace bevrand.authenticationapi
             services.AddDbContext<UserContext>(options =>
                 options.UseNpgsql(sqlConnectionString));
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUsersLogic, UsersLogic>();
   
             services.AddMvc();
             
@@ -57,7 +60,7 @@ namespace bevrand.authenticationapi
                 app.UseDeveloperExceptionPage();
             }
 
-           // app.UseMiddleware(typeof(ErrorHandlingMiddleware));
+            app.UseMiddleware(typeof(ErrorHandlingMiddleware));
 
             app.UseSwagger();
 

@@ -6,8 +6,7 @@ namespace bevrand.authenticationapi.Models
 {
     public class GetAllUsersModels
     {
-        [JsonProperty]
-        public List<GetUserModel> AllUsers { get; set; }
+        public IEnumerable<GetUserModel> AllUsers { get; set; }
 
     }
 }

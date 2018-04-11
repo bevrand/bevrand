@@ -20,7 +20,6 @@ namespace bevrand.authenticationapi.Middleware
         {
             try
             {
-
                 await _next(context);
             }
             catch (Exception ex)
@@ -40,6 +39,11 @@ namespace bevrand.authenticationapi.Middleware
             if (exception is NotImplementedException)
             {
                 code = HttpStatusCode.NotImplemented;
+            }
+
+            if (exception is HttpNotFoundException)
+            {
+                code = HttpStatusCode.NotFound;
             }
 
             var errorModel = new ErrorModel {Error = exception.Message + " " + exception.InnerException?.Message};

@@ -12,12 +12,16 @@ namespace bevrand.authenticationapi.DAL.Models
         [Column("id")]
         public int Id { get; set; }
         
+        [Required(ErrorMessage = "UserName is required")]
+        [StringLength(50)]
         [Column("username")]
         public string UserName { get; set; }
-        
+       
+        [StringLength(40)]
         [Column("email")]
         public string EmailAddress { get; set; }
         
+        [StringLength(60)]
         [Column("password")]
         public string PassWord { get; set; }
         
@@ -28,8 +32,7 @@ namespace bevrand.authenticationapi.DAL.Models
         [Column("datecreated")]
         public DateTime Created { get; set; }
         
-        
         [Column("dateupdated")]
-        public DateTime Updated { get; set; } = DateTime.UtcNow;
+        public DateTime Updated { get; set; }
     }
 }

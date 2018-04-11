@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.0",
-    "signature": "5c26f10e340b43dde9bc598775c2dae28d06b7bd"
+    "signature": "e9cff240f3f0adef1320ce5f6641d53c13e13f5b"
   },
   "compilationOptions": {},
   "targets": {
@@ -15,6 +15,23 @@
         },
         "runtime": {
           "bevrand.authenticationapi.tests.dll": {}
+        }
+      },
+      "AutoMapper/6.2.2": {
+        "dependencies": {
+          "Microsoft.CSharp": "4.4.0",
+          "System.Collections.Concurrent": "4.3.0",
+          "System.Collections.Specialized": "4.3.0",
+          "System.ComponentModel.TypeConverter": "4.3.0",
+          "System.Dynamic.Runtime": "4.3.0",
+          "System.Linq.Queryable": "4.3.0",
+          "System.Reflection.Emit": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime.Serialization.Primitives": "4.3.0",
+          "System.Text.RegularExpressions": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard1.3/AutoMapper.dll": {}
         }
       },
       "BCrypt.Net-Core/1.4.0": {
@@ -2171,7 +2188,7 @@
           "System.Diagnostics.Debug": "4.3.0",
           "System.Linq": "4.3.0",
           "System.Linq.Expressions": "4.3.0",
-          "System.Linq.Queryable": "4.0.1",
+          "System.Linq.Queryable": "4.3.0",
           "System.ObjectModel": "4.3.0",
           "System.Reflection": "4.3.0",
           "System.Reflection.Extensions": "4.3.0",
@@ -2430,15 +2447,15 @@
       },
       "Swashbuckle.AspNetCore/1.1.0": {
         "dependencies": {
-          "Swashbuckle.AspNetCore.Swagger": "1.1.0",
-          "Swashbuckle.AspNetCore.SwaggerGen": "1.1.0",
-          "Swashbuckle.AspNetCore.SwaggerUI": "1.1.0"
+          "Swashbuckle.AspNetCore.Swagger": "2.2.0",
+          "Swashbuckle.AspNetCore.SwaggerGen": "2.2.0",
+          "Swashbuckle.AspNetCore.SwaggerUI": "2.2.0"
         },
         "runtime": {
           "lib/netstandard1.6/Swashbuckle.AspNetCore.dll": {}
         }
       },
-      "Swashbuckle.AspNetCore.Swagger/1.1.0": {
+      "Swashbuckle.AspNetCore.Swagger/2.2.0": {
         "dependencies": {
           "Microsoft.AspNetCore.Mvc.Core": "2.0.0",
           "Microsoft.AspNetCore.Mvc.Formatters.Json": "2.0.0"
@@ -2447,25 +2464,24 @@
           "lib/netstandard1.6/Swashbuckle.AspNetCore.Swagger.dll": {}
         }
       },
-      "Swashbuckle.AspNetCore.SwaggerGen/1.1.0": {
+      "Swashbuckle.AspNetCore.SwaggerGen/2.2.0": {
         "dependencies": {
           "Microsoft.AspNetCore.Mvc.ApiExplorer": "2.0.0",
           "Microsoft.AspNetCore.Mvc.Core": "2.0.0",
           "Microsoft.AspNetCore.Mvc.DataAnnotations": "2.0.0",
-          "Swashbuckle.AspNetCore.Swagger": "1.1.0",
+          "Swashbuckle.AspNetCore.Swagger": "2.2.0",
           "System.Xml.XPath": "4.3.0"
         },
         "runtime": {
           "lib/netstandard1.6/Swashbuckle.AspNetCore.SwaggerGen.dll": {}
         }
       },
-      "Swashbuckle.AspNetCore.SwaggerUI/1.1.0": {
+      "Swashbuckle.AspNetCore.SwaggerUI/2.2.0": {
         "dependencies": {
           "Microsoft.AspNetCore.Routing": "2.0.0",
           "Microsoft.AspNetCore.StaticFiles": "2.0.0",
           "Microsoft.Extensions.FileProviders.Embedded": "2.0.0",
-          "Newtonsoft.Json": "10.0.1",
-          "System.Xml.XPath": "4.3.0"
+          "Newtonsoft.Json": "10.0.1"
         },
         "runtime": {
           "lib/netstandard1.6/Swashbuckle.AspNetCore.SwaggerUI.dll": {}
@@ -2857,7 +2873,7 @@
           "System.Threading": "4.3.0"
         }
       },
-      "System.Linq.Queryable/4.0.1": {
+      "System.Linq.Queryable/4.3.0": {
         "dependencies": {
           "System.Collections": "4.3.0",
           "System.Diagnostics.Debug": "4.3.0",
@@ -3686,11 +3702,16 @@
       },
       "bevrand.authenticationapi/1.0.0": {
         "dependencies": {
+          "AutoMapper": "6.2.2",
           "BCrypt.Net-Core": "1.4.0",
           "Microsoft.AspNetCore.All": "2.0.0",
+          "Microsoft.AspNetCore.JsonPatch": "2.0.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "2.0.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL.Design": "2.0.0-preview1",
-          "Swashbuckle.AspNetCore": "1.1.0"
+          "Swashbuckle.AspNetCore": "1.1.0",
+          "Swashbuckle.AspNetCore.Swagger": "2.2.0",
+          "Swashbuckle.AspNetCore.SwaggerGen": "2.2.0",
+          "Swashbuckle.AspNetCore.SwaggerUI": "2.2.0"
         },
         "runtime": {
           "bevrand.authenticationapi.dll": {}
@@ -3703,6 +3724,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "AutoMapper/6.2.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-eGKcnJdoF5rYMWPUaSPtlWdvua9xw4hnQN5kM/X4AXLGKghrtPIaMv+RYoA3sj0kyZ3X6wZ1Qj67F+u0pCCPaw==",
+      "path": "automapper/6.2.2",
+      "hashPath": "automapper.6.2.2.nupkg.sha512"
     },
     "BCrypt.Net-Core/1.4.0": {
       "type": "package",
@@ -5125,26 +5153,26 @@
       "path": "swashbuckle.aspnetcore/1.1.0",
       "hashPath": "swashbuckle.aspnetcore.1.1.0.nupkg.sha512"
     },
-    "Swashbuckle.AspNetCore.Swagger/1.1.0": {
+    "Swashbuckle.AspNetCore.Swagger/2.2.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-zOMSwaORAM916wnoDilH9eTyBN01Ch4L4VE8s4xIiESOpHMMHBvVmPxSGMsmo+CltgM74o92KVrIcLYGCKlbXQ==",
-      "path": "swashbuckle.aspnetcore.swagger/1.1.0",
-      "hashPath": "swashbuckle.aspnetcore.swagger.1.1.0.nupkg.sha512"
+      "sha512": "sha512-olkPEPWXSIocCgvJUWnxm/kt0vJfBZoy8ZYuzvITHxAg1lAYiW6Bb0PVXhjOH0vqaWAzostIJMLD5Rkj3fddDQ==",
+      "path": "swashbuckle.aspnetcore.swagger/2.2.0",
+      "hashPath": "swashbuckle.aspnetcore.swagger.2.2.0.nupkg.sha512"
     },
-    "Swashbuckle.AspNetCore.SwaggerGen/1.1.0": {
+    "Swashbuckle.AspNetCore.SwaggerGen/2.2.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-5ErpRhRIkJKRjQ33CsTIsmBypDsWQNp28CsM8UsOwZ9aaw3UBsU4Ts2ZDGe7yvZiti8FrU8iQ5VYw9bvrHiPpA==",
-      "path": "swashbuckle.aspnetcore.swaggergen/1.1.0",
-      "hashPath": "swashbuckle.aspnetcore.swaggergen.1.1.0.nupkg.sha512"
+      "sha512": "sha512-pls+H+fU0yET0wJfRkLAfXnOwEiljcN6nJncSIcH+k89PLRmJtoGZASGE6I3b9xjnnDxztY5iswM0TAU9QVEZA==",
+      "path": "swashbuckle.aspnetcore.swaggergen/2.2.0",
+      "hashPath": "swashbuckle.aspnetcore.swaggergen.2.2.0.nupkg.sha512"
     },
-    "Swashbuckle.AspNetCore.SwaggerUI/1.1.0": {
+    "Swashbuckle.AspNetCore.SwaggerUI/2.2.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-gdV8MczYGIuxARtmDYBTbTKC0IJMhrQmZ4Uev8N/pOGQlTcwBYYlUn8X+8RcC7ATZQOOXBx4RBOlk+gbXbLfkg==",
-      "path": "swashbuckle.aspnetcore.swaggerui/1.1.0",
-      "hashPath": "swashbuckle.aspnetcore.swaggerui.1.1.0.nupkg.sha512"
+      "sha512": "sha512-nf+sedXgiFYJjZrPbjc+Vim4QgK1Mh9gHjmiapJxTk06MoZiTkQheAEBx0IMZxQkLn9fbjYg6uEMifSc/DVLcg==",
+      "path": "swashbuckle.aspnetcore.swaggerui/2.2.0",
+      "hashPath": "swashbuckle.aspnetcore.swaggerui.2.2.0.nupkg.sha512"
     },
     "System.AppContext/4.3.0": {
       "type": "package",
@@ -5398,12 +5426,12 @@
       "path": "system.linq.expressions/4.3.0",
       "hashPath": "system.linq.expressions.4.3.0.nupkg.sha512"
     },
-    "System.Linq.Queryable/4.0.1": {
+    "System.Linq.Queryable/4.3.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Yn/WfYe9RoRfmSLvUt2JerP0BTGGykCZkQPgojaxgzF2N0oPo+/AhB8TXOpdCcNlrG3VRtsamtK2uzsp3cqRVw==",
-      "path": "system.linq.queryable/4.0.1",
-      "hashPath": "system.linq.queryable.4.0.1.nupkg.sha512"
+      "sha512": "sha512-In1Bmmvl/j52yPu3xgakQSI0YIckPUr870w4K5+Lak3JCCa8hl+my65lABOuKfYs4ugmZy25ScFerC4nz8+b6g==",
+      "path": "system.linq.queryable/4.3.0",
+      "hashPath": "system.linq.queryable.4.3.0.nupkg.sha512"
     },
     "System.Net.Http/4.3.0": {
       "type": "package",
