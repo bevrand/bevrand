@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using AutoMapper;
 using bevrand.authenticationapi.BLL;
 using bevrand.authenticationapi.DAL.Models;
 using bevrand.authenticationapi.Middleware;
@@ -138,11 +139,15 @@ namespace bevrand.authenticationapi.Services
             }
 
             var selectedUser = _userRepository.GetSingleUser(id);
+             
+            AutoMapper.Mapper.Initialize(c => c.CreateMap<PatchUserModel, UserModel>());
             var patchUserDTO = AutoMapper.Mapper.Map<PatchUserModel>(selectedUser);
+           
             user.ApplyTo(patchUserDTO);
             AutoMapper.Mapper.Map(patchUserDTO, selectedUser);
             selectedUser.Updated = DateTime.UtcNow;
             _userRepository.Update(selectedUser);
+            Mapper.Reset();
             return selectedUser;
 
         }
