@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace bevrand.authenticationapi.Repository
 {
+
+
     public class UserRepository : IUserRepository
     {
         private UserContext _context;
@@ -37,6 +39,16 @@ namespace bevrand.authenticationapi.Repository
         public bool CheckIfUserExists(string name)
         {
             return _context.Users.Any(u => u.UserName == name);
+        }
+        
+        public bool CheckIfEmailExists(string name)
+        {
+            return _context.Users.Any(u => u.EmailAddress == name);
+        }
+        
+        public bool CheckIfIdExists(int id)
+        {
+            return _context.Users.Any(u => u.Id == id);
         }
 
         public IEnumerable<UserModel> GetAllUsers()

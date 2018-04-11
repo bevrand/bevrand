@@ -8,7 +8,9 @@ namespace bevrand.authenticationapi.Repository
         UserModel Add(UserModel user);
         void Update(UserModel user);
         void Delete(UserModel user);
+        bool CheckIfIdExists(int id);
         bool CheckIfUserExists(string name);
+        bool CheckIfEmailExists(string name);
         IEnumerable<UserModel> GetAllUsers();
         UserModel GetSingleUser(int id);
         UserModel GetSingleUser(string userName);
