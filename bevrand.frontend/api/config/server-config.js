@@ -13,7 +13,7 @@ if (process.env.NODE_ENV === 'production') {
  * environment variables schema
  */
 const envVarsSchema = joi.object({
-  MONGO_API: joi.string()
+  PLAYLIST_API: joi.string()
     .required(),
   RANDOMIZER_API: joi.string()
     .required(),
@@ -38,7 +38,7 @@ if (error) {
 
 const config = {
   env: envVars.NODE_ENV || 'development',
-  mongoApi: envVars.MONGO_API,
+  playlistApi: envVars.PLAYLIST_API,
   randomizerApi: envVars.RANDOMIZER_API,
   authenticationApi: envVars.AUTHENTICATION_API,
   authenticationSecret: envVars.AUTHENTICATION_SECRET,
