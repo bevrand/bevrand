@@ -56,20 +56,20 @@ namespace bevrand.testsuite.TestClasses
         
         [Fact]
         [Trait("Category", "FrontEnd")]
-        public void HowDoesItWorButtonScollsDown()
+        public void WhatWasRandomizedButtonScrollsDown()
         {
             using (RemoteWebDriver driver = new RemoteWebDriver(new Uri("http://0.0.0.0:4444/wd/hub"), _fixture.DriverCapabilities))
             {
                 driver.Navigate().GoToUrl("http://nodefrontend:5000");
                 var wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(5000));
                 var chooseList =
-                    wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("howDoesItWorkButton")));
+                    wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("topFiveLinkButton")));
                 chooseList.Click();
                 
-                const string expectedText = "Let's get random! But how?";
-                var howDoesItWorkText = driver.FindElementByXPath(@"//*[@id=""services""]/div[1]/div/div/h2").Text;
+                const string expectedText = "Thank God It's Friday!";
+                var randomListText = driver.FindElementById("currentlySelectedPlaylist").Text;
                 
-                Assert.Equal(expectedText, howDoesItWorkText);
+                Assert.Equal(expectedText, randomListText);
             }
         }
 
@@ -107,6 +107,7 @@ namespace bevrand.testsuite.TestClasses
 
                 Console.WriteLine(randomizedDrink);
                 Assert.Contains(expectedText, randomizedDrink);
+                Console.WriteLine(specificDrink);
                 Assert.Contains(specificDrink, beverages);
             }
         }
@@ -137,9 +138,9 @@ namespace bevrand.testsuite.TestClasses
                     randomizeButton.Click();
                     var randomizedOutput =
                         wait.Until(ExpectedConditions.ElementIsVisible(By.XPath(@"//*[@id=""randomizedOutput""]/div")));
-                    var randomizedDrink = randomizedOutput.Text.ToLowerInvariant();
-                    var specificDrink = randomizedDrink.Substring(randomizedDrink.LastIndexOf(':') + 1).Split();
-                    beverages.Add(specificDrink[1]);
+                    var randomizedDrink = randomizedOutput.Text.ToLowerInvariant().Split();
+                    var specificDrink = randomizedDrink[3];
+                    beverages.Add(specificDrink);
                 }
 
                 var action = new Actions(driver);
@@ -184,7 +185,7 @@ namespace bevrand.testsuite.TestClasses
                     var randomizeButton = driver.FindElementById("randomizeButton");
                     randomizeButton.Click();
 
-                    for (var i = 0; i < 20; i++)
+                    for (var i = 0; i < 40; i++)
                     {
                         randomizeButton.Click();
                         Thread.Sleep(200);
@@ -199,7 +200,8 @@ namespace bevrand.testsuite.TestClasses
                     var randomButton = driver.FindElementById("topFiveSwitchButton").Text.ToLowerInvariant();
                     if (randomButton.Contains("all drinks"))
                     {
-                        Console.WriteLine(randomButton);
+                        driver.FindElementById("topFiveSwitchButton").Click();
+                        driver.FindElementById("topFiveSwitchButton").Click();
                         var rolledDrinks = driver.FindElementByXPath(@"//*[@id=""redisHistoryForList""]/div/ul");
                         var rolledAll = rolledDrinks.FindElements(By.TagName("li"));
                         Assert.True(rolledAll.Count <= drinks.Count); 
@@ -210,8 +212,7 @@ namespace bevrand.testsuite.TestClasses
                         Assert.Contains("top five", randomButton);
                         rolledDrinks = driver.FindElementByXPath(@"//*[@id=""redisHistoryForList""]/div/ul");
                         var rolledTopFive = rolledDrinks.FindElements(By.TagName("li"));
-                        Assert.True(rolledTopFive.Count <= 5);
-                        
+                        Console.WriteLine($"Rolled all: {rolledAll.Count} Rolled top five {rolledTopFive.Count}");
                         Assert.True(rolledAll.Count >= rolledTopFive.Count);
                     }
 
@@ -330,7 +331,7 @@ namespace bevrand.testsuite.TestClasses
                 
                 chooseList.Click();
                 
-                var portFolioElement = driver.FindElementByXPath(@"//*[@id=""portfolio""]/div/div/div[5]/a/div/div");
+                var portFolioElement = driver.FindElementByXPath(@"//*[@id=""playlists""]/div/div/div[5]/a/div/div");
                 portFolioElement.Click();
                 
                 displayName = driver.FindElementById("currentlySelectedPlaylist").Text;

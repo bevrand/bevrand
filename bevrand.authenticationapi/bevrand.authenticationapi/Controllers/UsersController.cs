@@ -62,7 +62,8 @@ namespace bevrand.authenticationapi.Controllers
         public IActionResult Create([FromBody] PostUserModel user)
         {
            _usersLogic.CreateANewUser(user);
-            return CreatedAtRoute("GetByUserName", new {username = user.UserName}, user);
+            var userToReturn = _usersLogic.GetByUserName(user.UserName);
+            return CreatedAtRoute("GetByUserName", new {username = user.UserName}, userToReturn);
         }
 
         [HttpPatch]
