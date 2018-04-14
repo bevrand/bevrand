@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, animateScroll} from 'react-scroll';
+import { Link } from 'react-scroll';
 
 const Header = (props) => {
   return (
@@ -10,9 +10,9 @@ const Header = (props) => {
           <hr />
           <p>All those Beverage choices bringing you down? Feeling lucky? Let fate quench your thirst with the Beverage Randomizer.
             Like you know, for randomizing your beverages.</p>
-          <Link id="letsGetStartedButton" className="btn btn-primary btn-xl" smooth={true} duration={350} to="getstarted">Let's get started!</Link>
-          <Link id="topChooseListButton" className="btn btn-primary btn-xl" smooth={true} duration={350} to="playlists">Choose list</Link>
-          <Link id="topFiveLinkButton" className="btn btn-primary btn-xl" smooth={true} duration={350} to="topFiveSwitch">How much has been randomized?</Link>
+          <Link id="letsGetStartedButton" className="btn btn-primary btn-xl" smooth={true} duration={350} to="getstarted" href="">Let's get started!</Link>
+          <Link id="topChooseListButton" className="btn btn-primary btn-xl" smooth={true} duration={350} to="playlists" href="">Choose list</Link>
+          <Link id="topFiveLinkButton" className="btn btn-primary btn-xl" smooth={true} duration={350} to="topFiveSwitch" href="">How much has been randomized?</Link>
         </div>
       </div>
     </header>
