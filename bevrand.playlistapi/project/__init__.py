@@ -24,7 +24,7 @@ def create_app():
 
     app = Flask(__name__)
     app.config['SWAGGER'] = {
-        'title': 'Flask MongoApi',
+        'title': 'Flask PlaylistApi',
         'uiversion': 3
     }
     Swagger(app, config=swagger_config)
