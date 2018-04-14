@@ -30,7 +30,7 @@ const handleLogin = (url, secret, expirationTime) => {
       } else {
         return rp({
           method: 'GET',
-          uri: `${url}/api/User?username=${username}`
+          uri: `${url}/api/Users?username=${username}`
         });
       }
     }).then((result) => {
@@ -65,7 +65,7 @@ const registerUser = (authenticationUrl) => {
     }
     rp({
       method: 'POST',
-      uri: `${authenticationUrl}/api/User`,
+      uri: `${authenticationUrl}/api/Users`,
       body: {
         username: req.body.username,
         emailAddress: req.body.emailAddress,

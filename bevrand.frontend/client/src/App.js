@@ -28,7 +28,7 @@ class App extends Component {
         <Header />
         <Route exact path="/" component={RandomizeArea} />
         <Route path="/login" component={Login} />
-        <Route path="/signup" component={SignUp} />
+        <Route path="/register" component={SignUp} />
       </div>
     );
   }
