@@ -1,9 +1,10 @@
 import React from 'react';
+import { Link } from "react-scroll";
 
 const Card = (props) => {
   return (
     <div className="col-lg-4 col-sm-6">
-      <a className="portfolio-box" href="#randomize-area" onClick={() => props.onClick(props.playlist)}>
+      <Link className="portfolio-box" href="" smooth={true} to="getstarted" onClick={() => props.onClick(props.playlist)}>
         <img className="img-fluid" src={props.playlist.imageUrl} alt="" />
         <div className="portfolio-box-caption">
           <div className="portfolio-box-caption-content">
@@ -15,7 +16,7 @@ const Card = (props) => {
             </div>
           </div>
         </div>
-      </a>
+      </Link>
     </div>
   );
 }
