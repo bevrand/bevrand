@@ -9,13 +9,13 @@ services:
 
   dockermongo:
     container_name: dockermongo
-    image: mongo
+    image: mongo:3.6
     ports:
        - 27017:27017
 
   dockergres:
      container_name: dockergres
-     build: ./bevrand.mongoseeder/db
+     build: ./bevrand.dataseeder/db
      ports:
        - 5434:5432
      environment:
@@ -40,18 +40,18 @@ services:
     ports:
        - 4560:5000 # expose ports - HOST:CONTAINER
     depends_on:
-       - mongoapi
+       - playlistapi
        - redis
     links:
-       - mongoapi
+       - playlistapi
        - redis
     environment:
        - APP_SETTINGS=production
        - REDIS_URL=redis
 
-  mongoapi:
-    container_name: mongoapi
-    build: ./bevrand.mongoapi
+  playlistapi:
+    container_name: playlistapi
+    build: ./bevrand.playlistapi
     ports:
        - 4550:5000  # expose ports - HOST:CONTAINER
     depends_on:
@@ -69,18 +69,18 @@ services:
       - 4540:5000
     depends_on:
       - randomizerapi
-      - mongoapi
+      - playlistapi
       - authenticationapi
     environment:
       - NODE_ENV=production
     links:
       - randomizerapi
-      - mongoapi
+      - playlistapi
       - authenticationapi
 
-  mongoseeder:
-    container_name: mongoseeder
-    build: ./bevrand.mongoseeder
+  dataseeder:
+    container_name: dataseeder
+    build: ./bevrand.dataseeder
     depends_on:
        - dockermongo
        - dockergres
