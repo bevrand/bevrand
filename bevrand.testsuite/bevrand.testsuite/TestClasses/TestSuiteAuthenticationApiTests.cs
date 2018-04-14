@@ -43,8 +43,8 @@ namespace bevrand.testsuite.TestClasses
         
         [Theory]
         [Trait("Category", "Authentication")]
-        [InlineData(Int16.MaxValue, "Id not found")]
-        [InlineData(Int16.MinValue, "Id not found")]
+        [InlineData(Int16.MaxValue, "was not found")]
+        [InlineData(Int16.MinValue, "was not found")]
         public void GetUserByIdThatDoesNotExistGivesAnError(int id, string message)
         {
             var requeststring = _fixture.AuthenticationUrl + $"/api/Users/{id}";
@@ -102,7 +102,7 @@ namespace bevrand.testsuite.TestClasses
         
         [Theory]
         [Trait("Category", "Authentication")]
-        [InlineData("thisuserdoesnotexistandifitdoessomeonemadeamistake", "Id not found")]
+        [InlineData("thisuserdoesnotexistandifitdoessomeonemadeamistake", "was not found")]
         public void GetUserByUsernameThatDoesNotExistGivesAnError(string username, string message)
         {
             var requeststring = _fixture.AuthenticationUrl + $"/api/Users/{username}";
@@ -170,9 +170,9 @@ namespace bevrand.testsuite.TestClasses
 
         [Theory]
         [Trait("Category", "Authentication")]
-        [InlineData(null, null, null, "You must provide at least a username and password")]
-        [InlineData(null, "test@test.nl", "password", "You must provide at least a username and password")]
-        [InlineData("SomeRandomUserForPost", "test@test.nl", null, "You must provide at least a username and password")]
+        [InlineData(null, null, null, "You have to provide a user")]
+        [InlineData(null, "test@test.nl", "password", "You have to provide a user")]
+        [InlineData("SomeRandomUserForPost", "test@test.nl", null, "You have to provide a password")]
         [InlineData("SomeRandomUserForPost", "testtest", "password", "was not a valid mailaddress")]
         public void FaultyPostsDoNotGetEnteredIntoTheDatabse(string username, string email, string password, string message)
         {
@@ -194,7 +194,7 @@ namespace bevrand.testsuite.TestClasses
         
         [Fact] 
         [Trait("Category", "Authentication")]
-        public void DeleteAUserOnceShouldReturSuccesCode()
+        public void DeleteAUserOnceShouldReturnsSuccesCode()
         {
             var requeststring = _fixture.AuthenticationUrl + "/api/Users";
             var requestPost = new PostModelAuthentication
@@ -207,7 +207,7 @@ namespace bevrand.testsuite.TestClasses
             var response =
                 _fixture.BaseApiClient.GenericPostObject<PostModelResponse>(requeststring, requestPost).Result as
                     PostModelResponse;
-
+            
             var request = new IdBasedQueryModel
             {
                 Id = response.id
@@ -252,7 +252,7 @@ namespace bevrand.testsuite.TestClasses
             
             deletedResponse = _fixture.BaseApiClient.GenericDeleteObject(requestDelete);
             
-            Assert.Equal(404, deletedResponse.StatusCode);            
+            Assert.Equal(400, deletedResponse.StatusCode);            
         }
         
         [Fact] 
@@ -270,7 +270,7 @@ namespace bevrand.testsuite.TestClasses
             var requestDelete = requeststring + queryString;
             var deletedResponse = _fixture.BaseApiClient.GenericDeleteObject(requestDelete);
             
-            Assert.Equal(404, deletedResponse.StatusCode);
+            Assert.Equal(400, deletedResponse.StatusCode);
 
         }
     }
