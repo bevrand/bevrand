@@ -159,7 +159,7 @@ namespace bevrand.authenticationapi.Services
             if (string.IsNullOrWhiteSpace(username))
             {
                 throw new ArgumentException(
-                    $"You have to provide an user, provided was '{username}'");
+                    $"You have to provide a user, provided was '{username}'");
             }
             
             if (string.IsNullOrWhiteSpace(password))
