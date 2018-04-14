@@ -15,10 +15,14 @@ const Navigation = (props) => {
           <ul className="navbar-nav ml-auto">
             <li className="nav-item">
               {/* <a className="nav-link js-scroll-trigger" href="#services">How</a> */}
-              <Link className="nav-link" to='/login'></Link>
+              <Link className="nav-link" to='/login'>Login</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to='/register'></Link>
+              <Link className="nav-link" to='/register'>Register</Link>
+              {/* <a className="nav-link js-scroll-trigger" href="#getstarted">Get Started</a> */}
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to='/'>Home</Link>
               {/* <a className="nav-link js-scroll-trigger" href="#getstarted">Get Started</a> */}
             </li>
             <li className="nav-item">

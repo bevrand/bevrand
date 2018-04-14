@@ -35,6 +35,16 @@
   left: 0;
 }
 
+.SignUp h4 {
+  outline: none;
+  border: 0;
+  color: #FFFCE8;
+  font-family: "Lato", sans-serif;
+  flex: 1 0 auto;
+  font-size: 18px;
+  font-weight: 300;
+}
+
 .Modal {
   background: #464646;
   border-radius: 2px;
