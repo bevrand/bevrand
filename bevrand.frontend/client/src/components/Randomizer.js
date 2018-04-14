@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-scroll';
 
 const PreviewItemRow = (props) => {
   return (
@@ -24,8 +25,8 @@ const PlaylistPreview = (props) => {
 const RandomizeButton = (props) => {
   return (
     <div className="col-lg-8 mx-auto text-center">
-      <a id="randomizeButton" className="btn btn-primary btn-xl" onClick={props.onClick} href="#getstarted">Randomize!</a>
-      <a id="chooseListBottomButton" className="btn btn-primary btn-xl js-scroll-trigger" href="#portfolio">Choose list</a>
+      <a id="randomizeButton" className="btn btn-primary btn-xl text-white" onClick={props.onClick}>Randomize!</a>
+      <Link id="chooseListBottomButton" className="btn btn-primary btn-xl text-white" smooth={true} duration={350} href="" to="playlists">Choose a list</Link>
     </div>
   )
 };
