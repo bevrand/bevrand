@@ -60,9 +60,9 @@ const requestPipePost = (endpoint) => {
 /**
  * API routes
  */
-app.get('/api/frontpage', requestPipe(config.mongoApi));
+app.get('/api/frontpage', requestPipe(config.playlistApi));
 
-app.get('/api/list', requestPipe(config.mongoApi));
+app.get('/api/list', requestPipe(config.playlistApi));
 
 app.get('/api/redis', requestPipe(config.randomizerApi));
 
