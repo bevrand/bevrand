@@ -58,8 +58,7 @@ def post_list():
     user_list = json_body['user'] + json_body['list']
     return_object = api_handler.randomize_drink_from_list(beverages, user_list)
     if return_object['status_code'] is 200:
-        res = json.dumps(return_object['body'], indent=4)
-        return res, 200
+        return return_object['body'], 200
     else:
         res = json.dumps(return_object['body'], indent=4)
         return res, return_object['status_code']
