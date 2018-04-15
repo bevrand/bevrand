@@ -7,13 +7,13 @@ const handleLogin = (url, secret, expirationTime) => {
     const { username, passWord } = req.body;
     
     //TODO: If email address is provided, we first need to retrieve the username and id
-  
     if(!username || !passWord) {
       let err = new Error('Required body elements are not present');
       err.status = 400;
       return next(err);
     }
-    //TODO: Add password hashing on client side, that needs to be decrypted here
+    //TODO: Add password hashing on client side, we will compare the hashed password
+    // with the stored hashed password
     rp({
       method: 'POST',
       uri: `${url}/api/Validate`,

@@ -1,5 +1,5 @@
 @import "https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900";
-/* body {
+body {
   background-image: url('../img/header.jpg');
   background-position: center;
   background-repeat: no-repeat;
@@ -7,15 +7,16 @@
   color: #3E363F;
   font-family: "Lato", sans-serif;
   height: 100vh;
-  overflow: hidden;
-} */
+  /* Overflow seems to prevent scrolling, this should only be applied to the login / register pages */
+  /* overflow: hidden; */
+}
 
 .Login {
   align-items: center;
   display: flex;
-  /* height: 100vh; */
+  height: 100vh;
   justify-content: center;
-  /* width: 100vw; */
+  width: 100vw;
   position: relative;
   top: 0;
   left: 0;
@@ -23,13 +24,13 @@
 
 .SignUp {
   align-items: center;
-  background: #464646;
+  /* background: #464646; */
   border-radius: 2px;
   padding: 20px;
   display: flex;
-  /* height: 100vh; */
+  height: 100vh;
   justify-content: center;
-  /* width: 100vw; */
+  width: 100vw;
   position: relative;
   top: 0;
   left: 0;
