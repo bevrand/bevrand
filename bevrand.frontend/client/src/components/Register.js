@@ -63,9 +63,13 @@ class Register extends Component {
 
   async handleSubmit(event) {
     event.preventDefault();
-    if (this.state.submitName !== this.state.controlPassword)
+    if (this.state.submitPassword !== this.state.controlPassword)
     {
-      this.state.message = "Passwords do not match";
+      console.log(this.state.submitName)
+      console.log(this.state.controlPassword)
+      this.setState({
+        message: "Passwords do not match",
+      })
       return;
     }
     let data = {
@@ -138,7 +142,7 @@ class Register extends Component {
         id="controlPassword" 
         type="password" 
         value={this.state.controlPassword} 
-        placeholder="retype password" 
+        placeholder="Retype password" 
         onChange={this.handleInputChange}
        />
 

@@ -21,7 +21,7 @@
   left: 0;
 }
 
-.SignUp {
+.Register {
   align-items: center;
   background: #464646;
   border-radius: 2px;
@@ -35,7 +35,7 @@
   left: 0;
 }
 
-.SignUp h4 {
+.Register h4 {
   outline: none;
   border: 0;
   color: #FFFCE8;
