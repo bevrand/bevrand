@@ -107,7 +107,7 @@ app.use((err, req, res, next) => {
   res.locals.error = req.app.get('env') !== 'production' ? err : {};
 
   // render the error page
-  let responseStatus = err.status || 500;
+  let responseStatus = err.status || err.statusCode || 500;
   res.status(responseStatus).send({
     result: 'error',
     message: err.message,
