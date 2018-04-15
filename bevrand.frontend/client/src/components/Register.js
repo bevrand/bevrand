@@ -18,7 +18,7 @@ const Input = (props) => {
   );
 };
 
-class SignUp extends Component {
+class Register extends Component {
   constructor(props) {
     super(props);
 
@@ -26,6 +26,7 @@ class SignUp extends Component {
       submitName : "",
       submitEmail : "",
       submitPassword : "",
+      controlPassword: "",
       message : "You are about to sign up",
       mounted: false
     }
@@ -53,7 +54,8 @@ class SignUp extends Component {
         message: "Welcome " + this.state.submitName + " you are now ready to Randomize",
         submitName : "",
         submitEmail : "",
-        submitPassword : ""
+        submitPassword : "",
+        controlPassword: "",
       }
     )
     console.log(this.state.submitName)
@@ -61,7 +63,11 @@ class SignUp extends Component {
 
   async handleSubmit(event) {
     event.preventDefault();
-
+    if (this.state.submitName !== this.state.controlPassword)
+    {
+      this.state.message = "Passwords do not match";
+      return;
+    }
     let data = {
       username: this.state.submitName,
       emailAddress: this.state.submitEmail,
@@ -90,7 +96,7 @@ class SignUp extends Component {
       this.setState({
         message: parts,
       })
-      return
+      return;
     }
     this.clearFields();  
 }
@@ -98,7 +104,7 @@ class SignUp extends Component {
   render() {
     return (
 
-      <div className="SignUp">
+      <div className="Register">
 
       <form onSubmit={this.handleSubmit}>
       <h4>{this.state.message}</h4>
@@ -128,8 +134,16 @@ class SignUp extends Component {
         onChange={this.handleInputChange}
        />
 
+      <Input
+        id="controlPassword" 
+        type="password" 
+        value={this.state.controlPassword} 
+        placeholder="retype password" 
+        onChange={this.handleInputChange}
+       />
+
        <button type="submit">
-        Sign Up! 
+        Register! 
         <i className="fa fa-fw fa-chevron-right"></i>
        </button>
 
@@ -141,5 +155,5 @@ class SignUp extends Component {
   }
 }
 
-export default SignUp;
+export default Register;
 
