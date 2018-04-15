@@ -4,7 +4,7 @@ import Navigation from './components/Navigation';
 import Header from './components/Header';
 import RandomizeArea from './components/RandomizeArea';
 import Login from './components/Login';
-import SignUp from './components/SignUp';
+import Register from './components/Register';
 
 class App extends Component {
   constructor(props) {
@@ -28,7 +28,7 @@ class App extends Component {
         <Header />
         <Route exact path="/" component={RandomizeArea} />
         <Route path="/login" component={Login} />
-        <Route path="/register" component={SignUp} />
+        <Route path="/register" component={Register} />
       </div>
     );
   }
