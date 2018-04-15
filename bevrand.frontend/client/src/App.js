@@ -3,10 +3,11 @@ import { Route } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import RandomizeArea from './components/RandomizeArea';
 import Login from './components/Login';
-import SignUp from './components/SignUp';
 import AuthService from './components/AuthService';
 import withAuth from './components/withAuth';
+import Register from './components/Register';
 const Auth = new AuthService();
+
 
 class App extends Component {
   constructor(props) {
@@ -38,7 +39,7 @@ class App extends Component {
         <Route exact path="/" component={RandomizeArea} />
         <Route path="/user" component={withAuth(RandomizeArea)} />
         <Route path="/login" component={Login} />
-        <Route path="/register" component={SignUp} />
+        <Route path="/register" component={Register} />
       </div>
     );
   }
