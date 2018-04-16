@@ -1,6 +1,4 @@
-﻿using bevrand.authenticationapi.ViewModels;
-
-namespace bevrand.authenticationapi.Models
+﻿namespace bevrand.authenticationapi.ViewModels
 {
     public class BadRequestModel : BaseModel
     {

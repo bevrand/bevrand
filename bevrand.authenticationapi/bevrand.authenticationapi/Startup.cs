@@ -4,6 +4,7 @@ using bevrand.authenticationapi.DAL;
 using bevrand.authenticationapi.Middleware;
 using bevrand.authenticationapi.Repository;
 using bevrand.authenticationapi.Services;
+using bevrand.authenticationapi.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -41,6 +42,7 @@ namespace bevrand.authenticationapi
                 options.UseNpgsql(sqlConnectionString));
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUsersLogic, UsersLogic>();
+            services.AddScoped<IValidationLogic, ValidationLogic>();
   
             services.AddMvc();
             

@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using bevrand.authenticationapi.ViewModels;
-using Newtonsoft.Json;
+using bevrand.authenticationapi.Models;
 
-namespace bevrand.authenticationapi.Models
+namespace bevrand.authenticationapi.ViewModels
 {
     public class GetAllUsersModels
     {

@@ -1,5 +1,6 @@
 ﻿using bevrand.authenticationapi.DAL.Models;
 using bevrand.authenticationapi.Models;
+using bevrand.authenticationapi.ViewModels;
 using Microsoft.AspNetCore.JsonPatch;
 
 namespace bevrand.authenticationapi.Services

@@ -6,6 +6,7 @@ using bevrand.authenticationapi.DAL.Models;
 using bevrand.authenticationapi.Middleware;
 using bevrand.authenticationapi.Models;
 using bevrand.authenticationapi.Repository;
+using bevrand.authenticationapi.ViewModels;
 using Microsoft.AspNetCore.JsonPatch;
 
 namespace bevrand.authenticationapi.Services
@@ -155,7 +156,7 @@ namespace bevrand.authenticationapi.Services
 
 
         private void CheckForNulls(string username, string email, string password)
-        {
+        {   
             if (string.IsNullOrWhiteSpace(username))
             {
                 throw new ArgumentException(
