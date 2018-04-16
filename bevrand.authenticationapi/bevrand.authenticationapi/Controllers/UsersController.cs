@@ -18,12 +18,10 @@ namespace bevrand.authenticationapi.Controllers
     public class UsersController : Controller
     {
 
-       private readonly IUserRepository _userRepository;
-        private readonly IUsersLogic _usersLogic;
+       private readonly IUsersLogic _usersLogic;
 
-       public UsersController(IUserRepository userRepository, IUsersLogic usersLogic)
+       public UsersController(IUsersLogic usersLogic)
        {
-           _userRepository = userRepository;
            _usersLogic = usersLogic;
        }
 
@@ -49,7 +47,6 @@ namespace bevrand.authenticationapi.Controllers
             return Ok(result);
         }
         
-
         
         [HttpGet("by-username/{username}", Name = "GetByUserName")]
         public IActionResult GetByUserName(string username)
