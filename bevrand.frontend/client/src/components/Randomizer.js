@@ -46,8 +46,8 @@ const getRandomize = async (playlist) => {
       })
     });
     body = await response.text();
-  } catch (e) {
-    console.log(e);
+  } catch (err) {
+    console.error(err);
   }
 
   return body;

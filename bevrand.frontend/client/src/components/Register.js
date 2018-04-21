@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { CSSTransitionGroup } from 'react-transition-group';
+
+import AuthService from './AuthService';
 import './Login.css';
 
 const Input = (props) => {
@@ -11,23 +14,39 @@ const Input = (props) => {
         type={props.type}
         placeholder={props.placeholder}
         onChange={props.onChange}
-        value = {props.value}
       />
       <label htmlFor={props.id}></label>
     </div>
   );
 };
 
+const Modal = (props) => {
+  return (
+    <div className="Modal">
+      <form onSubmit={props.onSubmit} onChange={props.onChange} className={"ModalForm"}>
+        <h4>{props.message}</h4>
+        {/* minCharacters="4" validator="true" */}
+        <Input id="userName" type="text" placeholder="Your UserName"/>
+        <Input id="emailAddress" type="email" placeholder="YourEmail@gmail.com"/>
+        <Input id="passWord" type="password" placeholder="password"/>
+        <Input id="controlPassWord" type="password" placeholder="Retype password"/>
+        <button type="submit">
+          Register! <i className="fa fa-fw fa-chevron-right"></i>
+        </button>
+      </form>
+      
+    </div>
+  );
+}
+
 class Register extends Component {
   constructor(props) {
     super(props);
 
+    this.Auth = new AuthService();
+
     this.state = {
-      submitName : "",
-      submitEmail : "",
-      submitPassword : "",
-      controlPassword: "",
-      message : "You are about to sign up",
+      message : "You are about to register",
       mounted: false
     }
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -38,121 +57,71 @@ class Register extends Component {
     this.setState({ mounted: true});
   }
 
-  handleInputChange(event) {
-    const target = event.target;
-    const value =  target.value;
-    const name = target.id;
-
-    this.setState({
-      [name]: value
-    });
-  }
-
-  clearFields = () => {
+  handleInputChange(e) {
     this.setState(
       {
-        message: "Welcome " + this.state.submitName + " you are now ready to Randomize",
-        submitName : "",
-        submitEmail : "",
-        submitPassword : "",
-        controlPassword: "",
+        [e.target.id]: e.target.value
       }
     )
-    console.log(this.state.submitName)
   }
 
-  async handleSubmit(event) {
-    event.preventDefault();
-    if (this.state.submitPassword !== this.state.controlPassword)
+  clearFields = (userName) => {
+    this.setState(
+      {
+        message: "Welcome " + userName + " you are now ready to Randomize",
+        userName : "",
+        emailAddress : "",
+        passWord : "",
+        controlPassWord: "",
+      }
+    )
+    console.log(userName)
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    if (this.state.passWord !== this.state.controlPassWord)
     {
-      console.log(this.state.submitName)
-      console.log(this.state.controlPassword)
+      console.log('Passwords do not match')
       this.setState({
         message: "Passwords do not match",
       })
       return;
     }
-    let data = {
-      username: this.state.submitName,
-      emailAddress: this.state.submitEmail,
-      passWord: this.state.submitPassword,
-      active: true
-    };
-    let body;
-    let status;
-    try {
-      let response = await fetch(`/api/register`, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: new Headers({
-          'Content-Type': 'application/json'
-        })
-      });
-      body = await response.json();
-      status = response.status;
-    } catch (e) {
-      console.log(e);
-    }
-    if (status !== 200)
-    {
-      console.log(body)
-      var parts = body.message.split('-')[1].replace(/['"]+/g, '').replace(/[{}]/g, "");
-      this.setState({
-        message: parts,
+
+    this.Auth.register(this.state.userName, this.state.emailAddress, this.state.passWord)
+      .then(res => {
+        console.log(`Succesful register of ${res.username}`);
+        this.clearFields(this.state.userName);
+        this.props.history.replace('/login');
       })
-      return;
-    }
-    this.clearFields();  
+      .catch(err => {
+        this.setState({
+          message: `Oops, something went wrong: ${err.message}`
+        })
+      })
 }
   
   render() {
+    let child;
+
+    if(this.state.mounted) {
+      child = (
+        <Modal 
+          message={this.state.message} 
+          onSubmit={this.handleSubmit} 
+          onChange={this.handleInputChange} 
+        />)
+    }
+
     return (
-
       <div className="Register">
-
-      <form onSubmit={this.handleSubmit}>
-      <h4>{this.state.message}</h4>
-      <Input 
-        id="submitName" 
-        type="text"
-        validator="true"
-        minCharacters="4"
-        value={this.state.submitName} 
-        placeholder="Username" 
-        onChange={this.handleInputChange} 
-       />
-
-       <Input 
-         id="submitEmail" 
-         type="email" 
-         value={this.state.submitEmail}  
-         placeholder="YourEmail@gmail.com" 
-         onChange={this.handleInputChange}
-       />
-
-      <Input
-        id="submitPassword" 
-        type="password" 
-        value={this.state.submitPassword} 
-        placeholder="password" 
-        onChange={this.handleInputChange}
-       />
-
-      <Input
-        id="controlPassword" 
-        type="password" 
-        value={this.state.controlPassword} 
-        placeholder="Retype password" 
-        onChange={this.handleInputChange}
-       />
-
-       <button type="submit">
-        Register! 
-        <i className="fa fa-fw fa-chevron-right"></i>
-       </button>
-
-
-        </form>
+				<CSSTransitionGroup 
+					transitionName="login"
+					transitionEnterTimeout={500}
+					transitionLeaveTimeout={300}>
+						{child}
+				</CSSTransitionGroup>
       </div>
 
     );

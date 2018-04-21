@@ -27,14 +27,17 @@ class App extends Component {
   };
 
   handleLogout() {
+    console.log('Logging user out');
     Auth.logout();
+    //TODO: this does not work/
+    // Will need to implement something like this: https://reacttraining.com/react-router/web/example/auth-workflow
     this.props.history.replace('/login');
   }
 
   render() {
     return (
       <div className="App">
-        <Navigation onLogout={this.handleLogout} />
+        <Navigation handleLogout={this.handleLogout} />
         {/* TODO: create high order component for randomizer (user) */}
         <Route exact path="/" component={RandomizeArea} />
         <Route path="/user" component={withAuth(RandomizeArea)} />

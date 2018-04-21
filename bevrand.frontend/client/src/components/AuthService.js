@@ -8,13 +8,24 @@ export default class AuthService {
   }
 
   //TODO: add signup / register to authservice, to make it 1 central class
+  //TODO: add encryption to this class
+  register(userName, emailAddress, passWord) {
+    return this.fetch('api/register', {
+      method: 'POST',
+      body: JSON.stringify({
+        userName,
+        emailAddress,
+        passWord
+      })
+    })
+  }
   
-  login(username, email, passWord) {
+  login(userName, emailAddress, passWord) {
     return this.fetch('/api/login', {
       method: 'POST',
       body: JSON.stringify({
-        username,
-        email,
+        userName,
+        emailAddress,
         passWord
       })
     }).then(res => {
@@ -64,6 +75,7 @@ export default class AuthService {
     }
 
     if(this.loggedIn()) {
+      console.log('Logged in? ', this.loggedIn());
       headers['Authorization'] = 'Bearer' + this.getToken()
     }
 
@@ -75,9 +87,14 @@ export default class AuthService {
       .then(response => response.json())
   }
 
-  _checkStatus(response) {
+  async _checkStatus(response) {
     if(response.status >= 200 && response.status < 300) {
       return response;
+    } else if(response.status === 400) {
+      // If response is an 400 then username / emailAddress already exists
+      let parsedResponse = await response.json();
+      let error = new Error(parsedResponse.message.split('-')[1].replace(/['"]+/g, '').replace(/[{}]/g, ""))
+      throw error;
     } else {
       let error = new Error(response.statusText);
       error.response = response;

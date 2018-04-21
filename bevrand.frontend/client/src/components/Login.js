@@ -23,8 +23,8 @@ const Modal = (props) => {
   return (
     <div className="Modal">
       <form onSubmit={props.onSubmit} onChange={props.onChange} className={"ModalForm"}>
-        <Input id="username" type="text" placeholder="Your UserName"/>
-        <Input id="email" type="email" placeholder="YourEmail@gmail.com"/>
+        <Input id="userName" type="text" placeholder="Your UserName"/>
+        <Input id="emailAddress" type="email" placeholder="YourEmail@gmail.com"/>
         <Input id="passWord" type="password" placeholder="password"/>
         <button>
           Log in <i className="fa fa-fw fa-chevron-right"></i>
@@ -55,7 +55,7 @@ class Login extends Component {
       console.log('Already logged in');
       //Redirect here to userpage
       //TODO: redirect to the user specific page
-      this.props.history(`/user`);
+      this.props.history.replace(`/user`);
     }
   }
 
@@ -67,10 +67,13 @@ class Login extends Component {
     console.log('Tried to login')
     e.preventDefault();
 
-    this.Auth.login(this.state.username, this.state.email, this.state.passWord)
+    this.Auth.login(this.state.userName, this.state.emailAddress, this.state.passWord)
       .then(res => {
+        console.log('Succesful login')
         // Redirect here to the a subset of the frontpage (with user data)
-        this.props.history.replace(`/user/${this.state.username}`);
+        // TODO: set this back to the original plan
+        // this.props.history.replace(`/user/${this.state.username}`);
+        this.props.history.replace('/user')
       })
       .catch(err => {
         alert(err);

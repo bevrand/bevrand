@@ -91,7 +91,7 @@ app.use((req, res, next) => {
   next(err);
 });
 
-// error handler of 
+// error handler of authentication module
 app.use((err, req, res, next) => {
   if(err.name === 'UnauthorizedError') {
     res.status(401).send(err);
@@ -105,6 +105,12 @@ app.use((err, req, res, next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') !== 'production' ? err : {};
+  
+  // Only log when not in production env
+  if(req.app.get('env') !== 'production') {
+    console.error(err);
+  }
+  
 
   // render the error page
   let responseStatus = err.status || err.statusCode || 500;
