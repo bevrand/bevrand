@@ -23,7 +23,8 @@ const Navigation = (props) => {
             </li>
             <li className="nav-item">
             {/* TODO: decide if href is needed here */}
-              <a className="nav-link" /*href=""*/ onClick={props.handleLogout}>Logout</a>
+              <Link className="nav-link" to='/login' onClick={props.handleLogout}>Logout</Link>
+              {/* <a className="nav-link"  onClick={props.handleLogout}>Logout</a> */}
             </li>
           </ul>
         </div>

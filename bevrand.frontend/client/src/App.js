@@ -29,9 +29,6 @@ class App extends Component {
   handleLogout() {
     console.log('Logging user out');
     Auth.logout();
-    //TODO: this does not work/
-    // Will need to implement something like this: https://reacttraining.com/react-router/web/example/auth-workflow
-    this.props.history.replace('/login');
   }
 
   render() {
