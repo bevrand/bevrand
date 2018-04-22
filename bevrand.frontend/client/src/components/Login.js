@@ -23,6 +23,7 @@ const Modal = (props) => {
   return (
     <div className="Modal">
       <form onSubmit={props.onSubmit} onChange={props.onChange} className={"ModalForm"}>
+        <h4>Please login for user specific functions</h4>
         <Input id="userName" type="text" placeholder="Your UserName"/>
         <Input id="emailAddress" type="email" placeholder="YourEmail@gmail.com"/>
         <Input id="passWord" type="password" placeholder="password"/>

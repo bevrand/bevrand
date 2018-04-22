@@ -8,7 +8,6 @@ import withAuth from './components/withAuth';
 import Register from './components/Register';
 const Auth = new AuthService();
 
-
 class App extends Component {
   constructor(props) {
     super(props);
