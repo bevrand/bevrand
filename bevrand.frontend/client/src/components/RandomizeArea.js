@@ -3,14 +3,23 @@ import Header from './Header';
 import Randomizer from './Randomizer';
 import Playlists from './PlaylistSelection';
 import TopRolledBeverages from './TopRolledBeverages';
+import AuthService from './AuthService';
 
-const getFrontpagePlaylists = async () => {
+const Auth = new AuthService();
+
+const getPlaylists = async (userName) => {
+  console.log('Received username: ', userName);
+
+  let url = userName ? `/api/playlists?username=${userName}` : '/api/frontpage';
   let body;
-  let response;
   try {
-    response = await fetch('/api/frontpage');
+    const response = await fetch(url);
     body = await response.json();
+    console.log(body);
   } catch (err) {
+    if(err.httpstatus === 404){
+      return null;
+    }
     console.error('Error: ', err);
   }
   return body;
@@ -29,14 +38,23 @@ class RandomizeArea extends Component {
 
   componentDidMount() {
     let playlists;
-    console.log(this.props);
+    let userName;
 
-    getFrontpagePlaylists()
+    if(Auth.loggedIn()){
+      console.log('User is logged in')
+      userName = Auth.getProfile().username;
+    }
+
+    getPlaylists(userName)
       .then(result => {
         playlists = result;
-        return result.find((elem) => {
-          return elem.list.toLowerCase() === 'tgif';
-        });
+        if(!playlists) {
+          return null;
+        }
+        // return result.find((elem) => {
+        //   return elem.list.toLowerCase() === 'tgif';
+        // });
+        return playlists[0];
       })
       .then(currentPlaylist => {
         this.setState({
@@ -55,6 +73,8 @@ class RandomizeArea extends Component {
   };
 
   render() {
+    let userName = Auth.loggedIn() ? Auth.getProfile().username : null;
+    let headerText;
     if (this.state.isLoading) {
       return (
         <div className="App">
@@ -62,16 +82,29 @@ class RandomizeArea extends Component {
         </div>
       )
     }
+
+    if((!this.state.playlists || !this.state.currentPlaylist) && userName) {
+      headerText = `Welcome ${userName}, to your personal randomize area!`
+        + 'Here you can create your own lists and randomize these lists.'
+        + 'No personal playlists could be found, please add them first'
+    } else if(userName) {
+      headerText = `Welcome ${userName}, to your personal randomize area!`
+      + 'Here you can create your own lists and randomize these lists.'
+    } else {
+      headerText = 'All those Beverage choices bringing you down? Feeling lucky? Let fate quench your thirst with the Beverage Randomizer.'
+        + 'Like you know, for randomizing your beverages.'
+    }
+
     return (
       <div className="RandomizeArea">
       {/* TODO: put these components in a seperate Component, like this:
         https://medium.com/@pshrmn/a-simple-react-router-v4-tutorial-7f23ff27adf */}
       {/* Passing the props (of the main logged in user to the components like so:
         https://github.com/ReactTraining/react-router/issues/5521) */}
-        <Header />
-        <Randomizer playlist={this.state.currentPlaylist} />
-        <Playlists playlists={this.state.playlists} onClick={this.changePlaylist} />
-        <TopRolledBeverages playlist={this.state.currentPlaylist} />
+        <Header headerText={headerText}/>
+        {this.state.currentPlaylist && <Randomizer playlist={this.state.currentPlaylist} />}
+        {this.state.playlists && this.state.currentPlaylist && <Playlists playlists={this.state.playlists} onClick={this.changePlaylist} />}
+        {this.state.currentPlaylist && <TopRolledBeverages playlist={this.state.currentPlaylist} />}
       </div>
     );
   }

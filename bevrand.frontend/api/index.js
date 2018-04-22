@@ -5,6 +5,8 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const exjwt = require('express-jwt');
+const rp = require ('request-promise');
+const Promise = require('bluebird');
 
 const config = require('./config');
 
@@ -62,7 +64,38 @@ const requestPipePost = (endpoint) => {
  */
 app.get('/api/frontpage', requestPipe(config.playlistApi));
 
-app.get('/api/list', requestPipe(config.playlistApi));
+app.get('/api/playlists', (req, res, next) => {
+  const { username } = req.query;
+  if(!username){
+    let err = new Error('Required parameters are not present');
+    err.status = 400;
+    return next(err);
+  }
+
+  rp(`${config.playlistApi}/api/user=${username}`)
+    .then(result => {
+      let parsedResult = JSON.parse(result);
+      return parsedResult.lists;
+    })
+    .then(result => {
+      let promises = result.map(value => {
+        return rp(`${config.playlistApi}/api/list?user=${username}list=${value}`)
+          .then(response => { 
+            return JSON.parse(response); 
+          });
+      });
+
+      Promise.all(promises).then(results => {
+        console.log('Results of promise all: ', results);
+        res.send(results);
+      })
+    })
+    .catch(err => {
+      return next(err);
+    });
+});
+
+app.get('/api/user', requestPipe(config.playlistApi));
 
 app.get('/api/redis', requestPipe(config.randomizerApi));
 
