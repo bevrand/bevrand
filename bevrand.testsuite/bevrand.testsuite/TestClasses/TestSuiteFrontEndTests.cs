@@ -330,10 +330,10 @@ namespace bevrand.testsuite.TestClasses
                         By.Id("chooseListBottomButton")));
                 
                 chooseList.Click();
-                
-                var portFolioElement = driver.FindElementByXPath(@"//*[@id=""playlists""]/div/div/div[5]/a/div/div");
+                Thread.Sleep(1000);
+                var portFolioElement = driver.FindElementByXPath(@"//*[@id=""playlists""]/div/div/div[5]/a/div");
                 portFolioElement.Click();
-                
+
                 displayName = driver.FindElementById("currentlySelectedPlaylist").Text;
                 var listName = driver.FindElementByXPath(@"//*[@id=""getstarted""]/div/div[4]/div/div/ul");
                 var drinks = listName.FindElements(By.TagName("li"));
