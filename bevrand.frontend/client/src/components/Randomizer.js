@@ -31,13 +31,13 @@ const RandomizeButton = (props) => {
   )
 };
 
-const getRandomize = async (playlist) => {
+const getRandomize = async (playlist, username) => {
   let body;
   try {
     let response = await fetch(`/api/randomize`, {
       method: 'POST',
       body: JSON.stringify({
-        user: "frontpage",
+        user: username || "frontpage",
         list: `${playlist.list}`,
         beverages: playlist.beverages
       }),
@@ -71,7 +71,7 @@ class Randomizer extends Component {
   async handleRandomize() {
     //Randomize the beverage
     try {
-      let resultBody = await getRandomize(this.props.playlist);
+      let resultBody = await getRandomize(this.props.playlist, this.props.userName);
       this.setState({
         result: resultBody
       });
