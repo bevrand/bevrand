@@ -72,14 +72,14 @@ app.get('/api/playlists', (req, res, next) => {
     return next(err);
   }
 
-  rp(`${config.playlistApi}/api/user=${username}`)
+  rp(`${config.playlistApi}/api/user?user=${username}`)
     .then(result => {
       let parsedResult = JSON.parse(result);
       return parsedResult.lists;
     })
     .then(result => {
       let promises = result.map(value => {
-        return rp(`${config.playlistApi}/api/list?user=${username}list=${value}`)
+        return rp(`${config.playlistApi}/api/list?user=${username}&list=${value}`)
           .then(response => { 
             return JSON.parse(response); 
           });
@@ -96,6 +96,8 @@ app.get('/api/playlists', (req, res, next) => {
 });
 
 app.get('/api/user', requestPipe(config.playlistApi));
+
+app.post('/api/user', requestPipePost(config.playlistApi));
 
 app.get('/api/redis', requestPipe(config.randomizerApi));
 
