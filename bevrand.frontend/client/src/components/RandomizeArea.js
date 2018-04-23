@@ -100,7 +100,7 @@ class RandomizeArea extends Component {
       {/* Passing the props (of the main logged in user to the components like so:
         https://github.com/ReactTraining/react-router/issues/5521) */}
         <Header headerText={headerText}/>
-        {this.state.currentPlaylist && <Randomizer playlist={this.state.currentPlaylist} />}
+        {this.state.currentPlaylist && <Randomizer userName={userName} playlist={this.state.currentPlaylist} />}
         {this.state.playlists && this.state.currentPlaylist && <Playlists playlists={this.state.playlists} onClick={this.changePlaylist} />}
         {this.state.currentPlaylist && <TopRolledBeverages playlist={this.state.currentPlaylist} />}
       </div>
