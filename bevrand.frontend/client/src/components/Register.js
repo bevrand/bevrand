@@ -58,11 +58,9 @@ class Register extends Component {
   }
 
   handleInputChange(e) {
-    this.setState(
-      {
+    this.setState({
         [e.target.id]: e.target.value
-      }
-    )
+    })
   }
 
   clearFields = (userName) => {

@@ -22,6 +22,9 @@ const Navigation = (props) => {
               <Link className="nav-link" to='/user'>User</Link>
             </li>
             <li className="nav-item">
+              <Link className="nav-link" to='/create'>Create</Link>
+            </li>
+            <li className="nav-item">
             {/* TODO: decide if href is needed here */}
               <Link className="nav-link" to='/login' onClick={props.handleLogout}>Logout</Link>
               {/* <a className="nav-link"  onClick={props.handleLogout}>Logout</a> */}
