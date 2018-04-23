@@ -6,6 +6,7 @@ import Login from './components/Login';
 import AuthService from './components/AuthService';
 import withAuth from './components/withAuth';
 import Register from './components/Register';
+import PlaylistCreator from './components/PlaylistCreator';
 const Auth = new AuthService();
 
 class App extends Component {
@@ -37,6 +38,7 @@ class App extends Component {
         {/* TODO: create high order component for randomizer (user) */}
         <Route exact path="/" component={RandomizeArea} />
         <Route path="/user" component={withAuth(RandomizeArea)} />
+        <Route path="/create" component={withAuth(PlaylistCreator)} />
         <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />
       </div>

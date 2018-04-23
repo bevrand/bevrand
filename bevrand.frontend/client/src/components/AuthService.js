@@ -10,12 +10,14 @@ export default class AuthService {
   //TODO: add signup / register to authservice, to make it 1 central class
   //TODO: add encryption to this class
   register(userName, emailAddress, passWord) {
-    return this.fetch('api/register', {
+    const active = true
+    return this.fetch('/api/register', {
       method: 'POST',
       body: JSON.stringify({
         userName,
         emailAddress,
-        passWord
+        passWord,
+        active
       })
     })
   }
