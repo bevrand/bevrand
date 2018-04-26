@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using bevrand.testsuite.Models;
 using bevrand.testsuite.Models.AuthenticationApi;
 using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace bevrand.testsuite.TestClasses
@@ -11,14 +13,10 @@ namespace bevrand.testsuite.TestClasses
     public class TestSuiteAuthenticationApiTests
     {
         private readonly TestSuiteFixture _fixture;
-        private int Id;
-
         
         public TestSuiteAuthenticationApiTests(TestSuiteFixture _fixture)
         {
             this._fixture = _fixture;
-            Id = 99999999;
-
         }
 
         [Fact]
@@ -271,6 +269,51 @@ namespace bevrand.testsuite.TestClasses
             var deletedResponse = _fixture.BaseApiClient.GenericDeleteObject(requestDelete);
             
             Assert.Equal(400, deletedResponse.StatusCode);
+
+        }
+        
+        [Theory]
+        [Trait("Category", "Authentication")]
+        [InlineData("notnull", "notnull")]
+        [InlineData(null, "notnull")]
+        [InlineData("notnull", null)]
+        public void CanValidateByEmailAndUserNameWithValidPassWord(string username, string email)
+        {
+            var postString = _fixture.AuthenticationUrl + "/api/Users";
+            var requestPost = new PostModelAuthentication
+            {
+                userName = Helpers.RandomNameGenerator.RandomString(25),
+                emailAddress = Helpers.RandomNameGenerator.RandomEmail(),
+                active = true,
+                passWord = "thisisatestpassword"
+            };
+            
+            var response =
+                _fixture.BaseApiClient.GenericPostObject<PostModelResponse>(postString, requestPost).Result as
+                    PostModelResponse;
+            
+            Assert.Equal(201, response.StatusCode);
+            if (username != null)
+            {
+                username = requestPost.userName.ToLowerInvariant();
+            }
+
+            if (email != null)
+            {
+                email = requestPost.emailAddress;
+            }
+            var requeststring = _fixture.AuthenticationUrl + "/api/Validate";
+            var requestValidate = new ValidateUser
+            {
+                emailAddress = email,
+                userName = username,
+                passWord = requestPost.passWord
+            };
+
+            var resp = _fixture.AuthenicationApi.PostAValidation(requeststring, requestValidate).Result as ValidatePostResult;
+            
+            Assert.Equal(200, resp.StatusCode);
+            Assert.True(resp.Valid);
 
         }
     }

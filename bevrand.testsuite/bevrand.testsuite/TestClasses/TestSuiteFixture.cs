@@ -12,6 +12,7 @@ namespace bevrand.testsuite.TestClasses
         private ServiceCalls ServiceCalls { get; }
         public MongoApiClient MongoApi { get; }
         public BaseApiClient BaseApiClient { get; }
+        public AuthenticationApiClient AuthenicationApi { get; }
         public string AuthenticationUrl { get; }
         public RandomizerApiClient RandomizerApi { get; }
         public string RandomizerUrl { get; }
@@ -25,6 +26,7 @@ namespace bevrand.testsuite.TestClasses
             MongoApi = new MongoApiClient(ServiceCalls.MongoApiService);
             RandomizerApi = new RandomizerApiClient();
             RandomizerUrl = ServiceCalls.RandomizerApiService;
+            AuthenicationApi = new AuthenticationApiClient();
             AuthenticationUrl = ServiceCalls.AuthenticationApiService;
             DriverCapabilities = DesiredCapabilities.Chrome();
         }
