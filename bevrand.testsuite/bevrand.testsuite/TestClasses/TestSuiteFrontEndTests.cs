@@ -301,6 +301,7 @@ namespace bevrand.testsuite.TestClasses
             }
         }
         
+        
         [Fact]
         [Trait("Category", "FrontEnd")]
         public void GetAListFromMongoApiAndAssertAllDrinksArePresentAnotherList()
@@ -321,8 +322,6 @@ namespace bevrand.testsuite.TestClasses
                 var letsGetStarted =
                     wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("letsGetStartedButton")));
                 letsGetStarted.Click();
-
-
               //  driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(100);
                 Thread.Sleep(1000);
                 var chooseList =
@@ -331,7 +330,7 @@ namespace bevrand.testsuite.TestClasses
                 
                 chooseList.Click();
                 Thread.Sleep(1000);
-                var portFolioElement = driver.FindElementByXPath(@"//*[@id=""playlists""]/div/div/div[5]/a/div");
+                var portFolioElement = driver.FindElementByXPath(@"//*[@id=""playlists""]/div/div/div[4]/a/div");
                 portFolioElement.Click();
 
                 displayName = driver.FindElementById("currentlySelectedPlaylist").Text;
