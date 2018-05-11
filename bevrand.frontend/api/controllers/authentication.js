@@ -5,15 +5,13 @@ const debug = require('debug')('controllers:authentication');
 const handleLogin = (url, secret, expirationTime) => {
   return (req, res, next) => {
     const { userName, passWord, emailAddress } = req.body;
-    
-    //TODO: If email address is provided, we first need to retrieve the username and id
+  
     if(!(userName || emailAddress) || !passWord) {
       let err = new Error('Required body elements are not present');
       err.status = 400;
       return next(err);
     }
-    //TODO: Add password hashing on client side, we will compare the hashed password
-    // with the stored hashed password
+    
     rp({
       method: 'POST',
       uri: `${url}/api/Validate`,

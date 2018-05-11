@@ -55,7 +55,6 @@ class Login extends Component {
     if(this.Auth.loggedIn()) {
       console.log('Already logged in');
       //Redirect here to userpage
-      //TODO: redirect to the user specific page
       this.props.history.replace(`/user`);
     }
   }
@@ -72,8 +71,6 @@ class Login extends Component {
       .then(res => {
         console.log('Succesful login')
         // Redirect here to the a subset of the frontpage (with user data)
-        // TODO: set this back to the original plan
-        // this.props.history.replace(`/user/${this.state.username}`);
         this.props.history.replace('/user')
       })
       .catch(err => {

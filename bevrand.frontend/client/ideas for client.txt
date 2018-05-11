@@ -5,3 +5,7 @@ example: https://getbootstrap.com/docs/4.0/examples/cover/
 with to the side the corresponding playlist items.
 example: https://getbootstrap.com/docs/4.0/components/carousel/#with-captions
 
+3. Animations to Randomization (Could be a small spring when result is there)
+with build up to actual randomize
+
+4. Simpler interface, with minimal distractions (no nav bar)
