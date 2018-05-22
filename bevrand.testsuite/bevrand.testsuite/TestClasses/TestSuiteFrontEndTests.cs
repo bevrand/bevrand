@@ -306,10 +306,10 @@ namespace bevrand.testsuite.TestClasses
         [Trait("Category", "FrontEnd")]
         public void GetAListFromMongoApiAndAssertAllDrinksArePresentAnotherList()
         {            
-            var response = _fixture.MongoApi.FrontPageGetWithoutList() as FrontPageListResponse;
+            var responshttps://www.google.com/imgres?imgurl=https%3A%2F%2Fventurebeat.com%2Fwp-content%2Fuploads%2F2017%2F12%2Fmicrosoft-azure-new-logo-2017.png%3Ffit%3D578%252C334%26strip%3Dall&imgrefurl=https%3A%2F%2Fventurebeat.com%2F2018%2F03%2F07%2Fmicrosoft-updates-azure-services-for-sql-server-mysql-and-postgresql%2F&docid=tKNNlGzwbcT5AM&tbnid=oyBmXVbNTEPe8M%3A&vet=10ahUKEwia47Phv9zaAhVDZlAKHf-sBukQMwhLKAIwAg..i&w=578&h=334&bih=1327&biw=1237&q=azure&ved=0ahUKEwia47Phv9zaAhVDZlAKHf-sBukQMwhLKAIwAg&iact=mrc&uact=8e = _fixture.MongoApi.FrontPageGetWithoutList() as FrontPageListResponse;
 
             Assert.Equal(200, response.StatusCode);
-
+https://www.google.com/imgres?imgurl=https%3A%2F%2Fcdn-images-1.medium.com%2Fmax%2F1600%2F0*Hl-1BN46JLiTh8UM.png&imgrefurl=https%3A%2F%2Frominirani.com%2Fdocker-swarm-tutorial-b67470cf8872&docid=LrxGcOalWl3VNM&tbnid=qvE_dChmeT3F3M%3A&vet=10ahUKEwjU06qywdzaAhVFU1AKHQG-BPUQMwhOKAAwAA..i&w=1500&h=1478&bih=1327&biw=1237&q=docker%20swarm&ved=0ahUKEwjU06qywdzaAhVFU1AKHQG-BPUQMwhOKAAwAA&iact=mrc&uact=8
             var beverages = new List<string>();
             string displayName;
 
