@@ -1,14 +1,13 @@
 import decode from 'jwt-decode';
 
 export default class AuthService {
+    //TODO: add password hashing to this class
   constructor() {
     this.fetch = this.fetch.bind(this);
     this.login = this.login.bind(this);
     this.getProfile = this.getProfile.bind(this);
   }
 
-  //TODO: add signup / register to authservice, to make it 1 central class
-  //TODO: add encryption to this class
   register(userName, emailAddress, passWord) {
     const active = true
     return this.fetch('/api/register', {

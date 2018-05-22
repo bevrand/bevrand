@@ -35,7 +35,6 @@ class App extends Component {
     return (
       <div className="App">
         <Navigation handleLogout={this.handleLogout} />
-        {/* TODO: create high order component for randomizer (user) */}
         <Route exact path="/" component={RandomizeArea} />
         <Route path="/user" component={withAuth(RandomizeArea)} />
         <Route path="/create" component={withAuth(PlaylistCreator)} />
