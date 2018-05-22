@@ -12,7 +12,7 @@ branches:
   - develop
 
 notifications:
-  slack: "$TRAVIS_SLACK"
+  slack: bevrand:JiQ1Phpayqdnsbi2pdYvdqhJ
 
 services:
   - docker
