@@ -66,23 +66,20 @@ class TopRolledBeverages extends Component {
     }), () => {this.handleRedisHistory()});
   }
 
-  //TODO: split this component up in several smaller components
   render() {
     let playlist = this.props.playlist;
     let arrayListName = `${playlist.user.toString().toLowerCase()}:${playlist.list.toString().toLowerCase()}`
     let textValue;
-    if(this.state.toggle)
-    {
+    if(this.state.toggle) {
         textValue = "The Top Five"
     }
-    else{
+    else {
       textValue = "All drinks in this list"
     }
 
     let someArray;
-    if(this.state.result != null)
-    {
-    someArray = this.state.result[arrayListName]
+    if(this.state.result != null) {
+      someArray = this.state.result[arrayListName]
     }
     return (
       <section className="bg-primary" id="topFiveSwitch">
