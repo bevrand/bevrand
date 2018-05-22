@@ -34,7 +34,7 @@ script:
   - dotnet test
 
 after_success:
-  - cat "$DOCKERPASSWORD" | docker login --username bevrand --password-stdin 
+  - echo "$DOCKERPASSWORD" | docker login -u "$DOCKERUSER" --password-stdin 
   - cd ..
   - pwd
   - ./after_success_script.sh
