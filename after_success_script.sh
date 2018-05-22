@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+echo "$DOCKERPASSWORD" | docker login -u "$DOCKERUSER" --password-stdin 
+
 DOCKERIMAGES=$(docker images | grep bevrand_  | awk '{ print $1} ' )
 
 for image in $DOCKERIMAGES; do
