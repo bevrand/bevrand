@@ -11,6 +11,9 @@ branches:
   - master
   - develop
 
+notifications:
+  slack: "$TRAVIS_SLACK"
+
 services:
   - docker
 
