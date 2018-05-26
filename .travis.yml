@@ -11,6 +11,9 @@ branches:
   - master
   - develop
 
+notifications:
+  slack: bevrand:JiQ1Phpayqdnsbi2pdYvdqhJ
+
 services:
   - docker
 
@@ -24,6 +27,7 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
   - docker-compose --version
   - docker-compose build
+  - docker images
   - docker-compose up -d
   - docker ps -a
 
@@ -33,8 +37,11 @@ script:
   - dotnet test
 
 after_success:
-  - "$REACTFRONTEND_TRIGGER"
+  - cd ..
+  - pwd
+  - ./after_success_script.sh
+ # - "$REACTFRONTEND_TRIGGER"
  # - "$MONGOAPI_TRIGGER"
-  - "$RANDOMIZERAPI_TRIGGER"
-  - "$AUTHENTICATIONAPI_TRIGGER"
-  - "$PLAYLISTAPI_TRIGGER"
+ # - "$RANDOMIZERAPI_TRIGGER"
+ # - "$AUTHENTICATIONAPI_TRIGGER"
+ # - "$PLAYLISTAPI_TRIGGER"
