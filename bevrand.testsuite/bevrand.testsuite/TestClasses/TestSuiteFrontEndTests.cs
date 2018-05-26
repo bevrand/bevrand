@@ -309,7 +309,6 @@ namespace bevrand.testsuite.TestClasses
             var response = _fixture.MongoApi.FrontPageGetWithoutList() as FrontPageListResponse;
 
             Assert.Equal(200, response.StatusCode);
-
             var beverages = new List<string>();
             string displayName;
 
