@@ -9,7 +9,6 @@ dist: trusty
 branches:
   only:
   - master
-  - develop
 
 notifications:
   slack: bevrand:JiQ1Phpayqdnsbi2pdYvdqhJ

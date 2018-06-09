@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using bevrand.authenticationapi.DAL.Models;
+using bevrand.authenticationapi.Repository.Models;
 
 namespace bevrand.authenticationapi.Repository
 {

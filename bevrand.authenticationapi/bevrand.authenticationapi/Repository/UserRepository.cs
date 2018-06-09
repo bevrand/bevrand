@@ -2,6 +2,7 @@
 using System.Linq;
 using bevrand.authenticationapi.Data;
 using bevrand.authenticationapi.DAL.Models;
+using bevrand.authenticationapi.Repository.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace bevrand.authenticationapi.Repository

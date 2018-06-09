@@ -1,14 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using bevrand.authenticationapi.BLL;
-using bevrand.authenticationapi.Data;
-using bevrand.authenticationapi.DAL;
-using bevrand.authenticationapi.DAL.Models;
-using bevrand.authenticationapi.Models;
-using bevrand.authenticationapi.Repository;
+﻿using bevrand.authenticationapi.DAL.Models;
 using bevrand.authenticationapi.Services;
-using bevrand.authenticationapi.ViewModels;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
