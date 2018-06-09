@@ -110,6 +110,7 @@ ENV/
 # .tfstate files
 *.tfstate
 *.tfstate.*
+outfile
 
 # Crash log files
 crash.log
