@@ -5405,7 +5405,6 @@
           "BCrypt.Net-Core": "1.4.0",
           "Microsoft.AspNetCore.All": "2.0.0",
           "Microsoft.AspNetCore.JsonPatch": "2.0.0",
-          "Microsoft.NETCore.App": "2.0.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "2.0.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL.Design": "2.0.0-preview1",
           "Swashbuckle.AspNetCore": "1.1.0",
@@ -13970,7 +13969,7 @@
         "/usr/share/dotnet/sdk/NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "/home/joerivrij/.nuget/NuGet/NuGet.Config"
+        "/home/joerivrij/.config/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.0"

@@ -5,6 +5,7 @@ using bevrand.authenticationapi.DAL.Models;
 using bevrand.authenticationapi.Middleware;
 using bevrand.authenticationapi.Models;
 using bevrand.authenticationapi.Repository;
+using bevrand.authenticationapi.Repository.Models;
 using bevrand.authenticationapi.Services.Interfaces;
 
 namespace bevrand.authenticationapi.Services
