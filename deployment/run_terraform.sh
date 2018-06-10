@@ -1,8 +1,7 @@
 #!/usr/bin/env sh
 
 
-../terraform init
+../terraform init -backend-config="storage_account_name=$storage_account_name" -backend-config="access_key=$access_key"
 ../terraform taint digitalocean_droplet.docker
 ../terraform plan -out outfile
 ../terraform apply -auto-approve outfile
-
