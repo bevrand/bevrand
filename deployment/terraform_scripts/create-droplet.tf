@@ -9,7 +9,10 @@ variable "volume_id_data" {}
 
 variable "do_token" {}
 
-variable "ssh_key_id" {}
+variable "docker_droplet_name" {
+  default = "docker-terraform"
+}
+
 
 variable "dev1_ssh_key_id" {}
 
@@ -85,20 +88,38 @@ resource "digitalocean_floating_ip" "docker" {
   region     = "${digitalocean_droplet.docker.region}"
 }
 
+#resource "null_resource" "generate_ssh_keys" {
+#  provisioner "local-exec" {
+#    command = "ssh-keygen -t ed25519 -f testingkey -N ''"
+#    interpreter = ["sh"]
+#  }
+#}
+
+resource "tls_private_key" "terraformusersshkey" {
+  algorithm   = "RSA"
+}
+
+
+# Add key to digital ocean !depend on generated ssh key
+# Create a new SSH key
+resource "digitalocean_ssh_key" "default" {
+  name       = "terraformuser generated key"
+  public_key = "${tls_private_key.terraformusersshkey.public_key_openssh}"
+}
 resource "digitalocean_droplet" "docker" {
   image      = "docker"
-  name       = "docker-terraform"
+  name       = "${var.docker_droplet_name}"
   region     = "ams3"
   size       = "1gb"
-  ssh_keys   = ["${var.ssh_key_id}", "${var.dev1_ssh_key_id}", "${var.dev2_ssh_key_id}", "${var.dev3_ssh_key_id}"]
-  user_data  = "${file("cloud-config.conf")}"
+  ssh_keys   = ["${digitalocean_ssh_key.default.fingerprint}", "${var.dev1_ssh_key_id}", "${var.dev2_ssh_key_id}", "${var.dev3_ssh_key_id}"]
+  user_data  = "${replace(file("cloud-config.conf"), "__sshkeygoeshere__", tls_private_key.terraformusersshkey.public_key_openssh)}"
   monitoring = true
   tags       = ["${digitalocean_tag.allow_inbound_cloudflare.name}", "${digitalocean_tag.sshmanagement.name}", "${digitalocean_tag.outboundall.name}"]
   volume_ids = ["${var.volume_id_data}"]
 
   connection {
     user        = "terraformuser"
-    private_key = "${var.terraformuser_private_key}"
+    private_key = "${tls_private_key.terraformusersshkey.private_key_pem}"
   }
 
   provisioner "remote-exec" {
@@ -111,6 +132,7 @@ resource "digitalocean_droplet" "docker" {
       "sudo chmod +x /usr/local/bin/docker-compose",
       "docker-compose --version",
       "sudo usermod -aG docker $USER",
+	  "sudo service ssh restart", #because we have the AllowUsers only on developer, this will permanently lock us out. Only do as the last thing
     ]
   }
 }
