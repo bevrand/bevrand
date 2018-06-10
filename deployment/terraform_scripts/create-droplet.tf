@@ -1,6 +1,13 @@
-variable "do_token" {}
+terraform {
+  backend "azurerm" {
+    container_name       = "tfstate"
+    key                  = "prod.terraform.tfstate"
+  }
+}
 
-variable "key_path" {}
+variable "volume_id_data" {}
+
+variable "do_token" {}
 
 variable "ssh_key_id" {}
 
@@ -10,6 +17,8 @@ variable "dev2_ssh_key_id" {}
 
 variable "dev3_ssh_key_id" {}
 
+variable "terraformuser_private_key" {}
+
 provider "digitalocean" {
   token = "${var.do_token}"
 }
@@ -18,7 +27,7 @@ module "firewall_inbound_cloudflare" {
   source = "andrewsomething/firewall-cloudflare/digitalocean"
 
   name = "inbound-cloudflare"
-  tags = ["allow_inbound_cloudflare"]
+  tags = ["${digitalocean_tag.allow_inbound_cloudflare.name}"]
 }
 
 resource "digitalocean_tag" "allow_inbound_cloudflare" {
@@ -31,7 +40,6 @@ resource "digitalocean_tag" "sshmanagement" {
 
 resource "digitalocean_firewall" "sshmanagementfirewall" {
   name       = "sshmanagementfirewall"
-  depends_on = ["digitalocean_tag.sshmanagement"]
 
   inbound_rule = [
     {
@@ -41,7 +49,7 @@ resource "digitalocean_firewall" "sshmanagementfirewall" {
     },
   ]
 
-  tags = ["sshmanagement"]
+  tags = ["${digitalocean_tag.sshmanagement.name}"]
 }
 
 resource "digitalocean_tag" "outboundall" {
@@ -50,7 +58,6 @@ resource "digitalocean_tag" "outboundall" {
 
 resource "digitalocean_firewall" "outboundfirewall" {
   name       = "outboundfirewall"
-  depends_on = ["digitalocean_tag.outboundall"]
 
   outbound_rule = [
     {
@@ -70,7 +77,7 @@ resource "digitalocean_firewall" "outboundfirewall" {
     },
   ]
 
-  tags = ["outboundall"]
+  tags = ["${digitalocean_tag.outboundall.name}"]
 }
 
 resource "digitalocean_floating_ip" "docker" {
@@ -87,11 +94,11 @@ resource "digitalocean_droplet" "docker" {
   user_data  = "${file("cloud-config.conf")}"
   monitoring = true
   tags       = ["${digitalocean_tag.allow_inbound_cloudflare.name}", "${digitalocean_tag.sshmanagement.name}", "${digitalocean_tag.outboundall.name}"]
-  volume_ids = ["c8ace9bc-6bfc-11e8-bbbe-0242ac114a0a"]
+  volume_ids = ["${var.volume_id_data}"]
 
   connection {
     user        = "terraformuser"
-    private_key = "${file(var.key_path)}"
+    private_key = "${var.terraformuser_private_key}"
   }
 
   provisioner "remote-exec" {
