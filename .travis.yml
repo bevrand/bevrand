@@ -43,7 +43,6 @@ script:
   - dotnet test
 
 after_success:
-  - echo $TF_VAR_terraformuser_private_key
   - cd ../deployment
   - pwd
   - sh ./push_images.sh
