@@ -1,12 +1,14 @@
 variable "do_token" {}
 
-variable "key_path" {
-  default = "/home/joerivrij/.ssh/id_rsa"
-}
+variable "key_path" {}
 
-variable "ssh_key_id" {
-  default = "fb:9d:2f:52:96:0f:22:4a:44:af:40:99:ee:91:a1:ad"
-}
+variable "ssh_key_id" {}
+
+variable "dev1_ssh_key_id" {}
+
+variable "dev2_ssh_key_id" {}
+
+variable "dev3_ssh_key_id" {}
 
 provider "digitalocean" {
   token = "${var.do_token}"
@@ -81,7 +83,7 @@ resource "digitalocean_droplet" "docker" {
   name       = "docker-terraform"
   region     = "ams3"
   size       = "1gb"
-  ssh_keys   = ["${var.ssh_key_id}"]
+  ssh_keys   = ["${var.ssh_key_id}", "${var.dev1_ssh_key_id}", "${var.dev2_ssh_key_id}", "${var.dev3_ssh_key_id}"]
   user_data  = "${file("cloud-config.conf")}"
   monitoring = true
   tags       = ["${digitalocean_tag.allow_inbound_cloudflare.name}", "${digitalocean_tag.sshmanagement.name}", "${digitalocean_tag.outboundall.name}"]
