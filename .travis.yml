@@ -10,6 +10,12 @@ branches:
   only:
   - master
 
+#addons:
+#  sonarcloud:
+#    organization: "beveragerandomizer"
+#    token:
+#      secure: "$SONAR_TOKEN"
+
 notifications:
   slack: bevrand:JiQ1Phpayqdnsbi2pdYvdqhJ
 
@@ -31,6 +37,7 @@ before_install:
   - docker ps -a
 
 script:
+ # - sonar-scanner
   - cd ./bevrand.testsuite
   - pwd
   - dotnet test
