@@ -38,7 +38,7 @@ env:
 #  - docker ps -a
 
 script:
-  - sonar-scanner
+  - sonar-scanner -X
  # - cd ./bevrand.testsuite
  # - pwd
  # - dotnet test
