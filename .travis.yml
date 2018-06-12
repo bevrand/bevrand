@@ -15,7 +15,7 @@ addons:
   sonarcloud:
     organization: "beveragerandomizer"
     token:
-      secure: "$SONAR_TOKEN"
+      secure: $SONAR_TOKEN
 
 notifications:
   slack: bevrand:JiQ1Phpayqdnsbi2pdYvdqhJ
