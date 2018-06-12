@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f Bevrand-PROD-newdroplet.yml
+    kompose.version: 1.12.0 (0ab07be)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: playlistapi
+  name: playlistapi
+spec:
+  ports:
+  - name: "4550"
+    port: 4550
+    targetPort: 5000
+  selector:
+    io.kompose.service: playlistapi
+status:
+  loadBalancer: {}
