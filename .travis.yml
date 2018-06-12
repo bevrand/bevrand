@@ -32,6 +32,7 @@ env:
 #  - chmod +x docker-compose
 #  - sudo mv docker-compose /usr/local/bin
 #  - docker-compose --version
+#  - docker --version
 #  - docker-compose build
 #  - docker images
 #  - docker-compose up -d
