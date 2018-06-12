@@ -13,7 +13,7 @@ branches:
 
 addons:
   sonarcloud:
-    organization: "beveragerandomizer"
+    organization: "bevrand"
     token:
       secure: $SONAR_TOKEN
 
