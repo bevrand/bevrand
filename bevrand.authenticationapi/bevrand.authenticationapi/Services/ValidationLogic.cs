@@ -21,7 +21,6 @@ namespace bevrand.authenticationapi.Services
 
         public bool CheckIfPassWordIsCorrect(ValidateUserModel validate)
         {
-            bool validPassword = false;
             var userFromDatabase = GetIdFromEmailOrUsername(validate);
 
             return PasswordHasher.DoesPasswordMatch(validate.PassWord, userFromDatabase.PassWord);
