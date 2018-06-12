@@ -132,6 +132,8 @@ resource "digitalocean_droplet" "docker" {
       "sudo chmod +x /usr/local/bin/docker-compose",
       "docker-compose --version",
       "sudo usermod -aG docker $USER",
+	  "cd /mnt/datavolumedocker/deployment/",
+	  "sudo docker-compose up -d",
 	  "sudo service ssh restart", #because we have the AllowUsers only on developer, this will permanently lock us out. Only do as the last thing
     ]
   }
