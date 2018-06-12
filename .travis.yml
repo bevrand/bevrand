@@ -9,7 +9,6 @@ dist: trusty
 branches:
   only:
   - master
-  - develop
 
 addons:
   sonarcloud:
@@ -26,29 +25,29 @@ services:
 env:
   - DOCKER_COMPOSE_VERSION=1.8.0
 
-#before_install:
-#  - sudo rm /usr/local/bin/docker-compose
-#  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-#  - chmod +x docker-compose
-#  - sudo mv docker-compose /usr/local/bin
-#  - docker-compose --version
-#  - docker --version
-#  - docker-compose build
-#  - docker images
-#  - docker-compose up -d
-#  - docker ps -a
+before_install:
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+  - docker-compose --version
+  - docker --version
+  - docker-compose build
+  - docker images
+  - docker-compose up -d
+  - docker ps -a
 
 script:
-  - sonar-scanner -X
- # - cd ./bevrand.testsuite
- # - pwd
- # - dotnet test
+  - sonar-scanner
+  - cd ./bevrand.testsuite
+  - pwd
+  - dotnet test
 
 after_success:
   - cd ../deployment
   - pwd
-#  - sh ./push_images.sh
-#  - sh ./init_terraform.sh
-#  - cd ./terraform_scripts
-#  - pwd
-#  - sh ../run_terraform.sh
+  - sh ./push_images.sh
+  - sh ./init_terraform.sh
+  - cd ./terraform_scripts
+  - pwd
+  - sh ../run_terraform.sh
