@@ -46,7 +46,7 @@ script:
  # - cd ./bevrand.testsuite
  # - pwd
  # - dotnet test
-  - cd ../deployment
+  - cd ./deployment
   - ls
   - python3 validate_backend_test_results.py
 
