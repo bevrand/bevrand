@@ -12,8 +12,6 @@ dist: trusty
 branches:
   only:
   - master
-  - develop
-
 addons:
   sonarcloud:
     organization: "bevrand"
@@ -43,18 +41,13 @@ before_install:
 
 script:
   - sonar-scanner
- # - cd ./bevrand.testsuite
- # - pwd
- # - dotnet test
   - cd ./deployment
-  - ls
   - python3 validate_backend_test_results.py
 
 after_success:
- # - cd ../deployment
- # - pwd
- # - sh ./push_images.sh
- # - sh ./init_terraform.sh
- # - cd ./terraform_scripts
- # - pwd
- # - sh ../run_terraform.sh
+  - pwd
+  - sh ./push_images.sh
+  - sh ./init_terraform.sh
+  - cd ./terraform_scripts
+  - pwd
+  - sh ../run_terraform.sh
