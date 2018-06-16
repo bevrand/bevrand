@@ -13,3 +13,5 @@
 /home/joerivrij/Projects/bevrand/bevrand.authenticationapi/bevrand.authenticationapi.tests/obj/Debug/netcoreapp2.0/bevrand.authenticationapi.tests.AssemblyInfo.cs
 /home/joerivrij/Projects/bevrand/bevrand.authenticationapi/bevrand.authenticationapi.tests/obj/Debug/netcoreapp2.0/bevrand.authenticationapi.tests.dll
 /home/joerivrij/Projects/bevrand/bevrand.authenticationapi/bevrand.authenticationapi.tests/obj/Debug/netcoreapp2.0/bevrand.authenticationapi.tests.pdb
+/home/joerivrij/Projects/bevrand/bevrand.authenticationapi/bevrand.authenticationapi.tests/obj/Debug/netcoreapp2.0/bevrand.authenticationapi.tests.csprojResolveAssemblyReference.cache
+/home/joerivrij/Projects/bevrand/bevrand.authenticationapi/bevrand.authenticationapi.tests/obj/Debug/netcoreapp2.0/bevrand.authenticationapi.tests.csproj.CopyComplete

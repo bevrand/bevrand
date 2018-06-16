@@ -27,7 +27,7 @@ namespace bevrand.testsuite.TestClasses
         [Trait("Category", "FrontEnd")]
         public void SeeIfTitleOfPageIsCorrect()
         {
-            using (var driver = new RemoteWebDriver(new Uri("http://0.0.0.0:4444/wd/hub"), _fixture.DriverCapabilities))
+            using (var driver = new RemoteWebDriver(new Uri(_fixture.SeleniumHubUrl), _fixture.DriverCapabilities))
             {
                 driver.Navigate().GoToUrl("http://nodefrontend:5000");
                 var title = driver.Title;
@@ -41,7 +41,7 @@ namespace bevrand.testsuite.TestClasses
         [InlineData("currentlySelectedPlaylist")]
         public void TopPageButtonsScrollDown(string button)
         {
-            using (var driver = new RemoteWebDriver(new Uri("http://0.0.0.0:4444/wd/hub"), _fixture.DriverCapabilities))
+            using (var driver = new RemoteWebDriver(new Uri(_fixture.SeleniumHubUrl), _fixture.DriverCapabilities))
             {
                 driver.Navigate().GoToUrl("http://nodefrontend:5000");
                 var wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(5000));
@@ -58,7 +58,7 @@ namespace bevrand.testsuite.TestClasses
         [Trait("Category", "FrontEnd")]
         public void WhatWasRandomizedButtonScrollsDown()
         {
-            using (RemoteWebDriver driver = new RemoteWebDriver(new Uri("http://0.0.0.0:4444/wd/hub"), _fixture.DriverCapabilities))
+            using (RemoteWebDriver driver = new RemoteWebDriver(new Uri(_fixture.SeleniumHubUrl), _fixture.DriverCapabilities))
             {
                 driver.Navigate().GoToUrl("http://nodefrontend:5000");
                 var wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(5000));
@@ -81,7 +81,7 @@ namespace bevrand.testsuite.TestClasses
             const string expectedText = "you have randomized:";
 
             using (var driver =
-                new RemoteWebDriver(new Uri("http://0.0.0.0:4444/wd/hub"), _fixture.DriverCapabilities))
+                new RemoteWebDriver(new Uri(_fixture.SeleniumHubUrl), _fixture.DriverCapabilities))
             {
                 driver.Navigate().GoToUrl("http://nodefrontend:5000");
                 var wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(5000));
@@ -121,7 +121,7 @@ namespace bevrand.testsuite.TestClasses
             var rolledBeverages = new List<string>();
 
             using (var driver =
-                new RemoteWebDriver(new Uri("http://0.0.0.0:4444/wd/hub"), _fixture.DriverCapabilities))
+                new RemoteWebDriver(new Uri(_fixture.SeleniumHubUrl), _fixture.DriverCapabilities))
             {
                 driver.Navigate().GoToUrl("http://nodefrontend:5000");
                 var wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(5000));
@@ -169,7 +169,7 @@ namespace bevrand.testsuite.TestClasses
         {
 
             using (var driver =
-                new RemoteWebDriver(new Uri("http://0.0.0.0:4444/wd/hub"), _fixture.DriverCapabilities))
+                new RemoteWebDriver(new Uri(_fixture.SeleniumHubUrl), _fixture.DriverCapabilities))
             {
                 driver.Navigate().GoToUrl("http://nodefrontend:5000");
                 var wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(5000));
@@ -225,7 +225,7 @@ namespace bevrand.testsuite.TestClasses
         public void SwitchFromTopFiveButtonIsClickable()
         {
             using (var driver =
-                new RemoteWebDriver(new Uri("http://0.0.0.0:4444/wd/hub"), _fixture.DriverCapabilities))
+                new RemoteWebDriver(new Uri(_fixture.SeleniumHubUrl), _fixture.DriverCapabilities))
             {
                 //driver.Navigate().GoToUrl("http://0.0.0.0:4540/");
                 driver.Navigate().GoToUrl("http://nodefrontend:5000");
@@ -268,7 +268,7 @@ namespace bevrand.testsuite.TestClasses
             var beverages = new List<string>();
             string displayName;
 
-            using (var driver = new RemoteWebDriver(new Uri("http://0.0.0.0:4444/wd/hub"), _fixture.DriverCapabilities))
+            using (var driver = new RemoteWebDriver(new Uri(_fixture.SeleniumHubUrl), _fixture.DriverCapabilities))
             {
                 driver.Navigate().GoToUrl("http://nodefrontend:5000");
                 var wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(5000));
@@ -312,7 +312,7 @@ namespace bevrand.testsuite.TestClasses
             var beverages = new List<string>();
             string displayName;
 
-            using (var driver = new RemoteWebDriver(new Uri("http://0.0.0.0:4444/wd/hub"), _fixture.DriverCapabilities))
+            using (var driver = new RemoteWebDriver(new Uri(_fixture.SeleniumHubUrl), _fixture.DriverCapabilities))
        //     using(var driver = new ChromeDriver())
             {
                 driver.Navigate().GoToUrl("http://nodefrontend:5000");

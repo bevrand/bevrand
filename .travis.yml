@@ -1,14 +1,18 @@
 sudo: required
 
-language: csharp
-mono: none
-dotnet: 2.0.0
+#language: csharp
+#mono: none
+#dotnet: 2.0.0
+language: python
+python:
+  - "3.6" 
 dist: trusty
 
 #safelist
 branches:
   only:
   - master
+  - develop
 
 addons:
   sonarcloud:
@@ -39,13 +43,16 @@ before_install:
 
 script:
   - sonar-scanner
-  - cd ./bevrand.testsuite
-  - pwd
-  - dotnet test
-
-after_success:
+ # - cd ./bevrand.testsuite
+ # - pwd
+ # - dotnet test
   - cd ../deployment
   - pwd
+  - python3 validate_backend_test_results.py
+
+after_success:
+ # - cd ../deployment
+ # - pwd
   - sh ./push_images.sh
   - sh ./init_terraform.sh
   - cd ./terraform_scripts
