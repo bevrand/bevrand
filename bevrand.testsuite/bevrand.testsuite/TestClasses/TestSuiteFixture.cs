@@ -17,6 +17,7 @@ namespace bevrand.testsuite.TestClasses
         public RandomizerApiClient RandomizerApi { get; }
         public string RandomizerUrl { get; }
         public DesiredCapabilities DriverCapabilities { get; }
+        public string SeleniumHubUrl { get; }
 
         public TestSuiteFixture()
         {
@@ -29,17 +30,18 @@ namespace bevrand.testsuite.TestClasses
             AuthenicationApi = new AuthenticationApiClient();
             AuthenticationUrl = ServiceCalls.AuthenticationApiService;
             DriverCapabilities = DesiredCapabilities.Chrome();
+            SeleniumHubUrl = ServiceCalls.SeleniumHubService;
         }
 
         private void EnvBuilder()
         {
-            var environmentName = "development";
-
+            var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            Console.WriteLine(environmentName);
+            
             const string BaseFilePath = @"Settings/";
-            dynamic assemblyType = typeof(TestSuiteFixture);
-            string assemblyLocation = assemblyType.Assembly.Location;
+            var assemblyType = typeof(TestSuiteFixture);
+            var assemblyLocation = assemblyType.Assembly.Location;
             var solutionPath = Path.GetDirectoryName(assemblyLocation);
-         //   solutionPath = "/home/joerivrij/Projects/bevrand/bevrand.testsuite/bevrand.testsuite";
             var settingsPath = Path.Combine(solutionPath, BaseFilePath);
 
 

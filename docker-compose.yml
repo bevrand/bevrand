@@ -88,7 +88,24 @@ services:
        - dockermongo
        - dockergres
 
+  testsuite:
+    container_name: backend_tests
+    build: ./bevrand.testsuite/bevrand.testsuite
+    depends_on:
+      - randomizerapi
+      - playlistapi
+      - authenticationapi
+      - nodefrontend
+    links:
+      - randomizerapi
+      - playlistapi
+      - authenticationapi
+      - nodefrontend
+    environment:
+      - ASPNETCORE_ENVIRONMENT="Test"
+
   selenium-hub:
+    container_name: selenium
     image: selenium/hub
     ports:
       - 4444:4444

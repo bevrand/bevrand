@@ -7,6 +7,7 @@ using bevrand.authenticationapi.Middleware;
 using bevrand.authenticationapi.Models;
 using bevrand.authenticationapi.Repository;
 using bevrand.authenticationapi.Repository.Models;
+using bevrand.authenticationapi.Services.Extensions;
 using bevrand.authenticationapi.ViewModels;
 using Microsoft.AspNetCore.JsonPatch;
 
@@ -102,14 +103,15 @@ namespace bevrand.authenticationapi.Services
         public void CreateANewUser(PostUserModel user)
         {
 
-            CheckForNulls(user.UserName, user.EmailAddress, user.PassWord);
-            CheckIfEmailAndUserExistAndAreValid(user.UserName, user.EmailAddress);
+            this.CheckForNulls(user.UserName, user.EmailAddress, user.PassWord);
+            CheckIfUserExists(user.UserName);
+            CheckIfEmailExists(user.EmailAddress);
 
             var hashedPassword = PasswordHasher.SetPassword(user.PassWord);
             var userToPost = new UserModel
             {
                 UserName = user.UserName.ToLowerInvariant(),
-                Active = user.Active,
+                Active = true,
                 EmailAddress = user.EmailAddress,
                 PassWord = hashedPassword,
                 Created = DateTime.UtcNow,
@@ -123,7 +125,7 @@ namespace bevrand.authenticationapi.Services
             var userExists = _userRepository.CheckIfIdExists(id);
             if (!userExists)
             {
-                throw new ArgumentException(
+                throw new HttpNotFoundException(
                     $"Unable to delete user because it does not exist, id provided was: {id}");
             }
 
@@ -131,54 +133,43 @@ namespace bevrand.authenticationapi.Services
             _userRepository.Delete(user);
         }
 
-        public UserModel PatchAUser(int id, JsonPatchDocument<PatchUserModel> user)
+
+        public void UpdateAUser(int id, PutUserModel user)
         {
             var userExists = _userRepository.CheckIfIdExists(id);
             if (!userExists)
             {
-                throw new ArgumentException(
+                throw new HttpNotFoundException(
                     $"Unable to patch user because it does not exist, id provided was: {id}");
             }
-
-            var selectedUser = _userRepository.GetSingleUser(id);
-             
-            AutoMapper.Mapper.Initialize(c => c.CreateMap<PatchUserModel, UserModel>());
-            var patchUserDTO = AutoMapper.Mapper.Map<PatchUserModel>(selectedUser);
-           
-            user.ApplyTo(patchUserDTO);
-            AutoMapper.Mapper.Map(patchUserDTO, selectedUser);
-            selectedUser.Updated = DateTime.UtcNow;
-            _userRepository.Update(selectedUser);
-            Mapper.Reset();
-            return selectedUser;
-
-        }
-
-
-
-        private void CheckForNulls(string username, string email, string password)
-        {   
-            if (string.IsNullOrWhiteSpace(username))
+            
+            var userToUpdate = _userRepository.GetSingleUser(id);
+            
+            if (user.EmailAddress != null)
             {
-                throw new ArgumentException(
-                    $"You have to provide a user, provided was '{username}'");
+                CheckIfEmailExists(user.EmailAddress);
+                userToUpdate.EmailAddress = user.EmailAddress;
+            }
+
+            if (user.Username != null)
+            {
+                CheckIfUserExists(user.Username);
+                userToUpdate.UserName = user.Username;
+            }
+
+            if (!user.Active)
+            {
+                userToUpdate.Active = false;
             }
             
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                throw new ArgumentException(
-                    "You have to provide a password");
-            }
+            userToUpdate.Updated = DateTime.UtcNow;
             
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                throw new ArgumentException(
-                    $"You have to provide an email, provided was '{email}'");
-            }
+            _userRepository.Update(userToUpdate);
+            
         }
+
         
-        
-        private void CheckIfEmailAndUserExistAndAreValid(string userName, string emailAddress)
+        private void CheckIfUserExists(string userName)
         {
             var userExists = _userRepository.CheckIfUserExists(userName);
             if (userExists)
@@ -186,19 +177,19 @@ namespace bevrand.authenticationapi.Services
                 throw new ArgumentException($"User: {userName} already exists cannot post");
             }
 
+        }
+        
+        private void CheckIfEmailExists(string emailAddress)
+        {
+
             var emailExists = _userRepository.CheckIfEmailExists(emailAddress);
             if (emailExists)
             {
                 throw new ArgumentException($"Email: {emailAddress} already exists cannot post");
             }
 
-            var validateEmail = EmailValidator.EmailIsValid(emailAddress);
-            if (!validateEmail)
-            {
-                throw new ArgumentException($"{emailAddress} was not a valid mailaddress");
-            }
+            this.ValidateEmailAddress(emailAddress);
         }
-
     }
 }
 

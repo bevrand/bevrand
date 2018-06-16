@@ -26,7 +26,7 @@ namespace bevrand.authenticationapi.Repository.Models
         public string PassWord { get; set; }
         
         [Column("active")]
-        public bool? Active { get; set; }
+        public bool Active { get; set; }
         
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("datecreated")]
