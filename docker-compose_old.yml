@@ -64,7 +64,7 @@ services:
 
   nodefrontend:
     container_name: nodefrontend
-    build: ./bevrand.proxyapi
+    build: ./bevrand.frontend
     ports:
       - 4540:5000
     depends_on:
@@ -77,17 +77,6 @@ services:
       - randomizerapi
       - playlistapi
       - authenticationapi
-
-  reactapp:
-    container_name: reactapp
-    build: ./bevrand.reactapp
-    ports:
-      - 80:80
-    depends_on:
-      - nodefrontend
-    environment:
-      - NODE_ENV=production
-      - REACT_APP_PROXY_HOSTNAME=localhost
 
   dataseeder:
     container_name: dataseeder
