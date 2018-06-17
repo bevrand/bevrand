@@ -1,27 +1,25 @@
 sudo: required
 
-language: node_js
-
-node_js:
-  - "6"
+#language: node_js
+#node_js:
+#  - "6"
 #language: csharp
 #mono: none
 #dotnet: 2.0.0
-#language: python
-#python:
-#  - "3.6" 
+language: python
+python:
+  - "3.6" 
 dist: trusty
 
 #safelist
 branches:
   only:
   - master
-  - develop
 
-cache:
-  directories:
-    - ~/.npm
-    - node_modules
+#cache:
+#  directories:
+#    - ~/.npm
+#    - node_modules
 
 addons:
   sonarcloud:
@@ -39,8 +37,6 @@ env:
   - DOCKER_COMPOSE_VERSION=1.8.0
 
 before_install:
-  - sudo apt-get update
-  - sudo apt-get install python3
   - sudo rm /usr/local/bin/docker-compose
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
   - chmod +x docker-compose
@@ -57,7 +53,7 @@ script:
   - cd ./deployment
   - python3 validate_backend_test_results.py
   - cd ../bevrand.uitests
-  - npm run cypress:run
+ # - npm run cypress:run
 
 after_success:
   - pwd
