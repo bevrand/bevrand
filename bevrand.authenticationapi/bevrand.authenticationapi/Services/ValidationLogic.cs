@@ -5,6 +5,7 @@ using bevrand.authenticationapi.DAL.Models;
 using bevrand.authenticationapi.Middleware;
 using bevrand.authenticationapi.Models;
 using bevrand.authenticationapi.Repository;
+using bevrand.authenticationapi.Repository.Models;
 using bevrand.authenticationapi.Services.Interfaces;
 
 namespace bevrand.authenticationapi.Services
@@ -20,7 +21,6 @@ namespace bevrand.authenticationapi.Services
 
         public bool CheckIfPassWordIsCorrect(ValidateUserModel validate)
         {
-            bool validPassword = false;
             var userFromDatabase = GetIdFromEmailOrUsername(validate);
 
             return PasswordHasher.DoesPasswordMatch(validate.PassWord, userFromDatabase.PassWord);
@@ -53,7 +53,7 @@ namespace bevrand.authenticationapi.Services
 
             if (validate.UserName != null)
             {
-                user = _userRepository.GetSingleUser(validate.UserName);
+                user = _userRepository.GetSingleUser(validate.UserName.ToLowerInvariant());
                 if (user == null)
                 {
                     throw new HttpNotFoundException($"User with name: {validate.UserName} was not found");

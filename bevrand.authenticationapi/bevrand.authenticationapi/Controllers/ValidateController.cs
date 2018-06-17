@@ -1,14 +1,6 @@
-﻿using System;
-using System.Linq;
-using bevrand.authenticationapi.BLL;
-using bevrand.authenticationapi.Data;
-using bevrand.authenticationapi.DAL;
-using bevrand.authenticationapi.Models;
-using bevrand.authenticationapi.Repository;
+﻿using bevrand.authenticationapi.Models;
 using bevrand.authenticationapi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.EntityFrameworkCore;
 
 namespace bevrand.authenticationapi.Controllers
 {

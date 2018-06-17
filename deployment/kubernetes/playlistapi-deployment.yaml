@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f Bevrand-PROD-newdroplet.yml
+    kompose.version: 1.12.0 (0ab07be)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: playlistapi
+  name: playlistapi
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: playlistapi
+    spec:
+      containers:
+      - env:
+        - name: APP_SETTINGS
+          value: production
+        - name: MONGO_URL
+          value: mongodb://<MongoUser>:<MongoPassWord>@dockermongo:27017/admin
+        image: bevrand/playlistapi:latest
+        name: playlistapi
+        ports:
+        - containerPort: 5000
+        resources: {}
+      restartPolicy: Always
+status: {}

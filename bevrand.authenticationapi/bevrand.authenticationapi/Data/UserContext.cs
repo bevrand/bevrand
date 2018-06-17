@@ -1,4 +1,4 @@
-﻿using bevrand.authenticationapi.DAL.Models;
+﻿using bevrand.authenticationapi.Repository.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace bevrand.authenticationapi.Data
