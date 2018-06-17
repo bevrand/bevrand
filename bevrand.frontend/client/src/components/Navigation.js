@@ -1,9 +1,42 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-const Navigation = (props) => {
-  return (
-    <nav className="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+const debounce = (func, wait) => {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), wait);
+  }
+}
+
+class Navigation extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      scrollPositionY: 0
+    };
+  }
+
+  componentDidMount() {
+    return window.addEventListener('scroll', debounce(this.handleScroll, 16));
+  }
+
+  componentWillUnMount() {
+    return window.removeEventListener('scroll', debounce(this.handleScroll, 16));
+  }
+
+  handleScroll = () => {
+    const scrollPositionY = +window.scrollY;
+    return this.setState({ scrollPositionY });
+  }
+
+  render() {
+    // Add a navbar-shrink class when more then 100 pixels have geen scrolled
+    const navbarShrink = this.state.scrollPositionY > 100;
+    const navClasses = 'navbar navbar-expand-lg navbar-light fixed-top';
+
+    return (
+      <nav className={(navbarShrink ? navClasses + ' navbar-shrink' : navClasses)} id="mainNav">
       <div className="container">
         <Link className='navbar-brand' to='/'>The Beverage Randomizer</Link>
         <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive"
@@ -25,13 +58,15 @@ const Navigation = (props) => {
               <Link className="nav-link" to='/create'>Create</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to='/login' onClick={props.handleLogout}>Logout</Link>
+              <Link className="nav-link" to='/login' onClick={this.props.handleLogout}>Logout</Link>
             </li>
           </ul>
         </div>
       </div>
     </nav>
-  );
+    )
+  }
+
 }
 
 export default Navigation;
