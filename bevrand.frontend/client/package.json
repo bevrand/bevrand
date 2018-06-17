@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "bootstrap": "^4.0.0-alpha.6",
+    "bootstrap": "^4.1.1",
     "font-awesome": "^4.7.0",
     "jquery": "^3.2.1",
     "jwt-decode": "^2.2.0",
@@ -16,6 +16,7 @@
     "react-scripts": "1.0.17",
     "react-scroll": "^1.7.8",
     "react-transition-group": "^1.2.1",
+    "reactstrap": "^6.1.0",
     "uuid": "^3.2.1"
   },
   "scripts": {
@@ -30,7 +31,7 @@
   },
   "proxy": "http://localhost:4540",
   "devDependencies": {
-    "eslint": "^4.15.0",
+    "eslint": "^4.19.1",
     "eslint-config-react-app": "^2.1.0"
   }
 }

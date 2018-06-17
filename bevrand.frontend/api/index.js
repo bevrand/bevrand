@@ -14,12 +14,12 @@ const controllers = require('./controllers');
 
 const app = express();
 
-app.use((req, res, next) => {
-  //Might only be needed for local testing and developing
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-type,Authorization');
-  next();
-});
+// app.use((req, res, next) => {
+//   //Might only be needed for local testing and developing
+//   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+//   res.setHeader('Access-Control-Allow-Headers', 'Content-type,Authorization');
+//   next();
+// });
 
 const jwtMW = exjwt({
   secret: config.authenticationSecret
