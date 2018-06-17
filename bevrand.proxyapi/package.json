@@ -1,6 +1,11 @@
 {
   "name": "api",
   "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "lint": "eslint ."
+  },
   "dependencies": {
     "bluebird": "^3.5.1",
     "body-parser": "~1.17.1",

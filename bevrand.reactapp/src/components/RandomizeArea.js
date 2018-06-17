@@ -14,7 +14,7 @@ const getPlaylists = async (userName, isHomePage) => {
   let url = userName && !isHomePage ? `/api/playlists?username=${userName}` : '/api/frontpage';
   let body;
   try {
-    const response = await fetch(`${config}${url}`);
+    const response = await fetch(`${config.proxyHostname}${url}`);
     body = await response.json();
   } catch(err) {
     if(err.httpstatus === 404) {
