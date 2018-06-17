@@ -1,15 +1,22 @@
 sudo: required
 
-language: csharp
-mono: none
-dotnet: 2.0.0
+#language: csharp
+#mono: none
+#dotnet: 2.0.0
+language: python
+python:
+  - "3.6" 
 dist: trusty
 
 #safelist
 branches:
   only:
   - master
-  - develop
+addons:
+  sonarcloud:
+    organization: "bevrand"
+    token:
+      secure: "$SONAR_TOKEN"
 
 notifications:
   slack: bevrand:JiQ1Phpayqdnsbi2pdYvdqhJ
@@ -26,22 +33,21 @@ before_install:
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
   - docker-compose --version
+  - docker --version
   - docker-compose build
   - docker images
   - docker-compose up -d
   - docker ps -a
 
 script:
-  - cd ./bevrand.testsuite
-  - pwd
-  - dotnet test
+  - sonar-scanner
+  - cd ./deployment
+  - python3 validate_backend_test_results.py
 
 after_success:
-  - cd ..
   - pwd
-  - ./after_success_script.sh
- # - "$REACTFRONTEND_TRIGGER"
- # - "$MONGOAPI_TRIGGER"
- # - "$RANDOMIZERAPI_TRIGGER"
- # - "$AUTHENTICATIONAPI_TRIGGER"
- # - "$PLAYLISTAPI_TRIGGER"
+  - sh ./push_images.sh
+  - sh ./init_terraform.sh
+  - cd ./terraform_scripts
+  - pwd
+  - sh ../run_terraform.sh

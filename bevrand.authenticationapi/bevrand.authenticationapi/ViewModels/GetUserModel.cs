@@ -6,6 +6,6 @@ namespace bevrand.authenticationapi.Models
     {
         public string EmailAddress { get; set; }
         
-        public bool? Active { get; set; }
+        public bool Active { get; set; }
     }
 }

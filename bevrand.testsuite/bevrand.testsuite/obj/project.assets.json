@@ -6218,7 +6218,7 @@
         "/usr/share/dotnet/sdk/NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "/home/joerivrij/.nuget/NuGet/NuGet.Config"
+        "/home/joerivrij/.config/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.0"

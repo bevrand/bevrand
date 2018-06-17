@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace bevrand.authenticationapi.DAL.Models
+namespace bevrand.authenticationapi.Repository.Models
 {
     [Table("users")]
     public class UserModel
@@ -26,7 +26,7 @@ namespace bevrand.authenticationapi.DAL.Models
         public string PassWord { get; set; }
         
         [Column("active")]
-        public bool? Active { get; set; }
+        public bool Active { get; set; }
         
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("datecreated")]
