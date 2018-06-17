@@ -76,7 +76,6 @@ describe('Top rolled beverages works', function () {
 
 describe('Register', function () {
     it('.should be able to reach the register page', function () {
-        cy.visit('http://0.0.0.0:4540')
         cy.get('#navbarResponsive > ul > li:nth-child(2) > a').click()
         cy.url().should('eq', 'http://0.0.0.0:4540/register')
     })
