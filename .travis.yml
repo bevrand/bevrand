@@ -1,5 +1,8 @@
 sudo: required
 
+#language: node_js
+#node_js:
+#  - "6"
 #language: csharp
 #mono: none
 #dotnet: 2.0.0
@@ -12,6 +15,12 @@ dist: trusty
 branches:
   only:
   - master
+
+#cache:
+#  directories:
+#    - ~/.npm
+#    - node_modules
+
 addons:
   sonarcloud:
     organization: "bevrand"
@@ -43,6 +52,8 @@ script:
   - sonar-scanner
   - cd ./deployment
   - python3 validate_backend_test_results.py
+  - cd ../bevrand.uitests
+ # - npm run cypress:run
 
 after_success:
   - pwd
