@@ -1,6 +1,6 @@
-FROM node:8.11-8.11-alpine
+FROM node:8.11-alpine
 
-RUN mkdir /usr/src/app
+RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 # Copy package.json first, so dependencies can be installed seperately

@@ -84,10 +84,15 @@ services:
     ports:
       - 80:80
     depends_on:
+      - randomizerapi
+      - playlistapi
+      - authenticationapi
       - nodefrontend
     environment:
       - NODE_ENV=production
       - REACT_APP_PROXY_HOSTNAME=localhost
+    links:
+      - nodefrontend
 
   dataseeder:
     container_name: dataseeder

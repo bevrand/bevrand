@@ -4,9 +4,9 @@ const joi = require('joi');
  * Load in Config based on NODE_ENV
  */
 if (process.env.NODE_ENV === 'production') {
-  require('dotenv').config({ path: './api/config/.production.env' });
+  require('dotenv').config({ path: './config/.production.env' });
 } else {
-  require('dotenv').config({ path: './api/config/.development.env' });
+  require('dotenv').config({ path: './config/.development.env' });
 }
 
 /**
