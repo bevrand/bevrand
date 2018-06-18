@@ -5,8 +5,7 @@
     "main": "index.js",
     "private": true,
     "scripts": {
-      "test-junit": "cypress run --reporter junit --reporter-options 'mochaFile=junit-results/my-test-output.xml'",
-      "test-multiple": "cypress run --reporter mocha-multi-reporters --reporter-options configFile=config.json"
+      "test-junit": "cypress run -P ./bevrand.uittests/ --reporter junit --reporter-options 'mochaFile=junit-results/my-test-output.xml'",
     },
     "repository": {
       "type": "git",
@@ -23,7 +22,6 @@
       "cypress": "^1.0.2",
       "mocha": "^4.0.1",
       "mocha-junit-reporter": "^1.13.0",
-      "mocha-multi-reporters": "^1.1.4"
     }
 }
   
