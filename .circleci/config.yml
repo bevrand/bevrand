@@ -12,12 +12,12 @@ jobs:
     parallelism: 1
     steps:
       - checkout
-      - run: "cd ./bevrand.uitests && pwd"
+      - run: "cd ./bevrand.uitests && ls"
       - restore_cache:
           keys:
             - v1-npm-deps-{{ checksum "./bevrand.uitests/package.json" }}
             - v1-npm-deps
-      - run: npm install
+      - run: "cd ./bevrand.uitests && npm install"
       - save_cache:
           key: v1-npm-deps-{{ checksum "./bevrand.uitests/package.json" }}
           paths:
