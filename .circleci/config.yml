@@ -30,12 +30,8 @@ jobs:
     steps:
      - checkout
      - run: "pwd && ls -lha"
-     - run: "cd ./deployment"
-     - run: "sh ./push_images.sh"
-     - run: "sh ./init_terraform.sh"
-     - run: "cd ./terraform_scripts"
-     - run: "pwd && ls -lha"
-     - run: "sh ../run_terraform.sh"
+     - run: "cd ./deployment && sh ./push_images.sh && sh ./init_terraform.sh"
+     - run: "cd ./terraform_scripts && pwd && ls -lha && sh ../run_terraform.sh"
   resume_uptimerobot:
     machine: true
     steps:
@@ -45,19 +41,24 @@ workflows:
   version: 2
   build_accept_deploy:
     jobs:
-     - build
+     - build 
+     #TODO Copy to artifacts
      #TODO Sonar-scanner
      #- acceptance_test_1:
      #    requires:
      #      - build
      - pause_uptimerobot:
+         context: BeverageRandomizerPROD
          requires:
            - build
      - deploy:
+         #TODO Get from artifacts
+         context: BeverageRandomizerPROD
          requires:
            #- acceptance_test_1
            - pause_uptimerobot
      - resume_uptimerobot:
+         context: BeverageRandomizerPROD
          requires:
            - deploy
          
