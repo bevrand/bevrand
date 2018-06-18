@@ -105,7 +105,7 @@ resource "digitalocean_ssh_key" "default" {
   public_key = "${tls_private_key.terraformusersshkey.public_key_openssh}"
 }
 resource "digitalocean_droplet" "docker" {
-  image      = "docker-16-04"
+  image      = "docker"
   name       = "${var.docker_droplet_name}"
   region     = "ams3"
   size       = "1gb"
