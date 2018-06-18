@@ -1,5 +1,5 @@
 {
-    "name": "Bevrand Circle ci with Cypress",
+    "name": "bevrand-circle-ci-with-cypress",
     "version": "1.0.0",
     "description": "Cypress + Docker + CircleCI = ❤️",
     "main": "index.js",
