@@ -1,8 +1,9 @@
 version: 2
+
 jobs:
- build:
-   machine: true
-   steps:
+  build:
+    machine: true
+    steps:
      - checkout
      # start proprietary DB using private Docker image
      # with credentials stored in the UI
@@ -20,3 +21,36 @@ jobs:
      - run: docker ps -a
      # deploy the image
      #- run: docker push company/app:$CIRCLE_BRANCH
+  pause_uptimerobot:
+    steps:
+     - run: "curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479363&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479359&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460902&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460904&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\""
+  deploy:
+    steps:
+     - run: "pwd && ls -lha"
+     - run: "cd ./deployment"
+     - run: "sh ./push_images.sh"
+     - run: "sh ./init_terraform.sh"
+     - run: "cd ./terraform_scripts"
+     - run: "pwd && ls -lha"
+     - run: "sh ../run_terraform.sh"
+  resume_uptimerobot:
+    steps:
+     - run: "curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479363&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479359&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460902&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460904&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\""
+
+  workflows:
+    version: 2
+    build_accept_deploy:
+      jobs:
+         - checkout
+         - build
+         #TODO Sonar-scanner
+         #- acceptance_test_1:
+         #    requires:
+         #      - build
+         - pause_uptimerobot
+         - deploy:
+             requires:
+               #- acceptance_test_1
+               - build
+         - resume_uptimerobot
+         
