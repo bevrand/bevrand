@@ -51,7 +51,7 @@ jobs:
             - node_modules
       - run:
           name: Running E2E tests with JUnit reporter
-          command: "cd ./bevrand.uitests && npm run test-junit"
+          command: "cd ./bevrand.uitests && npm run test-bevrand"
       - store_test_results:
           path: junit-results
       - store_artifacts:
