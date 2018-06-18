@@ -50,14 +50,14 @@ workflows:
      #- acceptance_test_1:
      #    requires:
      #      - build
-     - pause_uptimerobot
+     - pause_uptimerobot:
          requires:
            - build
      - deploy:
          requires:
            #- acceptance_test_1
            - pause_uptimerobot
-     - resume_uptimerobot
+     - resume_uptimerobot:
          requires:
            - deploy
          
