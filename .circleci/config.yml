@@ -3,8 +3,40 @@ version: 2
 jobs:
   build:
     machine: true
+    docker:
+      # the Docker image with Cypress dependencies
+      - image: cypress/base:6
+        environment:
+          ## this enables colors in the output
+          TERM: xterm
+    parallelism: 1
     steps:
-     - checkout
+      - checkout
+      - run: cd ./bevrand.uitests/
+      - restore_cache:
+          keys:
+            - v1-npm-deps-{{ checksum "package.json" }}
+            - v1-npm-deps
+      - run: npm install
+      - save_cache:
+          key: v1-npm-deps-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - run:
+          name: Running E2E tests with JUnit reporter
+          command: npm run test-junit
+      - store_test_results:
+          path: junit-results
+      - run:
+          name: Running E2E tests with multiple reporters
+          command: npm run test-multiple
+      - store_test_results:
+          path: multiple-results
+      - store_artifacts:
+          path: cypress/videos
+      - store_artifacts:
+          path: cypress/screenshots
+      
      # start proprietary DB using private Docker image
      # with credentials stored in the UI
      #- run: |
@@ -13,16 +45,18 @@ jobs:
 
      # build the application image
      #- run: docker build -t company/app:$CIRCLE_BRANCH .
-     - run: docker-compose --version
-     - run: docker --version
-     - run: docker-compose build
-     - run: docker images
-     - run: docker-compose up -d
-     - run: docker ps -a
+      - run: docker-compose --version
+      - run: docker --version
+      - run: docker-compose build
+      - run: docker images
+      - run: docker-compose up -d
+      - run: docker ps -a
      # TODO Put push images in a different step
-     - run: "cd ./deployment && sh ./push_images.sh"
+      - run: "cd ./deployment && sh ./push_images.sh"
      # deploy the image
      #- run: docker push company/app:$CIRCLE_BRANCH
+  
+        
   pause_uptimerobot:
     machine: true
     steps:
