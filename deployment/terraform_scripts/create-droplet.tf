@@ -20,8 +20,6 @@ variable "dev2_ssh_key_id" {}
 
 variable "dev3_ssh_key_id" {}
 
-variable "terraformuser_private_key" {}
-
 provider "digitalocean" {
   token = "${var.do_token}"
 }
@@ -107,7 +105,7 @@ resource "digitalocean_ssh_key" "default" {
   public_key = "${tls_private_key.terraformusersshkey.public_key_openssh}"
 }
 resource "digitalocean_droplet" "docker" {
-  image      = "docker"
+  image      = "docker-16-04"
   name       = "${var.docker_droplet_name}"
   region     = "ams3"
   size       = "1gb"
