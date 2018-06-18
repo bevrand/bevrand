@@ -19,6 +19,8 @@ jobs:
      - run: docker images
      - run: docker-compose up -d
      - run: docker ps -a
+     # TODO Put push images in a different step
+     - run: "cd ./deployment && sh ./push_images.sh"
      # deploy the image
      #- run: docker push company/app:$CIRCLE_BRANCH
   pause_uptimerobot:
@@ -30,7 +32,7 @@ jobs:
     steps:
      - checkout
      - run: "pwd && ls -lha"
-     - run: "cd ./deployment && sh ./push_images.sh && sh ./init_terraform.sh"
+     - run: "cd ./deployment && sh ./init_terraform.sh"
      - run: "cd ./deployment/terraform_scripts && pwd && ls -lha && sh ../run_terraform.sh"
   resume_uptimerobot:
     machine: true
