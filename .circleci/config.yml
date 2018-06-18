@@ -1,0 +1,67 @@
+version: 2
+
+jobs:
+  build:
+    machine: true
+    steps:
+     - checkout
+     # start proprietary DB using private Docker image
+     # with credentials stored in the UI
+     #- run: |
+     #    docker login -u $DOCKER_USER -p $DOCKER_PASS
+     #    docker run -d --name db company/proprietary-db:1.2.3
+
+     # build the application image
+     #- run: docker build -t company/app:$CIRCLE_BRANCH .
+     - run: docker-compose --version
+     - run: docker --version
+     - run: docker-compose build
+     - run: docker images
+     - run: docker-compose up -d
+     - run: docker ps -a
+     # TODO Put push images in a different step
+     - run: "cd ./deployment && sh ./push_images.sh"
+     # deploy the image
+     #- run: docker push company/app:$CIRCLE_BRANCH
+  pause_uptimerobot:
+    machine: true
+    steps:
+     - run: "curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479363&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479359&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460902&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460904&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\""
+  deploy:
+    machine: true
+    steps:
+     - checkout
+     - run: "pwd && ls -lha"
+     - run: "cd ./deployment && sh ./init_terraform.sh"
+     - run: "cd ./deployment/terraform_scripts && pwd && ls -lha && sh ../run_terraform.sh"
+  resume_uptimerobot:
+    machine: true
+    steps:
+     - run: "curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479363&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479359&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460902&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460904&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\""
+
+workflows:
+  version: 2
+  build_accept_deploy:
+    jobs:
+     - build:
+         context: BeverageRandomizerPROD
+     #TODO Copy to artifacts
+     #TODO Sonar-scanner
+     #- acceptance_test_1:
+     #    requires:
+     #      - build
+     - pause_uptimerobot:
+         context: BeverageRandomizerPROD
+         requires:
+           - build
+     - deploy:
+         #TODO Get from artifacts
+         context: BeverageRandomizerPROD
+         requires:
+           #- acceptance_test_1
+           - pause_uptimerobot
+     - resume_uptimerobot:
+         context: BeverageRandomizerPROD
+         requires:
+           - deploy
+         
