@@ -45,14 +45,14 @@ jobs:
 
      # build the application image
      #- run: docker build -t company/app:$CIRCLE_BRANCH .
-      - run: docker-compose --version
-      - run: docker --version
-      - run: docker-compose build
-      - run: docker images
-      - run: docker-compose up -d
-      - run: docker ps -a
+     # - run: docker-compose --version
+     # - run: docker --version
+     # - run: docker-compose build
+     # - run: docker images
+     # - run: docker-compose up -d
+     # - run: docker ps -a
      # TODO Put push images in a different step
-      - run: "cd ./deployment && sh ./push_images.sh"
+     # - run: "cd ./deployment && sh ./push_images.sh"
      # deploy the image
      #- run: docker push company/app:$CIRCLE_BRANCH
   
