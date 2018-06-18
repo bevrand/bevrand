@@ -28,6 +28,7 @@ jobs:
   deploy:
     machine: true
     steps:
+     - checkout
      - run: "pwd && ls -lha"
      - run: "cd ./deployment"
      - run: "sh ./push_images.sh"
