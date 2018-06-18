@@ -13,6 +13,17 @@ variable "docker_droplet_name" {
   default = "docker-terraform"
 }
 
+variable "droplet_image_name" {
+  default = "docker"
+}
+
+variable "droplet_region" {
+  default = "ams3"
+}
+
+variable "droplet_size" {
+  default = "1gb"
+}
 
 variable "dev1_ssh_key_id" {}
 
@@ -105,10 +116,10 @@ resource "digitalocean_ssh_key" "default" {
   public_key = "${tls_private_key.terraformusersshkey.public_key_openssh}"
 }
 resource "digitalocean_droplet" "docker" {
-  image      = "docker"
+  image      = "${var.droplet_image_name}"
   name       = "${var.docker_droplet_name}"
-  region     = "ams3"
-  size       = "1gb"
+  region     = "${var.droplet_region}"
+  size       = "${var.droplet_size}"
   ssh_keys   = ["${digitalocean_ssh_key.default.fingerprint}", "${var.dev1_ssh_key_id}", "${var.dev2_ssh_key_id}", "${var.dev3_ssh_key_id}"]
   user_data  = "${replace(file("cloud-config.conf"), "__sshkeygoeshere__", tls_private_key.terraformusersshkey.public_key_openssh)}"
   monitoring = true
