@@ -31,7 +31,7 @@ jobs:
      - checkout
      - run: "pwd && ls -lha"
      - run: "cd ./deployment && sh ./push_images.sh && sh ./init_terraform.sh"
-     - run: "cd ./terraform_scripts && pwd && ls -lha && sh ../run_terraform.sh"
+     - run: "cd ./deployment/terraform_scripts && pwd && ls -lha && sh ../run_terraform.sh"
   resume_uptimerobot:
     machine: true
     steps:
