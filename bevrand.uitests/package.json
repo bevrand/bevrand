@@ -5,7 +5,7 @@
     "main": "index.js",
     "private": true,
     "scripts": {
-      "test-junit": "cypress run -P ./bevrand.uittests/ --reporter junit --reporter-options 'mochaFile=junit-results/my-test-output.xml'"
+      "test-junit": "cypress run --reporter junit --reporter-options 'mochaFile=junit-results/my-test-output.xml'"
     },
     "repository": {
       "type": "git",
