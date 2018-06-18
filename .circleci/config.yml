@@ -60,21 +60,21 @@ jobs:
           path: ./bevrand_uitests/cypress/screenshots
   
         
-  pause_uptimerobot:
-    machine: true
-    steps:
-     - run: "curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479363&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479359&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460902&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460904&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\""
-  deploy:
-    machine: true
-    steps:
-     - checkout
-     - run: "pwd && ls -lha"
-     - run: "cd ./deployment && sh ./init_terraform.sh"
-     - run: "cd ./deployment/terraform_scripts && pwd && ls -lha && sh ../run_terraform.sh"
-  resume_uptimerobot:
-    machine: true
-    steps:
-     - run: "curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479363&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479359&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460902&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460904&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\""
+ # pause_uptimerobot:
+ #   machine: true
+ #   steps:
+#     - run: "curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479363&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479359&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460902&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460904&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\""
+#  deploy:
+#    machine: true
+#    steps:
+#     - checkout
+#     - run: "pwd && ls -lha"
+#     - run: "cd ./deployment && sh ./init_terraform.sh"
+#     - run: "cd ./deployment/terraform_scripts && pwd && ls -lha && sh ../run_terraform.sh"
+#  resume_uptimerobot:
+#    machine: true
+#    steps:
+#     - run: "curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479363&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479359&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460902&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460904&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\""
 
 workflows:
   version: 2
@@ -87,18 +87,21 @@ workflows:
      #- acceptance_test_1:
      #    requires:
      #      - build
-     - pause_uptimerobot:
-         context: BeverageRandomizerPROD
-         requires:
-           - build
-     - deploy:
+     - uitests:
+        requires:
+          - build
+ #    - pause_uptimerobot:
+ #        context: BeverageRandomizerPROD
+ #        requires:
+ #          - build
+ #    - deploy:
          #TODO Get from artifacts
-         context: BeverageRandomizerPROD
-         requires:
+  #       context: BeverageRandomizerPROD
+   #      requires:
            #- acceptance_test_1
-           - pause_uptimerobot
-     - resume_uptimerobot:
-         context: BeverageRandomizerPROD
-         requires:
-           - deploy
+   #        - pause_uptimerobot
+   #  - resume_uptimerobot:
+   #      context: BeverageRandomizerPROD
+   #      requires:
+   #        - deploy
          
