@@ -1,0 +1,28 @@
+{
+    "name": "Bevrand Circle ci with Cypress",
+    "version": "1.0.0",
+    "description": "Cypress + Docker + CircleCI = ❤️",
+    "main": "index.js",
+    "private": true,
+    "scripts": {
+      "test-junit": "cypress run --reporter junit --reporter-options 'mochaFile=junit-results/my-test-output.xml'",
+      "test-multiple": "cypress run --reporter mocha-multi-reporters --reporter-options configFile=config.json"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/bevrand/bevrand.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "MIT",
+    "bugs": {
+      "url": "https://github.com/cypress-io/cypress-example-docker-circle/issues"
+    },
+    "homepage": "https://www.beveragerandomizer.com",
+    "devDependencies": {
+      "cypress": "^1.0.2",
+      "mocha": "^4.0.1",
+      "mocha-junit-reporter": "^1.13.0",
+      "mocha-multi-reporters": "^1.1.4"
+    }
+  
