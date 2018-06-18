@@ -14,6 +14,6 @@ namespace bevrand.authenticationapi.Services
         GetUserModel GetByEmailAddress(string emailAddress);
         void CreateANewUser(PostUserModel user);
         void DeleteAUser(int id);
-        UserModel PatchAUser(int id, JsonPatchDocument<PatchUserModel> user);
+        void UpdateAUser(int id, PutUserModel user);
     }
 }

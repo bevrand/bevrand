@@ -1,0 +1,7 @@
+organization=bevrand
+projectKey=bevrand
+serverUrl=https://sonarcloud.io
+serverVersion=7.2.0.12953
+dashboardUrl=https://sonarcloud.io/dashboard/index/bevrand
+ceTaskId=AWP1Pkrfv15GUGDTLSM3
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AWP1Pkrfv15GUGDTLSM3
