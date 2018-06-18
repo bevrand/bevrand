@@ -30,7 +30,7 @@ namespace bevrand.testsuite.TestClasses
                 passWord = "thisisatestpassword"
             };
             
-            using (var driver = new RemoteWebDriver(new Uri("http://0.0.0.0:4444/wd/hub"), _fixture.DriverCapabilities))
+            using (var driver = new RemoteWebDriver(new Uri(_fixture.SeleniumHubUrl), _fixture.DriverCapabilities))
             //using(var driver = new ChromeDriver())
             {
                 driver.Navigate().GoToUrl("http://nodefrontend:5000");
@@ -92,7 +92,7 @@ namespace bevrand.testsuite.TestClasses
             };
             
             
-            using (var driver = new RemoteWebDriver(new Uri("http://0.0.0.0:4444/wd/hub"), _fixture.DriverCapabilities))
+            using (var driver = new RemoteWebDriver(new Uri(_fixture.SeleniumHubUrl), _fixture.DriverCapabilities))
            // using(var driver = new ChromeDriver())
             {
                 driver.Navigate().GoToUrl("http://nodefrontend:5000");

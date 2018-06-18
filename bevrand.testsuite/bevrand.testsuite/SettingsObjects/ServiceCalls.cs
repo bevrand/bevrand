@@ -7,5 +7,7 @@
         public string RandomizerApiService { get; set; }
         
         public string AuthenticationApiService { get; set; }
+        
+        public string SeleniumHubService { get; set; }
     }
 }

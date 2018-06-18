@@ -1,5 +1,6 @@
 ﻿using bevrand.authenticationapi.DAL.Models;
 using bevrand.authenticationapi.Services;
+using bevrand.authenticationapi.ViewModels;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -54,11 +55,11 @@ namespace bevrand.authenticationapi.Controllers
             return CreatedAtRoute("GetByUserName", new {username = user.UserName}, userToReturn);
         }
 
-        [HttpPatch]
-        public IActionResult Patch([FromQuery]int id, [FromBody]JsonPatchDocument<PatchUserModel> user)
+        [HttpPut]
+        public IActionResult Update([FromQuery]int id, [FromBody] PutUserModel user)
         {
-            var result = _usersLogic.PatchAUser(id, user);
-            return Ok(result);
+            _usersLogic.UpdateAUser(id, user);
+            return new NoContentResult();
 
         }
 

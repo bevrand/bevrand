@@ -170,7 +170,7 @@ namespace bevrand.testsuite.TestClasses
         [Trait("Category", "Authentication")]
         [InlineData(null, null, null, "You have to provide a user")]
         [InlineData(null, "test@test.nl", "password", "You have to provide a user")]
-        [InlineData("SomeRandomUserForPost", "test@test.nl", null, "You have to provide a password")]
+        [InlineData("SomeRandomUserForPost", "test@test.nl", null, "You have to provide a valid password")]
         [InlineData("SomeRandomUserForPost", "testtest", "password", "was not a valid mailaddress")]
         public void FaultyPostsDoNotGetEnteredIntoTheDatabse(string username, string email, string password, string message)
         {
@@ -250,7 +250,7 @@ namespace bevrand.testsuite.TestClasses
             
             deletedResponse = _fixture.BaseApiClient.GenericDeleteObject(requestDelete);
             
-            Assert.Equal(400, deletedResponse.StatusCode);            
+            Assert.Equal(404, deletedResponse.StatusCode);            
         }
         
         [Fact] 
@@ -268,7 +268,7 @@ namespace bevrand.testsuite.TestClasses
             var requestDelete = requeststring + queryString;
             var deletedResponse = _fixture.BaseApiClient.GenericDeleteObject(requestDelete);
             
-            Assert.Equal(400, deletedResponse.StatusCode);
+            Assert.Equal(404, deletedResponse.StatusCode);
 
         }
         
