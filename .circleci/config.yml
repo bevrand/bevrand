@@ -22,9 +22,11 @@ jobs:
      # deploy the image
      #- run: docker push company/app:$CIRCLE_BRANCH
   pause_uptimerobot:
+    machine: true
     steps:
      - run: "curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479363&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479359&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460902&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460904&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\""
   deploy:
+    machine: true
     steps:
      - run: "pwd && ls -lha"
      - run: "cd ./deployment"
@@ -34,6 +36,7 @@ jobs:
      - run: "pwd && ls -lha"
      - run: "sh ../run_terraform.sh"
   resume_uptimerobot:
+    machine: true
     steps:
      - run: "curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479363&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479359&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460902&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460904&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\""
 
@@ -48,9 +51,13 @@ workflows:
      #    requires:
      #      - build
      - pause_uptimerobot
+         requires:
+           - build
      - deploy:
          requires:
            #- acceptance_test_1
-           - build
+           - pause_uptimerobot
      - resume_uptimerobot
+         requires:
+           - deploy
          
