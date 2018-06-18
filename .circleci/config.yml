@@ -15,11 +15,11 @@ jobs:
       - run: "cd ./bevrand.uitests && pwd"
       - restore_cache:
           keys:
-            - v1-npm-deps-{{ checksum "./package.json" }}
+            - v1-npm-deps-{{ checksum "./bevrand.uitests/package.json" }}
             - v1-npm-deps
       - run: npm install
       - save_cache:
-          key: v1-npm-deps-{{ checksum "./package.json" }}
+          key: v1-npm-deps-{{ checksum "./bevrand.uitests/package.json" }}
           paths:
             - node_modules
       - run:
