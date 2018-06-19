@@ -17,6 +17,7 @@ class testing(BaseConfig):
     """Testing configuration"""
     DEBUG = True
     TESTING = True
+    CONNECTION = 'mongodb://0.0.0.0:27017'
 
 
 class production(BaseConfig):

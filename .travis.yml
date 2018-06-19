@@ -14,7 +14,7 @@ dist: trusty
 #safelist
 branches:
   only:
-  - master
+  - feature
 
 #cache:
 #  directories:
