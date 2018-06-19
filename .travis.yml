@@ -52,7 +52,7 @@ script:
   - sonar-scanner
   - cd ./deployment
   - python3 validate_backend_test_results.py
-  - cd ../bevrand.uitests
+ # - cd ../bevrand.uitests
  # - npm run cypress:run
 
 after_success:
