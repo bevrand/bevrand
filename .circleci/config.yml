@@ -24,24 +24,19 @@ jobs:
       - run: docker images
       - run: docker-compose up -d
       - run: docker ps -a
-     # - restore_cache:
-     #     keys:
-     #       - v1-npm-deps-{{ checksum "./bevrand.uitests/package.json" }}
-     #       - v1-npm-deps
       - run: "cd ./bevrand.uitests && npm install"
-     # - save_cache:
-     #     key: v1-npm-deps-{{ checksum "./bevrand.uitests/package.json" }}
-     #     paths:
-     #       - node_modules
+
       - run:
           name: Running E2E tests with JUnit reporter
-          command: "cd ./bevrand.uitests && npm run test-junit"
+          command: "cd ./bevrand.uitests && npm run test-multiple"
       - store_test_results:
-          path: junit-results
+          path: multiple-results
       - store_artifacts:
           path: /home/circleci/project/bevrand.uitests/cypress/videos/
       - store_artifacts:
-          path: ./bevrand_uitests/cypress/screenshots
+          path: /home/circleci/project/bevrand.uitests/cypress/screenshots/
+
+      - run: "cd ./deployment && python3 validate_backend_test_results.py"
       
      # start proprietary DB using private Docker image
      # with credentials stored in the UI
