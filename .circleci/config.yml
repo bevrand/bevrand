@@ -11,7 +11,8 @@ jobs:
     steps:
       - checkout
 
-      - run: "python3.5.2 -V"
+      - run: "python -V"
+      - run: "python3.5 -V"
      # build the application image
       - run: docker-compose --version
       - run: docker --version
@@ -33,7 +34,7 @@ jobs:
       - store_artifacts:
           path: /home/circleci/project/bevrand.uitests/cypress/screenshots/
 
-      - run: "cd ./deployment && python3.5.2 validate_backend_test_results.py"
+      - run: "cd ./deployment && python3.5 validate_backend_test_results.py"
       
      # start proprietary DB using private Docker image
      # with credentials stored in the UI
