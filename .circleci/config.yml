@@ -11,8 +11,6 @@ jobs:
     steps:
       - checkout
 
-      - run: "python -V"
-      - run: "python3.5 -V"
      # build the application image
       - run: docker-compose --version
       - run: docker --version
@@ -21,7 +19,22 @@ jobs:
       - run: docker-compose up -d
       - run: docker ps -a
      
-      #TODO Put uitests in a different job
+     #verify the results of the component test
+      - run: "cd ./deployment && python validate_backend_test_results.py"
+  
+  uitests:
+    machine: true
+    parallelism: 1
+    steps:
+      - checkout    
+
+      - run: docker-compose --version
+      - run: docker --version
+      - run: docker-compose build
+      - run: docker images
+      - run: docker-compose up -d
+      - run: docker ps -a
+      #TODO Persist docker?
       - run: "cd ./bevrand.uitests && npm install"
 
       - run:
@@ -33,31 +46,15 @@ jobs:
           path: /home/circleci/project/bevrand.uitests/cypress/videos/
       - store_artifacts:
           path: /home/circleci/project/bevrand.uitests/cypress/screenshots/
-
-      - run: "cd ./deployment && python3.5 validate_backend_test_results.py"
-      
-     # start proprietary DB using private Docker image
-     # with credentials stored in the UI
-     #- run: |
-     #    docker login -u $DOCKER_USER -p $DOCKER_PASS
-     #    docker run -d --name db company/proprietary-db:1.2.3
      # TODO Put push images in a different step
      # - run: "cd ./deployment && sh ./push_images.sh"
-     # deploy the image
-     #- run: docker push company/app:$CIRCLE_BRANCH
-  
- # uitests:
- #   machine: true
- #   parallelism: 1    
- #   steps:
-  #    - checkout
-
         
  # pause_uptimerobot:
  #   machine: true
  #   steps:
 #     - run: "curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479363&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479359&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460902&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460904&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\""
-#  deploy:
+# 
+# deploy:
 #    machine: true
 #    steps:
 #     - checkout
@@ -75,16 +72,20 @@ workflows:
     jobs:
      - build:
          context: BeverageRandomizerPROD
+     - uitests:
+         context: BeverageRandomizerPROD
+         requires:
+           - build
      #TODO Copy to artifacts
      #TODO Sonar-scanner
      #- acceptance_test_1:
      #    requires:
-     #      - build
+     #      - uitests
 
  #    - pause_uptimerobot:
  #        context: BeverageRandomizerPROD
  #        requires:
- #          - build
+ #          - uitests
  #    - deploy:
          #TODO Get from artifacts
   #       context: BeverageRandomizerPROD
