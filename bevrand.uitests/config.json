@@ -1,0 +1,6 @@
+{
+    "reporterEnabled": "spec, mocha-junit-reporter",
+    "mochaJunitReporterReporterOptions": {
+      "mochaFile": "./bevrand_uitests/multiple-results/results.xml"
+    }
+  }
