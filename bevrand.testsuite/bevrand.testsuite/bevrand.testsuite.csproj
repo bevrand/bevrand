@@ -22,10 +22,13 @@
     <Folder Include="Features" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="Settings\appsettings.development.json">
+    <None Update="Settings\appsettings.Development.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Settings\appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Settings\appsettings.Test.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
