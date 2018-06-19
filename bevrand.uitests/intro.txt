@@ -1,5 +1,0 @@
-Run the following command when try to use cypress (first command depends on the install location of Cypress
-
-#home
-node_modules/.bin/cypress run -P ~/Projects/bevrand/bevrand.uittests/
-
