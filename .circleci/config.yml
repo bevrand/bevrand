@@ -13,6 +13,7 @@ jobs:
 
      # build the application image
     #  - run: docker build -t company/app:$CIRCLE_BRANCH .
+      - run: "chmod -R 777 ./node_modules" 
       - run: docker-compose --version
       - run: docker --version
       - run: docker-compose build
@@ -31,8 +32,8 @@ jobs:
       - run:
           name: Running E2E tests with JUnit reporter
           command: "cd ./bevrand.uitests && npm run test-bevrand"
-      - store_test_results:
-          path: junit-results
+    #  - store_test_results:
+    #      path: junit-results
       - store_artifacts:
           path: ./bevrand_uitests/cypress/videos
       - store_artifacts:
