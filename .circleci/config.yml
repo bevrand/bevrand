@@ -35,11 +35,11 @@ jobs:
      #       - node_modules
       - run:
           name: Running E2E tests with JUnit reporter
-          command: "cd ./bevrand.uitests && npm run test-bevrand"
-    #  - store_test_results:
-    #      path: junit-results
+          command: "cd ./bevrand.uitests && npm run test-junit"
+      - store_test_results:
+          path: junit-results
       - store_artifacts:
-          path: ./bevrand_uitests/cypress/videos
+          path: /home/circleci/project/bevrand.uitests/cypress/videos/
       - store_artifacts:
           path: ./bevrand_uitests/cypress/screenshots
       
