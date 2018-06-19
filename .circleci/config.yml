@@ -19,27 +19,6 @@ jobs:
       - run: docker images
       - run: docker-compose up -d
       - run: docker ps -a
-      
-     # start proprietary DB using private Docker image
-     # with credentials stored in the UI
-     #- run: |
-     #    docker login -u $DOCKER_USER -p $DOCKER_PASS
-     #    docker run -d --name db company/proprietary-db:1.2.3
-     # TODO Put push images in a different step
-     # - run: "cd ./deployment && sh ./push_images.sh"
-     # deploy the image
-     #- run: docker push company/app:$CIRCLE_BRANCH
-  
-  uitests:
-    docker:
-      # the Docker image with Cypress dependencies
-      - image: cypress/base:6
-        environment:
-          ## this enables colors in the output
-          TERM: xterm
-    parallelism: 1    
-    steps:
-      - checkout
       - restore_cache:
           keys:
             - v1-npm-deps-{{ checksum "./bevrand.uitests/package.json" }}
@@ -58,7 +37,28 @@ jobs:
           path: ./bevrand_uitests/cypress/videos
       - store_artifacts:
           path: ./bevrand_uitests/cypress/screenshots
+      
+     # start proprietary DB using private Docker image
+     # with credentials stored in the UI
+     #- run: |
+     #    docker login -u $DOCKER_USER -p $DOCKER_PASS
+     #    docker run -d --name db company/proprietary-db:1.2.3
+     # TODO Put push images in a different step
+     # - run: "cd ./deployment && sh ./push_images.sh"
+     # deploy the image
+     #- run: docker push company/app:$CIRCLE_BRANCH
   
+ # uitests:
+ #   docker:
+      # the Docker image with Cypress dependencies
+#      - image: cypress/base:6
+#        environment:
+          ## this enables colors in the output
+ #         TERM: xterm
+ #   parallelism: 1    
+ #   steps:
+  #    - checkout
+
         
  # pause_uptimerobot:
  #   machine: true
@@ -87,9 +87,7 @@ workflows:
      #- acceptance_test_1:
      #    requires:
      #      - build
-     - uitests:
-        requires:
-          - build
+
  #    - pause_uptimerobot:
  #        context: BeverageRandomizerPROD
  #        requires:
