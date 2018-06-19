@@ -1,10 +1,4 @@
 version: 2
-
-general:
-  branches:
-    only:
-     - master # list of branches to build
-   #  - cypress # or regexes
 jobs:
   build:   
     machine: true
@@ -73,8 +67,16 @@ workflows:
     jobs:
      - build:
          context: BeverageRandomizerPROD
+         filters:
+            branches:
+              only: 
+              - master
      - uitests:
          context: BeverageRandomizerPROD
+         filters:
+            branches:
+              only: 
+              - master
          requires:
            - build
      #TODO Copy to artifacts
@@ -85,16 +87,25 @@ workflows:
 
      - pause_uptimerobot:
          context: BeverageRandomizerPROD
+         filters:
+            branches:
+              only: master
          requires:
            - uitests
      - deploy:
          #TODO Get from artifacts
          context: BeverageRandomizerPROD
+         filters:
+            branches:
+              only: master
          requires:
            #- acceptance_test_1
            - pause_uptimerobot
      - resume_uptimerobot:
          context: BeverageRandomizerPROD
+         filters:
+            branches:
+              only: master
          requires:
            - deploy
          
