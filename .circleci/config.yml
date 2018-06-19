@@ -1,5 +1,10 @@
 version: 2
 
+general:
+  branches:
+    only:
+     - master # list of branches to build
+     - cypress # or regexes
 jobs:
   build:   
     machine: true
@@ -19,15 +24,15 @@ jobs:
       - run: docker images
       - run: docker-compose up -d
       - run: docker ps -a
-      - restore_cache:
-          keys:
-            - v1-npm-deps-{{ checksum "./bevrand.uitests/package.json" }}
-            - v1-npm-deps
+     # - restore_cache:
+     #     keys:
+     #       - v1-npm-deps-{{ checksum "./bevrand.uitests/package.json" }}
+     #       - v1-npm-deps
       - run: "cd ./bevrand.uitests && npm install"
-      - save_cache:
-          key: v1-npm-deps-{{ checksum "./bevrand.uitests/package.json" }}
-          paths:
-            - node_modules
+     # - save_cache:
+     #     key: v1-npm-deps-{{ checksum "./bevrand.uitests/package.json" }}
+     #     paths:
+     #       - node_modules
       - run:
           name: Running E2E tests with JUnit reporter
           command: "cd ./bevrand.uitests && npm run test-bevrand"
