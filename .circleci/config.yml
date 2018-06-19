@@ -11,7 +11,7 @@ jobs:
     steps:
       - checkout
 
-      - run: "python3 -V"
+      - run: "python3.5.2 -V"
      # build the application image
       - run: docker-compose --version
       - run: docker --version
