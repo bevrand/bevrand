@@ -33,10 +33,10 @@ namespace bevrand.testsuite.TestClasses
             };
 
             var response =
-                _fixture.RandomizerApi.PostASampleListWithBeverages(requeststring, request).Result as
+                _fixture.BaseApiClient.GenericPostObject<RandomizePostResult>(requeststring, request).Result as
                     RandomizePostResult;
             
-            var drink = response.beverage;
+            var drink = response.result;
             Assert.Contains(drink, request.beverages);
             Assert.Equal(200, response.StatusCode);
         }
@@ -74,10 +74,10 @@ namespace bevrand.testsuite.TestClasses
             };
 
             var response =
-                _fixture.RandomizerApi.PostASampleListWithBeverages(requeststring, request).Result as
+                _fixture.BaseApiClient.GenericPostObject<RandomizePostResult>(requeststring, request).Result as
                     RandomizePostResult;
             
-            var drink = response.beverage;
+            var drink = response.result;
             Assert.Contains(drink, request.beverages);
             Assert.Equal(200, response.StatusCode);
         }
@@ -102,7 +102,7 @@ namespace bevrand.testsuite.TestClasses
                     BaseErrorResponse;
             
             Assert.Equal(400, response.StatusCode);
-            Assert.Contains("'beverages': ['min length is 2'", response.UserError);
+            Assert.Contains("Errors occured when validating", response.UserError);
         }
         
         [Theory]

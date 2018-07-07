@@ -46,8 +46,10 @@ services:
        - playlistapi
        - redis
     environment:
-       - APP_SETTINGS=production
+       - APP_SETTINGS=Production
        - REDIS_URL=redis
+       - JAEGER_HOST=jaeger-agent
+   
 
   playlistapi:
     container_name: playlistapi
@@ -119,3 +121,4 @@ services:
       - proxyapi
     environment:
       - ASPNETCORE_ENVIRONMENT="Test"
+      

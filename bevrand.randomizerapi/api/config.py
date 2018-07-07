@@ -7,19 +7,19 @@ class BaseConfig:
     TESTING = False
     CONNECTION = os.environ.get('REDIS_URL')
 
-
-class development(BaseConfig):
+class Development(BaseConfig):
     """Development configuration"""
     DEBUG = True
 
 
-class testing(BaseConfig):
+class Testing(BaseConfig):
     """Testing configuration"""
     DEBUG = True
     TESTING = True
 
 
-class production(BaseConfig):
+class Production(BaseConfig):
     """Production configuration"""
     DEBUG = False
+
 
