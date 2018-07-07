@@ -1,9 +1,11 @@
 import redis
 import os
-import project
+import api
 
 app_settings = os.getenv('APP_SETTINGS')
-env = getattr(project.config, app_settings)
+if app_settings is None:
+    app_settings = 'Testing'
+env = getattr(api.config, app_settings)
 connection = env.CONNECTION
 print(connection)
 

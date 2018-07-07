@@ -33,7 +33,7 @@ namespace bevrand.testsuite.TestClasses
         {
             var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             Console.WriteLine(environmentName);
-            
+                
             const string BaseFilePath = @"Settings/";
             var assemblyType = typeof(TestSuiteFixture);
             var assemblyLocation = assemblyType.Assembly.Location;

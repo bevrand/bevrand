@@ -18,9 +18,11 @@ namespace bevrand.testsuite.Clients
                 var content = res.Content.ReadAsStringAsync().Result;
                 var responseModel = new RandomizePostResult
                 {
-                    beverage = content.Replace("\"", ""),
+                    result = content,
                     StatusCode = (int) res.StatusCode
                 };
+                
+              
 
                 return responseModel;
             }

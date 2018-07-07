@@ -1,21 +1,16 @@
-from project.db import redis_connection
-
+from api.db import redis_connection
 import random
 
 
 def randomize_drink_from_list(beverage_list, user_list):
-        return_object = random_selection(beverage_list, user_list)
-        return return_object
+    return random_selection(beverage_list, user_list)
 
 
 def random_selection(rand_list, redis_col):
     randomized_drink = random.choice(rand_list)
-    redis_response = redis_connection.redis_controller(redis_col, randomized_drink)
-    if not redis_response.valid:
-        error_object = {'status_code': redis_response.status_code, 'body': redis_response.message}
-        return error_object
-    return_object = {'status_code': 200, 'body': randomized_drink}
-    return return_object
+    redis_connection.count_rolled_drinks(redis_col, randomized_drink)
+    return randomized_drink
+
 
 
 def get_all_rolled_drinks_from_redis(user, desc_list, topfive_bool):
