@@ -2,10 +2,10 @@ from ..db.data_models import ErrorModel, SuccessModel, SuccessModelRedis
 from ..db import r_
 import redis
 from operator import itemgetter
-from flask import jsonify
+from api.error_handler.error_model import InvalidUsage
 
 
-def redis_controller(redis_col, drink_to_incr):
+def count_rolled_drinks(redis_col, drink_to_incr):
     try:
         col = redis_col
         drink = drink_to_incr
@@ -14,14 +14,11 @@ def redis_controller(redis_col, drink_to_incr):
         if temp is None:
             r_.set(key, 0)
         r_.incr(key)
-        success_model = SuccessModel(True)
-        return success_model
+        return
     except redis.exceptions.ConnectionError:
-        error_model = ErrorModel(False, 'An error has occurred with the Redis connection', 503)
-        return error_model
+        raise InvalidUsage('An error has occurred with the Redis connection', status_code=503)
     except redis.exceptions.RedisError:
-        error_model = ErrorModel(False, 'An error has occurred when incrementing drinks', 503)
-        return error_model
+        raise InvalidUsage('An error has occurred when incrementing drinks', status_code=503)
 
 
 def get_top_list(redis_col):
@@ -37,11 +34,9 @@ def get_top_list(redis_col):
         success_model = SuccessModelRedis(True, sorted_list)
         return success_model
     except redis.exceptions.ConnectionError:
-        error_model = ErrorModel(False, 'An error has occurred with the Redis connection', 503)
-        return error_model
+        raise InvalidUsage('An error has occurred with the Redis connection', status_code=503)
     except redis.exceptions.RedisError:
-        error_model = ErrorModel(False, 'An error has occurred when incrementing drinks', 503)
-        return error_model
+        raise InvalidUsage('An error has occurred when incrementing drinks', status_code=503)
 
 
 def clean_up_redis(redis_col):

@@ -20,7 +20,7 @@ namespace bevrand.testsuite.TestClasses
         [Trait("Category", "Randomizer")]
         public void PostingTwoDrinksReturnsARandomDrink()
         {
-            var requeststring = _fixture.RandomizerUrl + "/api/randomize";
+            var requeststring = _fixture.RandomizerUrl + "/api/randomize/";
             var request = new RandomizePostRequest
             {
                 list = "testsuite",
@@ -33,10 +33,10 @@ namespace bevrand.testsuite.TestClasses
             };
 
             var response =
-                _fixture.RandomizerApi.PostASampleListWithBeverages(requeststring, request).Result as
+                _fixture.BaseApiClient.GenericPostObject<RandomizePostResult>(requeststring, request).Result as
                     RandomizePostResult;
             
-            var drink = response.beverage;
+            var drink = response.result;
             Assert.Contains(drink, request.beverages);
             Assert.Equal(200, response.StatusCode);
         }
@@ -45,7 +45,7 @@ namespace bevrand.testsuite.TestClasses
         [Trait("Category", "Randomizer")]
         public void LongListsGetRandomized()
         {
-            var requeststring = _fixture.RandomizerUrl + "/api/randomize";
+            var requeststring = _fixture.RandomizerUrl + "/api/randomize/";
             var request = new RandomizePostRequest
             {
                 list = "testsuite",
@@ -74,10 +74,10 @@ namespace bevrand.testsuite.TestClasses
             };
 
             var response =
-                _fixture.RandomizerApi.PostASampleListWithBeverages(requeststring, request).Result as
+                _fixture.BaseApiClient.GenericPostObject<RandomizePostResult>(requeststring, request).Result as
                     RandomizePostResult;
             
-            var drink = response.beverage;
+            var drink = response.result;
             Assert.Contains(drink, request.beverages);
             Assert.Equal(200, response.StatusCode);
         }
@@ -86,7 +86,7 @@ namespace bevrand.testsuite.TestClasses
         [Trait("Category", "Randomizer")]
         public void PostASingleDrinkGivesAnError()
         {
-            var requeststring = _fixture.RandomizerUrl + "/api/randomize";
+            var requeststring = _fixture.RandomizerUrl + "/api/randomize/";
             var request = new RandomizePostRequest
             {
                 list = "testsuite",
@@ -102,7 +102,7 @@ namespace bevrand.testsuite.TestClasses
                     BaseErrorResponse;
             
             Assert.Equal(400, response.StatusCode);
-            Assert.Contains("'beverages': ['min length is 2'", response.UserError);
+            Assert.Contains("Errors occured when validating", response.UserError);
         }
         
         [Theory]
@@ -114,7 +114,7 @@ namespace bevrand.testsuite.TestClasses
         [InlineData("validlist", "e", "min length is 3")]
         public void PostWithAnInvalidObjectGivesAnError(string list, string user, string message)
         {
-            var requeststring = _fixture.RandomizerUrl + "/api/randomize";
+            var requeststring = _fixture.RandomizerUrl + "/api/randomize/";
             var request = new RandomizePostRequest
             {
                 list = list,
