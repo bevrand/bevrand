@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 const exjwt = require('express-jwt');
 const rp = require ('request-promise');
 const Promise = require('bluebird');
-
+const jwt = require("jsonwebtoken");
 const config = require('./config');
 
 const controllers = require('./controllers');
@@ -67,6 +67,31 @@ const requestPipePost = (endpoint) => {
  */
 app.get('/api/frontpage', requestPipe(config.playlistApi));
 
+const frontpageWithSignature = (url) => {
+  return (req, res, next) => {
+    
+    rp({
+      method: 'GET',
+      uri: `${url}/api/frontpage`
+    }).then(result => {
+      
+
+      let newResult = JSON.parse(result).map(item => {
+        let signedItem = jwt.sign(item, config.frontendJwtSecret);
+        item.token = signedItem;
+        return item;
+      });
+
+      return res.send(newResult);
+    }).catch(err => {
+      debug(`Error: ${err.message}`);
+      return next(err);
+    });
+  }  
+}
+
+app.get('/api/frontpage2', frontpageWithSignature(config.playlistApi));
+
 app.get('/api/playlists', (req, res, next) => {
   //TODO: add middleware that checks is user is authorized for the specified username
   const { username } = req.query;
@@ -105,6 +130,16 @@ app.post('/api/user', requestPipePost(config.playlistApi));
 
 app.get('/api/redis', requestPipe(config.randomizerApi));
 
+const validateJwtTokenFrontend = (req, res, next) => {
+    try {
+      jwt.verify(req.body.token, config.frontendJwtSecret);    
+      return next();
+    } catch(err) {
+      return next(err);
+    }
+}
+
+app.post('/api/randomize2', validateJwtTokenFrontend, requestPipePost(config.randomizerApi));
 app.post('/api/randomize', requestPipePost(config.randomizerApi));
 
 app.post('/api/login', 
