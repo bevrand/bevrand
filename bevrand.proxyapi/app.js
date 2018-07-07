@@ -8,6 +8,7 @@ const exjwt = require('express-jwt');
 const rp = require ('request-promise');
 const Promise = require('bluebird');
 const jwt = require("jsonwebtoken");
+const cors = require('cors');
 const config = require('./config');
 
 const controllers = require('./controllers');
@@ -17,10 +18,9 @@ const app = express();
 app.use((req, res, next) => {
   //Only needed when running react app locally
   if(config.env === 'development'){
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost');
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Content-type,Authorization');
   }
-  
   next();
 });
 
@@ -61,6 +61,12 @@ const requestPipePost = (endpoint) => {
     }).pipe(res);
   }
 }
+
+/**
+ * CORS Pre-Flight enabled routes
+ */
+app.options('/api/randomize', cors());
+app.options('/api/register', cors());
 
 /**
  * API routes
