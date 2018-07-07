@@ -3,7 +3,6 @@ using System.IO;
 using bevrand.testsuite.Clients;
 using bevrand.testsuite.SettingsObjects;
 using Microsoft.Extensions.Configuration;
-using OpenQA.Selenium.Remote;
 
 namespace bevrand.testsuite.TestClasses
 {
@@ -16,8 +15,7 @@ namespace bevrand.testsuite.TestClasses
         public string AuthenticationUrl { get; }
         public RandomizerApiClient RandomizerApi { get; }
         public string RandomizerUrl { get; }
-        public DesiredCapabilities DriverCapabilities { get; }
-        public string SeleniumHubUrl { get; }
+
 
         public TestSuiteFixture()
         {
@@ -29,8 +27,6 @@ namespace bevrand.testsuite.TestClasses
             RandomizerUrl = ServiceCalls.RandomizerApiService;
             AuthenicationApi = new AuthenticationApiClient();
             AuthenticationUrl = ServiceCalls.AuthenticationApiService;
-            DriverCapabilities = DesiredCapabilities.Chrome();
-            SeleniumHubUrl = ServiceCalls.SeleniumHubService;
         }
 
         private void EnvBuilder()

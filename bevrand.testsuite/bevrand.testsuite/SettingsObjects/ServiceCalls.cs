@@ -8,6 +8,5 @@
         
         public string AuthenticationApiService { get; set; }
         
-        public string SeleniumHubService { get; set; }
     }
 }
