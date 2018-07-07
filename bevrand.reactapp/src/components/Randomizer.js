@@ -48,7 +48,7 @@ const getRandomize = async (playlist, username) => {
         'Content-Type': 'application/json'
       })
     });
-    body = await response.text();
+    body = await response.json();
   } catch (err) {
     console.error(err);
   }
@@ -75,9 +75,7 @@ class Randomizer extends Component {
     //Randomize the beverage
     try {
       let resultBody = await getRandomize(this.props.playlist, this.props.userName);
-      this.setState({
-        result: resultBody
-      });
+      this.setState(resultBody);
     } catch (error) { console.log(error); }
   }
 
