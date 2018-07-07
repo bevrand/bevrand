@@ -67,6 +67,8 @@ const requestPipePost = (endpoint) => {
  */
 app.options('/api/randomize', cors());
 app.options('/api/register', cors());
+app.options('/api/login', cors());
+app.options('/api/user', cors());
 
 /**
  * API routes
