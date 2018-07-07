@@ -62,8 +62,8 @@ services:
        - APP_SETTINGS=production
        - MONGO_URL=mongodb://dockermongo:27017
 
-  nodefrontend:
-    container_name: nodefrontend
+  proxyapi:
+    container_name: proxyapi
     build: ./bevrand.proxyapi
     ports:
       - 4540:5000
@@ -87,12 +87,12 @@ services:
       - randomizerapi
       - playlistapi
       - authenticationapi
-      - nodefrontend
+      - proxyapi
     environment:
       - NODE_ENV=production
       - REACT_APP_PROXY_HOSTNAME=localhost
     links:
-      - nodefrontend
+      - proxyapi
 
   dataseeder:
     container_name: dataseeder
@@ -111,12 +111,12 @@ services:
       - randomizerapi
       - playlistapi
       - authenticationapi
-      - nodefrontend
+      - proxyapi
     links:
       - randomizerapi
       - playlistapi
       - authenticationapi
-      - nodefrontend
+      - proxyapi
     environment:
       - ASPNETCORE_ENVIRONMENT="Test"
 

@@ -68,6 +68,7 @@ const requestPipePost = (endpoint) => {
 app.get('/api/frontpage', requestPipe(config.playlistApi));
 
 app.get('/api/playlists', (req, res, next) => {
+  //TODO: add middleware that checks is user is authorized for the specified username
   const { username } = req.query;
   if(!username){
     let err = new Error('Required parameters are not present');
