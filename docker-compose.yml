@@ -72,7 +72,7 @@ services:
       - playlistapi
       - authenticationapi
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
     links:
       - randomizerapi
       - playlistapi

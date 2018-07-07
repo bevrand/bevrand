@@ -17,7 +17,7 @@ const app = express();
 app.use((req, res, next) => {
   //Only needed when running react app locally
   if(config.env === 'development'){
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost');
     res.setHeader('Access-Control-Allow-Headers', 'Content-type,Authorization');
   }
   
