@@ -43,16 +43,10 @@ def redis_top_five():
             description: Your call was made with success
     """
     desc_list = request.args.get('list')
-    validation = data_validator.validate_json_for_list(desc_list)
-    valid = validation['valid']
-    if not valid:
-        return str(validation['errors']), 400
+    data_validator.validate_json_for_list(desc_list)
 
     user_name = request.args.get('user')
-    validation = data_validator.validate_json_for_user(user_name)
-    valid = validation['valid']
-    if not valid:
-        return str(validation['errors']), 400
+    data_validator.validate_json_for_user(user_name)
 
     top_five = request.args.get('topfive', type=inputs.boolean, default=True)
 
