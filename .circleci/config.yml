@@ -1,0 +1,111 @@
+version: 2
+jobs:
+  build:   
+    machine: true
+    steps:
+      - checkout
+
+     # build the application image
+      - run: docker-compose --version
+      - run: docker --version
+      - run: docker-compose build
+      - run: docker images
+      - run: docker-compose up -d
+      - run: docker ps -a
+     
+     #verify the results of the component test
+      - run: "cd ./deployment && python validate_backend_test_results.py"
+  
+  uitests:
+    machine: true
+    parallelism: 1
+    steps:
+      - checkout    
+
+      - run: docker-compose --version
+      - run: docker --version
+      - run: docker-compose build
+      - run: docker images
+      - run: docker-compose up -d
+      - run: docker ps -a
+      #TODO Persist docker?
+      - run: "cd ./bevrand.uitests && npm install"
+
+      - run:
+          name: Running E2E tests with Multiple reporters
+          command: "cd ./bevrand.uitests && npm run test-multiple"
+      - store_test_results:
+          path: multiple-results
+      - store_artifacts:
+          path: /home/circleci/project/bevrand.uitests/cypress/videos/
+      - store_artifacts:
+          path: /home/circleci/project/bevrand.uitests/cypress/screenshots/
+     # TODO Put push images in a different step
+      - run: "cd ./deployment && sh ./push_images.sh"
+        
+  pause_uptimerobot:
+    machine: true
+    steps:
+     - run: "curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479363&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479359&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460902&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460904&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\""
+ 
+  deploy:
+    machine: true
+    steps:
+     - checkout
+     - run: "pwd && ls -lha"
+     - run: "cd ./deployment && sh ./init_terraform.sh"
+     - run: "cd ./deployment/terraform_scripts && pwd && ls -lha && sh ../run_terraform.sh"
+  
+  resume_uptimerobot:
+    machine: true
+    steps:
+     - run: "curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479363&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479359&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460902&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460904&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\""
+
+workflows:
+  version: 2
+  build_accept_deploy:
+    jobs:
+     - build:
+         context: BeverageRandomizerPROD
+         filters:
+            branches:
+              only: 
+              - master
+     - uitests:
+         context: BeverageRandomizerPROD
+         filters:
+            branches:
+              only: 
+              - master
+         requires:
+           - build
+     #TODO Copy to artifacts
+     #TODO Sonar-scanner
+     #- acceptance_test_1:
+     #    requires:
+     #      - uitests
+
+     - pause_uptimerobot:
+         context: BeverageRandomizerPROD
+         filters:
+            branches:
+              only: master
+         requires:
+           - uitests
+     - deploy:
+         #TODO Get from artifacts
+         context: BeverageRandomizerPROD
+         filters:
+            branches:
+              only: master
+         requires:
+           #- acceptance_test_1
+           - pause_uptimerobot
+     - resume_uptimerobot:
+         context: BeverageRandomizerPROD
+         filters:
+            branches:
+              only: master
+         requires:
+           - deploy
+         

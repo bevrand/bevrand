@@ -32,9 +32,9 @@ def print_success_and_failed_tests(list_to_print):
     passed_index = list_to_print.index("Passed:")
     failed_index = list_to_print.index("Failed:")
     skipped_index = list_to_print.index("Skipped:")
-    print(f"{list_to_print[passed_index]} {list_to_print[passed_index + 1]} "
-          f"{list_to_print[failed_index]} {list_to_print[failed_index + 1]} "
-          f"{list_to_print[skipped_index]} {list_to_print[skipped_index + 1]}")
+    print('%s %s' %(list_to_print[passed_index], list_to_print[passed_index + 1])) 
+    print('%s %s' %(list_to_print[failed_index], list_to_print[failed_index + 1]))
+    print('%s %s' %(list_to_print[skipped_index], list_to_print[skipped_index + 1]))
     return
 
 
