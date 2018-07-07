@@ -10,8 +10,6 @@ const Header = (props) => {
           <hr />
           <p>{ props.headerText }</p>
           <Link id="letsGetStartedButton" className="btn btn-primary btn-xl" smooth={true} duration={350} to="getstarted" href="">Let's get started!</Link>
-          <Link id="topChooseListButton" className="btn btn-primary btn-xl" smooth={true} duration={350} to="playlists" href="">Choose list</Link>
-          <Link id="topFiveLinkButton" className="btn btn-primary btn-xl" smooth={true} duration={350} to="topFiveSwitch" href="">How much has been randomized?</Link>
         </div>
       </div>
     </header>
