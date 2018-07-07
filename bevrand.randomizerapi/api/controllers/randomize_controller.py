@@ -16,7 +16,7 @@ def ping_pong():
     })
 
 
-@randomize_blueprint.route('/', methods=['POST'])
+@randomize_blueprint.route('', methods=['POST'])
 def randomize_list_of_drinks():
     """
         This is an api to randomize lists and add data to redis
