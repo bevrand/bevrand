@@ -38,7 +38,7 @@
       }
     ],
     "list": "tgif",
-    "imageUrl": "https://f002.backblazeb2.com/file/beveragerandomizer/images/frontpage/tgif.jpg",
+    "imageUrl": "https://static.beveragerandomizer.com/file/beveragerandomizer/images/frontpage/tgif.jpg",
     "displayName": "Thank God It's Friday!"
   },
 {
@@ -68,7 +68,7 @@
     ], 
     "dateupdated" : "2017-09-03T09:46:41.062432", 
     "list" : "girlsnightout", 
-    "imageUrl" : "https://f002.backblazeb2.com/file/beveragerandomizer/images/frontpage/girlsnightout.jpg", 
+    "imageUrl" : "https://static.beveragerandomizer.com/file/beveragerandomizer/images/frontpage/girlsnightout.jpg", 
     "displayName" : "Girl's night out"
 },
 { 
@@ -95,7 +95,7 @@
         }
     ], 
     "list" : "mancavemayhem", 
-    "imageUrl" : "https://f002.backblazeb2.com/file/beveragerandomizer/images/frontpage/mancavemayhem.jpg", 
+    "imageUrl" : "https://static.beveragerandomizer.com/file/beveragerandomizer/images/frontpage/mancavemayhem.jpg", 
     "displayName" : "Mancave Mayhem"
 },
 { 
@@ -128,7 +128,7 @@
     "dateinserted" : "2017-09-01T21:09:13.187+0000", 
     "dateupdated" : "2017-09-01T21:09:13.592+0000", 
     "list" : "highlandgames", 
-    "imageUrl" : "https://f002.backblazeb2.com/file/beveragerandomizer/images/frontpage/highlandgames.jpg", 
+    "imageUrl" : "https://static.beveragerandomizer.com/file/beveragerandomizer/images/frontpage/highlandgames.jpg", 
     "displayName" : "Highland Games"
 },
 { 
@@ -153,7 +153,7 @@
         }
     ], 
     "list" : "mostwonderfultimeoftheyear", 
-    "imageUrl" : "https://f002.backblazeb2.com/file/beveragerandomizer/images/frontpage/xmas.jpg", 
+    "imageUrl" : "https://static.beveragerandomizer.com/file/beveragerandomizer/images/frontpage/xmas.jpg", 
     "displayName" : "It's the most wonderful time of the year"
 },
 { 
@@ -183,7 +183,7 @@
     "dateinserted" : "2017-09-01T21:53:23.368620", 
     "dateupdated" : "2017-09-01T21:53:23.368630", 
     "list" : "officemadness", 
-    "imageUrl" : "https://f002.backblazeb2.com/file/beveragerandomizer/images/frontpage/officemadness.jpg", 
+    "imageUrl" : "https://static.beveragerandomizer.com/file/beveragerandomizer/images/frontpage/officemadness.jpg", 
     "displayName" : "Office Madness"
 }
 ]
