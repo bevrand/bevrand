@@ -10,7 +10,7 @@ import json
 redis_blueprint = Blueprint('redis', __name__,)
 
 
-@redis_blueprint.route('/', methods=['GET'])
+@redis_blueprint.route('', methods=['GET'])
 #@FLASK_TRACER.trace()
 def redis_top_five():
     """
