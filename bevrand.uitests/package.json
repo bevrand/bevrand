@@ -6,7 +6,7 @@
     "private": true,
     "scripts": {
       "test-junit": "cypress run --reporter junit --reporter-options 'mochaFile=junit-results/my-test-output.xml'",
-      "test-multiple": "cypress run --reporter mocha-multi-reporters --reporter-options configFile=config.json"
+      "test-multiple": "cypress run --reporter mocha-multi-reporters --reporter-options configFile=./bevrand_uitests/config.json"
     },
     "repository": {
       "type": "git",

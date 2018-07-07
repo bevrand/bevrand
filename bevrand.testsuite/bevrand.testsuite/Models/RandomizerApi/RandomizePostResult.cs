@@ -2,6 +2,6 @@
 {
     public class RandomizePostResult : BaseResponseModel
     {
-        public string beverage { get; set; }
+        public string result { get; set; }
     }
 }
