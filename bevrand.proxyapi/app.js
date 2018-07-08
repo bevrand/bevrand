@@ -85,8 +85,9 @@ const frontpageWithSignature = (url) => {
       
 
       let newResult = JSON.parse(result).map(item => {
-        let signedItem = jwt.sign(item, config.frontendJwtSecret);
-        item.token = signedItem;
+        let signedItem = jwt.sign(item, config.frontendJwtSecret, { mutatePayload: true});
+        item.jwtheader = JSON.parse(Buffer.from(signedItem.split('.')[0], 'base64').toString("ascii"));
+        item.jwttoken = signedItem.split('.')[2];
         return item;
       });
 
@@ -98,7 +99,11 @@ const frontpageWithSignature = (url) => {
   }  
 }
 
-app.get('/api/frontpage2', frontpageWithSignature(config.playlistApi));
+/**
+ * Gives the complete response from the playlist api at the endpoint /api/frontpage, 
+ * signed with a JWT Token, IssuedAtTime property (iat) and a JWT Header, which describes the algorithm used.
+ */
+app.get('/api/v2/frontpage', frontpageWithSignature(config.playlistApi));
 
 app.get('/api/playlists', (req, res, next) => {
   //TODO: add middleware that checks is user is authorized for the specified username
@@ -140,14 +145,57 @@ app.get('/api/redis', requestPipe(config.randomizerApi));
 
 const validateJwtTokenFrontend = (req, res, next) => {
     try {
-      jwt.verify(req.body.token, config.frontendJwtSecret);    
+      let requestJwtHeader = req.body.jwtheader;
+      let requestJwtToken = req.body.jwttoken;
+
+      delete req.body.jwtheader;
+      delete req.body.jwttoken;
+
+      let signedItem = jwt.sign(req.body, config.frontendJwtSecret);
+      let jwtheader = signedItem.split('.')[0];
+      let jwttoken = signedItem.split('.')[2];
+
+      if(requestJwtToken === jwttoken){
+        return next();
+      }
+      throw new Error('JWT Token does not validate');
+      
       return next();
     } catch(err) {
       return next(err);
     }
 }
 
-app.post('/api/randomize2', validateJwtTokenFrontend, requestPipePost(config.randomizerApi));
+/**
+ * 
+ * @param {string} user 
+ * @param {string} list 
+ * @param {string[]} beverages 
+ */
+var RandomizeRequest = function (user, list, beverages) {
+  this.user = user;
+  this.list = list;
+  this.beverages = beverages;
+};
+
+/**
+ * Calls the backend randomize api with POST at endpoint /api/randomize
+ * Takes from the post body (req.body) the properties user, list, and beverages.
+ * @param {string} endpoint 
+ */
+const requestRandomizePost = (endpoint) => {
+  return (req, res) => {
+    request({
+      method: 'POST',
+      qs: req.query, 
+      uri: endpoint + '/api/randomize',
+      body: new RandomizeRequest(req.body.user, req.body.list, req.body.beverages),
+      json: true
+    }).pipe(res);
+  }
+}
+
+app.post('/api/v2/randomize', validateJwtTokenFrontend, requestRandomizePost(config.randomizerApi));
 app.post('/api/randomize', requestPipePost(config.randomizerApi));
 
 app.post('/api/login', 
