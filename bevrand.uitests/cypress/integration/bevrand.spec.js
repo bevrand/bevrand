@@ -3,7 +3,7 @@ let passWord = '';
 
 context('Beverage Randomizer Test', () => {
     beforeEach(() => {
-        cy.visit('http://0.0.0.0:4540')
+        cy.visit('http://0.0.0.0:80')
     })
 
 describe('Page comes up', function () {
@@ -37,7 +37,6 @@ describe('Randomize functionality works', function () {
         })
     })
     it('The randomized drink is in the list after switch', function () {
-        cy.get('#topChooseListButton').click()
         cy.get('#playlists > div > div > div:nth-child(4) > a > div').click()
         cy.get('#randomizeButton').click()
         cy.get('#randomizedOutput').then(($randomizedDrink) => {
@@ -48,14 +47,10 @@ describe('Randomize functionality works', function () {
 })
 
 describe('Top rolled beverages works', function () {
-    it('Buttons should be clickable', function () {
-        cy.get('#topFiveLinkButton').click()
-    })
     it('Current list should match top five list', function () {
         cy.get('#letsGetStartedButton').click()
         cy.get("#currentlySelectedPlaylist").then(($currentList) => {
             const currentList = $currentList.text()
-            cy.get('#topFiveLinkButton').click()
             cy.get("#currentlySelectedPlaylist").then(($topFiveList) => {
                 expect($topFiveList.text()).eq(currentList)
             })
@@ -66,7 +61,6 @@ describe('Top rolled beverages works', function () {
         cy.get("#currentlySelectedPlaylist").then(($currentList) => {
             const currentList = $currentList.text()
             cy.get('#playlists > div > div > div:nth-child(4) > a > div').click()
-            cy.get('#topFiveLinkButton').click()
             cy.get("#currentlySelectedPlaylist").then(($topFiveList) => {
                 expect($topFiveList.text()).not.to.eq(currentList)
             })
@@ -94,14 +88,14 @@ describe('Register', function () {
         cy.get('#controlPassWord')
         .type(passWord).should('have.value', passWord)
         cy.get('#root > div > div > span > div > form > button').click()
-        cy.url().should('eq', 'http://0.0.0.0:4540/login')
+        cy.url().should('eq', 'http://0.0.0.0:80/login')
     })
 })
 
 describe('Login', function () {
     it('Should be able to reach the login page', function () {
         cy.get('#navbarResponsive > ul > li:nth-child(1) > a').click()
-        cy.url().should('eq', 'http://0.0.0.0:4540/login')
+        cy.url().should('eq', 'http://0.0.0.0:80/login')
     })
     it('Should be able to login a created user', function () {
         cy.get('#navbarResponsive > ul > li:nth-child(1) > a').click()
@@ -113,7 +107,7 @@ describe('Login', function () {
         cy.get('#passWord')
         .type(passWord).should('have.value', passWord)
         cy.get('#root > div > div > span > div > form > button').click()
-        cy.url().should('eq', 'http://0.0.0.0:4540/user')
+        cy.url().should('eq', 'http://0.0.0.0:80/user')
     })
 })
 
@@ -124,5 +118,7 @@ function makeRandomString(numberOfChars) {
     for (var i = 0; i < numberOfChars; i++)
         text += possible.charAt(Math.floor(Math.random() * possible.length));
     return text;
+    
 }
 })
+

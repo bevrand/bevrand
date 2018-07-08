@@ -9,7 +9,7 @@ import config from './ConfigService';
 const Auth = new AuthService();
 
 const getPlaylists = async (userName, isHomePage) => {
-  console.log('Received username: ', userName);
+  // console.log('Received username: ', userName);
 
   let url = userName && !isHomePage ? `/api/playlists?username=${userName}` : '/api/frontpage';
   let body;
@@ -42,7 +42,7 @@ class RandomizeArea extends Component {
     let userName;
 
     if(Auth.loggedIn()){
-      console.log('User is logged in')
+      // console.log('User is logged in')
       userName = Auth.getProfile().username;
     }
 
