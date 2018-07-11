@@ -49,7 +49,6 @@ func AllPlayLists(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Printf("%s\n", string(jsonFile))
 	result := string(jsonFile)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
