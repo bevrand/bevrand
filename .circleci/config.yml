@@ -1,11 +1,5 @@
 version: 2
 jobs:
-  
-  test_job:
-    docker:
-      - image: circleci/python:3.6.1
-    steps:
-      - checkout
   unittest_playlist:
     docker:
       - image: circleci/python:3.6.1
@@ -86,21 +80,12 @@ workflows:
   version: 2
   build_accept_deploy:
     jobs:
-     - test_job:
-        context: BeverageRandomizerPROD
-        filters:
-          branches:
-            only: 
-            - develop
-
      - unittest_randomizer:
         context: BeverageRandomizerPROD
         filters:
           branches:
             only: 
             - develop
-        requires:
-           - test_job
 
      - unittest_playlist:
         context: BeverageRandomizerPROD
@@ -108,8 +93,6 @@ workflows:
           branches:
             only: 
             - develop
-          requires:
-            - test_job
 
      - build:
          context: BeverageRandomizerPROD
