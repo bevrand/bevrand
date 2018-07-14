@@ -99,7 +99,7 @@ workflows:
          filters:
             branches:
               only: 
-              - develop
+              - master
          requires:
            - unittest_randomizer
            - unittest_playlist
@@ -109,7 +109,7 @@ workflows:
          filters:
             branches:
               only: 
-              - develop
+              - master
          requires:
            - build
      #TODO Copy to artifacts
