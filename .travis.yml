@@ -14,7 +14,7 @@ dist: trusty
 #safelist
 branches:
   only:
-  - feature
+  - develop
 
 #cache:
 #  directories:
@@ -55,14 +55,14 @@ script:
  # - cd ../bevrand.uitests
  # - npm run cypress:run
 
-after_success:
+#after_success:
   #Pause all uptimerobot monitors:
-  - "curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479363&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479359&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460902&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460904&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\""
-  - pwd
-  - sh ./push_images.sh
-  - sh ./init_terraform.sh
-  - cd ./terraform_scripts
-  - pwd
-  - sh ../run_terraform.sh
+#  - "curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479363&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479359&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460902&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460904&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\""
+#  - pwd
+#  - sh ./push_images.sh
+#  - sh ./init_terraform.sh
+#  - cd ./terraform_scripts
+#  - pwd
+#  - sh ../run_terraform.sh
   #Continue all uptimerobot monitors:
-  - "curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479363&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479359&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460902&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460904&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\""
+#  - "curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479363&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479359&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460902&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460904&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\""
