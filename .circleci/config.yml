@@ -1,21 +1,26 @@
 version: 2
 jobs:
   
+  test_job:
+    docker:
+      - image: circleci/python:3.6.1
+    steps:
+      - checkout
   unittest_playlist:
     docker:
       - image: circleci/python:3.6.1
     steps:
       - checkout 
-      - run: "cd ./bevrand.playlistapi && pip install -r requirements.txt"
-      - run: "cd ./bevrand.playlistapi && pytest --cov-report term --cov=api"
+      - run: "cd ./bevrand.playlistapi && sudo pip install -r requirements.txt"
+      - run: "cd ./bevrand.playlistapi && sudo pytest --cov-report term --cov=api"
       
   unittest_randomizer:
     docker:
       - image: circleci/python:3.6.1
     steps:
       - checkout 
-      - run: "cd ./bevrand.randomizerapi && pip install -r requirements.txt"
-      - run: "cd ./bevrand.randomizerapi && pytest --cov-report term --cov=api"
+      - run: "cd ./bevrand.randomizerapi && sudo pip install -r requirements.txt"
+      - run: "cd ./bevrand.randomizerapi && sudo pytest --cov-report term --cov=api"
   build:   
     machine: true
     steps:
@@ -81,18 +86,31 @@ workflows:
   version: 2
   build_accept_deploy:
     jobs:
+     - test_job:
+        context: BeverageRandomizerPROD
+        filters:
+          branches:
+            only: 
+            - develop
+
+     - unittest_randomizer:
+        context: BeverageRandomizerPROD
+        filters:
+          branches:
+            only: 
+            - develop
+        requires:
+           - test_job
+
      - unittest_playlist:
         context: BeverageRandomizerPROD
         filters:
           branches:
             only: 
             - develop
-     - unittest_playlist:
-        context: BeverageRandomizerPROD
-        filters:
-          branches:
-            only: 
-            - develop
+          requires:
+            - test_job
+
      - build:
          context: BeverageRandomizerPROD
          filters:
