@@ -1,5 +1,5 @@
-from project.db import db_users
-from project.services.view_models import ErrorModel
+from api.db import db_users
+from api.services.view_models import ErrorModel
 
 
 def worker_for_delete(user_name, list_name):

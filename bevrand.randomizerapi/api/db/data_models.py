@@ -6,14 +6,7 @@ class ErrorModel():
         self.status_code = status_code
 
 
-class SuccessModel():
+class SuccessModelRedis():
 
-    def __init__(self, valid):
-        self.valid = valid
-
-
-class SuccessModelRedis(SuccessModel):
-
-    def __init__(self, valid, sorted_list):
-        SuccessModel.__init__(self, valid)
+    def __init__(self, sorted_list):
         self.sorted_list = sorted_list

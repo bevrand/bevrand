@@ -1,9 +1,9 @@
 from flask import jsonify, request, Blueprint
-from api import FLASK_TRACER, JAEGER_TRACER
+from api import FLASK_TRACER
 from api.service import redis_service, data_validator
 from api.error_handler.error_model import InvalidUsage
 import opentracing
-from opentracing.ext import tags
+
 
 randomize_blueprint = Blueprint('randomize', __name__,)
 
@@ -56,7 +56,7 @@ def randomize_list_of_drinks():
     with opentracing.tracer.start_span('randomized-drink', child_of=parent_span) as span:
         randomized_drink = redis_service.randomize_drink_from_list(beverages, user_list)
         span.log_kv({"status_code": 200, "result": randomized_drink})
-        return jsonify({"result": randomized_drink})
+        return jsonify({"result": randomized_drink}), 200
 
 
 @randomize_blueprint.errorhandler(InvalidUsage)

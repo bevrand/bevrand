@@ -61,12 +61,13 @@ services:
     links:
        - dockermongo
     environment:
-       - APP_SETTINGS=production
+       - APP_SETTINGS=Production
        - MONGO_URL=mongodb://dockermongo:27017
+       - JAEGER_HOST=jaeger-agent
 
-  nodefrontend:
-    container_name: nodefrontend
-    build: ./bevrand.frontend
+  proxyapi:
+    container_name: proxyapi
+    build: ./bevrand.proxyapi
     ports:
       - 4540:5000
     depends_on:
@@ -74,11 +75,27 @@ services:
       - playlistapi
       - authenticationapi
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
     links:
       - randomizerapi
       - playlistapi
       - authenticationapi
+
+  reactapp:
+    container_name: reactapp
+    build: ./bevrand.reactapp
+    ports:
+      - 80:80
+    depends_on:
+      - randomizerapi
+      - playlistapi
+      - authenticationapi
+      - proxyapi
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_PROXY_HOSTNAME=http://localhost:4540
+    links:
+      - proxyapi
 
   dataseeder:
     container_name: dataseeder
@@ -97,10 +114,12 @@ services:
       - randomizerapi
       - playlistapi
       - authenticationapi
+      - proxyapi
     links:
       - randomizerapi
       - playlistapi
       - authenticationapi
+      - proxyapi
     environment:
       - ASPNETCORE_ENVIRONMENT="Test"
   jaeger-collector:

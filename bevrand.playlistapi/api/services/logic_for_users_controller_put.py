@@ -1,6 +1,6 @@
-from project.db import db_users
-from project.services.custom_mapper import map_json_to_object
-from project.services.view_models import ErrorModel, PostModelReturn
+from api.db import db_users
+from api.services.custom_mapper import map_json_to_object
+from api.services.view_models import ErrorModel, PostModelReturn
 
 
 def worker_for_update(user_name, list_name, json_body):
