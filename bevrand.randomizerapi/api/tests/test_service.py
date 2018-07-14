@@ -48,9 +48,9 @@ class TestService(BaseTestCase):
 
 
     def test_random_drink_return(self):
-        def mockreturn(self, redis_col):
+        def mockreturn(self, redis_col, drink_to_incr):
             return
-        self.monkeypatch.setattr(RedisConnection, 'get_top_list', mockreturn)
+        self.monkeypatch.setattr(RedisConnection, 'count_rolled_drinks', mockreturn)
         drink_list = ['wine', 'beer', 'cola']
         user = 'pytest'
         sut = redis_service.randomize_drink_from_list(drink_list, user)
