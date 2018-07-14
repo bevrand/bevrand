@@ -12,7 +12,7 @@ class Development(BaseConfig):
     DEBUG = True
 
 
-class Testing(BaseConfig):
+class Test(BaseConfig):
     """Testing configuration"""
     DEBUG = True
     TESTING = True

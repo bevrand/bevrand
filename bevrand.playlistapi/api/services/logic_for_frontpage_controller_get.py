@@ -1,5 +1,5 @@
-from project.db import db_frontpage
-from project.services.view_models import ErrorModel
+from api.db import db_frontpage
+from api.services.view_models import ErrorModel
 
 
 def worker_for_frontpage_get(list_name):

@@ -6,12 +6,14 @@ from flask_opentracing import FlaskTracer
 from opentracing_instrumentation.client_hooks import install_all_patches
 import logging
 
+
 JAEGER_HOST = getenv('JAEGER_HOST', 'localhost')
+
 
 FLASK_TRACER = None
 
-
 def create_app():
+
     # instantiate the app
     swagger_config = {
         "headers": [
@@ -34,7 +36,7 @@ def create_app():
             "swagger": "3.0",
             'uiversion': "3",
             "info": {
-                "title": "BevRand Randomizer Api",
+                "title": "BevRand Playlist Api",
                 "version": "1.0"
 
             }
@@ -51,7 +53,7 @@ def create_app():
                             # Also, provide a hostname of Jaeger instance to send traces to.
                                 {'reporting_host': JAEGER_HOST}},
                     # Service name can be arbitrary string describing this particular web service.
-                    service_name="randomizer_api")
+                    service_name="playlist-api")
 
     jaeger_tracer = config.initialize_tracer()
     tracer = FlaskTracer(jaeger_tracer)
@@ -67,38 +69,8 @@ def create_app():
     app.config.from_object(app_settings)
 
     # register blueprints
-    from api.controllers.randomize_controller import randomize_blueprint
-    app.register_blueprint(randomize_blueprint, url_prefix='/api/randomize')
+    from api.controllers.frontpage_controller import users_blueprint
+    app.register_blueprint(users_blueprint)
 
-    from api.controllers.redis_controller import redis_blueprint
-    app.register_blueprint(redis_blueprint, url_prefix='/api/redis')
 
     return app
-
-'''
-    #set tracing
-    def initialize_tracer():
-        config = Config(
-            config={  # usually read from some yaml config
-                'sampler': {
-                    'type': 'const',
-                    'param': 1,
-                },
-                'local_agent': {
-                    'reporting_host': JAEGER_HOST
-                },
-                'logging': True,
-            },
-            service_name='randomizer_api_docker',
-        )
-        return config.initialize_tracer()  # also sets opentracing.tracer
-
-    jaeger_tracer = initialize_tracer()
-    global JAEGER_TRACER
-    JAEGER_TRACER = jaeger_tracer
-    flask_tracer = FlaskTracer(jaeger_tracer)
-    #install_all_patches()
-    global FLASK_TRACER
-    FLASK_TRACER = flask_tracer
-
-'''

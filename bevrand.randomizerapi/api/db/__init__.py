@@ -4,7 +4,7 @@ import api
 
 app_settings = os.getenv('APP_SETTINGS')
 if app_settings is None:
-    app_settings = 'Testing'
+    app_settings = 'Test'
 env = getattr(api.config, app_settings)
 connection = env.CONNECTION
 print(connection)

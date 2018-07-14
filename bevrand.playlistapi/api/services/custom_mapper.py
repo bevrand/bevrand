@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from project.services.view_models import MongoObject
+from api.services.view_models import MongoObject
 
 
 def map_json_to_object(json):
