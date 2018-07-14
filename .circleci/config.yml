@@ -52,6 +52,7 @@ jobs:
       - run: docker ps -a
       #TODO Persist docker?
       - run: "cd ./bevrand.uitests && npm install"
+      - run: "cd /home/circleci/project"
 
       - run:
           name: Running E2E tests with Multiple reporters
