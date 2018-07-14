@@ -111,7 +111,7 @@ workflows:
               only: 
               - develop
          requires:
-           - build
+           - unittest_randomizer
      #TODO Copy to artifacts
      #TODO Sonar-scanner
      #- acceptance_test_1:
