@@ -110,9 +110,9 @@ workflows:
          filters:
             branches:
               only: 
-              - develop
+              - master
          requires:
-           - unittest_randomizer
+           - build
      #TODO Copy to artifacts
      #TODO Sonar-scanner
      #- acceptance_test_1:
