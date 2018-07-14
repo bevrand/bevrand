@@ -15,6 +15,13 @@ jobs:
       - checkout 
       - run: "cd ./bevrand.randomizerapi && sudo pip install -r requirements.txt"
       - run: "cd ./bevrand.randomizerapi && sudo pytest --cov-report term --cov=api"
+  unittest_authentication:
+    docker:
+      - image: microsoft/dotnet:2-sdk
+    steps:
+      - checkout:
+      - run: "cd bevrand.authenticationapi/bevrand.authenticationapi.tests && dotnet test"
+  
   build:   
     machine: true
     steps:
@@ -82,18 +89,11 @@ workflows:
     jobs:
      - unittest_randomizer:
         context: BeverageRandomizerPROD
-        filters:
-          branches:
-            only: 
-            - develop
 
      - unittest_playlist:
         context: BeverageRandomizerPROD
-        filters:
-          branches:
-            only: 
-            - develop
-
+     - unittest_authentication:
+        context: BeverageRandomizerPROD
      - build:
          context: BeverageRandomizerPROD
          filters:
