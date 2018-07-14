@@ -3,7 +3,7 @@ jobs:
   
   unittest_playlist:
     docker:
-      - image: circleci/python:<version TAG>
+      - image: circleci/python:3.6.1
     steps:
       - checkout 
       - run: "cd ./bevrand.playlistapi && pip install -r requirements.txt"
@@ -11,7 +11,7 @@ jobs:
       
   unittest_randomizer:
     docker:
-      - image: circleci/python:<version TAG>
+      - image: circleci/python:3.6.1
     steps:
       - checkout 
       - run: "cd ./bevrand.randomizerapi && pip install -r requirements.txt"
