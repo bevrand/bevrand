@@ -99,13 +99,17 @@ workflows:
          filters:
             branches:
               only: 
-              - master
+              - develop
+         requires:
+           - unittest_randomizer
+           - unittest_playlist
+           - unittest_authentication
      - uitests:
          context: BeverageRandomizerPROD
          filters:
             branches:
               only: 
-              - master
+              - develop
          requires:
            - build
      #TODO Copy to artifacts
