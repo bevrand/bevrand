@@ -55,7 +55,7 @@ jobs:
 
       - run:
           name: Running E2E tests with Multiple reporters
-          command: "npm run test-multiple"
+          command: "cd ./bevrand.uitests && npm run test-multiple"
       - store_test_results:
           path: multiple-results
       - store_artifacts:
@@ -109,7 +109,7 @@ workflows:
          filters:
             branches:
               only: 
-              - master
+              - develop
          requires:
            - build
      #TODO Copy to artifacts
