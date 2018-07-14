@@ -1,6 +1,0 @@
-{
-  "api/tests/test_db.py::TestDb::test_viewisup": true,
-  "api/tests/test_error_handler.py::TestErrorHandler::test_viewisup": true,
-  "api/tests/test_service.py::TestService::test_viewisup": true,
-  "api/tests/test_service.py::test_random_drink_return": true
-}
