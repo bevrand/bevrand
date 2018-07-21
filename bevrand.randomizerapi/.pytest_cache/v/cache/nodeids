@@ -1,0 +1,18 @@
+[
+  "api/tests/test_controller.py::TestController::test_view_is_up",
+  "api/tests/test_error_handler.py::TestErrorHandler::test_error_raised",
+  "api/tests/test_error_handler.py::TestErrorHandler::test_error_raised_with_meta",
+  "api/tests/test_error_handler.py::TestErrorHandler::test_invalid_usage_randomize",
+  "api/tests/test_error_handler.py::TestErrorHandler::test_invalid_usage_redis",
+  "api/tests/test_error_handler.py::TestErrorHandler::test_no_status_code_gives_back_400",
+  "api/tests/test_service.py::TestService::test_invalid_beverage_in_beverage_list_raises_error",
+  "api/tests/test_service.py::TestService::test_invalid_beverage_list_length_raises_error",
+  "api/tests/test_service.py::TestService::test_invalid_list_raises_error",
+  "api/tests/test_service.py::TestService::test_invalid_user_raises_error",
+  "api/tests/test_service.py::TestService::test_lists_are_complete_when_bool_is_false",
+  "api/tests/test_service.py::TestService::test_lists_are_limited_to_five_when_bool_is_true",
+  "api/tests/test_service.py::TestService::test_lists_are_returned_in_the_correct_format",
+  "api/tests/test_service.py::TestService::test_model_created_correctly",
+  "api/tests/test_service.py::TestService::test_random_drink_return",
+  "api/tests/test_service.py::TestService::test_valid_model_returns_none"
+]
