@@ -1,15 +1,17 @@
 ﻿using System;
 using bevrand.authenticationapi.Data;
-using bevrand.authenticationapi.DAL;
 using bevrand.authenticationapi.Middleware;
 using bevrand.authenticationapi.Repository;
 using bevrand.authenticationapi.Services;
 using bevrand.authenticationapi.Services.Interfaces;
+using OpenTracing.Util;
+using Jaeger;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Swagger;
 
 
@@ -17,6 +19,8 @@ namespace bevrand.authenticationapi
 {
     public class Startup
     {
+        private static readonly ILoggerFactory LoggerFactory = new LoggerFactory().AddConsole();
+        private static readonly Tracer Tracer = Tracing.Init("Authenication Api", LoggerFactory);
         
         public Startup(IHostingEnvironment env)
         {
@@ -33,6 +37,7 @@ namespace bevrand.authenticationapi
 
         public IConfiguration Configuration { get; }
 
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -45,6 +50,9 @@ namespace bevrand.authenticationapi
             services.AddScoped<IValidationLogic, ValidationLogic>();
   
             services.AddMvc();
+            
+            GlobalTracer.Register(Tracer);
+            services.AddOpenTracing();
             
                 // Register the Swagger generator, defining one or more Swagger documents
             services.AddSwaggerGen(c =>
@@ -63,6 +71,7 @@ namespace bevrand.authenticationapi
             }
 
             app.UseMiddleware(typeof(ErrorHandlingMiddleware));
+          //  app.UseMiddleware(typeof(TracingHandlingMiddleware));
 
             app.UseSwagger();
 

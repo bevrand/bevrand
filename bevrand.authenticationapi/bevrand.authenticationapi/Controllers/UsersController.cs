@@ -1,8 +1,11 @@
-﻿using bevrand.authenticationapi.DAL.Models;
+﻿using System.Collections.Generic;
+using bevrand.authenticationapi.DAL.Models;
 using bevrand.authenticationapi.Services;
 using bevrand.authenticationapi.ViewModels;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using OpenTracing;
 
 namespace bevrand.authenticationapi.Controllers
 {
@@ -11,25 +14,44 @@ namespace bevrand.authenticationapi.Controllers
     {
 
        private readonly IUsersLogic _usersLogic;
+       private readonly ITracer _tracer;
+       private const string spanName = "user-controller";
 
-       public UsersController(IUsersLogic usersLogic)
+       public UsersController(IUsersLogic usersLogic, ITracer tracer)
        {
            _usersLogic = usersLogic;
+           _tracer = tracer;
        }
 
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetAllUsers()
         {
-            var result = _usersLogic.GetAllUsersFromDataBase();
-            return Ok(result);
+            using (var scope = _tracer.BuildSpan(spanName).StartActive(true))
+            {
+                 var result = _usersLogic.GetAllUsersFromDataBase();
+                 scope.Span.Log(new Dictionary<string, object>
+                     {
+                         [LogFields.Event] = "Get all users result",
+                         ["value"] = JsonConvert.SerializeObject(result)
+                     });   
+                return Ok(result);
+            }
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var result = _usersLogic.GetById(id);
-            return Ok(result);
+            using (var scope = _tracer.BuildSpan(spanName).StartActive(true))
+            {
+                var result = _usersLogic.GetById(id);
+                scope.Span.Log(new Dictionary<string, object>
+                {
+                    [LogFields.Event] = "Get user by id",
+                    ["value"] = JsonConvert.SerializeObject(result)
+                });
+                return Ok(result);
+            }
         }
 
         [HttpGet("by-email/{emailaddress}", Name = "GetByEmail")]
