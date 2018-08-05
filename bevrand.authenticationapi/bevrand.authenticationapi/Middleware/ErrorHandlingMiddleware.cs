@@ -13,7 +13,14 @@ namespace bevrand.authenticationapi.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly ITracer _tracer;
-        private const string spanName = "error-handling-middleware";
+
+        private readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
+        {
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        };
+
+        private const string ResponseContentType = "application/json";
+        private const string JaegerSpanName = "error-handling-middleware";
 
         public ErrorHandlingMiddleware(RequestDelegate next, ITracer tracer)
         {
@@ -21,6 +28,11 @@ namespace bevrand.authenticationapi.Middleware
             _tracer = tracer;
         }
 
+        /// <summary>
+        /// MiddleWare function, to catch unhandled exceptions
+        /// </summary>
+        /// <param name="context">HttpContext to process.</param>
+        // ReSharper disable once UnusedMember.Global : MiddleWare function, is used implicitly.
         public async Task Invoke(HttpContext context)
         {
             try
@@ -35,21 +47,25 @@ namespace bevrand.authenticationapi.Middleware
 
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            using (var scope = _tracer.BuildSpan(spanName).StartActive(true))
+            using (var scope = _tracer.BuildSpan(JaegerSpanName).StartActive(true))
             {
-                Tags.Error.Set(scope.Span, true);
-                var code = HttpStatusCode.InternalServerError; // 500 if unexpected
+                HttpStatusCode code;
 
                 switch (exception)
                 {
                     case ArgumentException _:
                         code = HttpStatusCode.BadRequest;
                         break;
+                    case RecordNotFoundException _:
+                        code = HttpStatusCode.NotFound;
+                        break;
                     case NotImplementedException _:
                         code = HttpStatusCode.NotImplemented;
+                        Tags.Error.Set(scope.Span, true);
                         break;
-                    case HttpNotFoundException _:
-                        code = HttpStatusCode.NotFound;
+                    default:
+                        code = HttpStatusCode.InternalServerError; // 500 if unexpected
+                        Tags.Error.Set(scope.Span, true);
                         break;
                 }
 
@@ -58,17 +74,13 @@ namespace bevrand.authenticationapi.Middleware
                     Error = exception.Message + " " + exception.InnerException?.Message
                 };
 
-                var result = JsonConvert.SerializeObject(errorModel,
-                    new JsonSerializerSettings
-                    {
-                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                    });
+                var result = JsonConvert.SerializeObject(errorModel, _jsonSerializerSettings);
 
-                context.Response.ContentType = "application/json";
+                context.Response.ContentType = ResponseContentType;
                 context.Response.StatusCode = (int) code;
+                
                 scope.Span.Log(new Dictionary<string, object>
                 {
-                    ["level"] = "error",
                     [LogFields.Event] = "error",
                     [LogFields.ErrorKind] = exception.GetType().ToString(),
                     [LogFields.ErrorObject] = exception,
