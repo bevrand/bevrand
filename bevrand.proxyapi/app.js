@@ -1,4 +1,5 @@
 const express = require('express');
+const expressOasGenerator = require('express-oas-generator');
 const path = require('path');
 const request = require('request');
 const logger = require('morgan');
@@ -14,10 +15,11 @@ const config = require('./config');
 const controllers = require('./controllers');
 
 const app = express();
+expressOasGenerator.init(app, {}); // to overwrite generated specification's values use second argument.
 
 app.use((req, res, next) => {
   //Only needed when running react app locally
-  if(config.env === 'development'){
+  if(config.env === 'development' || config.env === 'local'){
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Content-type,Authorization');
   }
