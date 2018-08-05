@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Reflection;
 using bevrand.authenticationapi.Data;
 using bevrand.authenticationapi.Middleware;
 using bevrand.authenticationapi.Repository;
@@ -58,7 +60,12 @@ namespace bevrand.authenticationapi
                 // Register the Swagger generator, defining one or more Swagger documents
             services.AddSwaggerGen(c =>
             {
+                var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                var commentsFileName = Assembly.GetExecutingAssembly().GetName().Name + ".XML";
+                var commentsFile = Path.Combine(baseDirectory, commentsFileName);
+                
                 c.SwaggerDoc("v1", new Info { Title = "Authentication Api", Version = "v1" });
+                c.IncludeXmlComments(commentsFile);
             });
         }
         

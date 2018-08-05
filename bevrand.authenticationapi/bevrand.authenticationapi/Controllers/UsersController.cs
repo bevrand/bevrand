@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Net;
 using bevrand.authenticationapi.DAL.Models;
+using bevrand.authenticationapi.Middleware;
+using bevrand.authenticationapi.Models;
 using bevrand.authenticationapi.Services;
 using bevrand.authenticationapi.ViewModels;
 using Microsoft.AspNetCore.JsonPatch;
@@ -22,7 +25,6 @@ namespace bevrand.authenticationapi.Controllers
            _usersLogic = usersLogic;
            _tracer = tracer;
        }
-
 
         [HttpGet]
         public IActionResult GetAllUsers()
@@ -57,7 +59,15 @@ namespace bevrand.authenticationapi.Controllers
             return Ok(result);
         }
         
-        
+        /// <summary>
+        /// Returns the user based on the provided <paramref name="username"/>
+        /// </summary>
+        /// <param name="username">Username to search user by in database.</param>
+        /// <response code="200" cref="GetUserModel">Gives the email address and active status of the user with the provided <paramref name="username"/>.</response>
+        /// <response code="404" cref="ErrorModel">Could not find any user with the given <paramref name="username"/>.</response>
+        /// <returns><see cref="GetAllUsersModels"/> response with email address and active status.</returns>
+        [ProducesResponseType(typeof(ErrorModel), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(GetUserModel), (int)HttpStatusCode.OK)]
         [HttpGet("by-username/{username}", Name = "GetByUserName")]
         public IActionResult GetByUserName(string username)
         {
