@@ -51,6 +51,7 @@ namespace bevrand.authenticationapi
   
             services.AddMvc();
             
+            //TODO Reconsider using the "GlobalTracer" / "AddOpenTracing", this is probably the cause of a lot of noise in the tracing.
             GlobalTracer.Register(Tracer);
             services.AddOpenTracing();
             

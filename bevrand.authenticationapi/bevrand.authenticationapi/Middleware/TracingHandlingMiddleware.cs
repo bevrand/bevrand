@@ -28,11 +28,7 @@ namespace bevrand.authenticationapi.Middleware
             response.Body.Seek(0, SeekOrigin.Begin);
             using (var scope = _tracer.BuildSpan("TRACING MIDDLEWARE").StartActive(true))
             {
-                scope.Span.Log(new Dictionary<string, object>
-                {
-                    [LogFields.Event] = "TRACING MIDDLEWARE",
-                    ["value"] = JsonConvert.SerializeObject(result)
-                });      
+                scope.LogResult("TRACING MIDDLEWARE", result);
             }
         }
     }

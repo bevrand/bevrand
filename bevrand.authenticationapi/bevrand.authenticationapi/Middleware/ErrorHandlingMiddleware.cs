@@ -89,7 +89,6 @@ namespace bevrand.authenticationapi.Middleware
                     ["error_id"] = errorModel.ErrorId,
                     ["value"] = result,
                     ["status_code"] = (int) code
-
                 });
                 
                 return context.Response.WriteAsync(result);

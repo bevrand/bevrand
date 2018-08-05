@@ -29,12 +29,10 @@ namespace bevrand.authenticationapi.Controllers
         {
             using (var scope = _tracer.BuildSpan(spanName).StartActive(true))
             {
-                 var result = _usersLogic.GetAllUsersFromDataBase();
-                 scope.Span.Log(new Dictionary<string, object>
-                     {
-                         [LogFields.Event] = "Get all users result",
-                         ["value"] = JsonConvert.SerializeObject(result)
-                     });   
+                var result = _usersLogic.GetAllUsersFromDataBase();
+                
+                scope.LogResult("Get all users result", result);
+
                 return Ok(result);
             }
         }
@@ -45,11 +43,9 @@ namespace bevrand.authenticationapi.Controllers
             using (var scope = _tracer.BuildSpan(spanName).StartActive(true))
             {
                 var result = _usersLogic.GetById(id);
-                scope.Span.Log(new Dictionary<string, object>
-                {
-                    [LogFields.Event] = "Get user by id",
-                    ["value"] = JsonConvert.SerializeObject(result)
-                });
+                
+                scope.LogResult("Get user by id", result);
+                
                 return Ok(result);
             }
         }
