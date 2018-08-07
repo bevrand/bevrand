@@ -45,6 +45,10 @@ namespace bevrand.authenticationapi
             services.AddScoped<IValidationLogic, ValidationLogic>();
   
             services.AddMvc();
+
+            //TODO Reconsider using the "GlobalTracer" / "AddOpenTracing", this is probably the cause of a lot of noise in the tracing.
+            GlobalTracer.Register(Tracer);
+            services.AddOpenTracing();
             
                 // Register the Swagger generator, defining one or more Swagger documents
             services.AddSwaggerGen(c =>

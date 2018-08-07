@@ -48,7 +48,7 @@ namespace bevrand.authenticationapi.Services
             var model = _userRepository.GetSingleUser(username.ToLowerInvariant());
             if (model == null)
             {
-                throw new HttpNotFoundException($"User with username: {username} was not found");
+                throw new RecordNotFoundException($"User with username: {username} was not found");
             }
 
             var userModel = new GetUserModel
@@ -67,7 +67,7 @@ namespace bevrand.authenticationapi.Services
             var model = _userRepository.GetSingleUser(id);
             if (model == null)
             {
-                throw new HttpNotFoundException($"User with id: {id} was not found");
+                throw new RecordNotFoundException($"User with id: {id} was not found");
             }
 
             var idModel = new GetUserModel
@@ -86,7 +86,7 @@ namespace bevrand.authenticationapi.Services
             var model = _userRepository.GetSingleUserEmail(emailAddress);
             if (model == null)
             {
-                throw new HttpNotFoundException($"User with emailaddress: {emailAddress} was not found");
+                throw new RecordNotFoundException($"User with emailaddress: {emailAddress} was not found");
             }
 
             var emailModel = new GetUserModel
@@ -125,7 +125,7 @@ namespace bevrand.authenticationapi.Services
             var userExists = _userRepository.CheckIfIdExists(id);
             if (!userExists)
             {
-                throw new HttpNotFoundException(
+                throw new RecordNotFoundException(
                     $"Unable to delete user because it does not exist, id provided was: {id}");
             }
 
@@ -139,7 +139,7 @@ namespace bevrand.authenticationapi.Services
             var userExists = _userRepository.CheckIfIdExists(id);
             if (!userExists)
             {
-                throw new HttpNotFoundException(
+                throw new RecordNotFoundException(
                     $"Unable to patch user because it does not exist, id provided was: {id}");
             }
             

@@ -56,7 +56,7 @@ namespace bevrand.authenticationapi.Services
                 user = _userRepository.GetSingleUser(validate.UserName.ToLowerInvariant());
                 if (user == null)
                 {
-                    throw new HttpNotFoundException($"User with name: {validate.UserName} was not found");
+                    throw new RecordNotFoundException($"User with name: {validate.UserName} was not found");
                 }
 
                 var validateModel = new ValidateUserModel
@@ -73,7 +73,7 @@ namespace bevrand.authenticationapi.Services
                 user = _userRepository.GetSingleUserEmail(validate.emailAddress);
                 if (user == null)
                 {
-                    throw new HttpNotFoundException($"User with email: {validate.emailAddress} was not found");
+                    throw new RecordNotFoundException($"User with email: {validate.emailAddress} was not found");
                 }
 
                 var validateModel = new ValidateUserModel
