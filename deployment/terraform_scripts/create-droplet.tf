@@ -1,7 +1,7 @@
 terraform {
   backend "azurerm" {
-    container_name       = "tfstate"
-    key                  = "prod.terraform.tfstate"
+    container_name = "tfstate"
+    key            = "prod.terraform.tfstate"
   }
 }
 
@@ -22,7 +22,7 @@ variable "droplet_region" {
 }
 
 variable "droplet_size" {
-  default = "1gb"
+  default = "512mb"
 }
 
 variable "dev1_ssh_key_id" {}
@@ -51,7 +51,7 @@ resource "digitalocean_tag" "sshmanagement" {
 }
 
 resource "digitalocean_firewall" "sshmanagementfirewall" {
-  name       = "sshmanagementfirewall"
+  name = "sshmanagementfirewall"
 
   inbound_rule = [
     {
@@ -69,7 +69,7 @@ resource "digitalocean_tag" "outboundall" {
 }
 
 resource "digitalocean_firewall" "outboundfirewall" {
-  name       = "outboundfirewall"
+  name = "outboundfirewall"
 
   outbound_rule = [
     {
@@ -105,9 +105,8 @@ resource "digitalocean_floating_ip" "docker" {
 #}
 
 resource "tls_private_key" "terraformusersshkey" {
-  algorithm   = "RSA"
+  algorithm = "RSA"
 }
-
 
 # Add key to digital ocean !depend on generated ssh key
 # Create a new SSH key
@@ -115,6 +114,7 @@ resource "digitalocean_ssh_key" "default" {
   name       = "terraformuser generated key"
   public_key = "${tls_private_key.terraformusersshkey.public_key_openssh}"
 }
+
 resource "digitalocean_droplet" "docker" {
   image      = "${var.droplet_image_name}"
   name       = "${var.docker_droplet_name}"
@@ -141,9 +141,9 @@ resource "digitalocean_droplet" "docker" {
       "sudo chmod +x /usr/local/bin/docker-compose",
       "docker-compose --version",
       "sudo usermod -aG docker $USER",
-	  "cd /mnt/datavolumedocker/deployment/",
-	  "sudo docker-compose up -d",
-	  "sudo service ssh restart", #because we have the AllowUsers only on developer, this will permanently lock us out. Only do as the last thing
+      "cd /mnt/datavolumedocker/deployment/",
+      "sudo docker-compose up -d",
+      "sudo service ssh restart",                                                                                                                        #because we have the AllowUsers only on developer, this will permanently lock us out. Only do as the last thing
     ]
   }
 }
