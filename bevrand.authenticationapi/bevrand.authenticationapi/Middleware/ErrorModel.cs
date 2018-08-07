@@ -1,9 +1,6 @@
-using System;
-
-namespace bevrand.authenticationapi.Middleware
+ using System;
+ namespace bevrand.authenticationapi.Middleware
 {
-{
-    internal class ErrorModel
     /// <summary>
     /// Error model which can be returned by REST APIs when an non-recoverable error has occurred.
     /// </summary>
@@ -20,4 +17,3 @@ namespace bevrand.authenticationapi.Middleware
         public Guid ErrorId { get; set; } = Guid.NewGuid();
     }
 } 
-}
