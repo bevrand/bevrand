@@ -1,11 +1,13 @@
 from flask_script import Manager
 import unittest
 
+
 from api import create_app
 
 
 app = create_app()
 manager = Manager(app)
+
 
 @manager.command
 def test():

@@ -1,30 +1,16 @@
-from werkzeug.local import LocalProxy
-
-from api.db import db_connection
 from ..db.database_models import MongoObject
-
-from flask import jsonify, g
-
-
-def get_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = db_connection.connect_to_mongo()
-    return db
-
-
-db = LocalProxy(get_db)
+from api import MONGO as mongo
 
 
 def get_frontpage_beverages(list):
-    fpusers = db.frontpagestandard
+    fpusers = mongo.db.frontpagestandard
     specified_document = fpusers.find_one({'list': list})
     front_page_model = map_cursor_to_object(specified_document)
     return front_page_model
 
 
 def check_if_frontpage_list_exists(list_name):
-    fp_users = db.frontpagestandard
+    fp_users = mongo.db.frontpagestandard
     specified_document = fp_users.find_one({'list': list_name})
     if specified_document is None:
         return False
@@ -33,7 +19,7 @@ def check_if_frontpage_list_exists(list_name):
 
 
 def get_all_frontpage_lists():
-    fp_users = db.frontpagestandard
+    fp_users = mongo.db.frontpagestandard
     users = []
     query = fp_users.find()
     if query.count() == 0:

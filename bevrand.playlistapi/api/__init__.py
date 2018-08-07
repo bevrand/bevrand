@@ -5,12 +5,13 @@ from jaeger_client import Config
 from flask_opentracing import FlaskTracer
 from opentracing_instrumentation.client_hooks import install_all_patches
 import logging
+from flask_pymongo import PyMongo
 
 
 JAEGER_HOST = getenv('JAEGER_HOST', 'localhost')
-
-
 FLASK_TRACER = None
+MONGO = None
+
 
 def create_app():
 
@@ -69,8 +70,15 @@ def create_app():
     app.config.from_object(app_settings)
 
     # register blueprints
-    from api.controllers.frontpage_controller import users_blueprint
+    from api.controllers.user_controller import users_blueprint
     app.register_blueprint(users_blueprint)
 
+    from api.controllers.frontpage_controller import front_page_blueprint
+    app.register_blueprint(front_page_blueprint)
+
+    mongo_url = app.config["CONNECTION"] + "/bevrand"
+    mongo = PyMongo(app, uri=mongo_url)
+    global MONGO
+    MONGO = mongo
 
     return app
