@@ -22,7 +22,7 @@ variable "droplet_region" {
 }
 
 variable "droplet_size" {
-  default = "512mb"
+  default = "s-1vcpu-1gb"
 }
 
 variable "dev1_ssh_key_id" {}
