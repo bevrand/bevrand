@@ -138,6 +138,7 @@ resource "digitalocean_droplet" "docker" {
       "sudo mount -o discard,defaults /dev/disk/by-id/scsi-0DO_Volume_datavolumedocker /mnt/datavolumedocker",
       "sudo echo /dev/disk/by-id/scsi-0DO_Volume_datavolumedocker /mnt/datavolumedocker ext4 defaults,nofail,discard 0 0 | sudo tee -a /etc/fstab",
       "sudo curl -fsSL get.docker.com -o get-docker.sh",
+      "sleep 300.0",
       "while fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do sleep 5.0; done",
       "sudo sh get-docker.sh",
       "sudo docker run docker/whalesay cowsay Hello Bevrand on Ubuntu 18.04",
