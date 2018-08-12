@@ -138,6 +138,7 @@ resource "digitalocean_droplet" "docker" {
       "sudo mount -o discard,defaults /dev/disk/by-id/scsi-0DO_Volume_datavolumedocker /mnt/datavolumedocker",
       "sudo echo /dev/disk/by-id/scsi-0DO_Volume_datavolumedocker /mnt/datavolumedocker ext4 defaults,nofail,discard 0 0 | sudo tee -a /etc/fstab",
       "sudo curl -fsSL get.docker.com -o get-docker.sh",
+      "$file(\"wait-for-apt.sh\")",
       "sudo sh get-docker.sh",
       "sudo docker run docker/whalesay cowsay Hello Bevrand on Ubuntu 18.04",
       "sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose",
