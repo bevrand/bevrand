@@ -25,7 +25,8 @@
     "swagger-ui-express": "^3.0.10"
   },
   "devDependencies": {
-    "eslint": "^4.15.0"
+    "eslint": "^4.15.0",
+    "jest": "^23.5.0"
   },
   "eslintConfig": {
     "extends": "eslint:recommended",
