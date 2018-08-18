@@ -37,13 +37,9 @@ const getRandomize = async (playlist, username) => {
   let body;
   try {
     //TODO: Create generic service for Proxy calls (like AuthService)
-    let response = await fetch(`${config.proxyHostname}/api/randomize`, {
+    let response = await fetch(`${config.proxyHostname}/api/v2/randomize`, {
       method: 'POST',
-      body: JSON.stringify({
-        user: username || "frontpage",
-        list: `${playlist.list}`,
-        beverages: playlist.beverages
-      }),
+      body: JSON.stringify(playlist),
       headers: new Headers({
         'Content-Type': 'application/json'
       })

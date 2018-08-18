@@ -14,7 +14,8 @@ variable "docker_droplet_name" {
 }
 
 variable "droplet_image_name" {
-  default = "docker"
+  #default = "docker-16-04"
+  default = "ubuntu-18-04-x64"
 }
 
 variable "droplet_region" {
@@ -22,7 +23,7 @@ variable "droplet_region" {
 }
 
 variable "droplet_size" {
-  default = "512mb"
+  default = "s-1vcpu-1gb"
 }
 
 variable "dev1_ssh_key_id" {}
@@ -120,7 +121,7 @@ resource "digitalocean_droplet" "docker" {
   name       = "${var.docker_droplet_name}"
   region     = "${var.droplet_region}"
   size       = "${var.droplet_size}"
-  ssh_keys   = ["${digitalocean_ssh_key.default.fingerprint}", "${var.dev1_ssh_key_id}", "${var.dev2_ssh_key_id}", "${var.dev3_ssh_key_id}"]
+  ssh_keys   = ["${var.dev1_ssh_key_id}", "${var.dev2_ssh_key_id}", "${var.dev3_ssh_key_id}"]
   user_data  = "${replace(file("cloud-config.conf"), "__sshkeygoeshere__", tls_private_key.terraformusersshkey.public_key_openssh)}"
   monitoring = true
   tags       = ["${digitalocean_tag.allow_inbound_cloudflare.name}", "${digitalocean_tag.sshmanagement.name}", "${digitalocean_tag.outboundall.name}"]
@@ -136,8 +137,12 @@ resource "digitalocean_droplet" "docker" {
       "sudo mkdir -p /mnt/datavolumedocker",
       "sudo mount -o discard,defaults /dev/disk/by-id/scsi-0DO_Volume_datavolumedocker /mnt/datavolumedocker",
       "sudo echo /dev/disk/by-id/scsi-0DO_Volume_datavolumedocker /mnt/datavolumedocker ext4 defaults,nofail,discard 0 0 | sudo tee -a /etc/fstab",
-      "sudo docker run docker/whalesay cowsay Hello Bevrand",
-      "sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose",
+      "sudo curl -fsSL get.docker.com -o get-docker.sh",
+      "sleep 300.0",
+      "while fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do sleep 5.0; done",
+      "sudo sh get-docker.sh",
+      "sudo docker run docker/whalesay cowsay Hello Bevrand on Ubuntu 18.04",
+      "sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose",
       "sudo chmod +x /usr/local/bin/docker-compose",
       "docker-compose --version",
       "sudo usermod -aG docker $USER",

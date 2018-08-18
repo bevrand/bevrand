@@ -25,6 +25,8 @@ const envVarsSchema = joi.object({
     .required(),
   AUTHENTICATION_EXPIRATION_TIME: joi.number()
     .required(),
+  FRONTEND_JWT_SECRET: joi.string()
+    .required(),
   PORT: joi.any()
     .optional(),
   USEMOCK: joi.boolean()
@@ -45,6 +47,7 @@ const config = {
   authenticationApi: envVars.AUTHENTICATION_API,
   authenticationSecret: envVars.AUTHENTICATION_SECRET,
   authenticationExpirationTime: envVars.AUTHENTICATION_EXPIRATION_TIME,
+  frontendJwtSecret: envVars.FRONTEND_JWT_SECRET,
   useMock: envVars.USEMOCK,
   server: {
     port: envVars.PORT,

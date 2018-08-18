@@ -79,6 +79,6 @@ const registerUser = (authenticationUrl) => {
 }
 
 module.exports = {
-  handleLogin: handleLogin,
-  registerUser: registerUser
+  handleLogin,
+  registerUser
 };

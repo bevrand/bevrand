@@ -11,7 +11,7 @@ const Auth = new AuthService();
 const getPlaylists = async (userName, isHomePage) => {
   // console.log('Received username: ', userName);
 
-  let url = userName && !isHomePage ? `/api/playlists?username=${userName}` : '/api/frontpage';
+  let url = userName && !isHomePage ? `/api/playlists?username=${userName}` : '/api/v2/frontpage';
   let body;
   try {
     const response = await fetch(`${config.proxyHostname}${url}`);
