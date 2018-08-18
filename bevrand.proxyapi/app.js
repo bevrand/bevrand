@@ -70,7 +70,6 @@ const requestPipePost = (endpoint) => {
 /**
  * CORS Pre-Flight enabled routes
  */
-app.options('/api/randomize', cors());
 app.options('/api/register', cors());
 app.options('/api/login', cors());
 app.options('/api/user', cors());
@@ -80,8 +79,6 @@ app.options('/api/v2/randomize', cors());
 /**
  * API routes
  */
-app.get('/api/frontpage', requestPipe(config.playlistApi));
-
 const frontpageWithSignature = (url) => {
   return (req, res, next) => {
 
@@ -205,7 +202,6 @@ const requestRandomizePost = (endpoint) => {
 }
 
 app.post('/api/v2/randomize', validateJwtTokenFrontend, requestRandomizePost(config.randomizerApi));
-app.post('/api/randomize', requestPipePost(config.randomizerApi));
 
 app.post('/api/login', 
   controllers.authentication.handleLogin(

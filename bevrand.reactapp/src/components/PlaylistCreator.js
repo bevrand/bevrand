@@ -87,7 +87,7 @@ class PlaylistCreator extends Component {
       body: JSON.stringify({
         beverages: beverages,
         displayName: this.state.displayName,
-        imageUrl: 'https://beveragerandomizer.ams3.digitaloceanspaces.com/images/users/standardimage.png',
+        imageUrl: 'https://static.beveragerandomizer.com/file/beveragerandomizer/images/users/standardimage.png',
         list: uuidv5(this.state.displayName, MY_NAMESPACE),
         user: this.Auth.getProfile().username
       })
