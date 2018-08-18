@@ -21,7 +21,8 @@
     "morgan": "~1.8.1",
     "request": "^2.81.0",
     "request-promise": "^4.2.2",
-    "swagger-ui-express": "^3.0.10"
+    "swagger-ui-express": "^3.0.10",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "eslint": "^4.15.0",
