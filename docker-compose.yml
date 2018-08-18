@@ -92,8 +92,7 @@ services:
       - authenticationapi
       - proxyapi
     environment:
-      - NODE_ENV=production
-      - REACT_APP_PROXY_HOSTNAME=http://localhost:4540
+      - NODE_ENV=development
     links:
       - proxyapi
 
