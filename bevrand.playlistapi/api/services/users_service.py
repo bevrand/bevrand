@@ -4,9 +4,6 @@ from api.db.users_mongo import UsersDb
 
 class UsersService:
 
-    def retrieve_all_users(self):
-        mongo_users = UsersDb(api.mongo.db)
-        return {'activeUsers': mongo_users.get_all_users()}
 
     def retrieve_all_lists_for_user(self, user_name):
         mongo_users = UsersDb(api.mongo.db)

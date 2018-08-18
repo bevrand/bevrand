@@ -70,13 +70,10 @@ def create_app():
 
     # register blueprints
     from api.controllers.user_controller import users_blueprint
-    app.register_blueprint(users_blueprint)
+    app.register_blueprint(users_blueprint, url_prefix='/api/v1/private')
 
     from api.controllers.frontpage_controller import front_page_blueprint
-    app.register_blueprint(front_page_blueprint)
-
-    from api.controllers.list_controller import list_blueprint
-    app.register_blueprint(list_blueprint)
+    app.register_blueprint(front_page_blueprint, url_prefix='/api/v1/public')
 
     return app
 

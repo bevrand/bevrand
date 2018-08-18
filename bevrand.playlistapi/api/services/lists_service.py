@@ -12,30 +12,28 @@ class ListsService:
         mongo_users.check_if_userlist_can_be_found(user_name, list_name)
         return mongo_users.get_specific_list(user_name, list_name)
 
-
     def delete_user_list(self, user_name, list_name):
         mongo_users = UsersDb(api.mongo.db)
+        user_name = user_name.lower()
+        list_name = list_name.lower()
+        mongo_users.check_if_user_exists(user_name)
+        mongo_users.check_if_userlist_can_be_found(user_name, list_name)
+        mongo_users.delete_specific_list(user_name, list_name)
+        return
+
+    def delete_all_lists_for_a_user(self, user_name):
+        mongo_users = UsersDb(api.mongo.db)
         mongo_users.check_if_user_exists(user_name.lower())
-        if user_name is not None and list_name is None:
-            user_name = user_name.lower()
-            mongo_users.delete_all_user_lists(user_name)
-            return
+        mongo_users.delete_all_user_lists(user_name.lower())
+        return
 
-        if user_name is not None and list_name is not None:
-            user_name = user_name.lower()
-            list_name = list_name.lower()
-            mongo_users.check_if_userlist_can_be_found(user_name, list_name)
-            mongo_users.delete_specific_list(user_name, list_name)
-            return
-
-
-    def post_new_list(self, posted_user):
+    def post_new_list(self, posted_user, user_name):
         mongo_users = UsersDb(api.mongo.db)
         mapper = ObjectMapper()
         mongo_object = mapper.map_json_to_object(posted_user)
         self.validate_user_is_not_frontpage(mongo_object.user)
         mongo_users.check_if_userlist_exists(mongo_object.user, mongo_object.list)
-        mongo_users.insert_new_list(mongo_object)
+        mongo_users.insert_new_list(mongo_object, user_name)
         return
 
 

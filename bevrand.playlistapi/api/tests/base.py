@@ -1,6 +1,6 @@
 from flask_testing import TestCase
 
-from api import create_app
+from api.setup import create_app
 
 
 app = create_app()

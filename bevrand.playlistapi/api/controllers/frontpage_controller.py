@@ -19,13 +19,13 @@ def ping_pong():
     })
 
 
-@front_page_blueprint.route('/api/frontpages', methods=['GET'])
+@front_page_blueprint.route('', methods=['GET'])
 def front_page_all_lists():
     """
         Endpoint to get frontpage lists and if needed a list of lists
         ---
         tags:
-          - FrontPage Methods
+          - Public Methods
         responses:
           400:
             description: Incorrect dbs used
@@ -39,13 +39,13 @@ def front_page_all_lists():
         return jsonify({"result": front_page_lists}), 200
 
 
-@front_page_blueprint.route('/api/frontpages/<listname>', methods=['GET'])
-def front_page_list(listname):
+@front_page_blueprint.route('/<play_list_name>', methods=['GET'])
+def front_page_list(play_list_name):
     """
         Endpoint to get frontpage lists and if needed a list of lists
         ---
         tags:
-          - FrontPage Methods
+          - Public Methods
         parameters:
           - name: list
             in: path
@@ -60,9 +60,9 @@ def front_page_list(listname):
     """
     parent_span = create_parent_trace()
     with opentracing.tracer.start_span('playlist_frontpage', child_of=parent_span) as span:
-        data_validator.validate_json_for_list(listname)
+        data_validator.validate_json_for_list(play_list_name)
         service = FrontPageService()
-        front_page_lists = service.retrieve_front_page_list(listname)
+        front_page_lists = service.retrieve_front_page_list(play_list_name)
         return jsonify({"result": front_page_lists.__dict__}), 200
 
 

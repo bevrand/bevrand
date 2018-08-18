@@ -9,19 +9,6 @@ class UsersDb:
         self.db = database
         self.users = database.users
 
-    def get_all_users(self):
-        users = []
-        try:
-            query = self.users.find()
-            for user in query:
-                users.append(user['user'])
-            setlist = set(users)
-            desc_list = list(setlist)
-            return desc_list
-        except errors.ConnectionFailure:
-            raise InvalidUsage('Could not connect to mongo', status_code=400)
-        except errors.InvalidOperation:
-            raise InvalidUsage('The mongo operation was not valid', status_code=503)
 
     def get_all_user_lists(self, user_name):
         description_lists = []
@@ -41,7 +28,7 @@ class UsersDb:
         users_model = mapper.map_cursor_to_object(specified_document, user_name)
         return users_model
 
-    def insert_new_list(self, mongo_object):
+    def insert_new_list(self, mongo_object, user_name):
         post_data = mongo_object.__dict__
         try:
             insert_id = self.users.insert_one(post_data).inserted_id
