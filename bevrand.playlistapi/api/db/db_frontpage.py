@@ -1,6 +1,6 @@
 from werkzeug.local import LocalProxy
 
-from project.db import db_connection
+from api.db import db_connection
 from ..db.database_models import MongoObject
 
 from flask import jsonify, g

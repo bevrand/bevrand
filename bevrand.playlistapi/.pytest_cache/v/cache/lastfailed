@@ -1,0 +1,7 @@
+{
+  "api/tests/test_config.py": true, 
+  "api/tests/test_controller.py": true, 
+  "project/tests/test_config.py": true, 
+  "project/tests/test_frontpage.py": true, 
+  "project/tests/test_users.py": true
+}

@@ -1,7 +1,7 @@
 terraform {
   backend "azurerm" {
-    container_name       = "tfstate"
-    key                  = "prod.terraform.tfstate"
+    container_name = "tfstate"
+    key            = "prod.terraform.tfstate"
   }
 }
 
@@ -14,7 +14,8 @@ variable "docker_droplet_name" {
 }
 
 variable "droplet_image_name" {
-  default = "docker"
+  #default = "docker-16-04"
+  default = "ubuntu-18-04-x64"
 }
 
 variable "droplet_region" {
@@ -22,7 +23,7 @@ variable "droplet_region" {
 }
 
 variable "droplet_size" {
-  default = "1gb"
+  default = "s-1vcpu-1gb"
 }
 
 variable "dev1_ssh_key_id" {}
@@ -51,7 +52,7 @@ resource "digitalocean_tag" "sshmanagement" {
 }
 
 resource "digitalocean_firewall" "sshmanagementfirewall" {
-  name       = "sshmanagementfirewall"
+  name = "sshmanagementfirewall"
 
   inbound_rule = [
     {
@@ -69,7 +70,7 @@ resource "digitalocean_tag" "outboundall" {
 }
 
 resource "digitalocean_firewall" "outboundfirewall" {
-  name       = "outboundfirewall"
+  name = "outboundfirewall"
 
   outbound_rule = [
     {
@@ -105,9 +106,8 @@ resource "digitalocean_floating_ip" "docker" {
 #}
 
 resource "tls_private_key" "terraformusersshkey" {
-  algorithm   = "RSA"
+  algorithm = "RSA"
 }
-
 
 # Add key to digital ocean !depend on generated ssh key
 # Create a new SSH key
@@ -115,12 +115,13 @@ resource "digitalocean_ssh_key" "default" {
   name       = "terraformuser generated key"
   public_key = "${tls_private_key.terraformusersshkey.public_key_openssh}"
 }
+
 resource "digitalocean_droplet" "docker" {
   image      = "${var.droplet_image_name}"
   name       = "${var.docker_droplet_name}"
   region     = "${var.droplet_region}"
   size       = "${var.droplet_size}"
-  ssh_keys   = ["${digitalocean_ssh_key.default.fingerprint}", "${var.dev1_ssh_key_id}", "${var.dev2_ssh_key_id}", "${var.dev3_ssh_key_id}"]
+  ssh_keys   = ["${var.dev1_ssh_key_id}", "${var.dev2_ssh_key_id}", "${var.dev3_ssh_key_id}"]
   user_data  = "${replace(file("cloud-config.conf"), "__sshkeygoeshere__", tls_private_key.terraformusersshkey.public_key_openssh)}"
   monitoring = true
   tags       = ["${digitalocean_tag.allow_inbound_cloudflare.name}", "${digitalocean_tag.sshmanagement.name}", "${digitalocean_tag.outboundall.name}"]
@@ -136,14 +137,18 @@ resource "digitalocean_droplet" "docker" {
       "sudo mkdir -p /mnt/datavolumedocker",
       "sudo mount -o discard,defaults /dev/disk/by-id/scsi-0DO_Volume_datavolumedocker /mnt/datavolumedocker",
       "sudo echo /dev/disk/by-id/scsi-0DO_Volume_datavolumedocker /mnt/datavolumedocker ext4 defaults,nofail,discard 0 0 | sudo tee -a /etc/fstab",
-      "sudo docker run docker/whalesay cowsay Hello Bevrand",
-      "sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose",
+      "sudo curl -fsSL get.docker.com -o get-docker.sh",
+      "sleep 300.0",
+      "while fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do sleep 5.0; done",
+      "sudo sh get-docker.sh",
+      "sudo docker run docker/whalesay cowsay Hello Bevrand on Ubuntu 18.04",
+      "sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose",
       "sudo chmod +x /usr/local/bin/docker-compose",
       "docker-compose --version",
       "sudo usermod -aG docker $USER",
-	  "cd /mnt/datavolumedocker/deployment/",
-	  "sudo docker-compose up -d",
-	  "sudo service ssh restart", #because we have the AllowUsers only on developer, this will permanently lock us out. Only do as the last thing
+      "cd /mnt/datavolumedocker/deployment/",
+      "sudo docker-compose up -d",
+      "sudo service ssh restart",                                                                                                                        #because we have the AllowUsers only on developer, this will permanently lock us out. Only do as the last thing
     ]
   }
 }

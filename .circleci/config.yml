@@ -1,5 +1,27 @@
 version: 2
 jobs:
+  unittest_playlist:
+    docker:
+      - image: circleci/python:3.6.1
+    steps:
+      - checkout 
+      - run: "cd ./bevrand.playlistapi && sudo pip install -r requirements.txt"
+      - run: "cd ./bevrand.playlistapi && sudo pytest --cov-report term --cov=api"
+      
+  unittest_randomizer:
+    docker:
+      - image: circleci/python:3.6.1
+    steps:
+      - checkout 
+      - run: "cd ./bevrand.randomizerapi && sudo pip install -r requirements.txt"
+      - run: "cd ./bevrand.randomizerapi && sudo pytest --cov-report term --cov=api"
+  unittest_authentication:
+    docker:
+      - image: microsoft/dotnet:2-sdk
+    steps:
+      - checkout
+      - run: "cd bevrand.authenticationapi/bevrand.authenticationapi.tests && dotnet test"
+  
   build:   
     machine: true
     steps:
@@ -30,6 +52,7 @@ jobs:
       - run: docker ps -a
       #TODO Persist docker?
       - run: "cd ./bevrand.uitests && npm install"
+      - run: "cd /home/circleci/project"
 
       - run:
           name: Running E2E tests with Multiple reporters
@@ -65,12 +88,23 @@ workflows:
   version: 2
   build_accept_deploy:
     jobs:
+     - unittest_randomizer:
+        context: BeverageRandomizerPROD
+
+     - unittest_playlist:
+        context: BeverageRandomizerPROD
+     - unittest_authentication:
+        context: BeverageRandomizerPROD
      - build:
          context: BeverageRandomizerPROD
          filters:
             branches:
               only: 
               - master
+         requires:
+           - unittest_randomizer
+           - unittest_playlist
+           - unittest_authentication
      - uitests:
          context: BeverageRandomizerPROD
          filters:

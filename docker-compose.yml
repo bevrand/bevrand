@@ -61,8 +61,9 @@ services:
     links:
        - dockermongo
     environment:
-       - APP_SETTINGS=production
+       - APP_SETTINGS=Production
        - MONGO_URL=mongodb://dockermongo:27017
+       - JAEGER_HOST=jaeger-agent
 
   proxyapi:
     container_name: proxyapi
