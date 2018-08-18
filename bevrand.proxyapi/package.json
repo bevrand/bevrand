@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node server.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "jest --coverage"
   },
   "dependencies": {
     "bluebird": "^3.5.1",

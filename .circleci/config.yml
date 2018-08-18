@@ -14,7 +14,7 @@ jobs:
     steps:
       - checkout 
       - run: "cd ./bevrand.reactapp && npm install"
-      - run: "cd ./bevrand.reactapp && jest --coverage"
+      - run: "cd ./bevrand.reactapp && npm test"
 
   unittest_proxy:
     docker:
@@ -22,7 +22,7 @@ jobs:
     steps:
       - checkout 
       - run: "cd ./bevrand.proxyapi && npm install"
-      - run: "cd ./bevrand.proxyapi && jest --coverage"
+      - run: "cd ./bevrand.proxyapi && npm test"
   unittest_randomizer:
     docker:
       - image: circleci/python:3.6.1
