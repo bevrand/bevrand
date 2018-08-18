@@ -120,3 +120,6 @@ crash.log
 # version control.
 #
 # example.tfvars
+
+# Exclude node_modules
+node_modules/

@@ -10,6 +10,9 @@ const Promise = require('bluebird');
 const jwt = require("jsonwebtoken");
 const cors = require('cors');
 const config = require('./config');
+const swaggerUi = require('swagger-ui-express');
+const yamljs = require('yamljs');
+const swaggerDocument = yamljs.load('./swagger.yaml');
 
 const controllers = require('./controllers');
 
@@ -33,6 +36,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 /**
  * Util to pipe requests to another endpoint
@@ -77,6 +82,7 @@ app.get('/api/frontpage', requestPipe(config.playlistApi));
 
 const frontpageWithSignature = (url) => {
   return (req, res, next) => {
+
     
     rp({
       method: 'GET',
@@ -93,7 +99,7 @@ const frontpageWithSignature = (url) => {
 
       return res.send(newResult);
     }).catch(err => {
-      debug(`Error: ${err.message}`);
+      console.error(`Error: ${err.message}`);
       return next(err);
     });
   }  
@@ -158,9 +164,10 @@ const validateJwtTokenFrontend = (req, res, next) => {
       if(requestJwtToken === jwttoken){
         return next();
       }
-      throw new Error('JWT Token does not validate');
-      
-      return next();
+
+      const error = new Error('JWT Token does not validate');
+      error.name = 'InvalidJwtToken';
+      throw error;
     } catch(err) {
       return next(err);
     }
@@ -223,11 +230,13 @@ app.use((req, res, next) => {
 
 // error handler of authentication module
 app.use((err, req, res, next) => {
-  if(err.name === 'UnauthorizedError') {
-    res.status(401).send(err);
-  } else {
-    next(err);
+  if(err.name === 'InvalidJwtToken') {
+    err.status = 400;
   }
+  else if(err.name === 'UnauthorizedError') {
+    err.status = 401;
+  } 
+  next(err);  
 });
 
 // error handler
