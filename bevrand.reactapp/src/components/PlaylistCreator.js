@@ -3,7 +3,6 @@ import { CSSTransitionGroup } from 'react-transition-group';
 import uuidv5 from 'uuid/v5'
 
 import AuthService from './AuthService';
-import './PlaylistCreator.css';
 import config from './ConfigService';
 
 const PlaylistForm = (props) => {

@@ -74,6 +74,8 @@ app.options('/api/randomize', cors());
 app.options('/api/register', cors());
 app.options('/api/login', cors());
 app.options('/api/user', cors());
+app.options('/api/v2/frontpage', cors());
+app.options('/api/v2/randomize', cors());
 
 /**
  * API routes
