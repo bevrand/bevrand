@@ -1,11 +1,9 @@
 from flask_script import Manager
 import unittest
 
+from api.setup import app
 
-from api import create_app
 
-
-app = create_app()
 manager = Manager(app)
 
 

@@ -122,9 +122,9 @@ services:
       - proxyapi
     environment:
       - ASPNETCORE_ENVIRONMENT="Test"
-  jaeger-collector:
+    jaeger-collector:
     image: jaegertracing/jaeger-collector
-    command: ["/go/bin/collector-linux", "--cassandra.keyspace=jaeger_v1_dc1", "--cassandra.servers=cassandra", "--collector.zipkin.http-port=9411"]
+    command: ["--cassandra.keyspace=jaeger_v1_dc1", "--cassandra.servers=cassandra", "--collector.zipkin.http-port=9411"]
     ports:
       - "14269"
       - "14268:14268"
@@ -136,7 +136,7 @@ services:
 
   jaeger-query:
     image: jaegertracing/jaeger-query
-    command: ["/go/bin/query-linux", "--query.static-files=/go/jaeger-ui/", "--cassandra.keyspace=jaeger_v1_dc1", "--cassandra.servers=cassandra"]
+    command: ["--cassandra.keyspace=jaeger_v1_dc1", "--cassandra.servers=cassandra"]
     ports:
       - "16686:16686"
       - "16687"
@@ -146,7 +146,6 @@ services:
 
   jaeger-agent:
     image: jaegertracing/jaeger-agent
-    command: ["/go/bin/agent-linux", "--collector.host-port=jaeger-collector:14267"]
     ports:
       - "5775:5775/udp"
       - "5778:5778"
@@ -158,6 +157,10 @@ services:
 
   cassandra:
     image: cassandra:3.9
+    environment:
+      - MAX_HEAP_SIZE=128M
+      - HEAP_NEWSIZE=24M
+      - mem_limit=512m
 
   cassandra-schema:
     image: jaegertracing/jaeger-cassandra-schema

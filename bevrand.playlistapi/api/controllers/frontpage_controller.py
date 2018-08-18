@@ -1,13 +1,11 @@
 from flask import Blueprint, jsonify, request
 import json
 from api.services import data_validator
-from api import FLASK_TRACER
+from api import flask_tracer
+from api.setup import  FLASK_TRACER
 from api.error_handler.error_model import InvalidUsage
 import opentracing
-from api.services import frontpage_service
-from api.services import logic_for_users_controller_get, \
-    logic_for_users_controller_put, \
-    logic_for_users_controller_delete, logic_for_users_controller_post
+from api.services.frontpage_service import FrontPageService
 
 
 front_page_blueprint = Blueprint('front_page', __name__,)
@@ -21,19 +19,13 @@ def ping_pong():
     })
 
 
-@front_page_blueprint.route('/api/frontpage', methods=['GET'])
-def front_page():
+@front_page_blueprint.route('/api/frontpages', methods=['GET'])
+def front_page_all_lists():
     """
         Endpoint to get frontpage lists and if needed a list of lists
         ---
         tags:
           - FrontPage Methods
-        parameters:
-          - name: list
-            type: string
-            in: query
-            required: false
-            description: specific list that belong to a user
         responses:
           400:
             description: Incorrect dbs used
@@ -41,18 +33,37 @@ def front_page():
             description: Your list is correct see response
     """
     parent_span = create_parent_trace()
-    list_name = request.args.get('list', default=None)
-    with opentracing.tracer.start_span('playlist-frontpage', child_of=parent_span) as span:
-        if list_name is not None:
-            data_validator.validate_json_for_list(list_name)
-        return_object = frontpage_service.worker_for_frontpage_get(list_name)
-        if return_object['status_code'] is 200:
-            res = json.dumps(return_object['body'], indent=4)
-            span.log_kv({"status_code": 200, "result": return_object['body']})
-            return res, 200
-        else:
-            res = json.dumps(return_object['body'].__dict__, indent=4)
-            return res, return_object['status_code']
+    with opentracing.tracer.start_span('playlist_frontpage', child_of=parent_span) as span:
+        service = FrontPageService()
+        front_page_lists = service.retrieve_all_front_page_lists()
+        return jsonify({"result": front_page_lists}), 200
+
+
+@front_page_blueprint.route('/api/frontpages/<listname>', methods=['GET'])
+def front_page_list(listname):
+    """
+        Endpoint to get frontpage lists and if needed a list of lists
+        ---
+        tags:
+          - FrontPage Methods
+        parameters:
+          - name: list
+            in: path
+            type: string
+            required: true
+            description: specific frontpage list
+        responses:
+          400:
+            description: Incorrect dbs used
+          200:
+            description: Your list is correct see response
+    """
+    parent_span = create_parent_trace()
+    with opentracing.tracer.start_span('playlist_frontpage', child_of=parent_span) as span:
+        data_validator.validate_json_for_list(listname)
+        service = FrontPageService()
+        front_page_lists = service.retrieve_front_page_list(listname)
+        return jsonify({"result": front_page_lists.__dict__}), 200
 
 
 @front_page_blueprint.errorhandler(InvalidUsage)
@@ -65,6 +76,7 @@ def handle_invalid_usage(error):
         if error.meta is not None:
             span.log_kv({"meta": error.meta})
     return response
+
 
 @FLASK_TRACER.trace()
 def create_parent_trace():
