@@ -24,9 +24,8 @@
     "start-js": "react-scripts start",
     "build": "npm-run-all build-css build-js",
     "build-js": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "test": "jest"
+    "test": "jest --coverage",
+    "eject": "react-scripts eject"
   },
   "proxy": "http://localhost:4540",
   "devDependencies": {
