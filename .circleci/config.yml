@@ -7,7 +7,22 @@ jobs:
       - checkout 
       - run: "cd ./bevrand.playlistapi && sudo pip install -r requirements.txt"
       - run: "cd ./bevrand.playlistapi && sudo pytest --cov-report term --cov=api"
-      
+  
+  unittest_reactapp:
+    docker:
+      - image: circleci/node:8
+    steps:
+      - checkout 
+      - run: "cd ./bevrand.reactapp && npm install"
+      - run: "cd ./bevrand.reactapp && npm test"
+
+  unittest_proxy:
+    docker:
+      - image: circleci/node:8
+    steps:
+      - checkout 
+      - run: "cd ./bevrand.proxyapi && npm install"
+      - run: "cd ./bevrand.proxyapi && npm test"
   unittest_randomizer:
     docker:
       - image: circleci/python:3.6.1
@@ -90,7 +105,10 @@ workflows:
     jobs:
      - unittest_randomizer:
         context: BeverageRandomizerPROD
-
+     - unittest_reactapp:
+        context: BeverageRandomizerPROD
+     - unittest_proxy:
+        context: BeverageRandomizerPROD
      - unittest_playlist:
         context: BeverageRandomizerPROD
      - unittest_authentication:
