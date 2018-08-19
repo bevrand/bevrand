@@ -187,6 +187,7 @@ workflows:
           branches:
             only: 
             - develop
+            - master
         requires:
           - unittest_randomizer
           - unittest_playlist
@@ -196,6 +197,7 @@ workflows:
           branches:
             only: 
             - develop
+            - master
         requires:
           - unittest_proxy
           - unittest_reactapp
@@ -205,6 +207,7 @@ workflows:
           branches:
             only: 
             - develop
+            - master
         requires:
           - unittest_authentication
 
@@ -214,6 +217,7 @@ workflows:
             branches:
               only: 
               - develop
+              - master
          requires:
            - build_python
            - build_node
@@ -224,6 +228,7 @@ workflows:
              branches:
                only: 
                - develop
+               - master
           requires:
            - build_python
            - build_node
