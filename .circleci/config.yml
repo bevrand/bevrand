@@ -72,10 +72,11 @@ jobs:
       - checkout
 
      # build the application image
-      - run: docker-compose --version
-      - run: docker-compose -f ./deployment/docker/docker-compose-develop.yml up -d
-      - run: docker images
-      - run: docker ps -a
+      - run: |
+         docker-compose --version
+         docker-compose -f ./deployment/docker/docker-compose-develop.yml up -d
+         docker images
+         docker ps -a
      
      #verify the results of the component test
       - run: "cd ./deployment && python validate_backend_test_results.py"
@@ -86,10 +87,13 @@ jobs:
     steps:
       - checkout    
 
-      - run: docker-compose -f ./deployment/docker/docker-compose-staging.yml up -d
-      - run: docker images
-      - run: docker ps -a
-      #TODO Persist docker?
+     # build the application image
+      - run: |
+         docker-compose --version
+         docker-compose -f ./deployment/docker/docker-compose-develop.yml up -d
+         docker images
+         docker ps -a
+      #run ui_tests
       - run: "cd ./bevrand.uitests && npm install"
       - run: "cd /home/circleci/project"
 
@@ -103,8 +107,37 @@ jobs:
       - store_artifacts:
           path: /home/circleci/project/bevrand.uitests/cypress/screenshots/
      # TODO Put push images in a different step
-      - run: "cd ./deployment && sh ./push_images.sh"
-        
+     # - run: "cd ./deployment && sh ./push_images.sh"
+  create_production_images:
+    machine: true
+    steps:
+      - checkout
+     # build the application image
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/playlistapi:develop
+         docker tag bevrand/playlistapi:develop bevrand/playlistapi:production
+         docker push bevrand/playlistapi:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/reactapp:develop
+         docker tag bevrand/reactapp:develop bevrand/reactapp:production
+         docker push bevrand/reactapp:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/proxyapi:develop
+         docker tag bevrand/proxyapi:develop bevrand/proxyapi:production
+         docker push bevrand/proxyapi:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/randomizerapi:develop
+         docker tag bevrand/randomizerapi:develop bevrand/randomizerapi:production
+         docker push bevrand/randomizerapi:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/authenticationapi:develop
+         docker tag bevrand/authenticationapi:develop bevrand/authenticationapi:production
+         docker push bevrand/authenticationapi:production    
   pause_uptimerobot:
     machine: true
     steps:
@@ -176,7 +209,7 @@ workflows:
             branches:
               only: 
               - develop
-              #- feature/circli-dockerimages
+              - feature/circli-dockerimages
          requires:
            - build
      - ui_tests:
@@ -185,22 +218,30 @@ workflows:
              branches:
                only: 
                - develop
-              # - feature/circli-dockerimages
+               - feature/circli-dockerimages
           requires:
             - build
      #TODO Sonar-scanner
      #- acceptance_test_1:
      #    requires:
      #      - ui_tests
-
+     - create_production_images:
+          context: BeverageRandomizerPROD
+          filters:
+             branches:
+               only: 
+               - develop
+               - feature/circli-dockerimages
+          requires:
+            - ui_tests
+            - component_tests
      - pause_uptimerobot:
          context: BeverageRandomizerPROD
          filters:
             branches:
               only: master
          requires:
-           - ui_tests 
-           - component_tests
+           - create_production_images
      - deploy:
          #TODO Get from artifacts
          context: BeverageRandomizerPROD
