@@ -7,10 +7,7 @@ jobs:
       - checkout 
       - run: "cd ./bevrand.playlistapi && sudo pip install -r requirements.txt"
       - run: "cd ./bevrand.playlistapi && sudo pytest --cov-report term --cov=api"
-      - run: "sudo docker build -t bevrand/playlistapi:develop ./bevrand.playlistapi "
-      - run: |
-         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker push bevrand/playlistapi:develop
+
   unittest_reactapp:
     docker:
       - image: circleci/node:8
@@ -18,10 +15,7 @@ jobs:
       - checkout 
       - run: "cd ./bevrand.reactapp && npm install"
       - run: "cd ./bevrand.reactapp && npm test"
-      - run: "docker build -t bevrand/reactapp:develop ./bevrand.reactapp"
-      - run: |
-         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker push bevrand/reactapp:develop
+
 
   unittest_proxy:
     docker:
@@ -30,10 +24,7 @@ jobs:
       - checkout 
       - run: "cd ./bevrand.proxyapi && npm install"
       - run: "cd ./bevrand.proxyapi && npm test"
-      - run: "cd sudo docker build -t bevrand/proxyapi:develop ./bevrand.proxyapi"
-      - run: |
-         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker push bevrand/proxyapi:develop
+
   unittest_randomizer:
     docker:
       - image: circleci/python:3.6.1
@@ -41,48 +32,62 @@ jobs:
       - checkout 
       - run: "cd ./bevrand.randomizerapi && sudo pip install -r requirements.txt"
       - run: "cd ./bevrand.randomizerapi && sudo pytest --cov-report term --cov=api"
-      - run: "sudo docker build -t bevrand/randomizerapi:develop ./bevrand.randomizerapi"
-      - run: |
-         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker push bevrand/randomizerapi:develop
+
   unittest_authentication:
     docker:
       - image: microsoft/dotnet:2-sdk
     steps:
       - checkout
       - run: "cd bevrand.authenticationapi/bevrand.authenticationapi.tests && dotnet test"
-      - run: "sudo docker build -t bevrand/authenticationapi:develop ./bevrand.authenticationapi/bevrand.authenticationapi"
+
+  buid:   
+    machine: true
+    steps:
+      - checkout
+     # build the application image
       - run: |
+         docker build -t bevrand/playlistapi:develop ./bevrand.playlistapi
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/playlistapi:develop
+      - run: |
+         docker build -t bevrand/reactapp:develop ./bevrand.reactapp
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/reactapp:develop
+      - run: |
+         docker build -t bevrand/proxyapi:develop ./bevrand.proxyapi
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/proxyapi:develop
+      - run: |
+         docker build -t bevrand/randomizerapi:develop ./bevrand.randomizerapi
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/randomizerapi:develop
+      - run: |
+         docker build -t bevrand/authenticationapi:develop ./bevrand.authenticationapi/bevrand.authenticationapi
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/authenticationapi:develop
-  
-  build:   
+
+  component_tests:   
     machine: true
     steps:
       - checkout
 
      # build the application image
       - run: docker-compose --version
-      - run: docker --version
-      - run: docker-compose build
+      - run: docker-compose -f ./deployment/docker/docker-compose-develop.yml up -d
       - run: docker images
-      - run: docker-compose up -d
       - run: docker ps -a
      
      #verify the results of the component test
       - run: "cd ./deployment && python validate_backend_test_results.py"
   
-  uitests:
+  ui_tests:
     machine: true
     parallelism: 1
     steps:
       - checkout    
 
-      - run: docker-compose --version
-      - run: docker --version
-      - run: docker-compose build
+      - run: docker-compose -f ./deployment/docker/docker-compose-staging.yml up -d
       - run: docker images
-      - run: docker-compose up -d
       - run: docker ps -a
       #TODO Persist docker?
       - run: "cd ./bevrand.uitests && npm install"
@@ -153,6 +158,19 @@ workflows:
               - develop
               - feature/circli-dockerimages
      - build:
+        context: BeverageRandomizerPROD
+        filters:
+          branches:
+            only: 
+            - develop
+            - feature/circli-dockerimages
+        requires:
+          - unittest_randomizer
+          - unittest_playlist
+          - unittest_authentication
+          - unittest_proxy
+          - unittest_reactapp
+     - component_tests:
          context: BeverageRandomizerPROD
          filters:
             branches:
@@ -160,12 +178,8 @@ workflows:
               - develop
               #- feature/circli-dockerimages
          requires:
-           - unittest_randomizer
-           - unittest_playlist
-           - unittest_authentication
-           - unittest_proxy
-           - unittest_reactapp
-     - uitests:
+           - build
+     - ui_tests:
           context: BeverageRandomizerPROD
           filters:
              branches:
@@ -173,11 +187,11 @@ workflows:
                - develop
               # - feature/circli-dockerimages
           requires:
-            - build
+            - component_tests
      #TODO Sonar-scanner
      #- acceptance_test_1:
      #    requires:
-     #      - uitests
+     #      - ui_tests
 
      - pause_uptimerobot:
          context: BeverageRandomizerPROD
@@ -185,7 +199,7 @@ workflows:
             branches:
               only: master
          requires:
-           - uitests 
+           - ui_tests 
      - deploy:
          #TODO Get from artifacts
          context: BeverageRandomizerPROD
