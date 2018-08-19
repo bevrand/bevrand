@@ -117,8 +117,7 @@ jobs:
           path: /home/circleci/project/bevrand.uitests/cypress/videos/
       - store_artifacts:
           path: /home/circleci/project/bevrand.uitests/cypress/screenshots/
-     # TODO Put push images in a different step
-     # - run: "cd ./deployment && sh ./push_images.sh"
+
   create_production_images:
     machine: true
     steps:
@@ -173,41 +172,21 @@ workflows:
     jobs:
      - unittest_randomizer:
         context: BeverageRandomizerPROD
-        filters:
-            branches:
-              only: 
-              - develop
-              - feature/circli-dockerimages
      - unittest_reactapp:
         context: BeverageRandomizerPROD
      - unittest_proxy:
         context: BeverageRandomizerPROD
-        filters:
-            branches:
-              only: 
-              - develop
-              - feature/circli-dockerimages
      - unittest_playlist:
         context: BeverageRandomizerPROD
-        filters:
-            branches:
-              only: 
-              - develop
-              - feature/circli-dockerimages
      - unittest_authentication:
         context: BeverageRandomizerPROD
-        filters:
-            branches:
-              only: 
-              - develop
-              - feature/circli-dockerimages
+     
      - build_python:
         context: BeverageRandomizerPROD
         filters:
           branches:
             only: 
             - develop
-            - feature/circli-dockerimages
         requires:
           - unittest_randomizer
           - unittest_playlist
@@ -217,18 +196,15 @@ workflows:
           branches:
             only: 
             - develop
-            - feature/circli-dockerimages
         requires:
           - unittest_proxy
           - unittest_reactapp
-
      - build_dotnet:
         context: BeverageRandomizerPROD
         filters:
           branches:
             only: 
             - develop
-            - feature/circli-dockerimages
         requires:
           - unittest_authentication
 
@@ -238,7 +214,6 @@ workflows:
             branches:
               only: 
               - develop
-        #      - feature/circli-dockerimages
          requires:
            - build_python
            - build_node
@@ -249,7 +224,6 @@ workflows:
              branches:
                only: 
                - develop
-            #   - feature/circli-dockerimages
           requires:
            - build_python
            - build_node
@@ -263,8 +237,7 @@ workflows:
           filters:
              branches:
                only: 
-               - develop
-               - feature/circli-dockerimages
+               - master
           requires:
             - ui_tests
             - component_tests
