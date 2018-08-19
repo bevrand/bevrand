@@ -251,7 +251,9 @@ workflows:
                - develop
             #   - feature/circli-dockerimages
           requires:
-            - build
+           - build_python
+           - build_node
+           - build_dotnet
      #TODO Sonar-scanner
      #- acceptance_test_1:
      #    requires:
