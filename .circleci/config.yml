@@ -40,7 +40,7 @@ jobs:
       - checkout
       - run: "cd bevrand.authenticationapi/bevrand.authenticationapi.tests && dotnet test"
 
-  buid:   
+  build:   
     machine: true
     steps:
       - checkout
@@ -187,7 +187,7 @@ workflows:
                - develop
               # - feature/circli-dockerimages
           requires:
-            - component_tests
+            - build
      #TODO Sonar-scanner
      #- acceptance_test_1:
      #    requires:
@@ -200,6 +200,7 @@ workflows:
               only: master
          requires:
            - ui_tests 
+           - component_tests
      - deploy:
          #TODO Get from artifacts
          context: BeverageRandomizerPROD
