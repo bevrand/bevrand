@@ -7,7 +7,10 @@ jobs:
       - checkout 
       - run: "cd ./bevrand.playlistapi && sudo pip install -r requirements.txt"
       - run: "cd ./bevrand.playlistapi && sudo pytest --cov-report term --cov=api"
-  
+      - run: "cd ./bevrand.playlistapi && sudo docker build -t bevrand/playlistapi:develop"
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/playlistapi:develop
   unittest_reactapp:
     docker:
       - image: circleci/node:8
@@ -15,6 +18,10 @@ jobs:
       - checkout 
       - run: "cd ./bevrand.reactapp && npm install"
       - run: "cd ./bevrand.reactapp && npm test"
+      - run: "cd ./bevrand.reactapp && sudo docker build -t bevrand/reactapp:develop"
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/reactapp:develop
 
   unittest_proxy:
     docker:
@@ -23,6 +30,10 @@ jobs:
       - checkout 
       - run: "cd ./bevrand.proxyapi && npm install"
       - run: "cd ./bevrand.proxyapi && npm test"
+      - run: "cd ./bevrand.proxyapi && sudo docker build -t bevrand/proxyapi:develop"
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/proxyapi:develop
   unittest_randomizer:
     docker:
       - image: circleci/python:3.6.1
@@ -30,12 +41,20 @@ jobs:
       - checkout 
       - run: "cd ./bevrand.randomizerapi && sudo pip install -r requirements.txt"
       - run: "cd ./bevrand.randomizerapi && sudo pytest --cov-report term --cov=api"
+      - run: "cd ./bevrand.randomizerapi && sudo docker build -t bevrand/randomizerapi:develop"
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/randomizerapi:develop
   unittest_authentication:
     docker:
       - image: microsoft/dotnet:2-sdk
     steps:
       - checkout
       - run: "cd bevrand.authenticationapi/bevrand.authenticationapi.tests && dotnet test"
+      - run: "cd ./bevrand.authenticationapi/bevrand.authenticationapi && sudo docker build -t bevrand/authenticationapi:develop"
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/authenticationapi:develop
   
   build:   
     machine: true
@@ -105,35 +124,56 @@ workflows:
     jobs:
      - unittest_randomizer:
         context: BeverageRandomizerPROD
+        filters:
+            branches:
+              only: 
+              - develop
+              - feature/circli-dockerimages
      - unittest_reactapp:
         context: BeverageRandomizerPROD
      - unittest_proxy:
         context: BeverageRandomizerPROD
+        filters:
+            branches:
+              only: 
+              - develop
+              - feature/circli-dockerimages
      - unittest_playlist:
         context: BeverageRandomizerPROD
+        filters:
+            branches:
+              only: 
+              - develop
+              - feature/circli-dockerimages
      - unittest_authentication:
         context: BeverageRandomizerPROD
+        filters:
+            branches:
+              only: 
+              - develop
+              - feature/circli-dockerimages
      - build:
          context: BeverageRandomizerPROD
          filters:
             branches:
               only: 
-              - master
+              - develop
+              #- feature/circli-dockerimages
          requires:
            - unittest_randomizer
            - unittest_playlist
            - unittest_authentication
            - unittest_proxy
            - unittest_reactapp
-    #  - uitests:
-    #      context: BeverageRandomizerPROD
-    #      filters:
-    #         branches:
-    #           only: 
-    #           - master
-    #      requires:
-    #        - build
-     #TODO Copy to artifacts
+     - uitests:
+          context: BeverageRandomizerPROD
+          filters:
+             branches:
+               only: 
+               - develop
+              # - feature/circli-dockerimages
+          requires:
+            - build
      #TODO Sonar-scanner
      #- acceptance_test_1:
      #    requires:
@@ -145,8 +185,7 @@ workflows:
             branches:
               only: master
          requires:
-          #  - uitests Change back after react fix
-           - build
+           - uitests 
      - deploy:
          #TODO Get from artifacts
          context: BeverageRandomizerPROD
