@@ -13,7 +13,7 @@ class FrontPageDb:
         try:
             specified_document = self.frontpage.find_one({'list': list_name})
             if specified_document is None:
-                raise InvalidUsage('Given list cannot be found', status_code=404)
+                raise InvalidUsage('List could not be found', status_code=404)
             mapper = CursorMapper()
             front_page_model = mapper.map_cursor_to_object(specified_document, 'frontpage')
             return front_page_model

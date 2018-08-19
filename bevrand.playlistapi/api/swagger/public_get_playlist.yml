@@ -1,0 +1,89 @@
+Endpoint returning a specific playlist for the public frontpage
+Provide a playlist name
+---
+tags:
+  - Public Methods
+parameters:
+  - name: play_list_name
+    type: string
+    in: path
+    required: true
+    description: list you want to query
+definitions:
+  ErrorModel:
+    properties:
+      Error:
+        type: string
+      Meta:
+        type: object
+        properties:
+          validation_error:
+            type: array
+            items:
+              type: string
+  PlaylistModel:
+    properties:
+      beverages:
+        type: array
+        items:
+          type: string
+      displayName:
+        type: string
+      id:
+        type: string
+      imageUrl:
+        type: string
+      list:
+        type: string
+      user:
+        type: string
+responses:
+  200:
+    description: A playlist was found
+    examples:
+      playlist:
+            { "result": {
+              "beverages": [
+                "Gin-Tonic",
+                "Beer",
+                "Vodka",
+                "Jenever",
+                "Joker",
+                "Tripel Beer",
+                "Mojito",
+                "White Wine",
+                "Tequila",
+                "Whiskey",
+                "Red Wine"
+              ],
+              "displayName": "Thank God It's Friday!",
+              "id": "5b7970b0575559000b87f90b",
+              "imageUrl": "https://static.beveragerandomizer.com/file/beveragerandomizer/images/frontpage/tgif.jpg",
+              "list": "tgif",
+              "user": "frontpage"
+            }}
+    schema:
+      $ref: '#/definitions/PlaylistModel'
+  400:
+    description: Validation error
+    examples:
+      BAD REQUEST: {
+          "Error": "Errors occured when validating",
+          "Meta": {
+            "user_name": [
+              "min length is 3"
+              ]}}
+    schema:
+      $ref: '#/definitions/ErrorModel'
+  404:
+    description: Requested resource does not exist
+    examples:
+      NOT FOUND: {"Error": "List could not be found"}
+    schema:
+      $ref: '#/definitions/ErrorModel'
+  503:
+    description: No mongo connection could be made, are you running a mongo container?
+    examples:
+      ConnnectionProblem: {"Error": "Could not connect to mongo"}
+    schema:
+      $ref: '#/definitions/ErrorModel'

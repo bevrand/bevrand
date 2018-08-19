@@ -24,6 +24,8 @@ class UsersDb:
 
     def get_specific_list(self, user_name, list_name):
         specified_document = self.users.find_one({'user': user_name, 'list': list_name})
+        if specified_document is None:
+            raise InvalidUsage('List could not be found', status_code=404)
         mapper = CursorMapper()
         users_model = mapper.map_cursor_to_object(specified_document, user_name)
         return users_model
@@ -56,7 +58,7 @@ class UsersDb:
             raise InvalidUsage('Deletion of lists has failed', status_code=400)
 
     def update_specific_list(self, updated_object, old_user, old_list):
-        specified_document = self.users.find_one({'user': old_user, 'list': old_list})
+        specified_document = self.users.find_one({'user': old_user.lower(), 'list': old_list.lower()})
         id_to_be_used = specified_document['_id']
         updated_object = self.update_fields(specified_document, updated_object)
         try:

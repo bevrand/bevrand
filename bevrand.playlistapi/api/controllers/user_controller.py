@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request
+from flasgger import swag_from
 from api.services import data_validator
 from api.setup import FLASK_TRACER
 from api.error_handler.error_model import InvalidUsage
@@ -11,245 +12,82 @@ users_blueprint = Blueprint('users', __name__,)
 
 
 @users_blueprint.route('/<user_name>', methods=['GET'])
+@swag_from('../swagger/private_users_get.yml')
 def lists_for_specific_user(user_name):
-    """
-        Endpoint to get all lists for a specific user
-        ---
-        tags:
-          - Private Methods
-        parameters:
-          - name: user
-            type: string
-            in: path
-            required: true
-            description: user you want to see the lists of
-        responses:
-          200:
-            description: Your list is correct see response
-          400:
-            description: Invalid Mongo operation
-          503:
-            description: No mongo connection
-    """
     parent_span = create_parent_trace()
     with opentracing.tracer.start_span('playlist_get_all_user_lists', child_of=parent_span) as span:
-      data_validator.validate_json_for_user(user_name)
-      service = UsersService()
-      result = service.retrieve_all_lists_for_user(user_name)
-      span.log_kv({"status_code": 200, "result": result})
-      return jsonify(result), 200
-
-
-@users_blueprint.route('/<user_name>', methods=['POST'])
-def create_new_list(user_name):
-    """
-        Endpoint to insert new lists into Mongo
-        ---
-        tags:
-          - Private Methods
-        parameters:
-          - name: body
-            in: body
-            required: true
-            schema:
-              properties:
-                user:
-                  type: string
-                  description: The user to insert
-                list:
-                  type: string
-                  description: The list to insert
-                displayName:
-                  type: string
-                  description: The name you want people to see
-                imageUrl:
-                  type: string
-                  description: The image to upload
-                beverages:
-                  type: array
-                  items:
-                    schema:
-                        type: string
-              example:
-                user: Marvin
-                list: Paranoid
-                displayName: I am so depressed
-                imageUrl: http://whatever.com
-                beverages: [beer, wine]
-        responses:
-          200:
-            description: Your list has been inserted
-          400:
-            description: Invalid Mongo operation
-          503:
-            description: No mongo connection
-    """
-    parent_span = create_parent_trace()
-    json_body = request.json
-    with opentracing.tracer.start_span('playlist_list_post', child_of=parent_span) as span:
-        data_validator.validate_json_for_post(json_body)
-        service = ListsService()
-        service.post_new_list(json_body, user_name)
-        span.log_kv({"status_code": 201, "result": ""})
-        return 201
-
-
-@users_blueprint.route('/<user_name>', methods=['DELETE'])
-def remove_all_user_lists(user_name):
-    """
-        Endpoint to remove all lists for a user
-        ---
-        tags:
-          - Private Methods
-        parameters:
-          - name: user_name
-            type: string
-            in: path
-            required: true
-            description: user you want to query
-        responses:
-          400:
-            description: Incorrect dbs used
-          200:
-            description: Your list was deleted
-    """
-    parent_span = create_parent_trace()
-    with opentracing.tracer.start_span('playlist_list_delete', child_of=parent_span) as span:
-        data_validator.validate_json_for_user(user_name)
-        service = ListsService()
-        service.delete_all_lists_for_a_user(user_name)
-        span.log_kv({"status_code": 204, "result": ""})
-        return 204
-
-
-@users_blueprint.route('/<user_name>/<play_list_name>', methods=['DELETE'])
-def remove_user_list(user_name, play_list_name):
-    """
-        Endpoint to remove a specific list or a complete user
-        ---
-        tags:
-          - Private Methods
-        parameters:
-          - name: user_name
-            type: string
-            in: path
-            required: true
-            description: user you want to query
-          - name: list
-            type: string
-            in: query
-            required: false
-            description: specific list that belong to a user
-        responses:
-          400:
-            description: Incorrect dbs used
-          200:
-            description: Your list was deleted
-    """
-    parent_span = create_parent_trace()
-    with opentracing.tracer.start_span('playlist_list_delete', child_of=parent_span) as span:
-        data_validator.validate_json_for_user(user_name)
-        data_validator.validate_json_for_list(play_list_name)
-        service = ListsService()
-        service.delete_user_list(user_name, play_list_name)
-        span.log_kv({"status_code": 204, "result": ""})
-        return 204
-
-@users_blueprint.route('/<user_name>/<play_list_name>', methods=['PUT'])
-def update_user_list(user_name, play_list_name):
-    """
-         Endpoint to update a user or a list
-        ---
-        tags:
-          - Private Methods
-        parameters:
-          - name: user_name
-            type: string
-            in: path
-            required: true
-            description: user you want to update
-          - name: list_name
-            type: string
-            in: path
-            required: true
-            description: list you want to update
-          - name: body
-            in: body
-            required: true
-            schema:
-              properties:
-                user:
-                  type: string
-                  description: The user to insert
-                list:
-                  type: string
-                  description: The list to insert
-                displayName:
-                  type: string
-                  description: The name you want people to see
-                imageUrl:
-                  type: string
-                  description: The image to upload
-                beverages:
-                  type: array
-                  items:
-                    schema:
-                        type: string
-              example:
-                user: Marvin
-                list: Paranoid
-                displayName: I am so depressed
-                imageUrl: http://whatever.com
-                beverages: [beer, wine]
-        responses:
-          400:
-            description: Incorrect dbs used
-          200:
-            description: Your list was deleted
-    """
-    parent_span = create_parent_trace()
-    with opentracing.tracer.start_span('playlist_list_update', child_of=parent_span) as span:
-        json_body = request.json
-        data_validator.validate_json_for_post(json_body)
-        data_validator.validate_json_for_user(user_name)
-        data_validator.validate_json_for_list(play_list_name)
-        service = ListsService()
-        service.worker_for_update(user_name, play_list_name, json_body)
-        span.log_kv({"status_code": 204, "result": ""})
-        return 204
+        data_validator.validate_user_name(user_name)
+        service = UsersService()
+        result = service.retrieve_all_lists_for_user(user_name)
+        span.log_kv({"status_code": 200, "result": result})
+        return jsonify(result), 200
 
 
 @users_blueprint.route('/<user_name>/<play_list_name>', methods=['GET'])
+@swag_from('../swagger/private_users_get_playlist.yml')
 def specific_list_for_specific_user(user_name, play_list_name):
-    """
-        Endpoint to get a specific list for a specific user
-        ---
-        tags:
-          - Private Methods
-        parameters:
-          - name: user_name
-            type: string
-            in: path
-            required: true
-            description: user you want to query
-          - name: list_name
-            type: string
-            in: path
-            required: true
-            description: specific list that belong to a user
-        responses:
-          400:
-            description: Incorrect dbs used
-          200:
-            description: Your list is correct see response
-    """
     parent_span = create_parent_trace()
     with opentracing.tracer.start_span('playlist_list_get', child_of=parent_span) as span:
-        data_validator.validate_json_for_user(user_name)
-        data_validator.validate_json_for_list(play_list_name)
+        data_validator.validate_user_name(user_name)
+        data_validator.validate_play_list(play_list_name)
         service = ListsService()
         result = service.get_specific_user_list(user_name, play_list_name)
-        return jsonify(result.__dict__), 200
+        return jsonify({"result": result.__dict__}), 200
+
+
+@users_blueprint.route('/<user_name>', methods=['POST'])
+@swag_from('../swagger/private_users_post.yml')
+def create_new_list(user_name):
+    parent_span = create_parent_trace()
+    json_body = request.json
+    with opentracing.tracer.start_span('playlist_list_post', child_of=parent_span) as span:
+        data_validator.validate_user_name(user_name)
+        service = ListsService()
+        service.post_new_list(json_body, user_name)
+        span.log_kv({"status_code": 201, "result": ""})
+        return '', 201
+
+
+@users_blueprint.route('/<user_name>', methods=['DELETE'])
+@swag_from('../swagger/private_users_delete.yml')
+def remove_all_user_lists(user_name):
+    parent_span = create_parent_trace()
+    with opentracing.tracer.start_span('playlist_list_delete', child_of=parent_span) as span:
+        data_validator.validate_user_name(user_name)
+        service = ListsService()
+        service.delete_all_lists_for_a_user(user_name)
+        span.log_kv({"status_code": 204, "result": ""})
+        return '', 204
+
+
+@users_blueprint.route('/<user_name>/<play_list_name>', methods=['DELETE'])
+@swag_from('../swagger/private_users_delete_playlist.yml')
+def remove_user_list(user_name, play_list_name):
+    parent_span = create_parent_trace()
+    with opentracing.tracer.start_span('playlist_list_delete', child_of=parent_span) as span:
+        data_validator.validate_user_name(user_name)
+        data_validator.validate_play_list(play_list_name)
+        service = ListsService()
+        service.delete_user_list(user_name, play_list_name)
+        span.log_kv({"status_code": 204, "result": ""})
+        return '', 204
+
+
+@users_blueprint.route('/<user_name>/<play_list_name>', methods=['PUT'])
+@swag_from('../swagger/private_users_update.yml')
+def update_user_list(user_name, play_list_name):
+    parent_span = create_parent_trace()
+    with opentracing.tracer.start_span('playlist_list_update', child_of=parent_span) as span:
+        json_body = request.json
+        data_validator.validate_user_name(user_name)
+        data_validator.validate_play_list(play_list_name)
+        service = ListsService()
+        service.update_list(user_name, play_list_name, json_body)
+        span.log_kv({"status_code": 204, "result": ""})
+        return '', 204
+
+
+
 
 
 @users_blueprint.errorhandler(InvalidUsage)

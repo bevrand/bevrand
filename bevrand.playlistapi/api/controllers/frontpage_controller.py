@@ -1,7 +1,6 @@
 from flask import Blueprint, jsonify, request
-import json
+from flasgger import swag_from
 from api.services import data_validator
-from api import flask_tracer
 from api.setup import  FLASK_TRACER
 from api.error_handler.error_model import InvalidUsage
 import opentracing
@@ -20,50 +19,24 @@ def ping_pong():
 
 
 @front_page_blueprint.route('', methods=['GET'])
+@swag_from('../swagger/public_get.yml')
 def front_page_all_lists():
-    """
-        Endpoint to get frontpage lists and if needed a list of lists
-        ---
-        tags:
-          - Public Methods
-        responses:
-          400:
-            description: Incorrect dbs used
-          200:
-            description: Your list is correct see response
-    """
     parent_span = create_parent_trace()
     with opentracing.tracer.start_span('playlist_frontpage', child_of=parent_span) as span:
         service = FrontPageService()
-        front_page_lists = service.retrieve_all_front_page_lists()
-        return jsonify({"result": front_page_lists}), 200
+        result = service.retrieve_all_front_page_lists()
+        return jsonify({"result": result}), 200
 
 
 @front_page_blueprint.route('/<play_list_name>', methods=['GET'])
+@swag_from('../swagger/public_get_playlist.yml')
 def front_page_list(play_list_name):
-    """
-        Endpoint to get frontpage lists and if needed a list of lists
-        ---
-        tags:
-          - Public Methods
-        parameters:
-          - name: list
-            in: path
-            type: string
-            required: true
-            description: specific frontpage list
-        responses:
-          400:
-            description: Incorrect dbs used
-          200:
-            description: Your list is correct see response
-    """
     parent_span = create_parent_trace()
     with opentracing.tracer.start_span('playlist_frontpage', child_of=parent_span) as span:
-        data_validator.validate_json_for_list(play_list_name)
+        data_validator.validate_play_list(play_list_name)
         service = FrontPageService()
-        front_page_lists = service.retrieve_front_page_list(play_list_name)
-        return jsonify({"result": front_page_lists.__dict__}), 200
+        result = service.retrieve_front_page_list(play_list_name)
+        return jsonify({"result": result.__dict__}), 200
 
 
 @front_page_blueprint.errorhandler(InvalidUsage)

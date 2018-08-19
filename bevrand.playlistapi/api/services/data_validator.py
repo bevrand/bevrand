@@ -2,28 +2,36 @@ from cerberus import Validator
 from api.error_handler.error_model import InvalidUsage
 
 
-def validate_json_for_post(dict_file):
-    schema = {'user': {'type': 'string', 'required': True, 'minlength': 3},
-              'list': {'type': 'string', 'required': True, 'minlength': 2},
-              'displayName': {'type': 'string'},
-              'imageUrl': {'type': 'string'},
-              'beverages': {'type': 'list', 'required': True, 'minlength' : 2,'schema': {'type': 'string', 'minlength': 2}}}
-    validate_schema(schema, dict_file)
-    return
-
-
-def validate_json_for_list(list):
-    schema = {'list': {'type': 'string', 'required': True, 'minlength': 2}}
-    list_to_validate = {'list': list}
+def validate_play_list(play_list):
+    schema = {'playlist': {'type': 'string', 'required': True, 'minlength': 2}}
+    list_to_validate = {'playlist': play_list}
     validate_schema(schema, list_to_validate)
     return
 
 
-def validate_json_for_user(user):
-    schema = {'user': {'type': 'string', 'required': True, 'minlength': 3}}
-    list_to_validate = {'user': user}
+def validate_user_name(user):
+    schema = {'user_name': {'type': 'string', 'required': True, 'minlength': 3}}
+    list_to_validate = {'user_name': user}
     validate_schema(schema, list_to_validate)
     return
+
+
+def validate_beverages(beverages):
+    schema = {'beverages': {'type': 'list', 'required': True, 'minlength' : 2,'schema': {'type': 'string', 'minlength': 2}}}
+    beverages_to_validate = {'beverages': beverages}
+    validate_schema(schema, beverages_to_validate)
+
+
+def validate_image_url(image_url):
+    schema = {'imageUrl': {'type': 'string', 'required': True, 'minlength': 3}}
+    iamge_url_to_validate = {'imageUrl': image_url}
+    validate_schema(schema, iamge_url_to_validate)
+
+
+def validate_display_name(display_name):
+    schema = {'displayName': {'type': 'string', 'required': True, 'minlength': 3}}
+    display_name_to_validate = {'displayName': display_name}
+    validate_schema(schema, display_name_to_validate)
 
 
 def validate_schema(schema, file):

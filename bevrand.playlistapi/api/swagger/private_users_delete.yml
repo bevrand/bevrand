@@ -1,0 +1,49 @@
+Endpoint to delete ALL playlists for a user
+Provide a username and all lists for that user will be deleted.
+---
+tags:
+  - Private Methods
+parameters:
+  - name: user_name
+    type: string
+    in: path
+    required: true
+    description: user you want to delete all lists for
+definitions:
+  ErrorModel:
+    properties:
+      Error:
+        type: string
+      Meta:
+        type: object
+        properties:
+          validation_error:
+            type: array
+            items:
+              type: string
+responses:
+  204:
+    description: Lists weres successfully deleted
+  400:
+    description: Validation error
+    examples:
+      BAD REQUEST: {
+          "Error": "Errors occured when validating",
+          "Meta": {
+            "user_name": [
+              "min length is 3"
+              ]}}
+    schema:
+      $ref: '#/definitions/ErrorModel'
+  404:
+    description: Requested resource does not exist
+    examples:
+      NOT FOUND: {"Error": "User could not be found"}
+    schema:
+      $ref: '#/definitions/ErrorModel'
+  503:
+    description: No mongo connection could be made, are you running a mongo container?
+    examples:
+      ConnnectionProblem: {"Error": "Could not connect to mongo"}
+    schema:
+      $ref: '#/definitions/ErrorModel'
