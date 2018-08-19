@@ -7,7 +7,7 @@ jobs:
       - checkout 
       - run: "cd ./bevrand.playlistapi && sudo pip install -r requirements.txt"
       - run: "cd ./bevrand.playlistapi && sudo pytest --cov-report term --cov=api"
-      - run: "cd ./bevrand.playlistapi && sudo docker build -t bevrand/playlistapi:develop"
+      - run: "sudo docker build -t bevrand/playlistapi:develop ./bevrand.playlistapi "
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/playlistapi:develop
@@ -18,7 +18,7 @@ jobs:
       - checkout 
       - run: "cd ./bevrand.reactapp && npm install"
       - run: "cd ./bevrand.reactapp && npm test"
-      - run: "cd ./bevrand.reactapp && sudo docker build -t bevrand/reactapp:develop"
+      - run: "docker build -t bevrand/reactapp:develop ./bevrand.reactapp"
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/reactapp:develop
@@ -30,7 +30,7 @@ jobs:
       - checkout 
       - run: "cd ./bevrand.proxyapi && npm install"
       - run: "cd ./bevrand.proxyapi && npm test"
-      - run: "cd ./bevrand.proxyapi && sudo docker build -t bevrand/proxyapi:develop"
+      - run: "cd sudo docker build -t bevrand/proxyapi:develop ./bevrand.proxyapi"
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/proxyapi:develop
@@ -41,7 +41,7 @@ jobs:
       - checkout 
       - run: "cd ./bevrand.randomizerapi && sudo pip install -r requirements.txt"
       - run: "cd ./bevrand.randomizerapi && sudo pytest --cov-report term --cov=api"
-      - run: "cd ./bevrand.randomizerapi && sudo docker build -t bevrand/randomizerapi:develop"
+      - run: "sudo docker build -t bevrand/randomizerapi:develop ./bevrand.randomizerapi"
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/randomizerapi:develop
@@ -51,7 +51,7 @@ jobs:
     steps:
       - checkout
       - run: "cd bevrand.authenticationapi/bevrand.authenticationapi.tests && dotnet test"
-      - run: "cd ./bevrand.authenticationapi/bevrand.authenticationapi && sudo docker build -t bevrand/authenticationapi:develop"
+      - run: "sudo docker build -t bevrand/authenticationapi:develop ./bevrand.authenticationapi/bevrand.authenticationapi"
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/authenticationapi:develop
