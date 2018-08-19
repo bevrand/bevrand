@@ -1,6 +1,5 @@
 const Config = {
-  // proxyHostname: process.env.NODE_ENV === 'production' ? '' : 'http://localhost:4540'
-  proxyHostname: ''
+  proxyHostname: 'https:' == document.location.protocol ? '' : 'http://localhost:4540'
 }
 
 export default Config;
