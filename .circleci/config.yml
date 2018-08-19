@@ -215,7 +215,6 @@ workflows:
               only: 
               - develop
          requires:
-<<<<<<< HEAD
            - build_python
            - build_node
            - build_dotnet
@@ -229,20 +228,6 @@ workflows:
            - build_python
            - build_node
            - build_dotnet
-=======
-           - unittest_randomizer
-           - unittest_playlist
-           - unittest_authentication
-     - uitests:
-         context: BeverageRandomizerPROD
-         filters:
-            branches:
-              only: 
-              - master
-         requires:
-           - build
-     #TODO Copy to artifacts
->>>>>>> a9a95119d1c443c10b3cb8459f40c5ec41d5928c
      #TODO Sonar-scanner
      #- acceptance_test_1:
      #    requires:
@@ -262,11 +247,7 @@ workflows:
             branches:
               only: master
          requires:
-<<<<<<< HEAD
            - create_production_images
-=======
-           - uitests
->>>>>>> a9a95119d1c443c10b3cb8459f40c5ec41d5928c
      - deploy:
          #TODO Get from artifacts
          context: BeverageRandomizerPROD
