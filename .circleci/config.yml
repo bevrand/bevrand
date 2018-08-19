@@ -7,7 +7,24 @@ jobs:
       - checkout 
       - run: "cd ./bevrand.playlistapi && sudo pip install -r requirements.txt"
       - run: "cd ./bevrand.playlistapi && sudo pytest --cov-report term --cov=api"
-      
+
+  unittest_reactapp:
+    docker:
+      - image: circleci/node:8
+    steps:
+      - checkout 
+      - run: "cd ./bevrand.reactapp && npm install"
+      - run: "cd ./bevrand.reactapp && npm test"
+
+
+  unittest_proxy:
+    docker:
+      - image: circleci/node:8
+    steps:
+      - checkout 
+      - run: "cd ./bevrand.proxyapi && npm install"
+      - run: "cd ./bevrand.proxyapi && npm test"
+
   unittest_randomizer:
     docker:
       - image: circleci/python:3.6.1
@@ -15,42 +32,79 @@ jobs:
       - checkout 
       - run: "cd ./bevrand.randomizerapi && sudo pip install -r requirements.txt"
       - run: "cd ./bevrand.randomizerapi && sudo pytest --cov-report term --cov=api"
+
   unittest_authentication:
     docker:
       - image: microsoft/dotnet:2-sdk
     steps:
       - checkout
       - run: "cd bevrand.authenticationapi/bevrand.authenticationapi.tests && dotnet test"
+
+  build_python:   
+    machine: true
+    steps:
+      - checkout
+     # build the application image
+      - run: |
+         docker build -t bevrand/playlistapi:develop ./bevrand.playlistapi
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/playlistapi:develop
+      - run: |
+         docker build -t bevrand/randomizerapi:develop ./bevrand.randomizerapi
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/randomizerapi:develop
+  build_node:   
+    machine: true
+    steps:
+      - checkout
+     # build the application image
+      - run: |
+         docker build -t bevrand/reactapp:develop ./bevrand.reactapp
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/reactapp:develop
+      - run: |
+         docker build -t bevrand/proxyapi:develop ./bevrand.proxyapi
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/proxyapi:develop
   
-  build:   
+  build_dotnet:   
+    machine: true
+    steps:
+      - checkout
+     # build the application image
+      - run: |
+         docker build -t bevrand/authenticationapi:develop ./bevrand.authenticationapi/bevrand.authenticationapi
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/authenticationapi:develop
+
+  component_tests:   
     machine: true
     steps:
       - checkout
 
      # build the application image
-      - run: docker-compose --version
-      - run: docker --version
-      - run: docker-compose build
-      - run: docker images
-      - run: docker-compose up -d
-      - run: docker ps -a
+      - run: |
+         docker-compose --version
+         docker-compose -f ./deployment/docker/docker-compose-component.yml up -d
+         docker images
+         docker ps -a
      
      #verify the results of the component test
       - run: "cd ./deployment && python validate_backend_test_results.py"
   
-  uitests:
+  ui_tests:
     machine: true
     parallelism: 1
     steps:
       - checkout    
 
-      - run: docker-compose --version
-      - run: docker --version
-      - run: docker-compose build
-      - run: docker images
-      - run: docker-compose up -d
-      - run: docker ps -a
-      #TODO Persist docker?
+     # build the application image
+      - run: |
+         docker-compose --version
+         docker-compose -f ./deployment/docker/docker-compose-ui.yml up -d
+         docker images
+         docker ps -a
+      #run ui_tests
       - run: "cd ./bevrand.uitests && npm install"
       - run: "cd /home/circleci/project"
 
@@ -63,9 +117,37 @@ jobs:
           path: /home/circleci/project/bevrand.uitests/cypress/videos/
       - store_artifacts:
           path: /home/circleci/project/bevrand.uitests/cypress/screenshots/
-     # TODO Put push images in a different step
-      - run: "cd ./deployment && sh ./push_images.sh"
-        
+
+  create_production_images:
+    machine: true
+    steps:
+      - checkout
+     # build the application image
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/playlistapi:develop
+         docker tag bevrand/playlistapi:develop bevrand/playlistapi:production
+         docker push bevrand/playlistapi:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/reactapp:develop
+         docker tag bevrand/reactapp:develop bevrand/reactapp:production
+         docker push bevrand/reactapp:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/proxyapi:develop
+         docker tag bevrand/proxyapi:develop bevrand/proxyapi:production
+         docker push bevrand/proxyapi:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/randomizerapi:develop
+         docker tag bevrand/randomizerapi:develop bevrand/randomizerapi:production
+         docker push bevrand/randomizerapi:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/authenticationapi:develop
+         docker tag bevrand/authenticationapi:develop bevrand/authenticationapi:production
+         docker push bevrand/authenticationapi:production    
   pause_uptimerobot:
     machine: true
     steps:
@@ -90,42 +172,87 @@ workflows:
     jobs:
      - unittest_randomizer:
         context: BeverageRandomizerPROD
-
+     - unittest_reactapp:
+        context: BeverageRandomizerPROD
+     - unittest_proxy:
+        context: BeverageRandomizerPROD
      - unittest_playlist:
         context: BeverageRandomizerPROD
      - unittest_authentication:
         context: BeverageRandomizerPROD
-     - build:
+     
+     - build_python:
+        context: BeverageRandomizerPROD
+        filters:
+          branches:
+            only: 
+            - develop
+            - master
+        requires:
+          - unittest_randomizer
+          - unittest_playlist
+     - build_node:
+        context: BeverageRandomizerPROD
+        filters:
+          branches:
+            only: 
+            - develop
+            - master
+        requires:
+          - unittest_proxy
+          - unittest_reactapp
+     - build_dotnet:
+        context: BeverageRandomizerPROD
+        filters:
+          branches:
+            only: 
+            - develop
+            - master
+        requires:
+          - unittest_authentication
+
+     - component_tests:
          context: BeverageRandomizerPROD
          filters:
             branches:
               only: 
+              - develop
               - master
          requires:
-           - unittest_randomizer
-           - unittest_playlist
-           - unittest_authentication
-     - uitests:
-         context: BeverageRandomizerPROD
-         filters:
-            branches:
-              only: 
-              - master
-         requires:
-           - build
-     #TODO Copy to artifacts
+           - build_python
+           - build_node
+           - build_dotnet
+     - ui_tests:
+          context: BeverageRandomizerPROD
+          filters:
+             branches:
+               only: 
+               - develop
+               - master
+          requires:
+           - build_python
+           - build_node
+           - build_dotnet
      #TODO Sonar-scanner
      #- acceptance_test_1:
      #    requires:
-     #      - uitests
-
+     #      - ui_tests
+     - create_production_images:
+          context: BeverageRandomizerPROD
+          filters:
+             branches:
+               only: 
+               - master
+          requires:
+            - ui_tests
+            - component_tests
      - pause_uptimerobot:
          context: BeverageRandomizerPROD
          filters:
             branches:
               only: master
          requires:
-           - uitests
+           - create_production_images
      - deploy:
          #TODO Get from artifacts
          context: BeverageRandomizerPROD

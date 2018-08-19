@@ -8,9 +8,12 @@ const bodyParser = require('body-parser');
 const exjwt = require('express-jwt');
 const rp = require ('request-promise');
 const Promise = require('bluebird');
+const jwt = require("jsonwebtoken");
 const cors = require('cors');
-
 const config = require('./config');
+const swaggerUi = require('swagger-ui-express');
+const yamljs = require('yamljs');
+const swaggerDocument = yamljs.load('./swagger.yaml');
 
 const controllers = require('./controllers');
 
@@ -35,6 +38,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 /**
  * Util to pipe requests to another endpoint
@@ -67,15 +72,45 @@ const requestPipePost = (endpoint) => {
 /**
  * CORS Pre-Flight enabled routes
  */
-app.options('/api/randomize', cors());
 app.options('/api/register', cors());
 app.options('/api/login', cors());
 app.options('/api/user', cors());
+app.options('/api/v2/frontpage', cors());
+app.options('/api/v2/randomize', cors());
 
 /**
  * API routes
  */
-app.get('/api/frontpage', requestPipe(config.playlistApi));
+const frontpageWithSignature = (url) => {
+  return (req, res, next) => {
+
+    
+    rp({
+      method: 'GET',
+      uri: `${url}/api/frontpage`
+    }).then(result => {
+      
+
+      let newResult = JSON.parse(result).map(item => {
+        let signedItem = jwt.sign(item, config.frontendJwtSecret, { mutatePayload: true});
+        item.jwtheader = JSON.parse(Buffer.from(signedItem.split('.')[0], 'base64').toString("ascii"));
+        item.jwttoken = signedItem.split('.')[2];
+        return item;
+      });
+
+      return res.send(newResult);
+    }).catch(err => {
+      console.error(`Error: ${err.message}`);
+      return next(err);
+    });
+  }  
+}
+
+/**
+ * Gives the complete response from the playlist api at the endpoint /api/frontpage, 
+ * signed with a JWT Token, IssuedAtTime property (iat) and a JWT Header, which describes the algorithm used.
+ */
+app.get('/api/v2/frontpage', frontpageWithSignature(config.playlistApi));
 
 app.get('/api/playlists', (req, res, next) => {
   //TODO: add middleware that checks is user is authorized for the specified username
@@ -115,7 +150,60 @@ app.post('/api/user', requestPipePost(config.playlistApi));
 
 app.get('/api/redis', requestPipe(config.randomizerApi));
 
-app.post('/api/randomize', requestPipePost(config.randomizerApi));
+const validateJwtTokenFrontend = (req, res, next) => {
+    try {
+      let requestJwtHeader = req.body.jwtheader;
+      let requestJwtToken = req.body.jwttoken;
+
+      delete req.body.jwtheader;
+      delete req.body.jwttoken;
+
+      let signedItem = jwt.sign(req.body, config.frontendJwtSecret);
+      let jwtheader = signedItem.split('.')[0];
+      let jwttoken = signedItem.split('.')[2];
+
+      if(requestJwtToken === jwttoken){
+        return next();
+      }
+
+      const error = new Error('JWT Token does not validate');
+      error.name = 'InvalidJwtToken';
+      throw error;
+    } catch(err) {
+      return next(err);
+    }
+}
+
+/**
+ * 
+ * @param {string} user 
+ * @param {string} list 
+ * @param {string[]} beverages 
+ */
+var RandomizeRequest = function (user, list, beverages) {
+  this.user = user;
+  this.list = list;
+  this.beverages = beverages;
+};
+
+/**
+ * Calls the backend randomize api with POST at endpoint /api/randomize
+ * Takes from the post body (req.body) the properties user, list, and beverages.
+ * @param {string} endpoint 
+ */
+const requestRandomizePost = (endpoint) => {
+  return (req, res) => {
+    request({
+      method: 'POST',
+      qs: req.query, 
+      uri: endpoint + '/api/randomize',
+      body: new RandomizeRequest(req.body.user, req.body.list, req.body.beverages),
+      json: true
+    }).pipe(res);
+  }
+}
+
+app.post('/api/v2/randomize', validateJwtTokenFrontend, requestRandomizePost(config.randomizerApi));
 
 app.post('/api/login', 
   controllers.authentication.handleLogin(
@@ -142,11 +230,13 @@ app.use((req, res, next) => {
 
 // error handler of authentication module
 app.use((err, req, res, next) => {
-  if(err.name === 'UnauthorizedError') {
-    res.status(401).send(err);
-  } else {
-    next(err);
+  if(err.name === 'InvalidJwtToken') {
+    err.status = 400;
   }
+  else if(err.name === 'UnauthorizedError') {
+    err.status = 401;
+  } 
+  next(err);  
 });
 
 // error handler
