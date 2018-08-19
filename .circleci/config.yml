@@ -123,16 +123,14 @@ workflows:
            - unittest_randomizer
            - unittest_playlist
            - unittest_authentication
-           - unittest_proxy
-           - unittest_reactapp
-    #  - uitests:
-    #      context: BeverageRandomizerPROD
-    #      filters:
-    #         branches:
-    #           only: 
-    #           - master
-    #      requires:
-    #        - build
+     - uitests:
+         context: BeverageRandomizerPROD
+         filters:
+            branches:
+              only: 
+              - master
+         requires:
+           - build
      #TODO Copy to artifacts
      #TODO Sonar-scanner
      #- acceptance_test_1:
@@ -145,8 +143,7 @@ workflows:
             branches:
               only: master
          requires:
-          #  - uitests Change back after react fix
-           - build
+           - uitests
      - deploy:
          #TODO Get from artifacts
          context: BeverageRandomizerPROD
