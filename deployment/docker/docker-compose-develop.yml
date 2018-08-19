@@ -1,0 +1,123 @@
+version: "3"
+services:
+
+  authenticationapi:
+    container_name: authenticationapi
+    image: bevrand/authenticationapi:develop
+    ports:
+      - 4570:5000
+    depends_on:
+      - dockergres
+    links:
+      - dockergres
+    environment:
+      - ASPNETCORE_ENVIRONMENT="Development"
+
+  randomizerapi:
+    container_name: randomizerapi
+    image: bevrand/randomizerapi:develop
+    ports:
+       - 4560:5000 # expose ports - HOST:CONTAINER
+    depends_on:
+       - playlistapi
+       - redis
+    links:
+       - playlistapi
+       - redis
+    environment:
+       - APP_SETTINGS=Production
+       - REDIS_URL=redis
+       - JAEGER_HOST=jaeger-agent
+   
+
+  playlistapi:
+    container_name: playlistapi
+    image: bevrand/playlistapi:develop
+    ports:
+       - 4550:5000  # expose ports - HOST:CONTAINER
+    depends_on:
+       - dockermongo
+    links:
+       - dockermongo
+    environment:
+       - APP_SETTINGS=Production
+       - MONGO_URL=mongodb://dockermongo:27017
+       - JAEGER_HOST=jaeger-agent
+
+  proxyapi:
+    container_name: proxyapi
+    image: bevrand/proxyapi:develop
+    ports:
+      - 4540:5000
+    depends_on:
+      - randomizerapi
+      - playlistapi
+      - authenticationapi
+    environment:
+      - NODE_ENV=development
+    links:
+      - randomizerapi
+      - playlistapi
+      - authenticationapi
+
+  reactapp:
+    container_name: reactapp
+    image: bevrand/reactapp:develop
+    ports:
+      - 80:80
+    depends_on:
+      - randomizerapi
+      - playlistapi
+      - authenticationapi
+      - proxyapi
+    environment:
+      - NODE_ENV=development
+    links:
+      - proxyapi
+
+  dataseeder:
+    container_name: dataseeder
+    image: bevrand/dataseeder:circleci
+    depends_on:
+       - dockermongo
+       - dockergres
+    links:
+       - dockermongo
+       - dockergres
+
+  testsuite:
+    container_name: backend_tests
+    image: bevrand/testsuite:circleci
+    depends_on:
+      - randomizerapi
+      - playlistapi
+      - authenticationapi
+      - proxyapi
+    links:
+      - randomizerapi
+      - playlistapi
+      - authenticationapi
+      - proxyapi
+    environment:
+      - ASPNETCORE_ENVIRONMENT="Test"
+
+  dockergres:
+     container_name: dockergres
+     image: bevrand/dockergres:circleci
+     ports:
+       - 5434:5432
+     environment:
+       - POSTGRES_PASSWORD=postgres
+       - POSTGRES_USER=postgres
+
+  redis:
+    container_name: redis
+    image: redis
+    ports: #6379
+      - 6379:6379
+
+  dockermongo:
+    container_name: dockermongo
+    image: mongo:3.6
+    ports:
+       - 27017:27017
