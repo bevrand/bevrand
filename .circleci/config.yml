@@ -40,7 +40,7 @@ jobs:
       - checkout
       - run: "cd bevrand.authenticationapi/bevrand.authenticationapi.tests && dotnet test"
 
-  build:   
+  build_python:   
     machine: true
     steps:
       - checkout
@@ -50,6 +50,15 @@ jobs:
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/playlistapi:develop
       - run: |
+         docker build -t bevrand/randomizerapi:develop ./bevrand.randomizerapi
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/randomizerapi:develop
+  build_node:   
+    machine: true
+    steps:
+      - checkout
+     # build the application image
+      - run: |
          docker build -t bevrand/reactapp:develop ./bevrand.reactapp
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/reactapp:develop
@@ -57,10 +66,12 @@ jobs:
          docker build -t bevrand/proxyapi:develop ./bevrand.proxyapi
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/proxyapi:develop
-      - run: |
-         docker build -t bevrand/randomizerapi:develop ./bevrand.randomizerapi
-         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker push bevrand/randomizerapi:develop
+  
+  build_dotnet:   
+    machine: true
+    steps:
+      - checkout
+     # build the application image
       - run: |
          docker build -t bevrand/authenticationapi:develop ./bevrand.authenticationapi/bevrand.authenticationapi
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
@@ -74,7 +85,7 @@ jobs:
      # build the application image
       - run: |
          docker-compose --version
-         docker-compose -f ./deployment/docker/docker-compose-develop.yml up -d
+         docker-compose -f ./deployment/docker/docker-compose-component.yml up -d
          docker images
          docker ps -a
      
@@ -90,7 +101,7 @@ jobs:
      # build the application image
       - run: |
          docker-compose --version
-         docker-compose -f ./deployment/docker/docker-compose-develop.yml up -d
+         docker-compose -f ./deployment/docker/docker-compose-ui.yml up -d
          docker images
          docker ps -a
       #run ui_tests
@@ -190,7 +201,7 @@ workflows:
               only: 
               - develop
               - feature/circli-dockerimages
-     - build:
+     - build_python:
         context: BeverageRandomizerPROD
         filters:
           branches:
@@ -200,25 +211,45 @@ workflows:
         requires:
           - unittest_randomizer
           - unittest_playlist
-          - unittest_authentication
+     - build_node:
+        context: BeverageRandomizerPROD
+        filters:
+          branches:
+            only: 
+            - develop
+            - feature/circli-dockerimages
+        requires:
           - unittest_proxy
           - unittest_reactapp
+
+     - build_dotnet:
+        context: BeverageRandomizerPROD
+        filters:
+          branches:
+            only: 
+            - develop
+            - feature/circli-dockerimages
+        requires:
+          - unittest_authentication
+
      - component_tests:
          context: BeverageRandomizerPROD
          filters:
             branches:
               only: 
               - develop
-              - feature/circli-dockerimages
+        #      - feature/circli-dockerimages
          requires:
-           - build
+           - build_python
+           - build_node
+           - build_dotnet
      - ui_tests:
           context: BeverageRandomizerPROD
           filters:
              branches:
                only: 
                - develop
-               - feature/circli-dockerimages
+            #   - feature/circli-dockerimages
           requires:
             - build
      #TODO Sonar-scanner
