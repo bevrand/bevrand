@@ -14,3 +14,4 @@
 /home/joerivrij/Projects/bevrand/bevrand.testsuite/bevrand.testsuite/bin/Debug/netcoreapp2.0/Settings/appsettings.development.json
 /home/joerivrij/Projects/bevrand/bevrand.testsuite/bevrand.testsuite/bin/Debug/netcoreapp2.0/Settings/appsettings.json
 /home/joerivrij/Projects/bevrand/bevrand.testsuite/bevrand.testsuite/bin/Debug/netcoreapp2.0/Settings/appsettings.Test.json
+/home/joerivrij/projects/bevrand/bevrand.testsuite/bevrand.testsuite/obj/Debug/netcoreapp2.0/bevrand.testsuite.csprojAssemblyReference.cache

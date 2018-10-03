@@ -4,7 +4,7 @@ Provide a username and a json_body
 tags:
   - Private Methods
 parameters:
-  - name: user_name
+  - name: userName
     type: string
     in: path
     required: true

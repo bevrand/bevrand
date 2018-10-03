@@ -1999,10 +1999,11 @@
       ]
     },
     "Microsoft.Extensions.Configuration.Abstractions/2.0.1": {
-      "sha512": "stGq1c136UUYOsgQuJ5fjiygqZhgt6Kj0pm4iL0qq1MICNgEKTJ4tnbXLkZfrDHDz+olsT2VY9cVv2yshg+m+A==",
+      "sha512": "EHHUIf0I26syggtj3solZ23qh3nJNXMZXEfasbbkphFmKAEagrrVjvmJsm+uvxO14xddP/TfYIeWpgzWl1Ps5Q==",
       "type": "package",
       "path": "microsoft.extensions.configuration.abstractions/2.0.1",
       "files": [
+        ".signature.p7s",
         "lib/netstandard2.0/Microsoft.Extensions.Configuration.Abstractions.dll",
         "lib/netstandard2.0/Microsoft.Extensions.Configuration.Abstractions.xml",
         "microsoft.extensions.configuration.abstractions.2.0.1.nupkg.sha512",
@@ -2056,10 +2057,11 @@
       ]
     },
     "Microsoft.Extensions.FileProviders.Abstractions/2.0.1": {
-      "sha512": "Gzc5yXvwIrKpdti0Ev4jC0inVrGZpI86eLZorMVRqAPXowR8JDRbcHjhmID2EqA4rdhL/IsfD42+4upKpHULDw==",
+      "sha512": "X3qVOCDZmj1mQnN2SfFUZZ3qfA4OPmD6XxxZpx43g/OKYvf3RI9tvVUsNECVMHEW7PjYfH83wNpqn6fThFAD0g==",
       "type": "package",
       "path": "microsoft.extensions.fileproviders.abstractions/2.0.1",
       "files": [
+        ".signature.p7s",
         "lib/netstandard2.0/Microsoft.Extensions.FileProviders.Abstractions.dll",
         "lib/netstandard2.0/Microsoft.Extensions.FileProviders.Abstractions.xml",
         "microsoft.extensions.fileproviders.abstractions.2.0.1.nupkg.sha512",
@@ -2089,10 +2091,11 @@
       ]
     },
     "Microsoft.Extensions.Primitives/2.0.0": {
-      "sha512": "ukg53qNlqTrK38WA30b5qhw0GD7y3jdI9PHHASjdKyTcBHTevFM2o23tyk3pWCgAV27Bbkm+CPQ2zUe1ZOuYSA==",
+      "sha512": "AMyFwlYdEY4GjjCFGQhUr1/0ZZyYyNjjpCx8Vwfy+Ylxv8pn649uaX5J2L7aknEtQY5+XA+TSfxRSBCgy68yvQ==",
       "type": "package",
       "path": "microsoft.extensions.primitives/2.0.0",
       "files": [
+        ".signature.p7s",
         "lib/netstandard2.0/Microsoft.Extensions.Primitives.dll",
         "lib/netstandard2.0/Microsoft.Extensions.Primitives.xml",
         "microsoft.extensions.primitives.2.0.0.nupkg.sha512",
@@ -6095,17 +6098,17 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/joerivrij/Projects/bevrand/bevrand.testsuite/bevrand.testsuite/bevrand.testsuite.csproj",
+      "projectUniqueName": "/home/joerivrij/projects/bevrand/bevrand.testsuite/bevrand.testsuite/bevrand.testsuite.csproj",
       "projectName": "bevrand.testsuite",
-      "projectPath": "/home/joerivrij/Projects/bevrand/bevrand.testsuite/bevrand.testsuite/bevrand.testsuite.csproj",
+      "projectPath": "/home/joerivrij/projects/bevrand/bevrand.testsuite/bevrand.testsuite/bevrand.testsuite.csproj",
       "packagesPath": "/home/joerivrij/.nuget/packages/",
-      "outputPath": "/home/joerivrij/Projects/bevrand/bevrand.testsuite/bevrand.testsuite/obj/",
+      "outputPath": "/home/joerivrij/projects/bevrand/bevrand.testsuite/bevrand.testsuite/obj/",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "/usr/share/dotnet/sdk/NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "/home/joerivrij/.nuget/NuGet/NuGet.Config"
+        "/home/joerivrij/.config/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.0"

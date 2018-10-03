@@ -12,7 +12,7 @@ namespace bevrand.testsuite.Clients
 {
     public class BaseApiClient
     {
-        public async Task<BaseResponseModel> GenericGet<TType>(string requeststring)
+        public async Task<BaseResponseModel> FlurlGet<TType>(string requeststring)
             where TType : BaseResponseModel
         {
             try
@@ -51,12 +51,19 @@ namespace bevrand.testsuite.Clients
         }
         
 
-        public async Task<BaseResponseModel> GenericPostObject<TType>(string requeststring, object objectToPost)
+        public async Task<BaseResponseModel> FlurlPost<TType>(string requeststring, object objectToPost)
             where TType : BaseResponseModel
         {
             try
             {
                 var res = requeststring.PostJsonAsync(objectToPost).Result;
+                if ((int) res.StatusCode == 201)
+                {
+                    return new BaseResponseModel
+                    {
+                        StatusCode = 201
+                    };
+                }
                 var content = res.Content.ReadAsStringAsync().Result;
                 var responseModel = JsonConvert.DeserializeObject<TType>(content);
                 responseModel.StatusCode = (int) res.StatusCode;
@@ -75,7 +82,7 @@ namespace bevrand.testsuite.Clients
             }
         }
         
-        public BaseResponseModel GenericDeleteObject(string requeststring)
+        public BaseResponseModel FlurlDelete(string requeststring)
         {
             try
             {
@@ -102,12 +109,19 @@ namespace bevrand.testsuite.Clients
         }
         
                 
-        public async Task<BaseResponseModel> GenericUpdateObject<TType>(string requeststring, object objectToPost)
+        public async Task<BaseResponseModel> FlurlUpdate<TType>(string requeststring, object objectToUpdate)
             where TType : BaseResponseModel
         {
             try
             {
-                var res = requeststring.PostJsonAsync(objectToPost).Result;
+                var res = requeststring.PutJsonAsync(objectToUpdate).Result;
+                if ((int) res.StatusCode == 204)
+                {
+                    return new BaseResponseModel
+                    {
+                        StatusCode = 204
+                    };
+                }
                 var content = res.Content.ReadAsStringAsync().Result;
                 var responseModel = JsonConvert.DeserializeObject<TType>(content);
                 responseModel.StatusCode = (int) res.StatusCode;

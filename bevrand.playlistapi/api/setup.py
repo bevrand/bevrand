@@ -69,11 +69,11 @@ def create_app():
     install_all_patches()
 
     # register blueprints
-    from api.controllers.user_controller import users_blueprint
-    app.register_blueprint(users_blueprint, url_prefix='/api/v1/private')
+    from api.controllers.private_controller import private_blueprint
+    app.register_blueprint(private_blueprint, url_prefix='/api/v1/private')
 
-    from api.controllers.frontpage_controller import front_page_blueprint
-    app.register_blueprint(front_page_blueprint, url_prefix='/api/v1/public')
+    from api.controllers.public_controller import public_blueprint
+    app.register_blueprint(public_blueprint, url_prefix='/api/v1/public')
 
     return app
 

@@ -4,12 +4,12 @@ Provide a username and playlist and this will be deleted.
 tags:
   - Private Methods
 parameters:
-  - name: user_name
+  - name: userName
     type: string
     in: path
     required: true
     description: user you want to delete a playlist for
-  - name: play_list_name
+  - name: playListName
     type: string
     in: path
     required: true

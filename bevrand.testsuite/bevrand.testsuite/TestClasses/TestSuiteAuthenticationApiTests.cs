@@ -23,7 +23,7 @@ namespace bevrand.testsuite.TestClasses
         [Trait("Category", "Authentication")]
         public void GetUserByIdReturnsSuccess()
         {
-            var poststring = _fixture.AuthenticationUrl + "/api/Users/";
+            var poststring = _fixture.AuthenticationUrl + "/Users/";
             var request = new PostModelAuthentication
             {
                 userName = Helpers.RandomNameGenerator.RandomString(25),
@@ -31,10 +31,10 @@ namespace bevrand.testsuite.TestClasses
                 active = true,
                 passWord = "thisisatestpassword"
             };
-            var resp = _fixture.BaseApiClient.GenericPostObject<PostModelResponse>(poststring, request).Result as PostModelResponse;
+            var resp = _fixture.BaseApiClient.FlurlPost<PostModelResponse>(poststring, request).Result as PostModelResponse;
             
             var requeststring = _fixture.AuthenticationUrl + $"/api/Users/{resp.id}";
-            var response = _fixture.BaseApiClient.GenericGet<UserResponse>(requeststring).Result;
+            var response = _fixture.BaseApiClient.FlurlGet<UserResponse>(requeststring).Result;
 
             Assert.Equal(200, response.StatusCode);
         }  
@@ -45,8 +45,8 @@ namespace bevrand.testsuite.TestClasses
         [InlineData(Int16.MinValue, "was not found")]
         public void GetUserByIdThatDoesNotExistGivesAnError(int id, string message)
         {
-            var requeststring = _fixture.AuthenticationUrl + $"/api/Users/{id}/";
-            var response = _fixture.BaseApiClient.GenericGet<UserResponse>(requeststring).Result as BaseErrorResponse;
+            var requeststring = _fixture.AuthenticationUrl + $"/Users/{id}/";
+            var response = _fixture.BaseApiClient.FlurlGet<UserResponse>(requeststring).Result as BaseErrorResponse;
 
             Assert.Equal(404, response.StatusCode);
             Assert.Contains(message, response.UserError);
@@ -56,7 +56,7 @@ namespace bevrand.testsuite.TestClasses
         [Trait("Category", "Authentication")]
         public void GetUserByEmailReturnsSuccess()
         {
-            var poststring = _fixture.AuthenticationUrl + "/api/Users/";
+            var poststring = _fixture.AuthenticationUrl + "/Users/";
             var request = new PostModelAuthentication
             {
                 userName = Helpers.RandomNameGenerator.RandomString(25),
@@ -64,10 +64,10 @@ namespace bevrand.testsuite.TestClasses
                 active = true,
                 passWord = "thisisatestpassword"
             };
-            var resp = _fixture.BaseApiClient.GenericPostObject<PostModelResponse>(poststring, request).Result as PostModelResponse;
+            var resp = _fixture.BaseApiClient.FlurlPost<PostModelResponse>(poststring, request).Result as PostModelResponse;
             
-            var requeststring = _fixture.AuthenticationUrl + $"/api/Users/by-email/{resp.emailAddress}";
-            var response = _fixture.BaseApiClient.GenericGet<UserResponse>(requeststring).Result as UserResponse;
+            var requeststring = _fixture.AuthenticationUrl + $"/Users/by-email/{resp.emailAddress}";
+            var response = _fixture.BaseApiClient.FlurlGet<UserResponse>(requeststring).Result as UserResponse;
 
             Assert.Equal(200, response.StatusCode);
             Assert.Equal(resp.emailAddress, response.emailAddress);
@@ -80,7 +80,7 @@ namespace bevrand.testsuite.TestClasses
         [Trait("Category", "Authentication")]
         public void GetUserByUserNameReturnsSuccess()
         {
-            var poststring = _fixture.AuthenticationUrl + "/api/Users/";
+            var poststring = _fixture.AuthenticationUrl + "/Users/";
             var request = new PostModelAuthentication
             {
                 userName = Helpers.RandomNameGenerator.RandomString(25),
@@ -88,10 +88,10 @@ namespace bevrand.testsuite.TestClasses
                 active = true,
                 passWord = "thisisatestpassword"
             };
-            var resp = _fixture.BaseApiClient.GenericPostObject<PostModelResponse>(poststring, request).Result as PostModelResponse;
+            var resp = _fixture.BaseApiClient.FlurlPost<PostModelResponse>(poststring, request).Result as PostModelResponse;
             
-            var requeststring = _fixture.AuthenticationUrl + $"/api/Users/{resp.id}";
-            var response = _fixture.BaseApiClient.GenericGet<UserResponse>(requeststring).Result as UserResponse;
+            var requeststring = _fixture.AuthenticationUrl + $"/Users/{resp.id}";
+            var response = _fixture.BaseApiClient.FlurlGet<UserResponse>(requeststring).Result as UserResponse;
 
             Assert.Equal(200, response.StatusCode);
             Assert.Equal(resp.userName, response.username);
@@ -103,8 +103,8 @@ namespace bevrand.testsuite.TestClasses
         [InlineData("thisuserdoesnotexistandifitdoessomeonemadeamistake", "was not found")]
         public void GetUserByUsernameThatDoesNotExistGivesAnError(string username, string message)
         {
-            var requeststring = _fixture.AuthenticationUrl + $"/api/Users/{username}/";
-            var response = _fixture.BaseApiClient.GenericGet<UserResponse>(requeststring).Result as BaseErrorResponse;
+            var requeststring = _fixture.AuthenticationUrl + $"/Users/{username}/";
+            var response = _fixture.BaseApiClient.FlurlGet<UserResponse>(requeststring).Result as BaseErrorResponse;
 
             Assert.Equal(404, response.StatusCode);
             Assert.Contains(message, response.UserError);
@@ -114,8 +114,8 @@ namespace bevrand.testsuite.TestClasses
         [Trait("Category", "Authentication")]
         public void GetListOfUsersReturnsSucces()
         {            
-            var requeststring = _fixture.AuthenticationUrl + $"/api/Users/";
-            var response = _fixture.BaseApiClient.GenericGet<ListUserResponse>(requeststring).Result as ListUserResponse;
+            var requeststring = _fixture.AuthenticationUrl + $"/Users/";
+            var response = _fixture.BaseApiClient.FlurlGet<ListUserResponse>(requeststring).Result as ListUserResponse;
 
             Assert.Equal(200, response.StatusCode);
             var tempId = int.MaxValue;
@@ -131,7 +131,7 @@ namespace bevrand.testsuite.TestClasses
         [Trait("Category", "Authentication")]
         public void PostAUserReturnsASuccesCode()
         {
-            var requeststring = _fixture.AuthenticationUrl + "/api/Users/";
+            var requeststring = _fixture.AuthenticationUrl + "/Users/";
             var request = new PostModelAuthentication
             {
                 userName = Helpers.RandomNameGenerator.RandomString(25),
@@ -139,7 +139,7 @@ namespace bevrand.testsuite.TestClasses
                 active = true,
                 passWord = "thisisatestpassword"
             };
-            var response = _fixture.BaseApiClient.GenericPostObject<PostModelResponse>(requeststring, request).Result as PostModelResponse;
+            var response = _fixture.BaseApiClient.FlurlPost<PostModelResponse>(requeststring, request).Result as PostModelResponse;
 
             Assert.Equal(201, response.StatusCode);
             Assert.Equal(request.userName.ToLowerInvariant(), response.userName);
@@ -150,7 +150,7 @@ namespace bevrand.testsuite.TestClasses
         [Trait("Category", "Authentication")]
         public void PostAUserTwiceWillResultInAnError()
         {
-            var requeststring = _fixture.AuthenticationUrl + "/api/Users/";
+            var requeststring = _fixture.AuthenticationUrl + "/Users/";
             var request = new PostModelAuthentication
             {
                 userName = Helpers.RandomNameGenerator.RandomString(25),
@@ -158,11 +158,11 @@ namespace bevrand.testsuite.TestClasses
                 active = true,
                 passWord = "thisisatestpassword"
             };
-            var response = _fixture.BaseApiClient.GenericPostObject<PostModelResponse>(requeststring, request).Result;
+            var response = _fixture.BaseApiClient.FlurlPost<PostModelResponse>(requeststring, request).Result;
 
             Assert.Equal(201, response.StatusCode);
             
-            response = _fixture.BaseApiClient.GenericPostObject<PostModelResponse>(requeststring, request).Result;
+            response = _fixture.BaseApiClient.FlurlPost<PostModelResponse>(requeststring, request).Result;
             Assert.Equal(400, response.StatusCode);
         }
 
@@ -174,7 +174,7 @@ namespace bevrand.testsuite.TestClasses
         [InlineData("SomeRandomUserForPost", "testtest", "password", "was not a valid mailaddress")]
         public void FaultyPostsDoNotGetEnteredIntoTheDatabse(string username, string email, string password, string message)
         {
-            var requeststring = _fixture.AuthenticationUrl + "/api/Users/";
+            var requeststring = _fixture.AuthenticationUrl + "/Users/";
             var request = new PostModelAuthentication
             {
                 userName = username,
@@ -182,7 +182,7 @@ namespace bevrand.testsuite.TestClasses
                 active = true,
                 passWord = password
             };
-            var response = _fixture.BaseApiClient.GenericPostObject<PostModelResponse>(requeststring, request).Result as BaseErrorResponse;
+            var response = _fixture.BaseApiClient.FlurlPost<PostModelResponse>(requeststring, request).Result as BaseErrorResponse;
 
             Assert.Equal(400, response.StatusCode);
             Assert.Contains(message, response.UserError);
@@ -194,7 +194,7 @@ namespace bevrand.testsuite.TestClasses
         [Trait("Category", "Authentication")]
         public void DeleteAUserOnceShouldReturnsSuccesCode()
         {
-            var requeststring = _fixture.AuthenticationUrl + "/api/Users/";
+            var requeststring = _fixture.AuthenticationUrl + "/Users/";
             var requestPost = new PostModelAuthentication
             {
                 userName = Helpers.RandomNameGenerator.RandomString(25),
@@ -203,7 +203,7 @@ namespace bevrand.testsuite.TestClasses
                 passWord = "thisisatestpassword"
             };
             var response =
-                _fixture.BaseApiClient.GenericPostObject<PostModelResponse>(requeststring, requestPost).Result as
+                _fixture.BaseApiClient.FlurlPost<PostModelResponse>(requeststring, requestPost).Result as
                     PostModelResponse;
             
             var request = new IdBasedQueryModel
@@ -214,7 +214,7 @@ namespace bevrand.testsuite.TestClasses
             var queryString =
                 Helpers.CreateApiRequestString.GetQueryStringFromModel<IIdBasedQueryModel, IdBasedQueryModel>(request);
             var requestDelete = requeststring + queryString;
-            var deletedResponse = _fixture.BaseApiClient.GenericDeleteObject(requestDelete);
+            var deletedResponse = _fixture.BaseApiClient.FlurlDelete(requestDelete);
             
             Assert.Equal(204, deletedResponse.StatusCode);
 
@@ -224,7 +224,7 @@ namespace bevrand.testsuite.TestClasses
         [Trait("Category", "Authentication")]
         public void DeletingAUserTwiceReturnsAnError()
         {
-            var requeststring = _fixture.AuthenticationUrl + "/api/Users/";
+            var requeststring = _fixture.AuthenticationUrl + "/Users/";
             var requestPost = new PostModelAuthentication
             {
                 userName = Helpers.RandomNameGenerator.RandomString(25),
@@ -233,7 +233,7 @@ namespace bevrand.testsuite.TestClasses
                 passWord = "thisisatestpassword"
             };
             var response =
-                _fixture.BaseApiClient.GenericPostObject<PostModelResponse>(requeststring, requestPost).Result as
+                _fixture.BaseApiClient.FlurlPost<PostModelResponse>(requeststring, requestPost).Result as
                     PostModelResponse;
 
             var request = new IdBasedQueryModel
@@ -244,11 +244,11 @@ namespace bevrand.testsuite.TestClasses
             var queryString =
                 Helpers.CreateApiRequestString.GetQueryStringFromModel<IIdBasedQueryModel, IdBasedQueryModel>(request);
             var requestDelete = requeststring + queryString;
-            var deletedResponse = _fixture.BaseApiClient.GenericDeleteObject(requestDelete);
+            var deletedResponse = _fixture.BaseApiClient.FlurlDelete(requestDelete);
             
             Assert.Equal(204, deletedResponse.StatusCode);
             
-            deletedResponse = _fixture.BaseApiClient.GenericDeleteObject(requestDelete);
+            deletedResponse = _fixture.BaseApiClient.FlurlDelete(requestDelete);
             
             Assert.Equal(404, deletedResponse.StatusCode);            
         }
@@ -257,7 +257,7 @@ namespace bevrand.testsuite.TestClasses
         [Trait("Category", "Authentication")]
         public void CannotDeleteUserThatDoesNotExist()
         {
-            var requeststring = _fixture.AuthenticationUrl + "/api/Users/";
+            var requeststring = _fixture.AuthenticationUrl + "/Users/";
             var request = new IdBasedQueryModel
             {
                 Id = int.MaxValue
@@ -266,7 +266,7 @@ namespace bevrand.testsuite.TestClasses
             var queryString =
                 Helpers.CreateApiRequestString.GetQueryStringFromModel<IIdBasedQueryModel, IdBasedQueryModel>(request);
             var requestDelete = requeststring + queryString;
-            var deletedResponse = _fixture.BaseApiClient.GenericDeleteObject(requestDelete);
+            var deletedResponse = _fixture.BaseApiClient.FlurlDelete(requestDelete);
             
             Assert.Equal(404, deletedResponse.StatusCode);
 
@@ -279,7 +279,7 @@ namespace bevrand.testsuite.TestClasses
         [InlineData("notnull", null)]
         public void CanValidateByEmailAndUserNameWithValidPassWord(string username, string email)
         {
-            var postString = _fixture.AuthenticationUrl + "/api/Users/";
+            var postString = _fixture.AuthenticationUrl + "/Users/";
             var requestPost = new PostModelAuthentication
             {
                 userName = Helpers.RandomNameGenerator.RandomString(25),
@@ -289,7 +289,7 @@ namespace bevrand.testsuite.TestClasses
             };
             
             var response =
-                _fixture.BaseApiClient.GenericPostObject<PostModelResponse>(postString, requestPost).Result as
+                _fixture.BaseApiClient.FlurlPost<PostModelResponse>(postString, requestPost).Result as
                     PostModelResponse;
             
             Assert.Equal(201, response.StatusCode);
@@ -302,7 +302,7 @@ namespace bevrand.testsuite.TestClasses
             {
                 email = requestPost.emailAddress;
             }
-            var requeststring = _fixture.AuthenticationUrl + "/api/Validate/";
+            var requeststring = _fixture.AuthenticationUrl + "/Validate/";
             var requestValidate = new ValidateUser
             {
                 emailAddress = email,

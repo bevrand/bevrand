@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Features" />
+    <Folder Include="Models\ProxyApi" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Settings\appsettings.Development.json">

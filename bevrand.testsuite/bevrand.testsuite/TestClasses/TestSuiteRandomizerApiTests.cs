@@ -20,7 +20,7 @@ namespace bevrand.testsuite.TestClasses
         [Trait("Category", "Randomizer")]
         public void PostingTwoDrinksReturnsARandomDrink()
         {
-            var requeststring = _fixture.RandomizerUrl + "/api/randomize";
+            var requeststring = _fixture.RandomizerUrl + "/randomize";
             var request = new RandomizePostRequest
             {
                 list = "testsuite",
@@ -33,7 +33,7 @@ namespace bevrand.testsuite.TestClasses
             };
 
             var response =
-                _fixture.BaseApiClient.GenericPostObject<RandomizePostResult>(requeststring, request).Result as
+                _fixture.BaseApiClient.FlurlPost<RandomizePostResult>(requeststring, request).Result as
                     RandomizePostResult;
             
             var drink = response.result;
@@ -45,7 +45,7 @@ namespace bevrand.testsuite.TestClasses
         [Trait("Category", "Randomizer")]
         public void LongListsGetRandomized()
         {
-            var requeststring = _fixture.RandomizerUrl + "/api/randomize";
+            var requeststring = _fixture.RandomizerUrl + "/randomize";
             var request = new RandomizePostRequest
             {
                 list = "testsuite",
@@ -74,7 +74,7 @@ namespace bevrand.testsuite.TestClasses
             };
 
             var response =
-                _fixture.BaseApiClient.GenericPostObject<RandomizePostResult>(requeststring, request).Result as
+                _fixture.BaseApiClient.FlurlPost<RandomizePostResult>(requeststring, request).Result as
                     RandomizePostResult;
             
             var drink = response.result;
@@ -86,7 +86,7 @@ namespace bevrand.testsuite.TestClasses
         [Trait("Category", "Randomizer")]
         public void PostASingleDrinkGivesAnError()
         {
-            var requeststring = _fixture.RandomizerUrl + "/api/randomize";
+            var requeststring = _fixture.RandomizerUrl + "/randomize";
             var request = new RandomizePostRequest
             {
                 list = "testsuite",
@@ -114,7 +114,7 @@ namespace bevrand.testsuite.TestClasses
         [InlineData("validlist", "e", "min length is 3")]
         public void PostWithAnInvalidObjectGivesAnError(string list, string user, string message)
         {
-            var requeststring = _fixture.RandomizerUrl + "/api/randomize";
+            var requeststring = _fixture.RandomizerUrl + "/randomize";
             var request = new RandomizePostRequest
             {
                 list = list,

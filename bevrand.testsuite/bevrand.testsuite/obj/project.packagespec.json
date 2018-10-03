@@ -1,10 +1,10 @@
 ﻿{
   "version": "1.0.0",
   "restore": {
-    "projectUniqueName": "/home/joerivrij/Projects/bevrand/bevrand.testsuite/bevrand.testsuite/bevrand.testsuite.csproj",
+    "projectUniqueName": "/home/joerivrij/projects/bevrand/bevrand.testsuite/bevrand.testsuite/bevrand.testsuite.csproj",
     "projectName": "bevrand.testsuite",
-    "projectPath": "/home/joerivrij/Projects/bevrand/bevrand.testsuite/bevrand.testsuite/bevrand.testsuite.csproj",
-    "outputPath": "/home/joerivrij/Projects/bevrand/bevrand.testsuite/bevrand.testsuite/obj/",
+    "projectPath": "/home/joerivrij/projects/bevrand/bevrand.testsuite/bevrand.testsuite/bevrand.testsuite.csproj",
+    "outputPath": "/home/joerivrij/projects/bevrand/bevrand.testsuite/bevrand.testsuite/obj/",
     "projectStyle": "PackageReference",
     "fallbackFolders": [
       "/usr/share/dotnet/sdk/NuGetFallbackFolder"

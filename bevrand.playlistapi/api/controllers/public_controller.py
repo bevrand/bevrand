@@ -7,10 +7,10 @@ import opentracing
 from api.services.frontpage_service import FrontPageService
 
 
-front_page_blueprint = Blueprint('front_page', __name__,)
+public_blueprint = Blueprint('public', __name__, )
 
 
-@front_page_blueprint.route('/ping', methods=['GET'])
+@public_blueprint.route('/ping', methods=['GET'])
 def ping_pong():
     return jsonify({
         'status': 'success',
@@ -18,7 +18,7 @@ def ping_pong():
     })
 
 
-@front_page_blueprint.route('', methods=['GET'])
+@public_blueprint.route('', methods=['GET'])
 @swag_from('../swagger/public_get.yml')
 def front_page_all_lists():
     parent_span = create_parent_trace()
@@ -28,18 +28,18 @@ def front_page_all_lists():
         return jsonify({"result": result}), 200
 
 
-@front_page_blueprint.route('/<play_list_name>', methods=['GET'])
+@public_blueprint.route('/<playListName>', methods=['GET'])
 @swag_from('../swagger/public_get_playlist.yml')
-def front_page_list(play_list_name):
+def front_page_list(playListName):
     parent_span = create_parent_trace()
     with opentracing.tracer.start_span('playlist_frontpage', child_of=parent_span) as span:
-        data_validator.validate_play_list(play_list_name)
+        data_validator.validate_play_list(playListName)
         service = FrontPageService()
-        result = service.retrieve_front_page_list(play_list_name)
+        result = service.retrieve_front_page_list(playListName)
         return jsonify({"result": result.__dict__}), 200
 
 
-@front_page_blueprint.errorhandler(InvalidUsage)
+@public_blueprint.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
     response = jsonify(error.to_dict())
     response.status_code = error.status_code

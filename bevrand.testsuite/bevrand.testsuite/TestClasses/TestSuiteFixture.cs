@@ -9,20 +9,21 @@ namespace bevrand.testsuite.TestClasses
     public class TestSuiteFixture : IDisposable
     {
         private ServiceCalls ServiceCalls { get; }
-        public MongoApiClient MongoApi { get; }
         public BaseApiClient BaseApiClient { get; }
         public AuthenticationApiClient AuthenicationApi { get; }
         public string AuthenticationUrl { get; }
+        public string PlayListUrl { get; }
+        public string ProxyUrl { get; }
         public RandomizerApiClient RandomizerApi { get; }
         public string RandomizerUrl { get; }
-
 
         public TestSuiteFixture()
         {
             ServiceCalls = new ServiceCalls();
             EnvBuilder();
             BaseApiClient = new BaseApiClient();
-            MongoApi = new MongoApiClient(ServiceCalls.MongoApiService);
+            PlayListUrl = ServiceCalls.PlayListApiService;
+            ProxyUrl = ServiceCalls.ProxyApiService;
             RandomizerApi = new RandomizerApiClient();
             RandomizerUrl = ServiceCalls.RandomizerApiService;
             AuthenicationApi = new AuthenticationApiClient();
@@ -32,6 +33,7 @@ namespace bevrand.testsuite.TestClasses
         private void EnvBuilder()
         {
             var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            environmentName = "Development";
             Console.WriteLine(environmentName);
                 
             const string BaseFilePath = @"Settings/";
