@@ -35,15 +35,16 @@ def specific_list_for_specific_user(userName, playListName):
         return jsonify({"result": result.__dict__}), 200
 
 
-@private_blueprint.route('/<userName>', methods=['POST'])
+@private_blueprint.route('/<userName>/<playListName>', methods=['POST'])
 @swag_from('../swagger/private_users_post.yml')
-def create_new_list(userName):
+def create_new_list(userName, playListName):
     parent_span = create_parent_trace()
     json_body = request.json
     with opentracing.tracer.start_span('playlist_list_post', child_of=parent_span) as span:
         data_validator.validate_user_name(userName)
+        data_validator.validate_play_list(playListName)
         service = ListsService()
-        service.post_new_list(json_body, userName)
+        service.post_new_list(json_body, userName, playListName)
         span.log_kv({"status_code": 201, "result": ""})
         return '', 201
 

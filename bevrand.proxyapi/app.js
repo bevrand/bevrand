@@ -85,11 +85,11 @@ const frontpageWithSignature = (url) => {
     
     rp({
       method: 'GET',
-      uri: `${url}/api/frontpage`
+      uri: `${url}/api/v1/public`
     }).then(result => {
       
 
-      let newResult = JSON.parse(result).map(item => {
+      let newResult = JSON.parse(result).result.map(item => {
         let signedItem = jwt.sign(item, config.frontendJwtSecret, { mutatePayload: true});
         item.jwtheader = JSON.parse(Buffer.from(signedItem.split('.')[0], 'base64').toString("ascii"));
         item.jwttoken = signedItem.split('.')[2];
@@ -102,7 +102,7 @@ const frontpageWithSignature = (url) => {
       return next(err);
     });
   }  
-}
+};
 
 /**
  * Gives the complete response from the playlist api at the endpoint /api/frontpage, 
@@ -119,16 +119,17 @@ app.get('/api/playlists', (req, res, next) => {
     return next(err);
   }
 
-  rp(`${config.playlistApi}/api/user?user=${username}`)
+  rp(`${config.playlistApi}/api/v1/private/${username}`)
     .then(result => {
-      let parsedResult = JSON.parse(result);
-      return parsedResult.lists;
+      let parsedResult = JSON.parse(result).result;
+      console.log(parsedResult);
+      return parsedResult;
     })
     .then(result => {
       let promises = result.map(value => {
-        return rp(`${config.playlistApi}/api/list?user=${username}&list=${value}`)
+        return rp(`${config.playlistApi}/api/v1/private/${username}/${value}`)
           .then(response => { 
-            return JSON.parse(response); 
+            return JSON.parse(response).result;
           });
       });
 
@@ -141,10 +142,6 @@ app.get('/api/playlists', (req, res, next) => {
       return next(err);
     });
 });
-
-app.get('/api/user', requestPipe(config.playlistApi));
-
-app.post('/api/user', requestPipePost(config.playlistApi));
 
 app.get('/api/redis', requestPipe(config.randomizerApi));
 
@@ -170,7 +167,7 @@ const validateJwtTokenFrontend = (req, res, next) => {
     } catch(err) {
       return next(err);
     }
-}
+};
 
 /**
  * 
@@ -182,6 +179,12 @@ var RandomizeRequest = function (user, list, beverages) {
   this.user = user;
   this.list = list;
   this.beverages = beverages;
+};
+
+var CreatePlayListRequest = function (beverages, imageUrl, displayName) {
+    this.beverages = beverages;
+    this.imageUrl = imageUrl;
+    this.displayName = displayName;
 };
 
 /**
@@ -199,9 +202,30 @@ const requestRandomizePost = (endpoint) => {
       json: true
     }).pipe(res);
   }
-}
+};
 
 app.post('/api/v2/randomize', validateJwtTokenFrontend, requestRandomizePost(config.randomizerApi));
+
+app.get('/api/user', requestPipe(config.playlistApi));
+
+/**
+ * Calls the backend playlisy api with POST at endpoint /api/v1/private/{username}
+ * Takes from the post body (req.body) the properties user, list, and beverages.
+ * @param {string} endpoint
+ */
+const requestUserPlaylistPost = (endpoint) => {
+    return (req, res) => {
+        request({
+            method: 'POST',
+            //qs: req.query,
+            uri: endpoint + `/api/v1/private/${req.body.user}/${req.body.list}`,
+            body : new CreatePlayListRequest(req.body.beverages, req.body.imageUrl, req.body.displayName),
+            json: true
+        }).pipe(res);
+    }
+};
+
+app.post('/api/user', requestUserPlaylistPost(config.playlistApi));
 
 app.post('/api/login', 
   controllers.authentication.handleLogin(
@@ -217,7 +241,7 @@ app.post('/api/register',
 
 app.get('/test/validateJWT', jwtMW, (req, res)=> {
   res.send('You are authenticated');
-})
+});
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

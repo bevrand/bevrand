@@ -9,14 +9,16 @@ parameters:
     in: path
     required: true
     description: user you want to create a playlist for
+  - name: playListName
+    type: string
+    in: path
+    required: true
+    description: playlist you want to create
   - name: body
     in: body
     required: true
     schema:
       properties:
-        list:
-          type: string
-          description: The list to insert
         displayName:
           type: string
           description: The name you want people to see
@@ -29,7 +31,6 @@ parameters:
             schema:
                 type: string
       example:
-        list: Paranoid
         displayName: I am so depressed
         imageUrl: http://whatever.com
         beverages: [beer, wine]

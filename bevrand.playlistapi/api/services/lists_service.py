@@ -29,11 +29,11 @@ class ListsService:
         return
 
 
-    def post_new_list(self, posted_user, user_name):
+    def post_new_list(self, posted_user, user_name, playlist_name):
         self.validate_misc_fields_in_json(posted_user)
         mongo_users = UsersDb(api.mongo.db)
         mapper = ObjectMapper()
-        mongo_object = mapper.map_json_to_object(posted_user, user_name)
+        mongo_object = mapper.map_json_to_object(posted_user, user_name, playlist_name)
         self.validate_user_is_not_frontpage(mongo_object.user)
         mongo_users.check_if_userlist_exists(mongo_object.user, mongo_object.list)
         mongo_users.insert_new_list(mongo_object, user_name)
