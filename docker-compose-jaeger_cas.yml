@@ -158,6 +158,7 @@ services:
 
   cassandra:
       image: cassandra:3.9
+      mem_limit: 600M
 
   cassandra-schema:
       image: jaegertracing/jaeger-cassandra-schema

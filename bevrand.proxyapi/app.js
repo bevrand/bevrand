@@ -1,5 +1,4 @@
 const express = require('express');
-const expressOasGenerator = require('express-oas-generator');
 const path = require('path');
 const request = require('request');
 const logger = require('morgan');
@@ -18,7 +17,6 @@ const swaggerDocument = yamljs.load('./swagger.yaml');
 const controllers = require('./controllers');
 
 const app = express();
-expressOasGenerator.init(app, {}); // to overwrite generated specification's values use second argument.
 
 app.use((req, res, next) => {
   //Only needed when running react app locally
