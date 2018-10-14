@@ -17,7 +17,7 @@ services:
      container_name: dockergres
      build: ./bevrand.dataseeder/db
      ports:
-       - 5432:5432
+       - 5434:5432
      environment:
        - POSTGRES_PASSWORD=postgres
        - POSTGRES_USER=postgres
@@ -61,7 +61,7 @@ services:
     links:
        - dockermongo
     environment:
-       - APP_SETTINGS=production
+       - APP_SETTINGS=Production
        - MONGO_URL=mongodb://dockermongo:27017
        - JAEGER_HOST=jaeger-agent
 
@@ -92,8 +92,7 @@ services:
       - authenticationapi
       - proxyapi
     environment:
-      - NODE_ENV=production
-      - REACT_APP_PROXY_HOSTNAME=http://localhost:4540
+      - NODE_ENV=development
     links:
       - proxyapi
 
@@ -107,6 +106,22 @@ services:
        - dockermongo
        - dockergres
 
+  testsuite:
+    container_name: backend_tests
+    build: ./bevrand.testsuite/bevrand.testsuite
+    depends_on:
+      - randomizerapi
+      - playlistapi
+      - authenticationapi
+      - proxyapi
+    links:
+      - randomizerapi
+      - playlistapi
+      - authenticationapi
+      - proxyapi
+    environment:
+      - ASPNETCORE_ENVIRONMENT="Test"
+      
 
   jaeger-collector:
       image: jaegertracing/jaeger-collector

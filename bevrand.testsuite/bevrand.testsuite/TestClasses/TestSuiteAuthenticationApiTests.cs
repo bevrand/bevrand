@@ -23,7 +23,7 @@ namespace bevrand.testsuite.TestClasses
         [Trait("Category", "Authentication")]
         public void GetUserByIdReturnsSuccess()
         {
-            var poststring = _fixture.AuthenticationUrl + "/Users/";
+            var poststring = _fixture.AuthenticationUrl + "/Users";
             var request = new PostModelAuthentication
             {
                 userName = Helpers.RandomNameGenerator.RandomString(25),

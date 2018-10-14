@@ -61,7 +61,7 @@ namespace bevrand.authenticationapi
             services.AddSwaggerGen(c =>
             {
                 var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-                var commentsFileName = Assembly.GetExecutingAssembly().GetName().Name + ".XML";
+                var commentsFileName = Assembly.GetExecutingAssembly().GetName().Name + ".xml";
                 var commentsFile = Path.Combine(baseDirectory, commentsFileName);
                 
                 c.SwaggerDoc("v1", new Info { Title = "Authentication Api", Version = "v1" });
