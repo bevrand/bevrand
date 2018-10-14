@@ -7,9 +7,11 @@ from flask_opentracing import FlaskTracer
 from opentracing_instrumentation.client_hooks import install_all_patches
 import logging
 from flask_pymongo import PyMongo
+import os
 
 
-JAEGER_HOST = getenv('JAEGER_HOST', 'localhost')
+JAEGER_HOST = os.environ['JAEGER_AGENT_HOST']
+print(JAEGER_HOST)
 FLASK_TRACER = None
 
 def create_app():

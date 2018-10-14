@@ -5,9 +5,10 @@ from jaeger_client import Config
 from flask_opentracing import FlaskTracer
 from opentracing_instrumentation.client_hooks import install_all_patches
 import logging
+import os
 
-JAEGER_HOST = getenv('JAEGER_HOST', 'localhost')
-
+JAEGER_HOST = os.environ['JAEGER_AGENT_HOST']
+print(JAEGER_HOST)
 FLASK_TRACER = None
 
 

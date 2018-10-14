@@ -99,7 +99,9 @@ namespace bevrand.testsuite.TestClasses
         public void ShouldBeAbleToCreateANewPlaylistAndUserCombination()
         {
             var newUserName = RandomNameGenerator.RandomString(25);
-            var requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}";
+            var playListName = RandomNameGenerator.RandomString(10);
+
+            var requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}/{playListName}";
 
             var playList = this.MapNewPlaylist();
 
@@ -114,14 +116,16 @@ namespace bevrand.testsuite.TestClasses
         public void ListNamesShouldAllBeLowerCase()
         {
             var newUserName = RandomNameGenerator.RandomString(25);
-            var requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}";
+            var playListName = RandomNameGenerator.RandomString(10);
+            var requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}/{playListName}";
 
             var playList = this.MapNewPlaylist();
 
             var result = _fixture.BaseApiClient.FlurlPost<BaseResponseModel>(requestUrl, playList).Result;
             
             Assert.Equal(201, result.StatusCode);
-            
+
+            requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}";
             var response = _fixture.BaseApiClient.FlurlGet<PrivatePageUserPlaylistsResponse>(requestUrl).Result as PrivatePageUserPlaylistsResponse;
             
             Assert.Equal(200, response.StatusCode);
@@ -141,7 +145,8 @@ namespace bevrand.testsuite.TestClasses
         public void ShouldBeAbleToCreateNewListForExistingUser()
         {
             var username = "marvin";
-            var requestUrl = $"{_fixture.PlayListUrl}/private/{username}";
+            var playListName = RandomNameGenerator.RandomString(10);
+            var requestUrl = $"{_fixture.PlayListUrl}/private/{username}/{playListName}";
 
             var playList = this.MapNewPlaylist();
 
@@ -153,7 +158,7 @@ namespace bevrand.testsuite.TestClasses
         [Theory]
         [Trait("Category", "PlaylistApi")]
         [Trait("Category", "Get")]
-        [InlineData(" ", "displayname", "http://www.testimage.com/image.png", "beer", 400, "min length is 2")]
+        [InlineData("%20", "displayname", "http://www.testimage.com/image.png", "beer", 400, "min length is 2")]
         [InlineData("o", "displayname", "http://www.testimage.com/image.png", "beer", 400, "min length is 2")]
         [InlineData("listname", "d", "http://www.testimage.com/image.png", "beer", 400, "min length is 3")]
         [InlineData("listname", " ", "http://www.testimage.com/image.png", "beer", 400, "min length is 3")]
@@ -164,11 +169,10 @@ namespace bevrand.testsuite.TestClasses
         public void ShouldNotBeAbleToPostInvalidData(string list, string displayName, string imageUrl, string beverage, int errorcode, string errormessage)
         {
             var username = RandomNameGenerator.RandomString(25);
-            var requestUrl = $"{_fixture.PlayListUrl}/private/{username}";
+            var requestUrl = $"{_fixture.PlayListUrl}/private/{username}/{list}";
 
-            var playList = new CreatePlayList
+            var playList = new BasePlaylist
             {
-                list = list,
                 displayName = displayName,
                 imageUrl = imageUrl,
                 beverages = new List<string>
@@ -191,7 +195,8 @@ namespace bevrand.testsuite.TestClasses
         public void ShouldNotBeAbleToPostAPlaylistWithOnlyOneDrink(string list, string displayName, string imageUrl, string beverage, int errorcode, string errormessage)
         {
             var username = RandomNameGenerator.RandomString(25);
-            var requestUrl = $"{_fixture.PlayListUrl}/private/{username}";
+            var playListName = RandomNameGenerator.RandomString(10);
+            var requestUrl = $"{_fixture.PlayListUrl}/private/{username}/{playListName}";
 
             var playList = new CreatePlayList
             {
@@ -216,7 +221,8 @@ namespace bevrand.testsuite.TestClasses
         public void ShouldNotBeAbleToCreateTheSamePlayListForSameUserTwice()
         {
             var newUserName = RandomNameGenerator.RandomString(25);
-            var requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}";
+            var playListName = RandomNameGenerator.RandomString(10);
+            var requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}/{playListName}";
 
             var playList = this.MapNewPlaylist();
 
@@ -236,7 +242,8 @@ namespace bevrand.testsuite.TestClasses
         public void ShouldBeAbleToCreateSamePlayListForDifferentUser()
         {
             var newUserName = RandomNameGenerator.RandomString(25);
-            var requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}";
+            var playListName = RandomNameGenerator.RandomString(10);
+            var requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}/{playListName}";
 
             var playList = this.MapNewPlaylist();
 
@@ -245,7 +252,7 @@ namespace bevrand.testsuite.TestClasses
             Assert.Equal(201, result.StatusCode);
             
             newUserName = RandomNameGenerator.RandomString(25);
-            requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}";
+            requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}/{playListName}";
             var res = _fixture.BaseApiClient.FlurlPost<BaseResponseModel>(requestUrl, playList).Result;
             
             Assert.Equal(201, res.StatusCode);
@@ -258,7 +265,8 @@ namespace bevrand.testsuite.TestClasses
         [InlineData("o", 400, "min length is 3")]
         public void ShouldNotBeAbleToPostToAnInvalidUserName(string list, int errorcode, string errormessage)
         {
-            var requestUrl = $"{_fixture.PlayListUrl}/private/{list}";
+            var playListName = RandomNameGenerator.RandomString(10);
+            var requestUrl = $"{_fixture.PlayListUrl}/private/{list}/{playListName}";
             var playList = this.MapNewPlaylist();
             var response = _fixture.BaseApiClient.FlurlPost<BaseResponseModel>(requestUrl, playList).Result as BaseErrorResponse;
             
@@ -272,7 +280,8 @@ namespace bevrand.testsuite.TestClasses
         public void ShouldNotBeAbleToPostAFrontPageList()
         {
             var username = "frontpage";
-            var requestUrl = $"{_fixture.PlayListUrl}/private/{username}";
+            var playListName = RandomNameGenerator.RandomString(10);
+            var requestUrl = $"{_fixture.PlayListUrl}/private/{username}/{playListName}";
 
             var playList = this.MapNewPlaylist();
 
@@ -346,7 +355,8 @@ namespace bevrand.testsuite.TestClasses
         public void ShouldBeAbleToRetrieveAPlayListThatWasJustCreated()
         {
             var newUserName = RandomNameGenerator.RandomString(25);
-            var requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}";
+            var playListName = RandomNameGenerator.RandomString(10);
+            var requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}/{playListName}";
 
             var playList = this.MapNewPlaylist();
 
@@ -354,14 +364,14 @@ namespace bevrand.testsuite.TestClasses
             
             Assert.Equal(201, result.StatusCode);
             
-            requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}/{playList.list}";
+            requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}/{playListName}";
 
             var response = _fixture.BaseApiClient.FlurlGet<PublicPageResponse>(requestUrl).Result as PublicPageResponse;
             
             Assert.Equal(200, response.StatusCode);
             Assert.NotEmpty(response.result.beverages);
             Assert.Equal(newUserName.ToLower(), response.result.user);
-            Assert.Equal(playList.list.ToLower(), response.result.list);
+            Assert.Equal(playListName.ToLower(), response.result.list);
         }
         
         [Theory]
@@ -390,14 +400,15 @@ namespace bevrand.testsuite.TestClasses
         public void ShouldBeAbleToDeleteACreatedPlayList()
         {
             var newUserName = RandomNameGenerator.RandomString(25);
-            var requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}";
+            var playListName = RandomNameGenerator.RandomString(10);
+            var requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}/{playListName}";
 
             var playList = this.MapNewPlaylist();
 
             var result = _fixture.BaseApiClient.FlurlPost<BaseResponseModel>(requestUrl, playList).Result;
             Assert.Equal(201, result.StatusCode);
             
-            requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}/{playList.list}";
+            requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}/{playListName}";
             var response = _fixture.BaseApiClient.FlurlDelete(requestUrl);
             Assert.Equal(204, response.StatusCode);
         }
@@ -408,7 +419,8 @@ namespace bevrand.testsuite.TestClasses
         public void ShouldBeAbleToDeleteACreatedUser()
         {
             var newUserName = RandomNameGenerator.RandomString(25);
-            var requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}";
+            var playListName = RandomNameGenerator.RandomString(10);
+            var requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}/{playListName}";
 
             var playList = this.MapNewPlaylist();
 
@@ -477,7 +489,8 @@ namespace bevrand.testsuite.TestClasses
         public void ShouldBeAbleToUpdateACreatedUser()
         {
             var newUserName = RandomNameGenerator.RandomString(25);
-            var requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}";
+            var playListName = RandomNameGenerator.RandomString(10);
+            var requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}/{playListName}";
 
             var playList = this.MapNewPlaylist();
 
@@ -486,7 +499,7 @@ namespace bevrand.testsuite.TestClasses
 
             var updatedPlaylist = this.MapUpdatedList();
             
-            requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName.ToLower()}/{playList.list}";
+            requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName.ToLower()}/{playListName}";
             var response = _fixture.BaseApiClient.FlurlUpdate<BaseResponseModel>(requestUrl, updatedPlaylist).Result;
             Assert.Equal(204, response.StatusCode);
         }
@@ -556,11 +569,10 @@ namespace bevrand.testsuite.TestClasses
             Assert.Equal(404, result.StatusCode);
         }
         
-        private CreatePlayList MapNewPlaylist()
+        private BasePlaylist MapNewPlaylist()
         {
-            return new CreatePlayList
+            return new BasePlaylist
             {
-                list = RandomNameGenerator.RandomString(15),
                 displayName = RandomNameGenerator.RandomString(15),
                 imageUrl = "http://www.testimage.com/image.png",
                 beverages = new List<string>
