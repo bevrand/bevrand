@@ -29,6 +29,7 @@ services:
       - 4570:5000
     depends_on:
       - dockergres
+      - jaeger-agent
     links:
       - dockergres
     environment:
@@ -42,10 +43,9 @@ services:
     ports:
        - 4560:5000 # expose ports - HOST:CONTAINER
     depends_on:
-       - playlistapi
        - redis
+       - jaeger-agent
     links:
-       - playlistapi
        - redis
     environment:
        - APP_SETTINGS=Production
@@ -61,6 +61,7 @@ services:
        - 4550:5000  # expose ports - HOST:CONTAINER
     depends_on:
        - dockermongo
+       - jaeger-agent
     links:
        - dockermongo
     environment:
@@ -91,9 +92,6 @@ services:
     ports:
       - 80:80
     depends_on:
-      - randomizerapi
-      - playlistapi
-      - authenticationapi
       - proxyapi
     environment:
       - NODE_ENV=development
@@ -114,9 +112,6 @@ services:
     container_name: backend_tests
     build: ./bevrand.testsuite/bevrand.testsuite
     depends_on:
-      - randomizerapi
-      - playlistapi
-      - authenticationapi
       - proxyapi
     links:
       - randomizerapi

@@ -25,6 +25,7 @@ def front_page_all_lists():
     with opentracing.tracer.start_span('playlist_frontpage', child_of=parent_span) as span:
         service = FrontPageService()
         result = service.retrieve_all_front_page_lists()
+        span.log_kv({"status_code": 200, "result": result})
         return jsonify({"result": result}), 200
 
 
@@ -36,6 +37,7 @@ def front_page_list(playListName):
         data_validator.validate_play_list(playListName)
         service = FrontPageService()
         result = service.retrieve_front_page_list(playListName)
+        span.log_kv({"status_code": 200, "result": result})
         return jsonify({"result": result.__dict__}), 200
 
 
