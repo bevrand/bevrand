@@ -1,4 +1,4 @@
-package highscore_api
+package bevrand_highscoreapi
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"github.com/opentracing/opentracing-go"
 	"github.com/uber/jaeger-client-go"
 	"github.com/uber/jaeger-client-go/config"
-	"highscore_api/routes"
+	"github.com/bevrand/bevrand/bevrand.highscoreapi/highscore_api/routes"
 	"io"
 	"log"
 	"os"
