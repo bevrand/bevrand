@@ -29,7 +29,7 @@ func InitRoutes() *gin.Engine {
 	r.GET("/ping", PingPong)
 	//redis
 	r.GET("/api/v1/redis/:user/:playList",  RouteShowHighScore)
-	r.POST("/api/v1/redis", RouteIncrementHighscore)
+	r.POST("/api/v1/redis/:user/:playList", RouteIncrementHighscore)
 
 	// use ginSwagger middleware to serve the API docs
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -94,7 +94,7 @@ func RouteShowHighScore(c *gin.Context) {
 // @Failure 400 {object} models.ErrorModel
 // @Failure 404 {object} models.ErrorModel
 // @Failure 500 {object} models.ErrorModel
-// @Router /api/v1/redis [post]
+// @Router /api/v1/redis/{user}/{playList} [post]
 func RouteIncrementHighscore(c *gin.Context) {
 	tracer:= opentracing.GlobalTracer()
 	span := tracer.StartSpan("Posting data to Redis")
@@ -119,7 +119,10 @@ func RouteIncrementHighscore(c *gin.Context) {
 	ctx := context.Background()
 	ctx = opentracing.ContextWithSpan(ctx, span)
 
-	handlers.CreateNewHighScore(po.User, po.Playlist, po.Drink, ctx)
+	user := c.Param("user")
+	playlist := c.Param("playList")
+
+	handlers.CreateNewHighScore(user, playlist, po.Drink, ctx)
 
 	json.NewEncoder(c.Writer).Encode("success")
 
