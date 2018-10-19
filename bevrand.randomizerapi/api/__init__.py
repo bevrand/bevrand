@@ -52,7 +52,7 @@ def create_app():
                             # Also, provide a hostname of Jaeger instance to send traces to.
                                 {'reporting_host': JAEGER_HOST}},
                     # Service name can be arbitrary string describing this particular web service.
-                    service_name="randomizer_api")
+                    service_name="RandomizerApi")
 
     jaeger_tracer = config.initialize_tracer()
     tracer = FlaskTracer(jaeger_tracer)
