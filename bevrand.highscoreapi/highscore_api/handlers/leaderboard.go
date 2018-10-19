@@ -3,12 +3,14 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/mediocregopher/radix.v2/pool"
 	"github.com/opentracing/opentracing-go"
 	openlog "github.com/opentracing/opentracing-go/log"
-	"log"
 	"highscore_api/models"
+	"log"
+	"os"
 	"strconv"
 )
 
@@ -17,12 +19,16 @@ var db *pool.Pool
 func init() {
 	var err error
 	// Establish a pool of 10 connections to the Redis server listening on
-	// port 6379 of the local machine.
-	db, err = pool.New("tcp", "localhost:6379", 10)
+	// port 6379 of the variable that has been used
+
+	redisUrl := os.Getenv("REDIS_URL") + ":6379"
+	fmt.Println(redisUrl)
+	db, err = pool.New("tcp", redisUrl, 10)
 	if err != nil {
 		log.Panic(err)
 	}
 }
+
 
 func ShowHighScores(user string, playlist string, c *gin.Context, ctx context.Context) ([]models.Score) {
 	span, _ := opentracing.StartSpanFromContext(ctx, "ShowHighScores")
