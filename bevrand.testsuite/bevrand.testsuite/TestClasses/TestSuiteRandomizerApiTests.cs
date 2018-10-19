@@ -33,7 +33,7 @@ namespace bevrand.testsuite.TestClasses
             };
 
             var response =
-                _fixture.BaseApiClient.FlurlPost<RandomizePostResult>(requeststring, request).Result as
+                _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<RandomizePostResult>(requeststring, request).Result as
                     RandomizePostResult;
             
             var drink = response.result;
@@ -74,7 +74,7 @@ namespace bevrand.testsuite.TestClasses
             };
 
             var response =
-                _fixture.BaseApiClient.FlurlPost<RandomizePostResult>(requeststring, request).Result as
+                _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<RandomizePostResult>(requeststring, request).Result as
                     RandomizePostResult;
             
             var drink = response.result;

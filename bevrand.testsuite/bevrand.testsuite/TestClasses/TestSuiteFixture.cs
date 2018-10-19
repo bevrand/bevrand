@@ -10,7 +10,6 @@ namespace bevrand.testsuite.TestClasses
     {
         private ServiceCalls ServiceCalls { get; }
         public BaseApiClient BaseApiClient { get; }
-        public AuthenticationApiClient AuthenicationApi { get; }
         public string AuthenticationUrl { get; }
         public string PlayListUrl { get; }
         public string ProxyUrl { get; }
@@ -26,14 +25,12 @@ namespace bevrand.testsuite.TestClasses
             ProxyUrl = ServiceCalls.ProxyApiService;
             RandomizerApi = new RandomizerApiClient();
             RandomizerUrl = ServiceCalls.RandomizerApiService;
-            AuthenicationApi = new AuthenticationApiClient();
             AuthenticationUrl = ServiceCalls.AuthenticationApiService;
         }
 
         private void EnvBuilder()
         {
             var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            environmentName = "Development";
             Console.WriteLine(environmentName);
                 
             const string BaseFilePath = @"Settings/";

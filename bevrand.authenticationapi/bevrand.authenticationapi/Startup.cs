@@ -51,7 +51,7 @@ namespace bevrand.authenticationapi
     public class Startup
     {
         private static readonly ILoggerFactory LoggerFactory = new LoggerFactory().AddConsole();
-        private static readonly Tracer Tracer = JaegerInitializer.Init("Authenication Api", LoggerFactory);
+        private static readonly Tracer Tracer = JaegerInitializer.Init("AuthenicationApi", LoggerFactory);
         
         public Startup(IHostingEnvironment env)
         {
@@ -93,7 +93,7 @@ namespace bevrand.authenticationapi
                 var commentsFileName = Assembly.GetExecutingAssembly().GetName().Name + ".xml";
                 var commentsFile = Path.Combine(baseDirectory, commentsFileName);
                 
-                c.SwaggerDoc("v1", new Info { Title = "Authentication Api", Version = "v1" });
+                c.SwaggerDoc("v1", new Info { Title = "AuthenticationApi", Version = "v1" });
                 c.IncludeXmlComments(commentsFile);
             });
         }
@@ -115,7 +115,7 @@ namespace bevrand.authenticationapi
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Authentication Api");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "AuthenticationApi");
             });
 
             app.UseMvc();

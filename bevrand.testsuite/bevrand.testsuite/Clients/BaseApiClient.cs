@@ -51,7 +51,7 @@ namespace bevrand.testsuite.Clients
         }
         
 
-        public async Task<BaseResponseModel> FlurlPost<TType>(string requeststring, object objectToPost)
+        public async Task<BaseResponseModel> FlurlPostCreatedWithoutAResponse<TType>(string requeststring, object objectToPost)
             where TType : BaseResponseModel
         {
             try
@@ -64,6 +64,30 @@ namespace bevrand.testsuite.Clients
                         StatusCode = 201
                     };
                 }
+                var content = res.Content.ReadAsStringAsync().Result;
+                var responseModel = JsonConvert.DeserializeObject<TType>(content);
+                responseModel.StatusCode = (int) res.StatusCode;
+                return responseModel;
+            }
+            catch (AggregateException e)
+            {
+                var flurlException = e.InnerException as FlurlHttpException;
+                var responseModel = new BaseErrorResponse
+                {
+                    StatusCode = (int) flurlException.Call.HttpStatus,
+                    ErrorMessage = flurlException.Message,
+                    UserError = flurlException.GetResponseString()
+                };
+                return responseModel;
+            }
+        }
+        
+        public async Task<BaseResponseModel> FlurlPostWithCreatedResponse<TType>(string requeststring, object objectToPost)
+            where TType : BaseResponseModel
+        {
+            try
+            {
+                var res = requeststring.PostJsonAsync(objectToPost).Result;
                 var content = res.Content.ReadAsStringAsync().Result;
                 var responseModel = JsonConvert.DeserializeObject<TType>(content);
                 responseModel.StatusCode = (int) res.StatusCode;
@@ -139,6 +163,33 @@ namespace bevrand.testsuite.Clients
                 return responseModel;
             }
 
+        }
+        
+        public async Task<BaseResponseModel> ValidateAuthenticationApi(string requeststring, ValidateUser request)
+        {
+            try
+            {
+                var res = requeststring.PostJsonAsync(request).Result;
+                var content = res.Content.ReadAsStringAsync().Result;
+                var responseModel = new ValidatePostResult
+                {
+                    Valid =  Convert.ToBoolean(content),
+                    StatusCode = (int) res.StatusCode
+                };
+
+                return responseModel;
+            }
+            catch (AggregateException e)
+            {
+                var flurlException = e.InnerException as FlurlHttpException;
+                var responseModel = new BaseErrorResponse
+                {
+                    StatusCode = (int) flurlException.Call.HttpStatus,
+                    ErrorMessage = flurlException.Message,
+                    UserError = flurlException.GetResponseString()
+                };
+                return responseModel;
+            }
         }
     }
 }
