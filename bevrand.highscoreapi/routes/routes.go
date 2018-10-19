@@ -10,9 +10,9 @@ import (
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 	"log"
 	"net/http"
-	"highscore_api/docs"
-	"highscore_api/handlers"
-	"highscore_api/models"
+	"github.com/bevrand/bevrand/bevrand.highscoreapi/docs"
+	"github.com/bevrand/bevrand/bevrand.highscoreapi/handlers"
+	"github.com/bevrand/bevrand/bevrand.highscoreapi/models"
 )
 
 func InitRoutes() *gin.Engine {

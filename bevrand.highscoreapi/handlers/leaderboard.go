@@ -8,7 +8,7 @@ import (
 	"github.com/mediocregopher/radix.v2/pool"
 	"github.com/opentracing/opentracing-go"
 	openlog "github.com/opentracing/opentracing-go/log"
-	"highscore_api/models"
+	"github.com/bevrand/bevrand/bevrand.highscoreapi/models"
 	"log"
 	"os"
 	"strconv"
