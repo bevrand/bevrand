@@ -7,7 +7,10 @@ from opentracing_instrumentation.client_hooks import install_all_patches
 import logging
 import os
 
-JAEGER_HOST = os.environ['JAEGER_AGENT_HOST']
+try:
+    JAEGER_HOST = os.environ['JAEGER_AGENT_HOST']
+except:
+    JAEGER_HOST = "localhost"
 print(JAEGER_HOST)
 FLASK_TRACER = None
 
