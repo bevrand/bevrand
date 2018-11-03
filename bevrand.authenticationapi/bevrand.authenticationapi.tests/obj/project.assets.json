@@ -14035,11 +14035,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/joerivrij/projects/bevrand/bevrand.authenticationapi/bevrand.authenticationapi.tests/bevrand.authenticationapi.tests.csproj",
+      "projectUniqueName": "/home/joerivrij/projects/src/bevrand/bevrand/bevrand.authenticationapi/bevrand.authenticationapi.tests/bevrand.authenticationapi.tests.csproj",
       "projectName": "bevrand.authenticationapi.tests",
-      "projectPath": "/home/joerivrij/projects/bevrand/bevrand.authenticationapi/bevrand.authenticationapi.tests/bevrand.authenticationapi.tests.csproj",
+      "projectPath": "/home/joerivrij/projects/src/bevrand/bevrand/bevrand.authenticationapi/bevrand.authenticationapi.tests/bevrand.authenticationapi.tests.csproj",
       "packagesPath": "/home/joerivrij/.nuget/packages/",
-      "outputPath": "/home/joerivrij/projects/bevrand/bevrand.authenticationapi/bevrand.authenticationapi.tests/obj/",
+      "outputPath": "/home/joerivrij/projects/src/bevrand/bevrand/bevrand.authenticationapi/bevrand.authenticationapi.tests/obj/",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "/usr/share/dotnet/sdk/NuGetFallbackFolder"
@@ -14056,8 +14056,8 @@
       "frameworks": {
         "netcoreapp2.0": {
           "projectReferences": {
-            "/home/joerivrij/projects/bevrand/bevrand.authenticationapi/bevrand.authenticationapi/bevrand.authenticationapi.csproj": {
-              "projectPath": "/home/joerivrij/projects/bevrand/bevrand.authenticationapi/bevrand.authenticationapi/bevrand.authenticationapi.csproj"
+            "/home/joerivrij/projects/src/bevrand/bevrand/bevrand.authenticationapi/bevrand.authenticationapi/bevrand.authenticationapi.csproj": {
+              "projectPath": "/home/joerivrij/projects/src/bevrand/bevrand/bevrand.authenticationapi/bevrand.authenticationapi/bevrand.authenticationapi.csproj"
             }
           }
         }
