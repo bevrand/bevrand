@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-scroll';
+import './beerglass.css';
 
 import config from './ConfigService'
 
@@ -98,6 +99,30 @@ class Randomizer extends Component {
                 You have randomized: {this.state.result}
               </div>
             }
+
+              <div className="pour"></div>
+              <div id="beaker">
+                  <div className="beer-foam">
+                      <div className="foam-1"></div>
+                      <div className="foam-2"></div>
+                      <div className="foam-3"></div>
+                      <div className="foam-4"></div>
+                      <div className="foam-5"></div>
+                      <div className="foam-6"></div>
+                      <div className="foam-7"></div>
+                  </div>
+
+                  <div id="liquid">
+
+                      <div className="bubble bubble1"></div>
+                      <div className="bubble bubble2"></div>
+                      <div className="bubble bubble3"></div>
+                      <div className="bubble bubble4"></div>
+                      <div className="bubble bubble5"></div>
+                  </div>
+              </div>
+
+              <h2 className="animated drunk">Randomize me a drink brah!</h2>
           </div>
           <div className="row">
             <div className="col-lg-8 mx-auto">

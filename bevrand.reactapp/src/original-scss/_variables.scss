@@ -2,10 +2,12 @@
 
 // Gray and Brand Colors for use across theme
 
-$theme-primary: #FF6C00;
+$theme-primary: #e59400;
 
 $gray-base: #000 !default;
 $gray-charcoal: #464646 !default;
+$teal-background: #00e594 !default;
+$coolblue: #51afbf !default;
 $gray-darker: lighten($gray-base, 13.5%) !default;
 $gray-dark: lighten($gray-base, 20%) !default;
 $gray: lighten($gray-base, 33.5%) !default;

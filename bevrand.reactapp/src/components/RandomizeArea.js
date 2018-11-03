@@ -6,6 +6,7 @@ import TopRolledBeverages from './TopRolledBeverages';
 import AuthService from './AuthService';
 import config from './ConfigService';
 
+
 const Auth = new AuthService();
 
 const getPlaylists = async (userName, isHomePage) => {
@@ -102,10 +103,14 @@ class RandomizeArea extends Component {
         https://github.com/ReactTraining/react-router/issues/5521) */}
         <Header headerText={headerText}/>
         {this.state.currentPlaylist && <Randomizer userName={userName} playlist={this.state.currentPlaylist} />}
-        {this.state.playlists && this.state.currentPlaylist && <Playlists playlists={this.state.playlists} onClick={this.changePlaylist} />}
-        {this.state.currentPlaylist && <TopRolledBeverages playlist={this.state.currentPlaylist} />}
+
+
+          {this.state.playlists && this.state.currentPlaylist && <Playlists playlists={this.state.playlists} onClick={this.changePlaylist} />}
       </div>
+
     );
+
+
   }
 }
 
