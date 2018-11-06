@@ -9,8 +9,10 @@ import logging
 from flask_pymongo import PyMongo
 import os
 
-
-JAEGER_HOST = os.environ['JAEGER_AGENT_HOST']
+try:
+    JAEGER_HOST = os.environ['JAEGER_AGENT_HOST']
+except:
+    JAEGER_HOST = "localhost"
 print(JAEGER_HOST)
 FLASK_TRACER = None
 
