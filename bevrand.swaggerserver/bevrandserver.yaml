@@ -1,0 +1,40 @@
+---
+openapi: 3.0.0
+info:
+  description: "This is a sample server for the Bevrand"
+  version: "1.0.0"
+  title: "Swagger Bevrand"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "admin@beveragerandomizer.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+tags:
+- name: "playlistapi"
+  description: "Everything about playlists"
+  externalDocs:
+    description: "blank"
+    url: "blank"
+paths:
+  /test/{id}:
+    get:
+      tags:
+      - "playlistapi"
+      servers:
+        - url: "http://playlistapi:4550/api/v1"
+          description: "playlist specific"
+      summary: "Test"
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: "successful operation"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Id not found"
