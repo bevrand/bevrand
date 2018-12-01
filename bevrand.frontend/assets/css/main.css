@@ -73,6 +73,31 @@ input, select, textarea {
 }
 
 /* Basic */
+	.collapsible {
+		background-color: #e59400;
+		color: white;
+		cursor: pointer;
+		padding: 18px;
+		width: 100%;
+		border: none;
+		text-align: center;
+		outline: none;
+		font-size: 15px;
+	}
+	.content {
+		padding: 0 18px;
+		display: none;
+		overflow: hidden;
+		background-color: #e59400;
+	}
+
+	.collapsible:hover {
+
+	}
+
+	.active {
+		overflow: hidden;
+	}
 
 	html {
 		box-sizing: border-box;
@@ -1820,11 +1845,11 @@ input, select, textarea {
 
 	ul {
 		list-style: disc;
-		padding-left: 1em;
+		/*padding-left: 1em;*/
 	}
 
 		ul li {
-			padding-left: 0.5em;
+			/*padding-left: 0.5em;*/
 		}
 
 	ol {
@@ -2491,7 +2516,7 @@ input, select, textarea {
 			bottom: 0;
 			height: 0px;
 			overflow: hidden;
-			width: 180px;
+			width: 200px;
 		  }
 		  
 		  #liquid:after {
