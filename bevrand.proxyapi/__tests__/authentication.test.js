@@ -1,6 +1,3 @@
-const authentication = require('../controllers/authentication')
-
-
 function add(a , b) {
   return a + b;
 }

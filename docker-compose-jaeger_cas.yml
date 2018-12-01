@@ -79,8 +79,11 @@ services:
       - randomizerapi
       - playlistapi
       - authenticationapi
+      - jaeger-agent
     environment:
       - NODE_ENV=development
+      - JAEGER_AGENT_HOST=jaeger-agent
+      - JAEGER_AGENT_PORT=6831
     links:
       - randomizerapi
       - playlistapi
