@@ -35,7 +35,8 @@ const handleLogin = (authenticationUrl, secret, expirationTime) => {
         method: 'POST',
         url: `${authenticationUrl}/api/Validate`,
         body: req.body,
-        json: true
+        json: true,
+        span: validationSpan
       })
       if (!result) {
         let authenticationError = new Error('Username or password is incorrect');
@@ -56,7 +57,8 @@ const handleLogin = (authenticationUrl, secret, expirationTime) => {
       });
       const user = await httpRequest({
         method: 'GET',
-        url: `${authenticationUrl}/api/Users/by-username/${userName}`
+        url: `${authenticationUrl}/api/Users/by-username/${userName}`,
+        span: retrieveUserSpan
       });
 
       const { active, id } = JSON.parse(user);
