@@ -2,7 +2,7 @@ const request = require('request-promise');
 const { Tags, FORMAT_HTTP_HEADERS } = require('opentracing');
 const tracer = require('./tracerClass');
 
-function httpRequest({url, method, span}) {
+function httpRequest({url, method = 'GET', span, qs}) {
   const headers = {};
 
   span.setTag(Tags.HTTP_URL, url);
@@ -13,7 +13,8 @@ function httpRequest({url, method, span}) {
   return request({
     headers,
     method,
-    uri: url
+    uri: url,
+    qs
   })
 }
 

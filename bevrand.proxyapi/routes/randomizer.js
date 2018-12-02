@@ -50,7 +50,7 @@ const requestRandomizePost = (endpoint) => {
   }
 };
 
-router.get('/api/redis', (req, res, next) => {
+router.get('/redis', (req, res, next) => {
   const span = tracer.startSpan('redis-request');
   
   span.log({
@@ -59,7 +59,7 @@ router.get('/api/redis', (req, res, next) => {
   });
 
   httpRequest({
-    url: config.randomizerApi,
+    url: config.randomizerApi + req.originalUrl,
     method: 'GET',
     span
   }).then(result => {
