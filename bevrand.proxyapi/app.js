@@ -1,20 +1,11 @@
 const express = require('express');
 const path = require('path');
-const request = require('request');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const exjwt = require('express-jwt');
-const rp = require ('request-promise');
-const Promise = require('bluebird');
-const jwt = require("jsonwebtoken");
 const cors = require('cors');
 const config = require('./config');
-const swaggerUi = require('swagger-ui-express');
-const yamljs = require('yamljs');
-const swaggerDocument = yamljs.load('./swagger.yaml');
-
-const controllers = require('./controllers');
+const routes = require('./routes');
 
 const app = express();
 
@@ -27,45 +18,11 @@ app.use((req, res, next) => {
   next();
 });
 
-const jwtMW = exjwt({
-  secret: config.authenticationSecret
-});
-
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
-/**
- * Util to pipe requests to another endpoint
- * @param {string} endpoint 
- */
-const requestPipe = (endpoint) => {
-  return (req, res) => {
-    const url = endpoint + req.url;
-    req.pipe(request({ qs: req.query, uri: url })).pipe(res);
-  }
-}
-
-/**
- * Util to pipe requests to another endpoint
- * Also pipes the post body
- * @param {string} endpoint 
- */
-const requestPipePost = (endpoint) => {
-  return (req, res) => {
-    request({
-      method: 'POST',
-      qs: req.query, 
-      uri: endpoint + req.url,
-      body: req.body,
-      json: true
-    }).pipe(res);
-  }
-}
 
 /**
  * CORS Pre-Flight enabled routes
@@ -79,169 +36,10 @@ app.options('/api/v2/randomize', cors());
 /**
  * API routes
  */
-const frontpageWithSignature = (url) => {
-  return (req, res, next) => {
-
-    
-    rp({
-      method: 'GET',
-      uri: `${url}/api/v1/public`
-    }).then(result => {
-      
-
-      let newResult = JSON.parse(result).result.map(item => {
-        let signedItem = jwt.sign(item, config.frontendJwtSecret, { mutatePayload: true});
-        item.jwtheader = JSON.parse(Buffer.from(signedItem.split('.')[0], 'base64').toString("ascii"));
-        item.jwttoken = signedItem.split('.')[2];
-        return item;
-      });
-
-      return res.send(newResult);
-    }).catch(err => {
-      console.error(`Error: ${err.message}`);
-      return next(err);
-    });
-  }  
-};
-
-/**
- * Gives the complete response from the playlist api at the endpoint /api/frontpage, 
- * signed with a JWT Token, IssuedAtTime property (iat) and a JWT Header, which describes the algorithm used.
- */
-app.get('/api/v2/frontpage', frontpageWithSignature(config.playlistApi));
-
-app.get('/api/playlists', (req, res, next) => {
-  //TODO: add middleware that checks is user is authorized for the specified username
-  const { username } = req.query;
-  if(!username){
-    let err = new Error('Required parameters are not present');
-    err.status = 400;
-    return next(err);
-  }
-
-  rp(`${config.playlistApi}/api/v1/private/${username}`)
-    .then(result => {
-      let parsedResult = JSON.parse(result).result;
-      console.log(parsedResult);
-      return parsedResult;
-    })
-    .then(result => {
-      let promises = result.map(value => {
-        return rp(`${config.playlistApi}/api/v1/private/${username}/${value}`)
-          .then(response => { 
-            return JSON.parse(response).result;
-          });
-      });
-
-      Promise.all(promises).then(results => {
-        console.log('Results of promise all: ', results);
-        res.send(results);
-      })
-    })
-    .catch(err => {
-      return next(err);
-    });
-});
-
-app.get('/api/redis', requestPipe(config.randomizerApi));
-
-const validateJwtTokenFrontend = (req, res, next) => {
-    try {
-      let requestJwtHeader = req.body.jwtheader;
-      let requestJwtToken = req.body.jwttoken;
-
-      delete req.body.jwtheader;
-      delete req.body.jwttoken;
-
-      let signedItem = jwt.sign(req.body, config.frontendJwtSecret);
-      let jwtheader = signedItem.split('.')[0];
-      let jwttoken = signedItem.split('.')[2];
-
-      if(requestJwtToken === jwttoken){
-        return next();
-      }
-
-      const error = new Error('JWT Token does not validate');
-      error.name = 'InvalidJwtToken';
-      throw error;
-    } catch(err) {
-      return next(err);
-    }
-};
-
-/**
- * 
- * @param {string} user 
- * @param {string} list 
- * @param {string[]} beverages 
- */
-var RandomizeRequest = function (user, list, beverages) {
-  this.user = user;
-  this.list = list;
-  this.beverages = beverages;
-};
-
-var CreatePlayListRequest = function (beverages, imageUrl, displayName) {
-    this.beverages = beverages;
-    this.imageUrl = imageUrl;
-    this.displayName = displayName;
-};
-
-/**
- * Calls the backend randomize api with POST at endpoint /api/randomize
- * Takes from the post body (req.body) the properties user, list, and beverages.
- * @param {string} endpoint 
- */
-const requestRandomizePost = (endpoint) => {
-  return (req, res) => {
-    request({
-      method: 'POST',
-      qs: req.query, 
-      uri: endpoint + '/api/randomize',
-      body: new RandomizeRequest(req.body.user, req.body.list, req.body.beverages),
-      json: true
-    }).pipe(res);
-  }
-};
-
-app.post('/api/v2/randomize', validateJwtTokenFrontend, requestRandomizePost(config.randomizerApi));
-
-app.get('/api/user', requestPipe(config.playlistApi));
-
-/**
- * Calls the backend playlisy api with POST at endpoint /api/v1/private/{username}
- * Takes from the post body (req.body) the properties user, list, and beverages.
- * @param {string} endpoint
- */
-const requestUserPlaylistPost = (endpoint) => {
-    return (req, res) => {
-        request({
-            method: 'POST',
-            //qs: req.query,
-            uri: endpoint + `/api/v1/private/${req.body.user}/${req.body.list}`,
-            body : new CreatePlayListRequest(req.body.beverages, req.body.imageUrl, req.body.displayName),
-            json: true
-        }).pipe(res);
-    }
-};
-
-app.post('/api/user', requestUserPlaylistPost(config.playlistApi));
-
-app.post('/api/login', 
-  controllers.authentication.handleLogin(
-    config.authenticationApi, 
-    config.authenticationSecret, 
-    config.authenticationExpirationTime
-  )
-);
-
-app.post('/api/register', 
-  controllers.authentication.registerUser(config.authenticationApi)
-);
-
-app.get('/test/validateJWT', jwtMW, (req, res)=> {
-  res.send('You are authenticated');
-});
+app.use('/api', routes.authentication);
+app.use('/api', routes.playlist);
+app.use('/api', routes.randomizer);
+app.use('/api', routes.swagger);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
