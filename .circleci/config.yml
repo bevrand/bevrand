@@ -76,12 +76,15 @@ jobs:
          docker build -t bevrand/authenticationapi:develop ./bevrand.authenticationapi/bevrand.authenticationapi
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/authenticationapi:develop
+      - run: |
+         docker build -t bevrand/bevrand/testsuite:circleci ./bevrand.testsuite/bevrand.testsuite
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/testsuite:circleci
 
   component_tests:   
     machine: true
     steps:
       - checkout
-
      # build the application image
       - run: |
          docker-compose --version
@@ -147,7 +150,12 @@ jobs:
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker pull bevrand/authenticationapi:develop
          docker tag bevrand/authenticationapi:develop bevrand/authenticationapi:production
-         docker push bevrand/authenticationapi:production    
+         docker push bevrand/authenticationapi:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/authenticationapi:circleci
+         docker tag bevrand/testsuite:circleci bevrand/testsuite:develop 
+         docker push bevrand/testsuite:develop
   pause_uptimerobot:
     machine: true
     steps:
