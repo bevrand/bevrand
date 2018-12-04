@@ -77,7 +77,7 @@ jobs:
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/authenticationapi:develop
       - run: |
-         docker build -t bevrand/bevrand/testsuite:circleci ./bevrand.testsuite/bevrand.testsuite
+         docker build -t bevrand/testsuite:circleci ./bevrand.testsuite/bevrand.testsuite
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/testsuite:circleci
 
@@ -153,7 +153,7 @@ jobs:
          docker push bevrand/authenticationapi:production
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker pull bevrand/authenticationapi:circleci
+         docker pull bevrand/testsuite:circleci
          docker tag bevrand/testsuite:circleci bevrand/testsuite:develop 
          docker push bevrand/testsuite:develop
   pause_uptimerobot:
