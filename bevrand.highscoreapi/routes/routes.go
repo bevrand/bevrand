@@ -3,27 +3,17 @@ package routes
 import (
 	"context"
 	"encoding/json"
+	"github.com/bevrand/bevrand/bevrand.highscoreapi/handlers"
+	"github.com/bevrand/bevrand/bevrand.highscoreapi/models"
 	"github.com/gin-gonic/gin"
 	"github.com/opentracing/opentracing-go"
 	openlog "github.com/opentracing/opentracing-go/log"
-	"github.com/swaggo/gin-swagger"
-	"github.com/swaggo/gin-swagger/swaggerFiles"
 	"log"
 	"net/http"
-	"github.com/bevrand/bevrand/bevrand.highscoreapi/docs"
-	"github.com/bevrand/bevrand/bevrand.highscoreapi/handlers"
-	"github.com/bevrand/bevrand/bevrand.highscoreapi/models"
 )
 
 func InitRoutes() *gin.Engine {
 	r := gin.Default()
-
-	// programatically set swagger info
-	docs.SwaggerInfo.Title = "Swagger Example API"
-	docs.SwaggerInfo.Description = "This is a sample server Golang server."
-	docs.SwaggerInfo.Version = "1.0"
-	docs.SwaggerInfo.Host = "localhost"
-	docs.SwaggerInfo.BasePath = "/v2"
 
 	//pingpong
 	r.GET("/ping", PingPong)
@@ -31,38 +21,16 @@ func InitRoutes() *gin.Engine {
 	r.GET("/api/v1/redis/:user/:playList",  RouteShowHighScore)
 	r.POST("/api/v1/redis/:user/:playList", RouteIncrementHighscore)
 
-	// use ginSwagger middleware to serve the API docs
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
 	return r
 }
 
-
-// @Summary Ping Pong
-// @Description Is the api up?
-// @ID ping-pong
-// @Accept  json
-// @Produce  json
-// @Success 200 {string} string	"ok"
-// @Router /ping [get]
 func PingPong(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "pong",
 	})
 }
 
-// @Summary Show the high scores
-// @Description get list by user and playlistnames
-// @ID get-high-scores
-// @Accept  json
-// @Produce  json
-// @Param user path string true "user"
-// @Param playList path string true "playlist"
-// @Success 200 {array} models.Score
-// @Failure 400 {object} models.ErrorModel
-// @Failure 404 {object} models.ErrorModel
-// @Failure 500 {object} models.ErrorModel
-// @Router /api/v1/redis/{user}/{playList} [get]
+
 func RouteShowHighScore(c *gin.Context) {
 	tracer:= opentracing.GlobalTracer()
 	span := tracer.StartSpan("Getting data from Redis")
@@ -84,17 +52,7 @@ func RouteShowHighScore(c *gin.Context) {
 	span.Finish()
 }
 
-// @Summary Up or create a highscore
-// @Description Increase the scores
-// @ID post-high-scores
-// @Accept  json
-// @Produce  json
-// @Param Body body models.PostObject true "Up highscrore"
-// @Success 200 {string} string "success"
-// @Failure 400 {object} models.ErrorModel
-// @Failure 404 {object} models.ErrorModel
-// @Failure 500 {object} models.ErrorModel
-// @Router /api/v1/redis/{user}/{playList} [post]
+
 func RouteIncrementHighscore(c *gin.Context) {
 	tracer:= opentracing.GlobalTracer()
 	span := tracer.StartSpan("Posting data to Redis")

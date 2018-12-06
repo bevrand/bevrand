@@ -1,31 +1,16 @@
-package bevrand_highscoreapi
+package main
 
 import (
 	"fmt"
+	"github.com/bevrand/bevrand/bevrand.highscoreapi/routes"
 	"github.com/joho/godotenv"
 	"github.com/opentracing/opentracing-go"
 	"github.com/uber/jaeger-client-go"
 	"github.com/uber/jaeger-client-go/config"
-	"github.com/bevrand/bevrand/bevrand.highscoreapi/routes"
 	"io"
 	"log"
 	"os"
 )
-
-// @title Swagger Example API
-// @version 1.0
-// @description This is a sample server Petstore server.
-// @termsOfService http://swagger.io/terms/
-
-// @contact.name API Support
-// @contact.url http://www.swagger.io/support
-// @contact.email support@swagger.io
-
-// @license.name Apache 2.0
-// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-
-// @host petstore.swagger.io
-// @BasePath /v2
 
 func main() {
 	GetEnvFile()
@@ -45,7 +30,7 @@ func GetEnvFile() {
 		env = "development"
 	}
 
-	err := godotenv.Load("./src/highscore_api/.env." + env)
+	err := godotenv.Load(".env." + env)
 	if err != nil {
 		log.Fatal(err)
 	}
