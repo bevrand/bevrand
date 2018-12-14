@@ -29,7 +29,7 @@ class TestErrorHandler(BaseTestCase):
         sut = public_controller.handle_invalid_usage(error)
         message = sut.response
         status = sut.status_code
-        assert 'pytest' in message[0]
+        assert 'pytest' in str(message[0])
         assert status == 400
 
     def test_invalid_usage_redis(self):
@@ -37,5 +37,5 @@ class TestErrorHandler(BaseTestCase):
         sut = public_controller.handle_invalid_usage(error)
         message = sut.response
         status = sut.status_code
-        assert 'pytest' in message[0]
+        assert 'pytest' in str(message[0])
         assert status == 400
