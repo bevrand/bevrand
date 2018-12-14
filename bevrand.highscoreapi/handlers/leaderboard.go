@@ -41,6 +41,7 @@ func ShowHighScores(user string, playlist string, c *gin.Context, ctx context.Co
 		log.Fatal(err)
 	}
 	exists := res != 0
+	var redisResult []models.Score
 
 	//todo: add this to middleware
 	if !exists {
@@ -49,17 +50,14 @@ func ShowHighScores(user string, playlist string, c *gin.Context, ctx context.Co
 			openlog.String("body", "not found"),
 		)
 		span.Finish()
-		c.JSON(404, gin.H{
-			"error": "pong",
-		})
-		return nil
+		c.Request.Response.StatusCode = 404
+		return redisResult
 	}
 
 	result, err := db.Cmd("HGETALL", key).Map()
 	if err != nil {
 		log.Fatal(err)
 	}
-	var redisResult []models.Score
 	for drink, score := range result{
 		i, err := strconv.Atoi(score)
 		if err != nil {
@@ -77,6 +75,7 @@ func ShowHighScores(user string, playlist string, c *gin.Context, ctx context.Co
 		openlog.String("body", string(body)),
 	)
 
+	c.Request.Response.StatusCode = 200
 	return redisResult
 }
 

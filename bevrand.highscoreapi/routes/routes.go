@@ -8,8 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/opentracing/opentracing-go"
 	openlog "github.com/opentracing/opentracing-go/log"
+	"gopkg.in/oauth2.v3/utils/uuid"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func InitRoutes() *gin.Engine {
@@ -47,6 +49,7 @@ func RouteShowHighScore(c *gin.Context) {
 	user := c.Param("user")
 	playlist := c.Param("playList")
 	highScores := handlers.ShowHighScores(user, playlist, c, ctx)
+	respondWithJson(c.Writer, c.Request.Response.StatusCode, highScores, ctx)
 	json.NewEncoder(c.Writer).Encode(highScores)
 
 	span.Finish()
@@ -61,7 +64,12 @@ func RouteIncrementHighscore(c *gin.Context) {
 	var po models.PostObject
 	decoder := json.NewDecoder(c.Request.Body)
 	if err := decoder.Decode(&po); err != nil {
-		respondWithJSON(c.Writer, c.Request, "sdf", http.StatusBadRequest)
+		uuid, _ := uuid.NewRandom()
+		decodingError := models.ErrorModel{
+			Message: err.Error(),
+			UniqueCode: uuid}
+
+		respondWithJson(c.Writer, http.StatusBadRequest, decodingError, ctx)
 		return
 	}
 
@@ -73,7 +81,6 @@ func RouteIncrementHighscore(c *gin.Context) {
 		openlog.String("body", string(body)),
 		openlog.String("host", c.Request.Host),
 	)
-
 	ctx := context.Background()
 	ctx = opentracing.ContextWithSpan(ctx, span)
 
@@ -87,12 +94,17 @@ func RouteIncrementHighscore(c *gin.Context) {
 	span.Finish()
 }
 
-func respondWithJSON(w http.ResponseWriter, r *http.Request, model string, code int) {
-	body, err := json.MarshalIndent(model, "", "    ")
-	if err != nil {
-		log.Println(err)
-	}
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+func respondWithJson(w http.ResponseWriter, code int, payload interface{}, ctx context.Context) {
+	span, _ := opentracing.StartSpanFromContext(ctx, "Response")
+	span.SetTag("Method", "ShowHighScores")
+
+	response, _ := json.Marshal(payload)
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
-	w.Write(body)
+	w.Write(response)
+	span.LogFields(
+		openlog.String("http_status_code", strconv.Itoa(code)),
+		openlog.String("body", string(response)),
+	)
+	defer span.Finish()
 }
