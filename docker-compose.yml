@@ -96,6 +96,19 @@ services:
     links:
       - proxyapi
 
+  frontendapi:
+    container_name: frontend
+    build: ./bevrand.frontend
+    ports:
+    - 8080:80
+    depends_on:
+    - randomizerapi
+    - playlistapi
+    - authenticationapi
+    - proxyapi
+    links:
+    - proxyapi
+
   dataseeder:
     container_name: dataseeder
     build: ./bevrand.dataseeder
