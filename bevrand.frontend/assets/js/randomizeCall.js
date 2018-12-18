@@ -1,33 +1,46 @@
-let drink = '';
 let playlist = '';
+let currentPlayList = 'tgif';
 
-function randomizeThatShit () {
-    getAllLists().done(handleData);
-    console.log(playlist);
-    let local = playlist[0]
+const config = {
+    proxyHostname: 'https:' == document.location.protocol ? '' : 'http://localhost:4540'
+};
+
+$("#randomizebutton").click(function() {
+
+    let randomizeList = '';
+
+    for (var i = 0; i < playlist.length; i++) {
+        if (playlist[i]['list'] === currentPlayList) {
+            randomizeList = playlist[i]
+        }
+    }
+
     $.ajax({
         type: "POST",
-        url: "http://localhost:4540/api/v2/randomize",
-        data: { local },
+        url: `${config.proxyHostname}/api/v2/randomize`,
+        data: JSON.stringify(randomizeList),
+        contentType: "application/json",
         success: function(data){
-            console.log(data);
+            window.setTimeout(function () {
+                $('#randomized_drink')
+                    .text(data.result)
+                    .show()
+            }, 4500);
+        }
+    });
+});
+
+function getAllLists () {
+    $.ajax({
+        type: "GET",
+        url: `${config.proxyHostname}/api/v2/frontpage`,
+        success: function(data){
+            playlist = data;
         }
     });
 }
 
-function getAllLists () {
-     return $.ajax({
-        type: "GET",
-        url: "http://localhost:4540/api/v2/frontpage"
-    });
-}
-
-function handleData(data /* , textStatus, jqXHR */ ) {
-    playlist = data;
-    //do some stuff
-}
-
 // A $( document ).ready() block.
 $( document ).ready(function() {
-    randomizeThatShit();
+    getAllLists();
 });

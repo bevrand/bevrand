@@ -1,8 +1,7 @@
 $("#randomizebutton").click(function() {
 
     $("#randomizebutton").hide();
-
-    $('#randomized_drink').text(''); // Clear text
+    $('#randomized_drink').hide();
 
     $('#liquid') // Lower liquid level
         .animate({
@@ -40,10 +39,6 @@ $("#randomizebutton").click(function() {
         }, 1500)
         //.delay(1600)
         .slideUp(500);
-
-    window.setTimeout(function () {
-        $('#randomized_drink').text('Beer');
-    }, 4500);
 
     window.setTimeout(function () {
         $('#randomizebutton')
