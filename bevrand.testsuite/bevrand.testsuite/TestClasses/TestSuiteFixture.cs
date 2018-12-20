@@ -31,6 +31,7 @@ namespace bevrand.testsuite.TestClasses
         private void EnvBuilder()
         {
             var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+          //  environmentName = "Development";
             Console.WriteLine(environmentName);
                 
             const string BaseFilePath = @"Settings/";

@@ -10,7 +10,7 @@ namespace bevrand.testsuite.Clients
 {
     public class RandomizerApiClient
     {
-        public async Task<BaseResponseModel> PostASampleListWithBeverages(string requeststring, RandomizePostRequest request)
+        public BaseResponseModel PostASampleListWithBeverages(string requeststring, RandomizePostRequest request)
         {
             try
             {
@@ -22,8 +22,6 @@ namespace bevrand.testsuite.Clients
                     StatusCode = (int) res.StatusCode
                 };
                 
-              
-
                 return responseModel;
             }
             catch (AggregateException e)
@@ -33,7 +31,7 @@ namespace bevrand.testsuite.Clients
                 {
                     StatusCode = (int) flurlException.Call.HttpStatus,
                     ErrorMessage = flurlException.Message,
-                    UserError = flurlException.GetResponseString()
+                    UserError = flurlException.GetResponseStringAsync().Result
                 };
                 return responseModel;
             }

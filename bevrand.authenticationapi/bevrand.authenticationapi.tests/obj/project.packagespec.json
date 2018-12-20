@@ -10,10 +10,10 @@
       "/usr/share/dotnet/sdk/NuGetFallbackFolder"
     ],
     "originalTargetFrameworks": [
-      "netcoreapp2.0"
+      "netcoreapp2.2"
     ],
     "frameworks": {
-      "netcoreapp2.0": {
+      "netcoreapp2.2": {
         "projectReferences": {
           "/home/joerivrij/projects/src/bevrand/bevrand/bevrand.authenticationapi/bevrand.authenticationapi/bevrand.authenticationapi.csproj": {
             "projectPath": "/home/joerivrij/projects/src/bevrand/bevrand/bevrand.authenticationapi/bevrand.authenticationapi/bevrand.authenticationapi.csproj"
@@ -28,25 +28,25 @@
     }
   },
   "frameworks": {
-    "netcoreapp2.0": {
+    "netcoreapp2.2": {
       "dependencies": {
         "Microsoft.NET.Test.Sdk": {
           "target": "Package",
-          "version": "[15.5.0, )"
+          "version": "[15.9.0, )"
         },
         "Microsoft.NETCore.App": {
           "suppressParent": "All",
           "target": "Package",
-          "version": "[2.0.0, )",
+          "version": "[2.2.0, )",
           "autoReferenced": true
         },
         "xunit": {
           "target": "Package",
-          "version": "[2.3.1, )"
+          "version": "[2.4.1, )"
         },
         "xunit.runner.visualstudio": {
           "target": "Package",
-          "version": "[2.3.1, )"
+          "version": "[2.4.1, )"
         }
       },
       "imports": [

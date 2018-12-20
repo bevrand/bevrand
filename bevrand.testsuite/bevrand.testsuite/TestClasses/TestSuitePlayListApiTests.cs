@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using bevrand.testsuite.Helpers;
 using bevrand.testsuite.Models;
 using bevrand.testsuite.Models.PlaylistApi;
@@ -99,13 +100,13 @@ namespace bevrand.testsuite.TestClasses
         public void ShouldBeAbleToCreateANewPlaylistAndUserCombination()
         {
             var newUserName = RandomNameGenerator.RandomString(25);
-            var playListName = RandomNameGenerator.RandomString(10);
+            var playListName = RandomNameGenerator.RandomString(25);
 
             var requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}/{playListName}";
 
             var playList = this.MapNewPlaylist();
 
-            var result = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList).Result;
+            var result = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList);
             
             Assert.Equal(201, result.StatusCode);
         }
@@ -116,12 +117,12 @@ namespace bevrand.testsuite.TestClasses
         public void ListNamesShouldAllBeLowerCase()
         {
             var newUserName = RandomNameGenerator.RandomString(25);
-            var playListName = RandomNameGenerator.RandomString(10);
+            var playListName = RandomNameGenerator.RandomString(25);
             var requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}/{playListName}";
 
             var playList = this.MapNewPlaylist();
 
-            var result = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList).Result;
+            var result = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList);
             
             Assert.Equal(201, result.StatusCode);
 
@@ -150,7 +151,7 @@ namespace bevrand.testsuite.TestClasses
 
             var playList = this.MapNewPlaylist();
 
-            var result = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList).Result;
+            var result = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList);
             
             Assert.Equal(201, result.StatusCode);
         }
@@ -168,7 +169,7 @@ namespace bevrand.testsuite.TestClasses
         [InlineData("listname", "displayname", "http://www.testimage.com/image.png", " ", 400, "min length is 2")]
         public void ShouldNotBeAbleToPostInvalidData(string list, string displayName, string imageUrl, string beverage, int errorcode, string errormessage)
         {
-            var username = RandomNameGenerator.RandomString(25);
+            var username = RandomNameGenerator.RandomString(50);
             var requestUrl = $"{_fixture.PlayListUrl}/private/{username}/{list}";
 
             var playList = new BasePlaylist
@@ -182,8 +183,8 @@ namespace bevrand.testsuite.TestClasses
                 }
             };
 
-            var response = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseErrorResponse>(requestUrl, playList).Result as BaseErrorResponse;
-            
+            var response = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseErrorResponse>(requestUrl, playList) as BaseErrorResponse;
+
             Assert.Equal(errorcode, response.StatusCode);
             Assert.Contains(errormessage, response.UserError);
         }
@@ -195,7 +196,7 @@ namespace bevrand.testsuite.TestClasses
         public void ShouldNotBeAbleToPostAPlaylistWithOnlyOneDrink(string list, string displayName, string imageUrl, string beverage, int errorcode, string errormessage)
         {
             var username = RandomNameGenerator.RandomString(25);
-            var playListName = RandomNameGenerator.RandomString(10);
+            var playListName = RandomNameGenerator.RandomString(25);
             var requestUrl = $"{_fixture.PlayListUrl}/private/{username}/{playListName}";
 
             var playList = new CreatePlayList
@@ -209,7 +210,7 @@ namespace bevrand.testsuite.TestClasses
                 }
             };
 
-            var response = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseErrorResponse>(requestUrl, playList).Result as BaseErrorResponse;
+            var response = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseErrorResponse>(requestUrl, playList) as BaseErrorResponse;
             
             Assert.Equal(errorcode, response.StatusCode);
             Assert.Contains(errormessage, response.UserError);
@@ -221,16 +222,16 @@ namespace bevrand.testsuite.TestClasses
         public void ShouldNotBeAbleToCreateTheSamePlayListForSameUserTwice()
         {
             var newUserName = RandomNameGenerator.RandomString(25);
-            var playListName = RandomNameGenerator.RandomString(10);
+            var playListName = RandomNameGenerator.RandomString(25);
             var requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}/{playListName}";
 
             var playList = this.MapNewPlaylist();
 
-            var result = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList).Result;
+            var result = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList);
             
             Assert.Equal(201, result.StatusCode);
             
-            var res = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList).Result as BaseErrorResponse;
+            var res = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList) as BaseErrorResponse;
             
             Assert.Equal(400, res.StatusCode);
             Assert.Contains("User and list combination already exists", res.UserError);
@@ -242,18 +243,18 @@ namespace bevrand.testsuite.TestClasses
         public void ShouldBeAbleToCreateSamePlayListForDifferentUser()
         {
             var newUserName = RandomNameGenerator.RandomString(25);
-            var playListName = RandomNameGenerator.RandomString(10);
+            var playListName = RandomNameGenerator.RandomString(25);
             var requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}/{playListName}";
 
             var playList = this.MapNewPlaylist();
 
-            var result = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList).Result;
+            var result = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList);
             
             Assert.Equal(201, result.StatusCode);
             
             newUserName = RandomNameGenerator.RandomString(25);
             requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}/{playListName}";
-            var res = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList).Result;
+            var res = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList);
             
             Assert.Equal(201, res.StatusCode);
         }
@@ -265,10 +266,10 @@ namespace bevrand.testsuite.TestClasses
         [InlineData("o", 400, "min length is 3")]
         public void ShouldNotBeAbleToPostToAnInvalidUserName(string list, int errorcode, string errormessage)
         {
-            var playListName = RandomNameGenerator.RandomString(10);
+            var playListName = RandomNameGenerator.RandomString(25);
             var requestUrl = $"{_fixture.PlayListUrl}/private/{list}/{playListName}";
             var playList = this.MapNewPlaylist();
-            var response = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList).Result as BaseErrorResponse;
+            var response = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList) as BaseErrorResponse;
             
             Assert.Equal(errorcode, response.StatusCode);
             Assert.Contains(errormessage, response.UserError);
@@ -285,7 +286,7 @@ namespace bevrand.testsuite.TestClasses
 
             var playList = this.MapNewPlaylist();
 
-            var result = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList).Result;
+            var result = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList);
             Assert.Equal(403, result.StatusCode);
         }
 
@@ -355,12 +356,12 @@ namespace bevrand.testsuite.TestClasses
         public void ShouldBeAbleToRetrieveAPlayListThatWasJustCreated()
         {
             var newUserName = RandomNameGenerator.RandomString(25);
-            var playListName = RandomNameGenerator.RandomString(10);
+            var playListName = RandomNameGenerator.RandomString(25);
             var requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}/{playListName}";
 
             var playList = this.MapNewPlaylist();
 
-            var result = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList).Result;
+            var result = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList);
             
             Assert.Equal(201, result.StatusCode);
             
@@ -400,12 +401,12 @@ namespace bevrand.testsuite.TestClasses
         public void ShouldBeAbleToDeleteACreatedPlayList()
         {
             var newUserName = RandomNameGenerator.RandomString(25);
-            var playListName = RandomNameGenerator.RandomString(10);
+            var playListName = RandomNameGenerator.RandomString(25);
             var requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}/{playListName}";
 
             var playList = this.MapNewPlaylist();
 
-            var result = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList).Result;
+            var result = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList);
             Assert.Equal(201, result.StatusCode);
             
             requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}/{playListName}";
@@ -419,12 +420,12 @@ namespace bevrand.testsuite.TestClasses
         public void ShouldBeAbleToDeleteACreatedUser()
         {
             var newUserName = RandomNameGenerator.RandomString(25);
-            var playListName = RandomNameGenerator.RandomString(10);
+            var playListName = RandomNameGenerator.RandomString(25);
             var requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}/{playListName}";
 
             var playList = this.MapNewPlaylist();
 
-            var result = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList).Result;
+            var result = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList);
             Assert.Equal(201, result.StatusCode);
             
             requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}";
@@ -489,18 +490,18 @@ namespace bevrand.testsuite.TestClasses
         public void ShouldBeAbleToUpdateACreatedUser()
         {
             var newUserName = RandomNameGenerator.RandomString(25);
-            var playListName = RandomNameGenerator.RandomString(10);
+            var playListName = RandomNameGenerator.RandomString(25);
             var requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName}/{playListName}";
 
             var playList = this.MapNewPlaylist();
 
-            var result = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList).Result;
+            var result = _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<BaseResponseModel>(requestUrl, playList);
             Assert.Equal(201, result.StatusCode);
 
             var updatedPlaylist = this.MapUpdatedList();
             
             requestUrl = $"{_fixture.PlayListUrl}/private/{newUserName.ToLower()}/{playListName}";
-            var response = _fixture.BaseApiClient.FlurlUpdate<BaseResponseModel>(requestUrl, updatedPlaylist).Result;
+            var response = _fixture.BaseApiClient.FlurlUpdate<BaseResponseModel>(requestUrl, updatedPlaylist);
             Assert.Equal(204, response.StatusCode);
         }
         
@@ -514,7 +515,7 @@ namespace bevrand.testsuite.TestClasses
             var requestUrl = $"{_fixture.PlayListUrl}/private/{username}/{listname}";
             
             var updatedPlaylist = this.MapUpdatedList();
-            var response = _fixture.BaseApiClient.FlurlUpdate<BaseErrorResponse>(requestUrl, updatedPlaylist).Result as BaseErrorResponse;
+            var response = _fixture.BaseApiClient.FlurlUpdate<BaseErrorResponse>(requestUrl, updatedPlaylist) as BaseErrorResponse;
             
             Assert.Equal(errorcode, response.StatusCode);
             Assert.Contains(errormessage, response.UserError);
@@ -548,7 +549,7 @@ namespace bevrand.testsuite.TestClasses
                 }
             };
 
-            var response = _fixture.BaseApiClient.FlurlUpdate<BaseErrorResponse>(requestUrl, playList).Result as BaseErrorResponse;
+            var response = _fixture.BaseApiClient.FlurlUpdate<BaseErrorResponse>(requestUrl, playList) as BaseErrorResponse;
             
             Assert.Equal(errorcode, response.StatusCode);
             Assert.Contains(errormessage, response.UserError);
@@ -565,7 +566,7 @@ namespace bevrand.testsuite.TestClasses
 
             var playList = this.MapNewPlaylist();
 
-            var result = _fixture.BaseApiClient.FlurlUpdate<BaseResponseModel>(requestUrl, playList).Result;
+            var result = _fixture.BaseApiClient.FlurlUpdate<BaseResponseModel>(requestUrl, playList);
             Assert.Equal(404, result.StatusCode);
         }
         

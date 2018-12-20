@@ -33,7 +33,7 @@ namespace bevrand.testsuite.TestClasses
             };
 
             var response =
-                _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<RandomizePostResult>(requeststring, request).Result as
+                _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<RandomizePostResult>(requeststring, request) as
                     RandomizePostResult;
             
             var drink = response.result;
@@ -74,7 +74,7 @@ namespace bevrand.testsuite.TestClasses
             };
 
             var response =
-                _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<RandomizePostResult>(requeststring, request).Result as
+                _fixture.BaseApiClient.FlurlPostCreatedWithoutAResponse<RandomizePostResult>(requeststring, request) as
                     RandomizePostResult;
             
             var drink = response.result;
@@ -98,7 +98,7 @@ namespace bevrand.testsuite.TestClasses
             };
 
             var response =
-                _fixture.RandomizerApi.PostASampleListWithBeverages(requeststring, request).Result as
+                _fixture.RandomizerApi.PostASampleListWithBeverages(requeststring, request) as
                     BaseErrorResponse;
             
             Assert.Equal(400, response.StatusCode);
@@ -127,7 +127,7 @@ namespace bevrand.testsuite.TestClasses
             };
 
             var response =
-                _fixture.RandomizerApi.PostASampleListWithBeverages(requeststring, request).Result as
+                _fixture.RandomizerApi.PostASampleListWithBeverages(requeststring, request) as
                     BaseErrorResponse;
             
             Assert.Equal(400, response.StatusCode);

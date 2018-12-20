@@ -31,7 +31,7 @@ namespace bevrand.testsuite.TestClasses
                 active = true,
                 passWord = "thisisatestpassword"
             };
-            var resp = _fixture.BaseApiClient.FlurlPostWithCreatedResponse<PostModelResponse>(poststring, request).Result as PostModelResponse;
+            var resp = _fixture.BaseApiClient.FlurlPostWithCreatedResponse<PostModelResponse>(poststring, request) as PostModelResponse;
             
             var requeststring = _fixture.AuthenticationUrl + $"/Users/{resp.id}";
             var response = _fixture.BaseApiClient.FlurlGet<UserResponse>(requeststring).Result;
@@ -64,7 +64,7 @@ namespace bevrand.testsuite.TestClasses
                 active = true,
                 passWord = "thisisatestpassword"
             };
-            var resp = _fixture.BaseApiClient.FlurlPostWithCreatedResponse<PostModelResponse>(poststring, request).Result as PostModelResponse;
+            var resp = _fixture.BaseApiClient.FlurlPostWithCreatedResponse<PostModelResponse>(poststring, request) as PostModelResponse;
             
             var requeststring = _fixture.AuthenticationUrl + $"/Users/by-email/{resp.emailAddress}";
             var response = _fixture.BaseApiClient.FlurlGet<UserResponse>(requeststring).Result as UserResponse;
@@ -88,7 +88,7 @@ namespace bevrand.testsuite.TestClasses
                 active = true,
                 passWord = "thisisatestpassword"
             };
-            var resp = _fixture.BaseApiClient.FlurlPostWithCreatedResponse<PostModelResponse>(poststring, request).Result as PostModelResponse;
+            var resp = _fixture.BaseApiClient.FlurlPostWithCreatedResponse<PostModelResponse>(poststring, request) as PostModelResponse;
             
             var requeststring = _fixture.AuthenticationUrl + $"/Users/{resp.id}";
             var response = _fixture.BaseApiClient.FlurlGet<UserResponse>(requeststring).Result as UserResponse;
@@ -139,7 +139,7 @@ namespace bevrand.testsuite.TestClasses
                 active = true,
                 passWord = "thisisatestpassword"
             };
-            var response = _fixture.BaseApiClient.FlurlPostWithCreatedResponse<PostModelResponse>(requeststring, request).Result as PostModelResponse;
+            var response = _fixture.BaseApiClient.FlurlPostWithCreatedResponse<PostModelResponse>(requeststring, request) as PostModelResponse;
 
             Assert.Equal(201, response.StatusCode);
             Assert.Equal(request.userName.ToLowerInvariant(), response.userName);
@@ -158,11 +158,11 @@ namespace bevrand.testsuite.TestClasses
                 active = true,
                 passWord = "thisisatestpassword"
             };
-            var response = _fixture.BaseApiClient.FlurlPostWithCreatedResponse<PostModelResponse>(requeststring, request).Result;
+            var response = _fixture.BaseApiClient.FlurlPostWithCreatedResponse<PostModelResponse>(requeststring, request);
 
             Assert.Equal(201, response.StatusCode);
             
-            response = _fixture.BaseApiClient.FlurlPostWithCreatedResponse<PostModelResponse>(requeststring, request).Result;
+            response = _fixture.BaseApiClient.FlurlPostWithCreatedResponse<PostModelResponse>(requeststring, request);
             Assert.Equal(400, response.StatusCode);
         }
 
@@ -182,7 +182,7 @@ namespace bevrand.testsuite.TestClasses
                 active = true,
                 passWord = password
             };
-            var response = _fixture.BaseApiClient.FlurlPostWithCreatedResponse<PostModelResponse>(requeststring, request).Result as BaseErrorResponse;
+            var response = _fixture.BaseApiClient.FlurlPostWithCreatedResponse<PostModelResponse>(requeststring, request) as BaseErrorResponse;
 
             Assert.Equal(400, response.StatusCode);
             Assert.Contains(message, response.UserError);
@@ -203,7 +203,7 @@ namespace bevrand.testsuite.TestClasses
                 passWord = "thisisatestpassword"
             };
             var response =
-                _fixture.BaseApiClient.FlurlPostWithCreatedResponse<PostModelResponse>(requeststring, requestPost).Result as
+                _fixture.BaseApiClient.FlurlPostWithCreatedResponse<PostModelResponse>(requeststring, requestPost) as
                     PostModelResponse;
             
             var request = new IdBasedQueryModel
@@ -233,7 +233,7 @@ namespace bevrand.testsuite.TestClasses
                 passWord = "thisisatestpassword"
             };
             var response =
-                _fixture.BaseApiClient.FlurlPostWithCreatedResponse<PostModelResponse>(requeststring, requestPost).Result as
+                _fixture.BaseApiClient.FlurlPostWithCreatedResponse<PostModelResponse>(requeststring, requestPost) as
                     PostModelResponse;
 
             var request = new IdBasedQueryModel
@@ -289,7 +289,7 @@ namespace bevrand.testsuite.TestClasses
             };
             
             var response =
-                _fixture.BaseApiClient.FlurlPostWithCreatedResponse<PostModelResponse>(postString, requestPost).Result as
+                _fixture.BaseApiClient.FlurlPostWithCreatedResponse<PostModelResponse>(postString, requestPost) as
                     PostModelResponse;
             
             Assert.Equal(201, response.StatusCode);

@@ -44,14 +44,13 @@ namespace bevrand.testsuite.Clients
                 {
                     StatusCode = (int) e.Call.HttpStatus,
                     ErrorMessage = e.Message,
-                    UserError = e.GetResponseString()
+                    UserError = e.GetResponseStringAsync().Result
                 };
                 return responseModel;
             }
         }
         
-
-        public async Task<BaseResponseModel> FlurlPostCreatedWithoutAResponse<TType>(string requeststring, object objectToPost)
+        public BaseResponseModel FlurlPostCreatedWithoutAResponse<TType>(string requeststring, object objectToPost)
             where TType : BaseResponseModel
         {
             try
@@ -76,13 +75,14 @@ namespace bevrand.testsuite.Clients
                 {
                     StatusCode = (int) flurlException.Call.HttpStatus,
                     ErrorMessage = flurlException.Message,
-                    UserError = flurlException.GetResponseString()
+                    UserError = flurlException.GetResponseStringAsync().Result
                 };
                 return responseModel;
             }
         }
+       
         
-        public async Task<BaseResponseModel> FlurlPostWithCreatedResponse<TType>(string requeststring, object objectToPost)
+        public BaseResponseModel FlurlPostWithCreatedResponse<TType>(string requeststring, object objectToPost)
             where TType : BaseResponseModel
         {
             try
@@ -100,7 +100,7 @@ namespace bevrand.testsuite.Clients
                 {
                     StatusCode = (int) flurlException.Call.HttpStatus,
                     ErrorMessage = flurlException.Message,
-                    UserError = flurlException.GetResponseString()
+                    UserError = flurlException.GetResponseStringAsync().Result
                 };
                 return responseModel;
             }
@@ -125,7 +125,7 @@ namespace bevrand.testsuite.Clients
                 {
                     StatusCode = (int) flurlException.Call.HttpStatus,
                     ErrorMessage = flurlException.Message,
-                    UserError = flurlException.GetResponseString()
+                    UserError = flurlException.GetResponseStringAsync().Result
                 };
                 return responseModel;
             }
@@ -133,7 +133,7 @@ namespace bevrand.testsuite.Clients
         }
         
                 
-        public async Task<BaseResponseModel> FlurlUpdate<TType>(string requeststring, object objectToUpdate)
+        public BaseResponseModel FlurlUpdate<TType>(string requeststring, object objectToUpdate)
             where TType : BaseResponseModel
         {
             try
@@ -158,7 +158,7 @@ namespace bevrand.testsuite.Clients
                 {
                     StatusCode = (int) flurlException.Call.HttpStatus,
                     ErrorMessage = flurlException.Message,
-                    UserError = flurlException.GetResponseString()
+                    UserError = flurlException.GetResponseStringAsync().Result
                 };
                 return responseModel;
             }
@@ -169,7 +169,7 @@ namespace bevrand.testsuite.Clients
         {
             try
             {
-                var res = requeststring.PostJsonAsync(request).Result;
+                var res = await requeststring.PostJsonAsync(request);
                 var content = res.Content.ReadAsStringAsync().Result;
                 var responseModel = new ValidatePostResult
                 {
@@ -186,7 +186,7 @@ namespace bevrand.testsuite.Clients
                 {
                     StatusCode = (int) flurlException.Call.HttpStatus,
                     ErrorMessage = flurlException.Message,
-                    UserError = flurlException.GetResponseString()
+                    UserError = flurlException.GetResponseStringAsync().Result
                 };
                 return responseModel;
             }
