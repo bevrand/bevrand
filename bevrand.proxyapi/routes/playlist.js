@@ -2,12 +2,12 @@ const express = require('express');
 const request = require('request');
 const router = express.Router();
 const config = require('../config');
-const jwt = require('jsonwebtoken');
 const Promise = require('bluebird');
 const { requestPipeGet } = require('../helpers/requestPipes');
 const tracer = require('../lib/tracing/tracerClass');
 const { Tags } = require('opentracing');
 const { httpRequest } = require('../lib/tracing/httpRequestWithTracing');
+const { signObjectWithJwtToken } = require('../helpers/jwtToken');
 
 
 /**
@@ -29,12 +29,7 @@ router.get('/v2/frontpage', (req, res, next) => {
   }).then(result => {
     span.setTag(Tags.HTTP_STATUS_CODE, 200);
 
-    let newResult = JSON.parse(result).result.map(item => {
-      let signedItem = jwt.sign(item, config.frontendJwtSecret, { mutatePayload: true });
-      item.jwtheader = JSON.parse(Buffer.from(signedItem.split('.')[0], 'base64').toString("ascii"));
-      item.jwttoken = signedItem.split('.')[2];
-      return item;
-    });
+    let newResult = JSON.parse(result).result.map(signObjectWithJwtToken);
 
     span.log({
       event: 'frontpage-result',
@@ -87,10 +82,12 @@ router.get('/playlists', (req, res, next) => {
           method: 'GET',
           span: childSpan
         }).then(response => {
-            childSpan.setTag(Tags.HTTP_STATUS_CODE, 200);
-            childSpan.finish();
-            return JSON.parse(response).result;
-          });
+          childSpan.setTag(Tags.HTTP_STATUS_CODE, 200);
+          childSpan.finish();
+          const parsedResponse = JSON.parse(response).result;
+          const signedResponse = signObjectWithJwtToken(parsedResponse);
+          return signedResponse;
+        });
       });
 
       Promise.all(promises).then(results => {
