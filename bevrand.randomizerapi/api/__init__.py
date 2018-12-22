@@ -61,7 +61,6 @@ def create_app():
     tracer = FlaskTracer(jaeger_tracer)
     global FLASK_TRACER
     FLASK_TRACER = tracer
-    install_all_patches()
 
     # set config
     env = getenv('APP_SETTINGS')
@@ -74,8 +73,6 @@ def create_app():
     from api.controllers.randomize_controller import randomize_blueprint
     app.register_blueprint(randomize_blueprint, url_prefix='/api/randomize')
 
-    from api.controllers.redis_controller import redis_blueprint
-    app.register_blueprint(redis_blueprint, url_prefix='/api/redis')
 
     return app
 

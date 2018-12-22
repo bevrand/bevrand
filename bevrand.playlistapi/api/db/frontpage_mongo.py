@@ -2,6 +2,7 @@ from api.services.map_cursor_to_dict import CursorMapper
 from api.error_handler.error_model import InvalidUsage
 from pymongo import errors
 
+
 class FrontPageDb:
 
     #contructor

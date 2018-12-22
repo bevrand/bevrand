@@ -2,6 +2,7 @@ from api.error_handler.error_model import InvalidUsage
 from api.services.map_cursor_to_dict import CursorMapper
 from pymongo import errors
 
+
 class UsersDb:
 
     #contructor

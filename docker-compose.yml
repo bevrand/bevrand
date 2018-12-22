@@ -41,15 +41,13 @@ services:
        - 4560:5000 # expose ports - HOST:CONTAINER
     depends_on:
        - playlistapi
-       - redis
     links:
        - playlistapi
-       - redis
+       - highscoreapi
     environment:
        - APP_SETTINGS=Production
-       - REDIS_URL=redis
        - JAEGER_HOST=jaeger-agent
-   
+       - HIGHSCORE_API=http://highscoreapi:5000/api/v1/
 
   playlistapi:
     container_name: playlistapi
@@ -80,6 +78,20 @@ services:
       - randomizerapi
       - playlistapi
       - authenticationapi
+
+  highscoreapi:
+    container_name: highscoreapi
+    build: ./bevrand.highscoreapi
+    environment:
+    - GO_ENV=docker
+    - JAEGER_AGENT_HOST=jaeger-agent
+    - JAEGER_AGENT_PORT=6831
+    depends_on:
+    - redis
+    links:
+    - redis
+    ports:
+    - 4580:5000
 
   reactapp:
     container_name: reactapp
@@ -121,4 +133,22 @@ services:
       - proxyapi
     environment:
       - ASPNETCORE_ENVIRONMENT="Test"
+
+  componenttest:
+    container_name: component_tests
+    build: ./bevrand.componenttests
+    depends_on:
+    - randomizerapi
+    - playlistapi
+    - authenticationapi
+    - proxyapi
+    - highscoreapi
+    links:
+    - randomizerapi
+    - playlistapi
+    - authenticationapi
+    - proxyapi
+    - highscoreapi
+
+
       

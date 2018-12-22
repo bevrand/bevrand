@@ -1,6 +1,7 @@
 from flask import jsonify, request, Blueprint
 from api import FLASK_TRACER
-from api.service import redis_service, data_validator
+from api.service import data_validator
+from api.service.randomizer import Randomizer
 from api.error_handler.error_model import InvalidUsage
 import opentracing
 
@@ -52,9 +53,11 @@ def randomize_list_of_drinks():
     json_body = request.json
     data_validator.validate_json_for_randomize(json_body)
     beverages = request.json['beverages']
-    user_list = json_body['user'] + json_body['list']
+    user_name = json_body['user']
+    playlist = json_body['list']
     with opentracing.tracer.start_span('randomized-drink', child_of=parent_span) as span:
-        randomized_drink = redis_service.randomize_drink_from_list(beverages, user_list)
+        randomizer = Randomizer()
+        randomized_drink = randomizer.randomize_drink_from_list(beverages, user_name, playlist)
         span.log_kv({"status_code": 200, "result": randomized_drink})
         return jsonify({"result": randomized_drink}), 200
 

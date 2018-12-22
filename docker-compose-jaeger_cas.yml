@@ -37,22 +37,36 @@ services:
       - JAEGER_AGENT_HOST=jaeger-agent
       - JAEGER_AGENT_PORT=6831
 
+  highscoreapi:
+    container_name: highscoreapi
+    build: ./bevrand.highscoreapi
+    environment:
+    - GO_ENV=docker
+    - GIN_MODE=release
+    - JAEGER_AGENT_HOST=jaeger-agent
+    - JAEGER_AGENT_PORT=6831
+    depends_on:
+    - redis
+    - jaeger-agent
+    links:
+    - redis
+    ports:
+    - 4580:5000
+
   randomizerapi:
     container_name: randomizerapi
     build: ./bevrand.randomizerapi
     ports:
        - 4560:5000 # expose ports - HOST:CONTAINER
     depends_on:
-       - redis
-       - jaeger-agent
+       - playlistapi
     links:
-       - redis
+       - playlistapi
+       - highscoreapi
     environment:
        - APP_SETTINGS=Production
-       - REDIS_URL=redis
-       - JAEGER_AGENT_HOST=jaeger-agent
-       - JAEGER_AGENT_PORT=6831
-   
+       - JAEGER_HOST=jaeger-agent
+       - HIGHSCORE_API=http://highscoreapi:5000/api/v1/
 
   playlistapi:
     container_name: playlistapi
@@ -110,20 +124,6 @@ services:
     links:
        - dockermongo
        - dockergres
-
-  testsuite:
-    container_name: backend_tests
-    build: ./bevrand.testsuite/bevrand.testsuite
-    depends_on:
-      - proxyapi
-    links:
-      - randomizerapi
-      - playlistapi
-      - authenticationapi
-      - proxyapi
-    environment:
-      - ASPNETCORE_ENVIRONMENT="Test"
-      
 
   jaeger-collector:
       image: jaegertracing/jaeger-collector

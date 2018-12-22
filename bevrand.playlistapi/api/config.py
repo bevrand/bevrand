@@ -24,3 +24,4 @@ class Test(BaseConfig):
 class Production(BaseConfig):
     """Production configuration"""
     DEBUG = False
+
