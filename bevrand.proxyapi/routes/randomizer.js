@@ -25,7 +25,7 @@ const requestRandomizePost = (endpoint) => {
   
     httpPostRequest({
       method: 'POST',
-      url: `${endpoint}/api/randomize`,
+      url: `${endpoint}/api/v1/randomize`,
       qs: req.query,
       body: {
         user,

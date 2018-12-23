@@ -1,6 +1,6 @@
 from api.tests.base import BaseTestCase
 from api.error_handler.error_model import InvalidUsage
-from api.controllers import randomize_controller, redis_controller
+from api.controllers import randomize_controller
 import pytest
 
 
@@ -27,14 +27,6 @@ class TestErrorHandler(BaseTestCase):
     def test_invalid_usage_randomize(self):
         error = InvalidUsage('hello from pytest', 400)
         sut = randomize_controller.handle_invalid_usage(error)
-        message = sut.response
-        status = sut.status_code
-        assert 'pytest' in str(message[0])
-        assert status == 400
-
-    def test_invalid_usage_redis(self):
-        error = InvalidUsage('hello from pytest', 400)
-        sut = redis_controller.handle_invalid_usage(error)
         message = sut.response
         status = sut.status_code
         assert 'pytest' in str(message[0])

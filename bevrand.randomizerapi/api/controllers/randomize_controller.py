@@ -17,7 +17,8 @@ def ping_pong():
     })
 
 
-@randomize_blueprint.route('', methods=['POST'])
+@randomize_blueprint.route('randomize', methods=['POST'])
+@randomize_blueprint.route('v1/randomize', methods=['POST'])
 def randomize_list_of_drinks():
     """
         This is an api to randomize lists and add data to redis
@@ -51,10 +52,15 @@ def randomize_list_of_drinks():
     """
     parent_span = create_parent_trace()
     json_body = request.json
-    data_validator.validate_json_for_randomize(json_body)
-    beverages = request.json['beverages']
-    user_name = json_body['user']
-    playlist = json_body['list']
+    try:
+        beverages = json_body['beverages']
+        user_name = json_body['user']
+        playlist = json_body['list']
+    except KeyError:
+        raise InvalidUsage('Required fields are missing', status_code=400, meta="user, playlist or beverages")
+    data_validator.validate_beverages(beverages)
+    data_validator.validate_user_name(user_name)
+    data_validator.validate_play_list(playlist)
     with opentracing.tracer.start_span('randomized-drink', child_of=parent_span) as span:
         randomizer = Randomizer()
         randomized_drink = randomizer.randomize_drink_from_list(beverages, user_name, playlist)

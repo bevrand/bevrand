@@ -71,7 +71,7 @@ def create_app():
 
     # register blueprints
     from api.controllers.randomize_controller import randomize_blueprint
-    app.register_blueprint(randomize_blueprint, url_prefix='/api/randomize')
+    app.register_blueprint(randomize_blueprint, url_prefix='/api/')
 
 
     return app

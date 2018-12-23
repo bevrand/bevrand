@@ -2,6 +2,7 @@ from tests import test_setup_fixture
 from environment import config
 import pytest
 import os
+import json
 
 url = None
 
@@ -44,8 +45,21 @@ class PlaylistApiTests(test_setup_fixture.TestFixture):
         self.assertEqual(200, response.status_code)
         playlists = response.json()['result']
         for playlist in playlists:
-            print(playlist)
             inner_sut = sut + '/' + playlist['list']
             resp = self.get_without_auth_header(inner_sut)
             self.assertEqual(200, resp.status_code)
             self.assertEqual(playlist['user'], resp.json()['result']['user'])
+
+
+@pytest.mark.usefixtures("setup_config")
+class PlayListApiValidationTests(test_setup_fixture.TestFixture):
+
+    def test_should_not_be_able_to_create_playlists_with_reserved_users(self):
+        for keyword in self.reserved_keywords:
+            sut = url + f'/private/{keyword}/test'
+            body = json.dumps(self.test_playlist_body)
+            response = self.post_without_auth_header(sut, body)
+            error_message = response.json()['Error']
+            self.assertEqual(403, response.status_code)
+            self.assertTrue(self.validate_string_contains(error_message, self.reserved_user_error))
+            self.assertTrue(self.validate_string_contains(error_message, keyword))
