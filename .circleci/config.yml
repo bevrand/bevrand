@@ -45,7 +45,7 @@ jobs:
     - image: circleci/golang:1.11
     steps:
     - checkout
-    - run: "cd ./bevrand.highscoreapi && go test -cov"
+    - run: "cd ./bevrand.highscoreapi && go test"
 
   build_python:   
     machine: true
