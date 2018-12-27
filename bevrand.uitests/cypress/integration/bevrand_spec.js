@@ -50,28 +50,6 @@ describe('Randomize functionality works', function () {
     })
 })
 
-describe('Top rolled beverages works', function () {
-    it('Current list should match top five list', function () {
-        cy.get('#letsGetStartedButton').click()
-        cy.get("#currentlySelectedPlaylist").then(($currentList) => {
-            const currentList = $currentList.text()
-            cy.get("#currentlySelectedPlaylist").then(($topFiveList) => {
-                expect($topFiveList.text()).eq(currentList)
-            })
-        })
-    })
-    it('Switching list should switch topfive', function () {
-        cy.get('#letsGetStartedButton').click()
-        cy.get("#currentlySelectedPlaylist").then(($currentList) => {
-            const currentList = $currentList.text()
-            cy.get('#playlists > div > div > div:nth-child(4) > a > div').click()
-            cy.get("#currentlySelectedPlaylist").then(($topFiveList) => {
-                expect($topFiveList.text()).not.to.eq(currentList)
-            })
-        })
-    })
-})
-
 describe('Register', function () {
     it('Should be able to reach the register page', function () {
         cy.get('#navbarResponsive > ul > li:nth-child(2) > a').click()
@@ -91,6 +69,7 @@ describe('Register', function () {
         .type(passWord).should('have.value', passWord)
         cy.get('#controlPassWord')
         .type(passWord).should('have.value', passWord)
+        cy.wait(500)
         cy.get('#root > div > div > span > div > form > button').click()
         cy.url().should('eq', 'http://0.0.0.0/login')
     })
