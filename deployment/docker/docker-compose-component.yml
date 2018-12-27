@@ -29,6 +29,18 @@ services:
        - REDIS_URL=redis
        - JAEGER_HOST=jaeger-agent
    
+  highscoreapi:
+    container_name: highscoreapi
+    image: "bevrand/highscoreapi:${CIRCLE_SHA1}"
+    environment:
+    - GO_ENV=docker
+    - GIN_MODE=release
+    depends_on:
+    - redis
+    links:
+    - redis
+    ports:
+    - 4580:5000
 
   playlistapi:
     container_name: playlistapi

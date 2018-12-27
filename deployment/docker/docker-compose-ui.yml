@@ -85,6 +85,19 @@ services:
        - dockermongo
        - dockergres
 
+  highscoreapi:
+    container_name: highscoreapi
+    image: "bevrand/highscoreapi:${CIRCLE_SHA1}"
+    environment:
+    - GO_ENV=docker
+    - GIN_MODE=release
+    depends_on:
+    - redis
+    links:
+    - redis
+    ports:
+    - 4580:5000
+
   dockergres:
      container_name: dockergres
      image: "bevrand/dockergres:${CIRCLE_SHA1}"
