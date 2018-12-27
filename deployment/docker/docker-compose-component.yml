@@ -19,28 +19,13 @@ services:
     ports:
        - 4560:5000 # expose ports - HOST:CONTAINER
     depends_on:
-       - playlistapi
-       - redis
+       - highscoreapi
     links:
-       - playlistapi
-       - redis
+       - highscoreapi
     environment:
        - APP_SETTINGS=Production
-       - REDIS_URL=redis
-       - JAEGER_HOST=jaeger-agent
-   
-  highscoreapi:
-    container_name: highscoreapi
-    image: "bevrand/highscoreapi:${CIRCLE_SHA1}"
-    environment:
-    - GO_ENV=docker
-    - GIN_MODE=release
-    depends_on:
-    - redis
-    links:
-    - redis
-    ports:
-    - 4580:5000
+       - HIGHSCORE_API=http://highscoreapi:5000/api/v1/
+
 
   playlistapi:
     container_name: playlistapi
@@ -54,7 +39,6 @@ services:
     environment:
        - APP_SETTINGS=Production
        - MONGO_URL=mongodb://dockermongo:27017
-       - JAEGER_HOST=jaeger-agent
 
   proxyapi:
     container_name: proxyapi
@@ -65,41 +49,18 @@ services:
       - randomizerapi
       - playlistapi
       - authenticationapi
+      - highscoreapi
     environment:
       - NODE_ENV=development
     links:
       - randomizerapi
       - playlistapi
       - authenticationapi
-
-  reactapp:
-    container_name: reactapp
-    image: "bevrand/reactapp:${CIRCLE_SHA1}"
-    ports:
-      - 80:80
-    depends_on:
-      - randomizerapi
-      - playlistapi
-      - authenticationapi
-      - proxyapi
-    environment:
-      - NODE_ENV=development
-    links:
-      - proxyapi
-
-  dataseeder:
-    container_name: dataseeder
-    image: "bevrand/dataseeder:${CIRCLE_SHA1}"
-    depends_on:
-       - dockermongo
-       - dockergres
-    links:
-       - dockermongo
-       - dockergres
+      - highscoreapi
 
   componenttest:
     container_name: component_tests
-    image: "bevrand/componenttests:${CIRCLE_SHA1}"
+    image: "bevrand/componenttest:${CIRCLE_SHA1}"
     depends_on:
     - randomizerapi
     - playlistapi
@@ -116,6 +77,41 @@ services:
     - highscoreapi
     environment:
     - PYTHON_ENV=Test
+
+  reactapp:
+    container_name: reactapp
+    image: "bevrand/reactapp:${CIRCLE_SHA1}"
+    ports:
+      - 80:80
+    depends_on:
+      - proxyapi
+    environment:
+      - NODE_ENV=development
+    links:
+      - proxyapi
+
+  dataseeder:
+    container_name: dataseeder
+    image: "bevrand/dataseeder:${CIRCLE_SHA1}"
+    depends_on:
+       - dockermongo
+       - dockergres
+    links:
+       - dockermongo
+       - dockergres
+
+  highscoreapi:
+    container_name: highscoreapi
+    image: "bevrand/highscoreapi:${CIRCLE_SHA1}"
+    environment:
+    - GO_ENV=docker
+    - GIN_MODE=release
+    depends_on:
+    - redis
+    links:
+    - redis
+    ports:
+    - 4580:5000
 
   dockergres:
      container_name: dockergres

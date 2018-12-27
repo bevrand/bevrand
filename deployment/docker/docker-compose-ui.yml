@@ -19,16 +19,12 @@ services:
     ports:
        - 4560:5000 # expose ports - HOST:CONTAINER
     depends_on:
-       - playlistapi
-       - redis
+       - highscoreapi
     links:
-       - playlistapi
-       - redis
+       - highscoreapi
     environment:
        - APP_SETTINGS=Production
-       - REDIS_URL=redis
-       - JAEGER_HOST=jaeger-agent
-
+       - HIGHSCORE_API=http://highscoreapi:5000/api/v1/
 
   playlistapi:
     container_name: playlistapi
@@ -42,7 +38,6 @@ services:
     environment:
        - APP_SETTINGS=Production
        - MONGO_URL=mongodb://dockermongo:27017
-       - JAEGER_HOST=jaeger-agent
 
   proxyapi:
     container_name: proxyapi
@@ -53,12 +48,14 @@ services:
       - randomizerapi
       - playlistapi
       - authenticationapi
+      - highscoreapi
     environment:
       - NODE_ENV=development
     links:
       - randomizerapi
       - playlistapi
       - authenticationapi
+      - highscoreapi
 
   reactapp:
     container_name: reactapp
@@ -66,9 +63,6 @@ services:
     ports:
       - 80:80
     depends_on:
-      - randomizerapi
-      - playlistapi
-      - authenticationapi
       - proxyapi
     environment:
       - NODE_ENV=development
