@@ -160,34 +160,34 @@ jobs:
      # build the application image
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker pull bevrand/playlistapi:develop
-         docker tag bevrand/playlistapi:develop bevrand/playlistapi:production
+         docker pull bevrand/playlistapi:$CIRCLE_SHA1
+         docker tag bevrand/playlistapi:$CIRCLE_SHA1 bevrand/playlistapi:production
          docker push bevrand/playlistapi:production
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker pull bevrand/reactapp:develop
-         docker tag bevrand/reactapp:develop bevrand/reactapp:production
+         docker pull bevrand/reactapp:$CIRCLE_SHA1
+         docker tag bevrand/reactapp:$CIRCLE_SHA1 bevrand/reactapp:production
          docker push bevrand/reactapp:production
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker pull bevrand/proxyapi:develop
-         docker tag bevrand/proxyapi:develop bevrand/proxyapi:production
+         docker pull bevrand/proxyapi:$CIRCLE_SHA1
+         docker tag bevrand/proxyapi:$CIRCLE_SHA1 bevrand/proxyapi:production
          docker push bevrand/proxyapi:production
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker pull bevrand/randomizerapi:develop
-         docker tag bevrand/randomizerapi:develop bevrand/randomizerapi:production
+         docker pull bevrand/randomizerapi:$CIRCLE_SHA1
+         docker tag bevrand/randomizerapi:$CIRCLE_SHA1 bevrand/randomizerapi:production
          docker push bevrand/randomizerapi:production
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker pull bevrand/authenticationapi:develop
-         docker tag bevrand/authenticationapi:develop bevrand/authenticationapi:production
+         docker pull bevrand/authenticationapi:$CIRCLE_SHA1
+         docker tag bevrand/authenticationapi:$CIRCLE_SHA1 bevrand/authenticationapi:production
          docker push bevrand/authenticationapi:production
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker pull bevrand/testsuite:circleci
-         docker tag bevrand/testsuite:circleci bevrand/testsuite:develop 
-         docker push bevrand/testsuite:develop
+         docker pull bevrand/highscoreapi:$CIRCLE_SHA1
+         docker tag bevrand/highscoreapi:$CIRCLE_SHA1 bevrand/highscoreapi:production
+         docker push bevrand/highscoreapi:production
   pause_uptimerobot:
     machine: true
     steps:
@@ -255,6 +255,11 @@ workflows:
            - build_dockergres
      - ui_tests:
           context: BeverageRandomizerPROD
+          filters:
+            branches:
+              only:
+              - develop
+              - master
           requires:
            - build_python
            - build_node
