@@ -58,9 +58,9 @@ services:
       - authenticationapi
       - highscoreapi
 
-  componenttest:
+  componenttests:
     container_name: component_tests
-    image: "bevrand/componenttest:${CIRCLE_SHA1}"
+    image: "bevrand/componenttests:${CIRCLE_SHA1}"
     depends_on:
     - randomizerapi
     - playlistapi
