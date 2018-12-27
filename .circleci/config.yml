@@ -240,12 +240,11 @@ workflows:
      - build_golang:
          context: BeverageRandomizerPROD
          requires:
-         - unittest_highscore
-     - builder_dockergres:
+          - unittest_highscore
+     - build_dockergres:
          context: BeverageRandomizerPROD
          requires:
-         - unittest_authentication
-
+          - unittest_authentication
      - component_tests:
          context: BeverageRandomizerPROD
          requires:
