@@ -45,6 +45,7 @@ jobs:
     - image: circleci/golang:1.11
     steps:
     - checkout
+    - run: "cd ./bevrand.highscoreapi && go build"
     - run: "cd ./bevrand.highscoreapi && go test"
 
   build_python:   
@@ -53,21 +54,21 @@ jobs:
       - checkout
      # build the application image
       - run: |
-         docker build -t bevrand/playlistapi:$CIRCLE_BRANCH ./bevrand.playlistapi
+         docker build -t bevrand/playlistapi:$CIRCLE_BUILD_NUM ./bevrand.playlistapi
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker push bevrand/playlistapi:$CIRCLE_BRANCH
+         docker push bevrand/playlistapi:$CIRCLE_BUILD_NUM
       - run: |
-         docker build -t bevrand/randomizerapi:$CIRCLE_BRANCH ./bevrand.randomizerapi
+         docker build -t bevrand/randomizerapi:$CIRCLE_BUILD_NUM ./bevrand.randomizerapi
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker push bevrand/randomizerapi:$CIRCLE_BRANCH
+         docker push bevrand/randomizerapi:$CIRCLE_BUILD_NUM
       - run: |
-         docker build -t bevrand/componenttests:$CIRCLE_BRANCH ./bevrand.componenttests
+         docker build -t bevrand/componenttests:$CIRCLE_BUILD_NUM ./bevrand.componenttests
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker push bevrand/componenttests:$CIRCLE_BRANCH
+         docker push bevrand/componenttests:$CIRCLE_BUILD_NUM
       - run: |
-         docker build -t bevrand/dataseeder:$CIRCLE_BRANCH ./bevrand.dataseeder
+         docker build -t bevrand/dataseeder:$CIRCLE_BUILD_NUM ./bevrand.dataseeder
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker push bevrand/dataseeder:$CIRCLE_BRANCH
+         docker push bevrand/dataseeder:$CIRCLE_BUILD_NUM
 
   build_node:   
     machine: true
@@ -75,13 +76,13 @@ jobs:
       - checkout
      # build the application image
       - run: |
-         docker build -t bevrand/reactapp:$CIRCLE_BRANCH ./bevrand.reactapp
+         docker build -t bevrand/reactapp:$CIRCLE_BUILD_NUM ./bevrand.reactapp
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker push bevrand/reactapp:$CIRCLE_BRANCH
+         docker push bevrand/reactapp:$CIRCLE_BUILD_NUM
       - run: |
-         docker build -t bevrand/proxyapi:$CIRCLE_BRANCH ./bevrand.proxyapi
+         docker build -t bevrand/proxyapi:$CIRCLE_BUILD_NUM ./bevrand.proxyapi
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker push bevrand/proxyapi:$CIRCLE_BRANCH
+         docker push bevrand/proxyapi:$CIRCLE_BUILD_NUM
   
   build_dotnet:   
     machine: true
@@ -89,9 +90,9 @@ jobs:
       - checkout
      # build the application image
       - run: |
-         docker build -t bevrand/authenticationapi:$CIRCLE_BRANCH ./bevrand.authenticationapi/bevrand.authenticationapi
+         docker build -t bevrand/authenticationapi:$CIRCLE_BUILD_NUM ./bevrand.authenticationapi/bevrand.authenticationapi
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker push bevrand/authenticationapi:$CIRCLE_BRANCH
+         docker push bevrand/authenticationapi:$CIRCLE_BUILD_NUM
 
   build_golang:
     machine: true
@@ -99,9 +100,9 @@ jobs:
       - checkout
      # build the application image
       - run: |
-         docker build -t bevrand/highscoreapi:$CIRCLE_BRANCH ./bevrand.highscoreapi
+         docker build -t bevrand/highscoreapi:$CIRCLE_BUILD_NUM ./bevrand.highscoreapi
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker push bevrand/highscoreapi:$CIRCLE_BRANCH
+         docker push bevrand/highscoreapi:$CIRCLE_BUILD_NUM
 
   component_tests:   
     machine: true
