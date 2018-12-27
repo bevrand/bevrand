@@ -140,7 +140,7 @@ jobs:
          docker images
          docker ps -a
       #run ui_tests
-      - run: "cd ./bevrand.uitests && npm install"
+      - run: "cd ./bevrand.uitests && npm install --save-dev"
       - run: "cd /home/circleci/project"
 
       - run:

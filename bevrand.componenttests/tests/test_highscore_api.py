@@ -51,9 +51,10 @@ class HighScoreApiTests(test_setup_fixture.TestFixture):
         playlist = HelperClass.random_word_letters_only(35)
         user = HelperClass.random_word_letters_only(35)
         sut = url + f'/{user}/{playlist}'
-        body = json.dumps({"drink" : "beer"})
+        body = json.dumps({"drink": "beer"})
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(201, response.status_code)
+        print(url)
         resp = self.get_without_auth_header(url)
         self.assertEqual(200, resp.status_code)
         json_body = resp.json()
