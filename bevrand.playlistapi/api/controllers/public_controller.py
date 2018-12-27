@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from flasgger import swag_from
 from api.services import data_validator
-from api.setup import  FLASK_TRACER
+from api.setup import FLASK_TRACER
 from api.error_handler.error_model import InvalidUsage
 import opentracing
 from api.services.frontpage_service import FrontPageService

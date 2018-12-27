@@ -78,7 +78,7 @@ class RandomizerValidationChecks(test_setup_fixture.TestFixture):
         self.assertTrue(self.validate_string_contains(error_message, self.validation_missing_fields))
         self.assertTrue(self.validate_string_contains(meta_message, "user"))
 
-    def test_should_not_be_able_to_make_call_without_list(self):
+    def test_should_not_be_able_to_make_call_without_playlist(self):
         sut = url + '/v1/randomize'
         body = json.dumps({ "beverages": [
                             "beer",
@@ -106,3 +106,79 @@ class RandomizerValidationChecks(test_setup_fixture.TestFixture):
         })
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(200, response.status_code)
+
+    '''playlists should be at least two chars long'''
+    def test_should_not_be_able_to_randomize_with_invalid_playlist(self):
+        sut = url + '/v1/randomize'
+        body = json.dumps({
+            "beverages": [
+                "beer",
+                "wine",
+                "whiskey"
+            ],
+            "list": "t",
+            "user": "frontpage",
+        })
+        response = self.post_without_auth_header(sut, body)
+        self.assertEqual(400, response.status_code)
+        meta_message = response.json()['Meta']
+        self.assertTrue(meta_message['playlist'])
+        message = meta_message['playlist'][0]
+        self.assertEqual(message, "min length is 2")
+
+    '''users should be at least three chars long'''
+    def test_should_not_be_able_to_randomize_with_invalid_user(self):
+        sut = url + '/v1/randomize'
+        body = json.dumps({
+            "beverages": [
+                "beer",
+                "wine",
+                "whiskey"
+            ],
+            "list": "tgif",
+            "user": "fr",
+        })
+        response = self.post_without_auth_header(sut, body)
+        self.assertEqual(400, response.status_code)
+        meta_message = response.json()['Meta']
+        self.assertTrue(meta_message['user'])
+        message = meta_message['user'][0]
+        self.assertEqual(message, "min length is 3")
+
+    '''beverages list should be at least two beverages long'''
+    def test_should_not_be_able_to_randomize_with_invalid_beverage_list(self):
+        sut = url + '/v1/randomize'
+        body = json.dumps({
+            "beverages": [
+                "beer"
+            ],
+            "list": "tgif",
+            "user": "frontpage",
+        })
+        response = self.post_without_auth_header(sut, body)
+        self.assertEqual(400, response.status_code)
+        meta_message = response.json()['Meta']
+        self.assertTrue(meta_message['beverages'])
+        message = meta_message['beverages'][0]
+        self.assertEqual(message, "min length is 2")
+
+    '''beverages in the list should be at least 2 chars long '''
+    def test_should_not_be_able_to_randomize_with_invalid_beverages(self):
+        sut = url + '/v1/randomize'
+        body = json.dumps({
+            "beverages": [
+                "b",
+                "w",
+                "2"
+            ],
+            "list": "tgif",
+            "user": "frontpage",
+        })
+        response = self.post_without_auth_header(sut, body)
+        self.assertEqual(400, response.status_code)
+        meta_message = response.json()['Meta']
+        self.assertTrue(meta_message['beverages'])
+        messages = meta_message['beverages'][0]
+        self.assertEqual(len(messages), 3)
+        message = messages['1'][0]
+        self.assertEqual(message, "min length is 2")

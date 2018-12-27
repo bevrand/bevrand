@@ -9,8 +9,8 @@ def validate_play_list(play_list):
 
 
 def validate_user_name(user):
-    schema = {'user_name': {'type': 'string', 'required': True, 'minlength': 3}}
-    list_to_validate = {'user_name': user}
+    schema = {'user': {'type': 'string', 'required': True, 'minlength': 3}}
+    list_to_validate = {'user': user}
     validate_schema(schema, list_to_validate)
     return
 

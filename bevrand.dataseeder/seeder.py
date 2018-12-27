@@ -12,6 +12,12 @@ def insert_collections():
     connectionstring = CONNECTION
     client = MongoClient(connectionstring)
     db = client.bevrand
+    try:
+        print("dropping collections")
+        db.users.drop()
+        db.frontpagestandard.drop()
+    except:
+        print("no collection to delete")
     postids = []
     files = get_json_files()
     for file in files:

@@ -8,7 +8,9 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/mediocregopher/radix.v2/pool"
 	"github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go/ext"
 	openlog "github.com/opentracing/opentracing-go/log"
+	"github.com/uber/jaeger-client-go"
 	"github.com/uber/jaeger-client-go/config"
 	"gopkg.in/oauth2.v3/utils/uuid"
 	"io"
@@ -40,7 +42,6 @@ func ConnectRedis() {
 	var err error
 	// Establish a pool of 10 connections to the Redis server listening on
 	// port 6379 of the variable that has been used
-
 	redisUrl := os.Getenv("REDIS_URL") + ":6379"
 	fmt.Println(redisUrl)
 	db, err = pool.New("tcp", redisUrl, 10)
@@ -58,7 +59,7 @@ func main() {
 	jaegerConfig := jaegerUrl + ":" + jaegerPort
 	println(jaegerConfig)
 
-	tracer, closer := initJaeger("HighScoreApi", jaegerConfig)
+	tracer, closer := InitJaeger("HighScoreApi", jaegerConfig)
 	defer closer.Close()
 	opentracing.SetGlobalTracer(tracer)
 
@@ -90,7 +91,7 @@ func GetEnvFile() {
 	}
 }
 // Init returns an instance of Jaeger Tracer that samples 100% of traces and logs all spans to stdout.
-func initJaeger(service string, host string) (opentracing.Tracer, io.Closer) {
+func InitJaeger(service string, host string) (opentracing.Tracer, io.Closer) {
 	cfg := &config.Configuration{
 		Sampler: &config.SamplerConfig{
 			Type:  "const",
@@ -103,7 +104,7 @@ func initJaeger(service string, host string) (opentracing.Tracer, io.Closer) {
 	}
 	println(cfg)
 
-	tracer, closer, err := cfg.New(service, nil)
+	tracer, closer, err := cfg.New(service, config.Logger(jaeger.StdLogger))
 	if err != nil {
 		panic(fmt.Sprintf("ERROR: cannot init Jaeger: %v\n", err))
 	}
@@ -138,9 +139,9 @@ func PingPong(c *gin.Context) {
 }
 
 func RouteShowAllHighScore(c *gin.Context) {
-	tracer:= opentracing.GlobalTracer()
-	span := tracer.StartSpan("Getting data from Redis")
-	span.SetTag("Method", "RouteShowAllHighScore")
+	spanCtx, _ := opentracing.GlobalTracer().Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(c.Request.Header))
+	span := opentracing.GlobalTracer().StartSpan("ShowGlobalHighScore", ext.RPCServerOption(spanCtx))
+	defer span.Finish()
 
 	ctx := context.Background()
 	ctx = opentracing.ContextWithSpan(ctx, span)
@@ -159,9 +160,9 @@ func RouteShowAllHighScore(c *gin.Context) {
 }
 
 func RouteShowHighScore(c *gin.Context) {
-	tracer:= opentracing.GlobalTracer()
-	span := tracer.StartSpan("Getting data from Redis")
-	span.SetTag("Method", "RouteShowHighScore")
+	spanCtx, _ := opentracing.GlobalTracer().Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(c.Request.Header))
+	span := opentracing.GlobalTracer().StartSpan("ShowHighScore", ext.RPCServerOption(spanCtx))
+	defer span.Finish()
 
 	ctx := context.Background()
 	ctx = opentracing.ContextWithSpan(ctx, span)
@@ -183,9 +184,9 @@ func RouteShowHighScore(c *gin.Context) {
 
 
 func RouteIncrementHighscore(c *gin.Context) {
-	tracer:= opentracing.GlobalTracer()
-	span := tracer.StartSpan("Posting data to Redis")
-	span.SetTag("Method", "RouteIncrementHighscore")
+	spanCtx, _ := opentracing.GlobalTracer().Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(c.Request.Header))
+	span := opentracing.GlobalTracer().StartSpan("IncrementHighScore", ext.RPCServerOption(spanCtx))
+	defer span.Finish()
 
 	ctx := context.Background()
 	ctx = opentracing.ContextWithSpan(ctx, span)
@@ -212,7 +213,6 @@ func RouteIncrementHighscore(c *gin.Context) {
 		openlog.String("body", string(body)),
 		openlog.String("host", c.Request.Host),
 	)
-
 
 	user := c.Param("user")
 	playlist := c.Param("playList")

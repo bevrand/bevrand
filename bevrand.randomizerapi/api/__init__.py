@@ -61,6 +61,7 @@ def create_app():
     tracer = FlaskTracer(jaeger_tracer)
     global FLASK_TRACER
     FLASK_TRACER = tracer
+    install_all_patches()
 
     # set config
     env = getenv('APP_SETTINGS')

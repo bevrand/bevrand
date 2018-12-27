@@ -21,5 +21,4 @@ FROM alpine
 RUN apk update && apk add git && apk add ca-certificates
 COPY --from=build-env /app/highscoreapi /
 COPY --from=build-env /app/.env.docker /
-ENV GO_ENV=docker
 CMD ["/highscoreapi"]
