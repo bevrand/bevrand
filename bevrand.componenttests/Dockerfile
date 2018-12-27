@@ -12,7 +12,6 @@ RUN pip install -r requirements.txt
 
 # add app
 ADD . /usr/src/app
-ENV PYTHON_ENV="Test"
 
 # run server
 CMD pytest ./tests

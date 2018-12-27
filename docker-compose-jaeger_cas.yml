@@ -48,6 +48,7 @@ services:
     depends_on:
       - redis
       - jaeger-agent
+      - jaeger-collector
     links:
       - redis
     ports:
@@ -94,6 +95,7 @@ services:
       - randomizerapi
       - playlistapi
       - authenticationapi
+      - highscoreapi
       - jaeger-agent
     environment:
       - NODE_ENV=development
@@ -103,6 +105,7 @@ services:
       - randomizerapi
       - playlistapi
       - authenticationapi
+      - highscoreapi
 
   reactapp:
     container_name: reactapp

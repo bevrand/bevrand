@@ -1,7 +1,9 @@
 from tests import test_setup_fixture
+from helpers.random_name_generator import HelperClass
 from environment import config
 import pytest
 import os
+import json
 
 url = None
 
@@ -22,5 +24,38 @@ def setup_config():
 class HighScoreApiTests(test_setup_fixture.TestFixture):
 
     def test_ping_returns_200(self):
-        sut = url + '/ping'
-        self.assertTrue(True)
+        split_url = "/".join(url.split("/", 3)[:3])
+        sut = split_url + '/ping'
+        response = self.get_without_auth_header(sut)
+        self.assertEqual(200, response.status_code)
+
+    def test_should_be_able_to_post_a_sample_drink(self):
+        sut = url + '/test/test'
+        body = json.dumps({"drink" : "beer"})
+        response = self.post_without_auth_header(sut, body)
+        self.assertEqual(201, response.status_code)
+
+    def test_should_be_able_to_post_a_sample_drink_and_retrieve_it(self):
+        playlist = HelperClass.random_word_letters_only(35)
+        user = HelperClass.random_word_letters_only(35)
+        sut = url + f'/{user}/{playlist}'
+        body = json.dumps({"drink" : "beer"})
+        response = self.post_without_auth_header(sut, body)
+        self.assertEqual(201, response.status_code)
+        resp = self.get_without_auth_header(sut)
+        self.assertEqual(200, resp.status_code)
+        json_body = resp.json()
+        self.assertTrue(len(json_body) >= 1)
+
+    def test_should_be_able_to_post_a_sample_drink_and_retrieve_it_from_global(self):
+        playlist = HelperClass.random_word_letters_only(35)
+        user = HelperClass.random_word_letters_only(35)
+        sut = url + f'/{user}/{playlist}'
+        body = json.dumps({"drink" : "beer"})
+        response = self.post_without_auth_header(sut, body)
+        self.assertEqual(201, response.status_code)
+        resp = self.get_without_auth_header(url)
+        self.assertEqual(200, resp.status_code)
+        json_body = resp.json()
+        self.assertTrue(len(json_body) >= 1)
+

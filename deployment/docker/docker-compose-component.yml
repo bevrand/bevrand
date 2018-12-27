@@ -3,7 +3,7 @@ services:
 
   authenticationapi:
     container_name: authenticationapi
-    image: bevrand/authenticationapi:develop
+    image: "bevrand/authenticationapi:${CIRCLE_BRANCH}"
     ports:
       - 4570:5000
     depends_on:
@@ -15,7 +15,7 @@ services:
 
   randomizerapi:
     container_name: randomizerapi
-    image: bevrand/randomizerapi:develop
+    image: "bevrand/randomizerapi:${CIRCLE_BRANCH}"
     ports:
        - 4560:5000 # expose ports - HOST:CONTAINER
     depends_on:
@@ -32,7 +32,7 @@ services:
 
   playlistapi:
     container_name: playlistapi
-    image: bevrand/playlistapi:develop
+    image: "bevrand/playlistapi:${CIRCLE_BRANCH}"
     ports:
        - 4550:5000  # expose ports - HOST:CONTAINER
     depends_on:
@@ -46,7 +46,7 @@ services:
 
   proxyapi:
     container_name: proxyapi
-    image: bevrand/proxyapi:develop
+    image: "bevrand/proxyapi:${CIRCLE_BRANCH}"
     ports:
       - 4540:5000
     depends_on:
@@ -62,7 +62,7 @@ services:
 
   reactapp:
     container_name: reactapp
-    image: bevrand/reactapp:develop
+    image: "bevrand/reactapp:${CIRCLE_BRANCH}"
     ports:
       - 80:80
     depends_on:
@@ -77,7 +77,7 @@ services:
 
   dataseeder:
     container_name: dataseeder
-    image: bevrand/dataseeder:circleci
+    image: "bevrand/dataseeder:${CIRCLE_BRANCH}"
     depends_on:
        - dockermongo
        - dockergres
@@ -85,25 +85,29 @@ services:
        - dockermongo
        - dockergres
 
-  testsuite:
-    container_name: backend_tests
-    image: bevrand/testsuite:circleci
+  componenttest:
+    container_name: component_tests
+    image: "bevrand/componenttests:${CIRCLE_BRANCH}"
     depends_on:
-      - randomizerapi
-      - playlistapi
-      - authenticationapi
-      - proxyapi
+    - randomizerapi
+    - playlistapi
+    - authenticationapi
+    - proxyapi
+    - highscoreapi
+    - dataseeder
+    - reactapp
     links:
-      - randomizerapi
-      - playlistapi
-      - authenticationapi
-      - proxyapi
+    - randomizerapi
+    - playlistapi
+    - authenticationapi
+    - proxyapi
+    - highscoreapi
     environment:
-      - ASPNETCORE_ENVIRONMENT="Test"
+    - PYTHON_ENV=Test
 
   dockergres:
      container_name: dockergres
-     image: bevrand/dockergres:circleci
+     image: bevrand/dockergres:master
      ports:
        - 5434:5432
      environment:

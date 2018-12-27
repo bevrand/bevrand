@@ -5,8 +5,13 @@ import string
 class HelperClass(object):
 
     @staticmethod
-    def random_word(word_length):
-        chars =  string.ascii_letters + string.digits + '!@#$%^&*()/\{}[]<>'
+    def random_word_special_signs_included(word_length):
+        chars = string.ascii_letters + string.digits + '!@#$%^&*()/\{}[]<>'
+        return ''.join(random.sample(chars, word_length))
+
+    @staticmethod
+    def random_word_letters_only(word_length):
+        chars = string.ascii_letters
         return ''.join(random.sample(chars, word_length))
 
     @staticmethod

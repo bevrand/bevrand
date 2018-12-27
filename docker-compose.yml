@@ -46,7 +46,6 @@ services:
        - highscoreapi
     environment:
        - APP_SETTINGS=Production
-       - JAEGER_HOST=jaeger-agent
        - HIGHSCORE_API=http://highscoreapi:5000/api/v1/
 
   playlistapi:
@@ -61,7 +60,6 @@ services:
     environment:
        - APP_SETTINGS=Production
        - MONGO_URL=mongodb://dockermongo:27017
-       - JAEGER_HOST=jaeger-agent
 
   proxyapi:
     container_name: proxyapi
@@ -84,8 +82,7 @@ services:
     build: ./bevrand.highscoreapi
     environment:
     - GO_ENV=docker
-    - JAEGER_AGENT_HOST=jaeger-agent
-    - JAEGER_AGENT_PORT=6831
+    - GIN_MODE=release
     depends_on:
     - redis
     links:
@@ -118,22 +115,6 @@ services:
        - dockermongo
        - dockergres
 
-  testsuite:
-    container_name: backend_tests
-    build: ./bevrand.testsuite/bevrand.testsuite
-    depends_on:
-      - randomizerapi
-      - playlistapi
-      - authenticationapi
-      - proxyapi
-    links:
-      - randomizerapi
-      - playlistapi
-      - authenticationapi
-      - proxyapi
-    environment:
-      - ASPNETCORE_ENVIRONMENT="Test"
-
   componenttest:
     container_name: component_tests
     build: ./bevrand.componenttests
@@ -143,12 +124,16 @@ services:
     - authenticationapi
     - proxyapi
     - highscoreapi
+    - dataseeder
+    - reactapp
     links:
     - randomizerapi
     - playlistapi
     - authenticationapi
     - proxyapi
     - highscoreapi
+    environment:
+    - PYTHON_ENV=Test
 
 
       

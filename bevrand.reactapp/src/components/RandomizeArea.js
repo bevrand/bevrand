@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Header from './Header';
 import Randomizer from './Randomizer';
 import Playlists from './PlaylistSelection';
-import TopRolledBeverages from './TopRolledBeverages';
 import AuthService from './AuthService';
 import config from './ConfigService';
 
@@ -103,7 +102,6 @@ class RandomizeArea extends Component {
         <Header headerText={headerText}/>
         {this.state.currentPlaylist && <Randomizer userName={userName} playlist={this.state.currentPlaylist} />}
         {this.state.playlists && this.state.currentPlaylist && <Playlists playlists={this.state.playlists} onClick={this.changePlaylist} />}
-        {this.state.currentPlaylist && <TopRolledBeverages playlist={this.state.currentPlaylist} />}
       </div>
     );
   }
