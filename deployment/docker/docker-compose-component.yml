@@ -3,7 +3,7 @@ services:
 
   authenticationapi:
     container_name: authenticationapi
-    image: "bevrand/authenticationapi:${CIRCLE_BUILD_NUM}"
+    image: "bevrand/authenticationapi:${CIRCLE_SHA1}"
     ports:
       - 4570:5000
     depends_on:
@@ -15,7 +15,7 @@ services:
 
   randomizerapi:
     container_name: randomizerapi
-    image: "bevrand/randomizerapi:${CIRCLE_BUILD_NUM}"
+    image: "bevrand/randomizerapi:${CIRCLE_SHA1}"
     ports:
        - 4560:5000 # expose ports - HOST:CONTAINER
     depends_on:
@@ -32,7 +32,7 @@ services:
 
   playlistapi:
     container_name: playlistapi
-    image: "bevrand/playlistapi:${CIRCLE_BUILD_NUM}"
+    image: "bevrand/playlistapi:${CIRCLE_SHA1}"
     ports:
        - 4550:5000  # expose ports - HOST:CONTAINER
     depends_on:
@@ -46,7 +46,7 @@ services:
 
   proxyapi:
     container_name: proxyapi
-    image: "bevrand/proxyapi:${CIRCLE_BUILD_NUM}"
+    image: "bevrand/proxyapi:${CIRCLE_SHA1}"
     ports:
       - 4540:5000
     depends_on:
@@ -62,7 +62,7 @@ services:
 
   reactapp:
     container_name: reactapp
-    image: "bevrand/reactapp:${CIRCLE_BUILD_NUM}"
+    image: "bevrand/reactapp:${CIRCLE_SHA1}"
     ports:
       - 80:80
     depends_on:
@@ -77,7 +77,7 @@ services:
 
   dataseeder:
     container_name: dataseeder
-    image: "bevrand/dataseeder:${CIRCLE_BUILD_NUM}"
+    image: "bevrand/dataseeder:${CIRCLE_SHA1}"
     depends_on:
        - dockermongo
        - dockergres
@@ -87,7 +87,7 @@ services:
 
   componenttest:
     container_name: component_tests
-    image: "bevrand/componenttests:${CIRCLE_BUILD_NUM}"
+    image: "bevrand/componenttests:${CIRCLE_SHA1}"
     depends_on:
     - randomizerapi
     - playlistapi
