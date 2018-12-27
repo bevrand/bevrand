@@ -103,6 +103,16 @@ jobs:
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/highscoreapi:$CIRCLE_SHA1
 
+  build_dockergres:
+    machine: true
+    steps:
+      - checkout
+     # build the application image
+      - run: |
+         docker build -t bevrand/dockergres:$CIRCLE_SHA1 ./bevrand.dataseeder/db
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/dockergres:$CIRCLE_SHA1
+
   component_tests:   
     machine: true
     steps:
@@ -231,6 +241,10 @@ workflows:
          context: BeverageRandomizerPROD
          requires:
          - unittest_highscore
+     - builder_dockergres:
+         context: BeverageRandomizerPROD
+         requires:
+         - unittest_authentication
 
      - component_tests:
          context: BeverageRandomizerPROD
@@ -239,6 +253,7 @@ workflows:
            - build_node
            - build_dotnet
            - build_golang
+           - build_dockergres
      - ui_tests:
           context: BeverageRandomizerPROD
           requires:
@@ -246,6 +261,7 @@ workflows:
            - build_node
            - build_dotnet
            - build_golang
+           - build_dockergres
      #TODO Sonar-scanner
      #- acceptance_test_1:
      #    requires:

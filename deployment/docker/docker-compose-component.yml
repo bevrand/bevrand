@@ -107,7 +107,7 @@ services:
 
   dockergres:
      container_name: dockergres
-     image: bevrand/dockergres:master
+     image: "bevrand/dockergres:${CIRCLE_SHA1}"
      ports:
        - 5434:5432
      environment:
