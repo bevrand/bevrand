@@ -44,9 +44,8 @@ jobs:
     docker:
     - image: circleci/golang:1.11
     steps:
-    - checkout
-    - run: "cd ./bevrand.highscoreapi && go build"
-    - run: "cd ./bevrand.highscoreapi && go test"
+      - checkout
+      - run: "cd ./bevrand.highscoreapi && go test"
 
   build_python:   
     machine: true
