@@ -32,7 +32,11 @@ const envVarsSchema = joi.object({
   USEMOCK: joi.boolean()
     .optional(),
   DEFAULT_FRONTPAGE_LIST: joi.string()
-    .optional()
+    .optional(),
+  JAEGER_AGENT_HOST: joi.string()
+    .optional(),
+  JAEGER_AGENT_PORT: joi.number()
+    .default()
 }).unknown(true);
 
 const { error, value: envVars } = joi.validate(process.env, envVarsSchema)
@@ -52,7 +56,9 @@ const config = {
   server: {
     port: envVars.PORT,
   },
-  defaultFrontpageList: envVars.DEFAULT_FRONTPAGE_LIST
+  defaultFrontpageList: envVars.DEFAULT_FRONTPAGE_LIST,
+  jaegerAgentHostName: envVars.JAEGER_AGENT_HOST || 'localhost',
+  jaegerAgentPort: envVars.JAEGER_AGENT_PORT || 6831
 }
 
 module.exports = config;
