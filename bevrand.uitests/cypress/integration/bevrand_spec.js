@@ -61,6 +61,7 @@ describe('Register', function () {
         userName = makeRandomString(15)
         passWord = makeRandomString(10)
 
+        cy.get('#root > div > div > span > div > form > button').click()
         cy.get('#userName')
         .type(userName).should('have.value', userName)
         cy.get('#emailAddress')
