@@ -255,11 +255,6 @@ workflows:
            - build_dockergres
      - ui_tests:
           context: BeverageRandomizerPROD
-          filters:
-            branches:
-              only:
-              - develop
-              - master
           requires:
            - build_python
            - build_node

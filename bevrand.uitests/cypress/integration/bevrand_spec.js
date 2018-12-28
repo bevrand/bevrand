@@ -69,7 +69,6 @@ describe('Register', function () {
         .type(passWord).should('have.value', passWord)
         cy.get('#controlPassWord')
         .type(passWord).should('have.value', passWord)
-        cy.wait(500)
         cy.get('#root > div > div > span > div > form > button').click()
         cy.url().should('eq', 'http://0.0.0.0/login')
     })
