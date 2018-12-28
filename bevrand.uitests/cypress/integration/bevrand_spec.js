@@ -61,7 +61,6 @@ describe('Register', function () {
         userName = makeRandomString(15)
         passWord = makeRandomString(10)
 
-        cy.get('#root > div > div > span > div > form > button').click()
         cy.get('#userName')
         .type(userName).should('have.value', userName)
         cy.get('#emailAddress')
@@ -70,7 +69,7 @@ describe('Register', function () {
         .type(passWord).should('have.value', passWord)
         cy.get('#controlPassWord')
         .type(passWord).should('have.value', passWord)
-        cy.get('#root > div > div > span > div > form > button').click()
+        cy.get('#root > div > div > span > div > form > button > i').click()
         cy.url().should('eq', 'http://0.0.0.0/login')
     })
     it('Should not be able to register a user twice', function () {

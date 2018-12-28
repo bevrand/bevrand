@@ -1,5 +1,8 @@
 import argparse
 import yaml
+import string
+import random
+import os
 
 parser = argparse.ArgumentParser(description='Create a docker-compose file based on arguments given')
 
@@ -51,4 +54,20 @@ def print_values_at_startup():
     print('Password creation = ' + str(create_password))
 
 
+def create_password_and_users():
+    chars = string.ascii_letters + string.digits + '!@#$%^&*()/\{}[]<>'
+    return ''.join(random.sample(chars, 32))
+
+
+def load_docker_compose_file():
+    print(os.getcwd())
+    stream = open("docker-compose.yml", "r")
+    docs = yaml.load_all(stream)
+    for doc in docs:
+        for k, v in doc.items():
+            print(k, "->", v)
+        print("\n",)
+
+
 print_values_at_startup()
+load_docker_compose_file()
