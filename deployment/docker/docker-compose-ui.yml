@@ -115,24 +115,5 @@ services:
        - dockermongo
        - dockergres
 
-  componenttest:
-    container_name: component_tests
-    build: ./bevrand.componenttests
-    depends_on:
-    - randomizerapi
-    - playlistapi
-    - authenticationapi
-    - proxyapi
-    - highscoreapi
-    - dataseeder
-    - reactapp
-    links:
-    - randomizerapi
-    - playlistapi
-    - authenticationapi
-    - proxyapi
-    - highscoreapi
-    environment:
-    - PYTHON_ENV=Test
 
 
