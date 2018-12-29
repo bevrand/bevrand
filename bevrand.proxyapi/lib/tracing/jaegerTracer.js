@@ -1,6 +1,6 @@
 const { initTracer: initJaegerTracer } = require("jaeger-client");
 
-module.exports.initTracer = serviceName => {
+module.exports.initTracer = (serviceName, hostName) => {
   const config = {
     serviceName: serviceName,
     sampler: {
@@ -9,6 +9,7 @@ module.exports.initTracer = serviceName => {
     },
     reporter: {
       logSpans: true,
+      agentHost: hostName
     },
   };
   const options = {
