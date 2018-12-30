@@ -1,6 +1,5 @@
 from flask_script import Manager
 import unittest
-
 from api.setup import app
 
 

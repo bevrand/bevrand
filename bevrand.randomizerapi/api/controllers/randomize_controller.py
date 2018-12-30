@@ -1,13 +1,13 @@
 from flask import jsonify, request, Blueprint
-from api import FLASK_TRACER
 from api.service import data_validator
 from api.service.randomizer import Randomizer
 from api.error_handler.error_model import InvalidUsage
-import opentracing
-
+from api.jaeger import tracing
+from opentracing.ext import tags
+from opentracing.propagation import Format
 
 randomize_blueprint = Blueprint('randomize', __name__,)
-
+tracer = tracing.init_tracer("RandomizerApi")
 
 @randomize_blueprint.route('/ping', methods=['GET'])
 def ping_pong():
@@ -50,7 +50,10 @@ def randomize_list_of_drinks():
           200:
             description: Your list has been randomized
     """
-    parent_span = create_parent_trace()
+    span_ctx = tracer.extract(Format.HTTP_HEADERS, request.headers)
+    if span_ctx is None:
+        span_ctx = tracer.start_active_span(request)
+    span_tags = {tags.SPAN_KIND: tags.SPAN_KIND_RPC_SERVER}
     json_body = request.json
     try:
         beverages = json_body['beverages']
@@ -61,10 +64,10 @@ def randomize_list_of_drinks():
     data_validator.validate_beverages(beverages)
     data_validator.validate_user_name(user_name)
     data_validator.validate_play_list(playlist)
-    with opentracing.tracer.start_span('randomized-drink', child_of=parent_span) as span:
+    with tracer.start_active_span('randomized-drink', child_of=span_ctx, tags=span_tags) as scope:
         randomizer = Randomizer()
-        randomized_drink = randomizer.randomize_drink_from_list(beverages, user_name, playlist)
-        span.log_kv({"status_code": 200, "result": randomized_drink})
+        randomized_drink = randomizer.randomize_drink_from_list(beverages, user_name, playlist, tracer)
+        scope.span.log_kv({"status_code": 200, "result": randomized_drink})
         return jsonify({"result": randomized_drink}), 200
 
 
@@ -72,18 +75,12 @@ def randomize_list_of_drinks():
 def handle_invalid_usage(error):
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
-    parent_span = create_parent_trace()
-    with opentracing.tracer.start_span('error', child_of=parent_span) as span:
-        span.log_kv({"status_code": error.status_code, "error": error.message})
+    span_ctx = tracer.extract(Format.HTTP_HEADERS, request.headers)
+    if span_ctx is None:
+        span_ctx = tracer.start_active_span(request)
+    span_tags = {tags.SPAN_KIND: tags.SPAN_KIND_RPC_SERVER}
+    with tracer.start_active_span('ERROR', child_of=span_ctx, tags=span_tags) as scope:
+        scope.span.log_kv({"status_code": error.status_code, "error": error.message})
         if error.meta is not None:
-            span.log_kv({"meta": error.meta})
+            scope.span.log_kv({"meta": error.meta})
     return response
-
-
-@FLASK_TRACER.trace()
-def create_parent_trace():
-    parent_span = FLASK_TRACER.get_span(request)
-    parent_span.set_tag('http.url', request.base_url)
-    parent_span.set_tag('http.method', request.method)
-    parent_span.set_tag('body', request.json)
-    return parent_span

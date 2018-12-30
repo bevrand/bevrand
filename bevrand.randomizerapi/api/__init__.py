@@ -1,17 +1,8 @@
 from os import getenv
 from flask import Flask
 from flasgger import Swagger
-from jaeger_client import Config
-from flask_opentracing import FlaskTracer
-from opentracing_instrumentation.client_hooks import install_all_patches
-import logging
-import os
 
-try:
-    JAEGER_HOST = os.environ['JAEGER_AGENT_HOST']
-except:
-    JAEGER_HOST = "localhost"
-print(JAEGER_HOST)
+
 FLASK_TRACER = None
 
 
@@ -45,24 +36,6 @@ def create_app():
     }
     Swagger(app, config=swagger_config)
 
-    log_level = logging.DEBUG
-    logging.getLogger('').handlers = []
-    logging.basicConfig(format='%(asctime)s %(message)s', level=log_level)
-
-    config = Config(config={'sampler': {'type': 'const', 'param': 1},
-                            'logging': True,
-                            'local_agent':
-                            # Also, provide a hostname of Jaeger instance to send traces to.
-                                {'reporting_host': JAEGER_HOST}},
-                    # Service name can be arbitrary string describing this particular web service.
-                    service_name="RandomizerApi")
-
-    jaeger_tracer = config.initialize_tracer()
-    tracer = FlaskTracer(jaeger_tracer)
-    global FLASK_TRACER
-    FLASK_TRACER = tracer
-    install_all_patches()
-
     # set config
     env = getenv('APP_SETTINGS')
     if env is None:
@@ -76,31 +49,3 @@ def create_app():
 
 
     return app
-
-'''
-    #set tracing
-    def initialize_tracer():
-        config = Config(
-            config={  # usually read from some yaml config
-                'sampler': {
-                    'type': 'const',
-                    'param': 1,
-                },
-                'local_agent': {
-                    'reporting_host': JAEGER_HOST
-                },
-                'logging': True,
-            },
-            service_name='randomizer_api_docker',
-        )
-        return config.initialize_tracer()  # also sets opentracing.tracer
-
-    jaeger_tracer = initialize_tracer()
-    global JAEGER_TRACER
-    JAEGER_TRACER = jaeger_tracer
-    flask_tracer = FlaskTracer(jaeger_tracer)
-    #install_all_patches()
-    global FLASK_TRACER
-    FLASK_TRACER = flask_tracer
-
-'''

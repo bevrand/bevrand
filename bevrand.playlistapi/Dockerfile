@@ -1,4 +1,4 @@
-FROM python:3.6-alpine
+FROM python:3.6-alpine3.8
 CMD apk add curl
 HEALTHCHECK --timeout=1s --interval=30s --retries=3 \
   CMD curl -s --fail http://playlistapi:5000/api/v1/public/ping || exit 1
@@ -18,4 +18,5 @@ EXPOSE 5000
 ADD . /usr/src/app
 
 # run server
-CMD python manage.py runserver -h 0.0.0.0
+#CMD python manage.py runserver -h 0.0.0.0
+CMD gunicorn -w 1 -b 0.0.0.0:5000 manage:app
