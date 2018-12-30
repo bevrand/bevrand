@@ -6,7 +6,7 @@ jobs:
     steps:
       - checkout 
       - run: "cd ./bevrand.playlistapi && sudo pip install -r requirements.txt"
-      - run: "cd ./bevrand.playlistapi && sudo pytest --cov-report term --cov=api"
+      - run: "cd ./bevrand.playlistapi/api/tests && sudo pytest --cov-report term --cov=api"
 
   unittest_reactapp:
     docker:
@@ -31,7 +31,7 @@ jobs:
     steps:
       - checkout 
       - run: "cd ./bevrand.randomizerapi && sudo pip install -r requirements.txt"
-      - run: "cd ./bevrand.randomizerapi && sudo pytest --cov-report term --cov=api"
+      - run: "cd ./bevrand.randomizerapi/api/tests && sudo pytest --cov-report term --cov=api"
 
   unittest_authentication:
     docker:
