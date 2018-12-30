@@ -77,7 +77,7 @@ def handle_invalid_usage(error):
     response.status_code = error.status_code
     span_ctx = tracer.extract(Format.HTTP_HEADERS, request.headers)
     if span_ctx is None:
-        span_ctx = tracer.start_active_span(request)
+        return response
     span_tags = {tags.SPAN_KIND: tags.SPAN_KIND_RPC_SERVER}
     with tracer.start_active_span('ERROR', child_of=span_ctx, tags=span_tags) as scope:
         scope.span.log_kv({"status_code": error.status_code, "error": error.message})
