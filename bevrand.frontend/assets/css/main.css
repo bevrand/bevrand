@@ -73,28 +73,6 @@ input, select, textarea {
 }
 
 /* Basic */
-	.collapsible {
-		background-color: #e59400;
-		color: white;
-		cursor: pointer;
-		padding: 18px;
-		width: 100%;
-		border: none;
-		text-align: center;
-		outline: none;
-		font-size: 15px;
-	}
-	.content {
-		padding: 0 18px;
-		display: none;
-		overflow: hidden;
-		background-color: #e59400;
-	}
-
-	.collapsible:hover {
-
-	}
-
 	.active {
 		overflow: hidden;
 	}
@@ -136,7 +114,7 @@ input, select, textarea {
 
 	h1, h2, h3, h4, h5, h6 {
 		font-weight: 400;
-		color: #e7dce7;
+		color: #ffffff;
 		line-height: 1.25em;
 	}
 
@@ -151,10 +129,12 @@ input, select, textarea {
 	}
 
 	h2 {
+		text-align: center;
 		font-size: 2.85em;
 	}
 
 	h3 {
+		text-align: center;
 		font-size: 1.25em;
 	}
 
@@ -2080,13 +2060,12 @@ input, select, textarea {
 	.button {
 		position: relative;
 		display: inline-block;
-		background: #e59400;
-		color: #fff;
+		background: #FF9500;
+		color: #FFFFFF;
 		text-align: center;
 		border-radius: 0.5em;
 		text-decoration: none;
 		padding: 0.65em 3em 0.65em 3em;
-		border: 0;
 		cursor: pointer;
 		outline: 0;
 		font-weight: 400;
@@ -2095,6 +2074,18 @@ input, select, textarea {
 		-ms-transition: background-color 0.35s ease-in-out, color 0.35s ease-in-out, border-bottom-color 0.35s ease-in-out;
 		transition: background-color 0.35s ease-in-out, color 0.35s ease-in-out, border-bottom-color 0.35s ease-in-out;
 	}
+.selectedPlaylist{
+	text-align: center;
+	padding-top: 6%;
+	padding-bottom: 6%;
+}
+
+.randomizeButton{
+	text-align: center;
+	padding-top: 2%;
+	padding-bottom: 2%;
+}
+
 
 		input[type="button"]:hover,
 		input[type="submit"]:hover,
@@ -2173,7 +2164,7 @@ input, select, textarea {
 /* Wrapper */
 
 	.wrapper {
-		background: #00e594;
+		background: #7A2F9E;
 		margin: 0 0 2em 0;
 		padding: 6em 0 6em 0;
 	}
@@ -2418,7 +2409,7 @@ input, select, textarea {
 /* Banner */
 
 	#banner {
-		background: #00e594;
+		background: #7A2F9E;
 		text-align: center;
 		padding: 4.5em 0 4.5em 0;
 		margin-bottom: 0;
@@ -2760,7 +2751,7 @@ input, select, textarea {
 		position: relative;
 		overflow: hidden;
 		padding: 6em 0 6em 0;
-		background: #2b252c;
+		background: #424242;
 		color: #fff;
 	}
 
@@ -2890,12 +2881,14 @@ input, select, textarea {
 		.carousel article {
 			display: inline-block;
 			width: 18em;
-			background: #e59400;
+			background: #FF9B0D;
 			text-align: center;
 			padding: 0 1em 3em 1em;
 			margin: 0 2em 0 0;
 			white-space: normal;
-			opacity: .7;
+			height: 25em;
+			overflow: auto;
+			opacity: 1;
 			-moz-transition: opacity 0.75s ease-in-out;
 			-webkit-transition: opacity 0.75s ease-in-out;
 			-ms-transition: opacity 0.75s ease-in-out;
@@ -3426,3 +3419,4 @@ input, select, textarea {
 					}
 
 	}
+

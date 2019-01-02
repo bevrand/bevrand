@@ -44,6 +44,8 @@ $("#randomizebutton").click(function() {
         $('#randomizebutton')
             .text("Randomize from this list again?")
             .show()
+        $('#randomized_drink')
+            .show()
     }, 4500);
 
 
