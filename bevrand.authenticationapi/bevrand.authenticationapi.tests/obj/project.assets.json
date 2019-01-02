@@ -14430,11 +14430,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/joerivrij/projects/src/bevrand/bevrand/bevrand.authenticationapi/bevrand.authenticationapi.tests/bevrand.authenticationapi.tests.csproj",
+      "projectUniqueName": "/home/joerivrij/projects/src/github.com/bevrand/bevrand.authenticationapi/bevrand.authenticationapi.tests/bevrand.authenticationapi.tests.csproj",
       "projectName": "bevrand.authenticationapi.tests",
-      "projectPath": "/home/joerivrij/projects/src/bevrand/bevrand/bevrand.authenticationapi/bevrand.authenticationapi.tests/bevrand.authenticationapi.tests.csproj",
+      "projectPath": "/home/joerivrij/projects/src/github.com/bevrand/bevrand.authenticationapi/bevrand.authenticationapi.tests/bevrand.authenticationapi.tests.csproj",
       "packagesPath": "/home/joerivrij/.nuget/packages/",
-      "outputPath": "/home/joerivrij/projects/src/bevrand/bevrand/bevrand.authenticationapi/bevrand.authenticationapi.tests/obj/",
+      "outputPath": "/home/joerivrij/projects/src/github.com/bevrand/bevrand.authenticationapi/bevrand.authenticationapi.tests/obj/",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "/usr/share/dotnet/sdk/NuGetFallbackFolder"
@@ -14451,8 +14451,8 @@
       "frameworks": {
         "netcoreapp2.2": {
           "projectReferences": {
-            "/home/joerivrij/projects/src/bevrand/bevrand/bevrand.authenticationapi/bevrand.authenticationapi/bevrand.authenticationapi.csproj": {
-              "projectPath": "/home/joerivrij/projects/src/bevrand/bevrand/bevrand.authenticationapi/bevrand.authenticationapi/bevrand.authenticationapi.csproj"
+            "/home/joerivrij/projects/src/github.com/bevrand/bevrand.authenticationapi/bevrand.authenticationapi/bevrand.authenticationapi.csproj": {
+              "projectPath": "/home/joerivrij/projects/src/github.com/bevrand/bevrand.authenticationapi/bevrand.authenticationapi/bevrand.authenticationapi.csproj"
             }
           }
         }
@@ -14494,6 +14494,12 @@
     }
   },
   "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Problem reading the cache file /home/joerivrij/projects/src/github.com/bevrand/bevrand.authenticationapi/bevrand.authenticationapi.tests/obj/bevrand.authenticationapi.tests.csproj.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
+    },
     {
       "code": "NU1603",
       "level": "Warning",

@@ -11,6 +11,7 @@ import (
 	"gopkg.in/oauth2.v3/utils/uuid"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 
@@ -94,6 +95,17 @@ func RouteIncrementHighscore(c *gin.Context) {
 		return
 	}
 
+	if po.Drink == "" {
+		b, _ := uuid.NewRandom()
+		localUuid := fmt.Sprintf("%x-%x-%x-%x-%x",
+			b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
+		emptyBodyError := ErrorModel{
+			Message: "You have to provide a body with this request",
+			UniqueCode: localUuid}
+
+		respondWithJson(c, http.StatusBadRequest, emptyBodyError, ctx)
+	}
+
 	body, _ := json.Marshal(po)
 
 	span.LogFields(
@@ -105,6 +117,17 @@ func RouteIncrementHighscore(c *gin.Context) {
 
 	user := c.Param("user")
 	playlist := c.Param("playList")
+
+	if strings.ToLower(user) == "global" {
+		b, _ := uuid.NewRandom()
+		localUuid := fmt.Sprintf("%x-%x-%x-%x-%x",
+			b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
+		restrictedUserError := ErrorModel{
+			Message: "Global is a restricted user and cannot be used",
+			UniqueCode: localUuid}
+
+		respondWithJson(c, http.StatusBadRequest, restrictedUserError, ctx)
+	}
 
 	CreateNewHighScore(user, playlist, po.Drink, ctx)
 

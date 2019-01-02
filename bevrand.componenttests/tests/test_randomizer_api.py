@@ -2,9 +2,9 @@ from tests import test_setup_fixture
 from environment import config
 import pytest
 import os
-import json
 
 url = None
+
 
 @pytest.fixture(scope="module")
 def setup_config():
@@ -30,13 +30,13 @@ class RandomizerApiTests(test_setup_fixture.TestFixture):
     #this test is to check for backwards compatibility
     def test_should_be_able_to_randomize_a_simple_list_old_enpoint(self):
         sut = url + '/randomize'
-        body = json.dumps(self.test_randomize_body)
+        body = self.test_randomize_body
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(200, response.status_code)
 
     def test_should_be_able_to_randomize_a_simple_list(self):
         sut = url + '/v1/randomize'
-        body = json.dumps(self.test_randomize_body)
+        body = self.test_randomize_body
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(200, response.status_code)
 
@@ -46,7 +46,7 @@ class RandomizerValidationChecks(test_setup_fixture.TestFixture):
 
     def test_should_not_be_able_to_make_empty_calls(self):
         sut = url + '/v1/randomize'
-        body = json.dumps({})
+        body = {}
         response = self.post_without_auth_header(sut, body)
         error_message = response.json()['Error']
         meta_message = response.json()['Meta']
@@ -56,7 +56,7 @@ class RandomizerValidationChecks(test_setup_fixture.TestFixture):
 
     def test_should_not_be_able_to_make_call_without_beverages(self):
         sut = url + '/v1/randomize'
-        body = json.dumps({ "list": "tgif", "user": "frontpage"})
+        body = { "list": "tgif", "user": "frontpage"}
         response = self.post_without_auth_header(sut, body)
         error_message = response.json()['Error']
         meta_message = response.json()['Meta']
@@ -66,11 +66,11 @@ class RandomizerValidationChecks(test_setup_fixture.TestFixture):
 
     def test_should_not_be_able_to_make_call_without_user(self):
         sut = url + '/v1/randomize'
-        body = json.dumps({ "beverages": [
+        body = { "beverages": [
                             "beer",
                             "wine",
                             "whiskey"
-                          ],"list": "frontpage"})
+                          ],"list": "frontpage"}
         response = self.post_without_auth_header(sut, body)
         error_message = response.json()['Error']
         meta_message = response.json()['Meta']
@@ -80,11 +80,11 @@ class RandomizerValidationChecks(test_setup_fixture.TestFixture):
 
     def test_should_not_be_able_to_make_call_without_playlist(self):
         sut = url + '/v1/randomize'
-        body = json.dumps({ "beverages": [
+        body = { "beverages": [
                             "beer",
                             "wine",
                             "whiskey"
-                          ],"user": "frontpage"})
+                          ],"user": "frontpage"}
         response = self.post_without_auth_header(sut, body)
         error_message = response.json()['Error']
         meta_message = response.json()['Meta']
@@ -94,7 +94,7 @@ class RandomizerValidationChecks(test_setup_fixture.TestFixture):
 
     def test_should_be_able_to_include_extra_json_fields(self):
         sut = url + '/v1/randomize'
-        body = json.dumps({
+        body = {
             "beverages": [
                 "beer",
                 "wine",
@@ -103,14 +103,14 @@ class RandomizerValidationChecks(test_setup_fixture.TestFixture):
             "list": "tgif",
             "user": "frontpage",
             "anextrafield": "just an extra field"
-        })
+        }
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(200, response.status_code)
 
     '''playlists should be at least two chars long'''
     def test_should_not_be_able_to_randomize_with_invalid_playlist(self):
         sut = url + '/v1/randomize'
-        body = json.dumps({
+        body = {
             "beverages": [
                 "beer",
                 "wine",
@@ -118,7 +118,7 @@ class RandomizerValidationChecks(test_setup_fixture.TestFixture):
             ],
             "list": "t",
             "user": "frontpage",
-        })
+        }
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(400, response.status_code)
         meta_message = response.json()['Meta']
@@ -129,7 +129,7 @@ class RandomizerValidationChecks(test_setup_fixture.TestFixture):
     '''users should be at least three chars long'''
     def test_should_not_be_able_to_randomize_with_invalid_user(self):
         sut = url + '/v1/randomize'
-        body = json.dumps({
+        body = {
             "beverages": [
                 "beer",
                 "wine",
@@ -137,7 +137,7 @@ class RandomizerValidationChecks(test_setup_fixture.TestFixture):
             ],
             "list": "tgif",
             "user": "fr",
-        })
+        }
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(400, response.status_code)
         meta_message = response.json()['Meta']
@@ -148,13 +148,13 @@ class RandomizerValidationChecks(test_setup_fixture.TestFixture):
     '''beverages list should be at least two beverages long'''
     def test_should_not_be_able_to_randomize_with_invalid_beverage_list(self):
         sut = url + '/v1/randomize'
-        body = json.dumps({
+        body = {
             "beverages": [
                 "beer"
             ],
             "list": "tgif",
             "user": "frontpage",
-        })
+        }
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(400, response.status_code)
         meta_message = response.json()['Meta']
@@ -165,7 +165,7 @@ class RandomizerValidationChecks(test_setup_fixture.TestFixture):
     '''beverages in the list should be at least 2 chars long '''
     def test_should_not_be_able_to_randomize_with_invalid_beverages(self):
         sut = url + '/v1/randomize'
-        body = json.dumps({
+        body = {
             "beverages": [
                 "b",
                 "w",
@@ -173,7 +173,7 @@ class RandomizerValidationChecks(test_setup_fixture.TestFixture):
             ],
             "list": "tgif",
             "user": "frontpage",
-        })
+        }
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(400, response.status_code)
         meta_message = response.json()['Meta']
