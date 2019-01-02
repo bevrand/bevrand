@@ -4,55 +4,98 @@ import string
 import random
 import os
 
+
 parser = argparse.ArgumentParser(description='Create a docker-compose file based on arguments given')
 
-parser.add_argument('--build', type=bool, default=True,
-                    help='Whether you want to build your images or you want to use an image (Default is True')
+# jaeger_group = parser.add_argument_group('jaeger', 'jaeger related settings')
+image_action_group = parser.add_mutually_exclusive_group()
 
-parser.add_argument('--tag', type=str,
-                    help='The tag to use for your images, will only be set if build is True!')
+image_action_group.add_argument('--pull-images', dest='image_action', action='store_const',
+                                const='pull', default='build',
+                                help='set image action to perform to pull, skips the build stage (default: %(default)s)')
 
-parser.add_argument('--jaeger', type=bool, default=False,
-                    help='Whether you want jaeger included (Default is false, any value will result in True)')
+image_action_group.add_argument('--build-images', dest='image_action', action='store_const',
+                                const='build', default='build',
+                                help='set image action to perform to build, ensures the build stage is executed even if the profile would have set it to pull (default: %(default)s)')
 
-parser.add_argument('--jaegerdb', type=str, default='els', choices=['els', 'cas'],
-                    help='jaeger db to use (Default is els (elastic) other option is cas (cassandra will only be '
-                         'set if jaeger flag is True!')
+parser.add_argument('--tag', type=str, default='latest',
+                    help='The tag to set for your build images, or the tag that will be used to pull the custom images if --pull-images flag is set (default: %(default)s)')
+
+jaeger_group = parser.add_argument_group('jaeger', 'jaeger related settings')
+
+jaeger_group.add_argument('--include-jaeger', action='store_true',
+                          help='Jaeger containers will be included if this flag is set (default: %(default)s)')
+
+jaeger_group.add_argument('--jaeger-backend-db', type=str, default='els', choices=['els', 'cas'],
+                          help='jaeger db to use (Default is els (elastic) other option is cas (cassandra will only be '
+                               'used if --include-jaeger flag is set!')
 
 parser.add_argument('--version', type=str, default='2', choices=["2", "3", "3.1"],
                     help='docker-compose version you want to use')
 
-parser.add_argument('--volume', type=bool, default=False,
-                    help='Whether you want to use volumes(Default is false, any value will result in True)')
+parser.add_argument('--use-volumes', action='store_true',
+                    help='When this flag is set, docker will use volumes for persistent data storage (default: %(default)s)')
 
-parser.add_argument('--tests', type=bool, default=False,
-                    help='Whether you want componenttests included (Default is false, any value will result in True)')
+parser.add_argument('--run-component-tests', action='store_true',
+                    help='Whether you want componenttests included (default %(default)s)')
+
+profile_group = parser.add_mutually_exclusive_group()
+
+profile_group.add_argument('--no-profile', action='store_const', dest='profile', const='none',
+                           help='Same as "--profile none". Contains no images by default, the base profile to use for setting all flags and setings manually')
+
+profile_group.add_argument('--profile', type=str, default='dev', choices=['dev', 'database-only', 'none'],
+                           help='Sets the default action based on a particular purpose. All configurations can be made by setting all flags manually, the profiles just give an easier way to achieve this. [dev] builds all services and supporting systems with static passwords, for local development and demos. [database-only] runs only the database containers with data from database seeder, from images, for local development. [none] contains no images by default, the base profile to use for setting all flags and setings manually')
 
 parser.add_argument('--databaseonly', type=bool, default=False,
                     help='Whether you want only the databases and a dataseeder for local development'
                          '(Default is false, any value will result in True)')
 
-parser.add_argument('--dataseeder', type=bool, default=True,
-                    help='Whether you want only the dataseeder (Default is true)')
+dataseeder_arg = parser.add_argument('--dataseeder', type=bool, default=False,
+                                     help='Whether you want only the dataseeder (Default is true)')
 
-parser.add_argument('--password', type=bool, default=False,
+parser.add_argument('--generate-passwords', action='store_true',
                     help='Whether you want to create a password (production) or use test passwords'
-                         '(Default is false, any value will result in True)')
+                         '(default: %(default)s)')
+# TODO Support stdin
+parser.add_argument('infile', nargs='?', type=argparse.FileType('r'), default='docker-compose.yml',
+                    help='Select the docker-compose.yml base file %(default)s')
 
+# TODO Set output to quiet if using stdout
+# Output (file or stdout)
+output_group = parser.add_mutually_exclusive_group()
+
+output_group.add_argument('--stdout', action='store_true')
+outfile_arg = output_group.add_argument('--out', dest='outfile', nargs='?', type=argparse.FileType('w'),
+                                        default='docker-compose-test2.yml')
+parser.print_help()
 args = parser.parse_args()
 
-BUILD = args.build
-if BUILD is False:
-    TAG = args.tag
-JAEGER = args.jaeger
+PROFILE = args.profile
+
+if PROFILE == 'database-only':
+    dataseeder_arg.default = True
+
+USE_STDOUT = args.stdout
+if USE_STDOUT:
+    outfile_arg.default = sys.stdout
+
+# After setting the defaults, re-read the arguments
+args = parser.parse_args()
+
+BUILD = args.image_action == 'build'
+TAG = args.tag
+JAEGER = args.include_jaeger
 if JAEGER is True:
-    JAEGERDB = args.jaegerdb
-VOLUME = args.volume
+    JAEGERDB = args.jaeger_backend_db
+VOLUME = args.use_volumes
 VERSION = args.version
-TESTS = args.tests
-CREATE_PASSWORD = args.password
+TESTS = args.run_component_tests
+CREATE_PASSWORD = args.generate_passwords
 DATABASE_ONLY = args.databaseonly
 DATASEEDER = args.dataseeder
+INFILE = args.infile
+OUTFILE = args.outfile
 
 yaml_file = {}
 service_yaml_file = {}
