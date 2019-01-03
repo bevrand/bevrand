@@ -22,7 +22,7 @@ class Randomizer(object):
     def post_drink_to_highscore(self, drink, user, playlist, tracer):
         body = {'drink': drink}
         json_body = json.dumps(body)
-        url = self.url + f'highscore/{user}/{playlist}'
+        url = self.url + f'highscores/{user}/{playlist}'
 
         span = tracer.active_span
         span.set_tag(tags.HTTP_METHOD, 'GET')

@@ -16,7 +16,6 @@ jobs:
       - run: "cd ./bevrand.reactapp && npm install"
       - run: "cd ./bevrand.reactapp && npm test"
 
-
   unittest_proxy:
     docker:
       - image: circleci/node:8
@@ -82,6 +81,16 @@ jobs:
          docker build -t bevrand/proxyapi:$CIRCLE_SHA1 ./bevrand.proxyapi
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/proxyapi:$CIRCLE_SHA1
+
+  build_frontend:
+    machine: true
+    steps:
+      - checkout
+     # build the application image
+      - run: |
+         docker build -t bevrand/frontend:$CIRCLE_SHA1 ./bevrand.frontend
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/frontend:$CIRCLE_SHA1
   
   build_dotnet:   
     machine: true
@@ -245,6 +254,10 @@ workflows:
          context: BeverageRandomizerPROD
          requires:
           - unittest_authentication
+     - build_frontend:
+         context: BeverageRandomizerPROD
+         requires:
+          - unittest_proxy
      - component_tests:
          context: BeverageRandomizerPROD
          requires:
@@ -253,6 +266,7 @@ workflows:
            - build_dotnet
            - build_golang
            - build_dockergres
+           - build_frontend
      - ui_tests:
           context: BeverageRandomizerPROD
           requires:
@@ -261,6 +275,7 @@ workflows:
            - build_dotnet
            - build_golang
            - build_dockergres
+           - build_frontend
      #TODO Sonar-scanner
      #- acceptance_test_1:
      #    requires:

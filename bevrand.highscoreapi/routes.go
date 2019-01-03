@@ -21,9 +21,9 @@ func InitRoutes() *gin.Engine {
 	//pingpong
 	r.GET("/ping", PingPong)
 	//redis
-	r.GET("/api/v1/highscore/:user/:playList",  RouteShowHighScore)
-	r.GET("/api/v1/highscore",  RouteShowAllHighScore)
-	r.POST("/api/v1/highscore/:user/:playList", RouteIncrementHighscore)
+	r.GET("/api/v1/highscores/:user/:playList",  RouteShowHighScore)
+	r.GET("/api/v1/highscores",  RouteShowAllHighScore)
+	r.POST("/api/v1/highscores/:user/:playList", RouteIncrementHighscore)
 
 	return r
 }

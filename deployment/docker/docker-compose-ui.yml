@@ -34,6 +34,19 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT="Development"
 
+  frontendapi:
+    container_name: frontend
+    image: "bevrand/frontend:${CIRCLE_SHA1}"
+    ports:
+    - 8080:80
+    depends_on:
+    - randomizerapi
+    - playlistapi
+    - authenticationapi
+    - proxyapi
+    links:
+    - proxyapi
+
   randomizerapi:
     container_name: randomizerapi
     image: "bevrand/randomizerapi:${CIRCLE_SHA1}"
