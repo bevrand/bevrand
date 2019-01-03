@@ -12,7 +12,6 @@ RUN npm rebuild node-sass-chokidar
 COPY . /usr/src/app
 RUN npm run build
 
-
 # -- NGINX - environment --
 FROM nginx:stable-alpine
 
