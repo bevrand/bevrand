@@ -103,21 +103,6 @@ services:
     ports:
     - 4580:5000
 
-  reactapp:
-    container_name: reactapp
-    image: "bevrand/reactapp:${CIRCLE_SHA1}"
-    ports:
-      - 80:80
-    depends_on:
-      - randomizerapi
-      - playlistapi
-      - authenticationapi
-      - proxyapi
-    environment:
-      - NODE_ENV=development
-    links:
-      - proxyapi
-
   dataseeder:
     container_name: dataseeder
     image: "bevrand/dataseeder:${CIRCLE_SHA1}"

@@ -185,3 +185,29 @@ class PlayListApiValidationTests(test_setup_fixture.TestFixture):
             meta_message = response.json()['Meta']
             self.assertIsNotNone(error_message)
             self.assertEqual(meta_message['user_name'][0], "min length is 3")
+
+    def test_should_not_be_able_to_post_invalid_data_user(self):
+        newUsers = ['%20', 'o']
+        for newUser in newUsers:
+            playlist = 'listname'
+            sut = f'{url}/private/{newUser}/{playlist}'
+            body = PlaylistModel.create_random_playlist()
+            response = self.post_without_auth_header(sut, body)
+            self.assertEqual(400, response.status_code)
+            error_message = response.json()['Error']
+            meta_message = response.json()['Meta']
+            self.assertIsNotNone(error_message)
+            self.assertEqual(meta_message['user_name'][0], "min length is 3")
+
+    def test_should_not_be_able_to_post_invalid_data_playlist(self):
+        playlists = ['%20', 'o']
+        for playlist in playlists:
+            username = 'listname'
+            sut = f'{url}/private/{username}/{playlist}'
+            body = PlaylistModel.create_random_playlist()
+            response = self.post_without_auth_header(sut, body)
+            self.assertEqual(400, response.status_code)
+            error_message = response.json()['Error']
+            meta_message = response.json()['Meta']
+            self.assertIsNotNone(error_message)
+            self.assertEqual(meta_message['playlist'][0], "min length is 2")

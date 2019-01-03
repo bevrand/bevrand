@@ -68,7 +68,6 @@ services:
     - proxyapi
     - highscoreapi
     - dataseeder
-    - reactapp
     links:
     - randomizerapi
     - playlistapi
@@ -77,18 +76,6 @@ services:
     - highscoreapi
     environment:
     - PYTHON_ENV=Test
-
-  reactapp:
-    container_name: reactapp
-    image: "bevrand/reactapp:${CIRCLE_SHA1}"
-    ports:
-      - 80:80
-    depends_on:
-      - proxyapi
-    environment:
-      - NODE_ENV=development
-    links:
-      - proxyapi
 
   dataseeder:
     container_name: dataseeder
