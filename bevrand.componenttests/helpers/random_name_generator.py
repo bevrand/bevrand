@@ -7,7 +7,7 @@ class HelperClass(object):
     @staticmethod
     def random_word_special_signs_included(word_length):
         sb = ''
-        chars = string.ascii_letters + string.digits + '!@#$%^&*()/\{}[]<>'
+        chars = string.ascii_letters + string.digits + '!@#$%^&*(){}[]<>'
         for x in range(0, word_length):
             sb += chars
         return ''.join(random.sample(sb, word_length))
