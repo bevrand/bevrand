@@ -8,14 +8,6 @@ jobs:
       - run: "cd ./bevrand.playlistapi && sudo pip install -r requirements.txt"
       - run: "cd ./bevrand.playlistapi/api/tests && sudo pytest --cov-report term --cov=api"
 
-  unittest_reactapp:
-    docker:
-      - image: circleci/node:8
-    steps:
-      - checkout 
-      - run: "cd ./bevrand.reactapp && npm install"
-      - run: "cd ./bevrand.reactapp && npm test"
-
   unittest_proxy:
     docker:
       - image: circleci/node:8
@@ -73,10 +65,6 @@ jobs:
     steps:
       - checkout
      # build the application image
-      - run: |
-         docker build -t bevrand/reactapp:$CIRCLE_SHA1 ./bevrand.reactapp
-         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker push bevrand/reactapp:$CIRCLE_SHA1
       - run: |
          docker build -t bevrand/proxyapi:$CIRCLE_SHA1 ./bevrand.proxyapi
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
@@ -241,7 +229,6 @@ workflows:
         context: BeverageRandomizerPROD
         requires:
           - unittest_proxy
-          - unittest_reactapp
      - build_dotnet:
         context: BeverageRandomizerPROD
         requires:
@@ -276,6 +263,11 @@ workflows:
            - build_golang
            - build_dockergres
            - build_frontend
+          filters:
+            branches:
+              only:
+              - master
+              - develop
      #TODO Sonar-scanner
      #- acceptance_test_1:
      #    requires:
