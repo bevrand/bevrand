@@ -1,7 +1,7 @@
 $("#randomizebutton").click(function() {
 
     $("#randomizebutton").hide();
-    $('#randomized_drink').hide();
+    $('#randomizedDrink').hide();
 
     $('#liquid') // Lower liquid level
         .animate({
@@ -44,7 +44,7 @@ $("#randomizebutton").click(function() {
         $('#randomizebutton')
             .text("Randomize from this list again?")
             .show()
-        $('#randomized_drink')
+        $('#randomizedDrink')
             .show()
     }, 4500);
 

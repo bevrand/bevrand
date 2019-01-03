@@ -1,4 +1,4 @@
-let playlist = '';
+let playlist = [];
 let randomizeList = '';
 let currentPlayList = 'tgif';
 let currentlySelectedPlayList = '';
@@ -18,7 +18,7 @@ function changePlayList(playlistName) {
             .text(currentlySelectedPlayList);
         $('#randomizebutton')
             .text("Randomize!");
-        $('#randomized_drink').hide();
+        $('#randomizedDrink').hide();
     }
 }
 
@@ -31,7 +31,7 @@ $("#randomizebutton").click(function() {
         contentType: "application/json",
         success: function(data){
             window.setTimeout(function () {
-                $('#randomized_drink')
+                $('#randomizedDrink')
                     .text(data.result)
             });
         }

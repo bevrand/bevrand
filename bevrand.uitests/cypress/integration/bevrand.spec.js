@@ -3,241 +3,123 @@ let passWord = '';
 
 context('Beverage Randomizer Test', () => {
     beforeEach(() => {
-        cy.visit('http://0.0.0.0')
+        cy.visit('http://0.0.0.0:8080')
     }),
 
-describe('Page comes up', function () {
-    it('Visits the beverage randomizer', function () {
-        cy.title().should('eq', 'The Beverage Randomizer')
-    })})
-
-describe('Randomize functionality works', function () {
-    it('Should be able to randomize my drinks', function () {
-        cy.get('#letsGetStartedButton').click()
-        cy.get('#randomizeButton').click()
-        cy.get('#randomizedOutput').contains('randomized')
-    })
-    it('Should be able to switch list', function () {
-        cy.get('#letsGetStartedButton').click()
-        cy.get("#currentlySelectedPlaylist").then(($currentList) => {
-            const firstList = $currentList.text()
-            cy.get('#chooseListBottomButton').click()
-            cy.get('#playlists > div > div > div:nth-child(2) > a > div').click()
-            cy.get("#currentlySelectedPlaylist").then(($secondList) => {
-                expect($secondList.text()).not.to.eq(firstList)
+        describe('Page comes up', function () {
+            it('Visits the beverage randomizer', function () {
+                cy.title().should('eq', 'The Beverage Randomizer');
             })
-        })
-    })
-    it('The randomized drink is in the list', function () {
-        cy.get('#letsGetStartedButton').click()
-        cy.get('#randomizeButton').click()
-        cy.wait(500)    
-        cy.get('#randomizedOutput').then(($randomizedDrink) => {
-            console.log($randomizedDrink.text())
-            let firstDrink = $randomizedDrink.text().split(':')[1].split(' ')[1];
-            cy.get('#getstarted > div > div:nth-child(4) > div > div > ul').contains(firstDrink)
-        })
-    })
-    it('The randomized drink is in the list after switch', function () {
-        cy.get('#playlists > div > div > div:nth-child(4) > a > div').click()
-        cy.get('#randomizeButton').click()
-        cy.wait(500)    
-        cy.get('#randomizedOutput').then(($randomizedDrink) => {
-            console.log($randomizedDrink.text())
-            let firstDrink = $randomizedDrink.text().split(':')[1].split(' ')[1];
-            cy.get('#getstarted > div > div:nth-child(4) > div > div > ul').contains(firstDrink)
-        })
-    })
-})
+        });
 
-describe('Top rolled beverages works', function () {
-    it('Current list should match top five list', function () {
-        cy.get('#letsGetStartedButton').click()
-        cy.get("#currentlySelectedPlaylist").then(($currentList) => {
-            const currentList = $currentList.text()
-            cy.get("#currentlySelectedPlaylist").then(($topFiveList) => {
-                expect($topFiveList.text()).eq(currentList)
+        describe('Should be able to use the bevrand flow', function () {
+            it('Should be able to enter the selection area', function () {
+                cy.get('#letsGetStartedButton').click();
+                cy.get('#banner > header > h2').contains('Hi. You\'re looking at ');
+            });
+            it('Should be able to enter the randomize area', function () {
+                cy.get('#letsGetStartedButton').click();
+                cy.get('#page-wrapper > section.carousel > div > article:nth-child(1) > header > h3 > a').then(($currentList) => {
+                    let selectedPlayList = $currentList.text().split(' ')[0];
+                    cy.get('#page-wrapper > section.carousel > div > article:nth-child(1) > a > img').click();
+                    cy.get('#currentlySelectedPlayList').contains(selectedPlayList);
+                });
+            });
+        });
+
+        describe('Randomize functionality works', function () {
+            it('Should be able to randomize my drinks', function () {
+                cy.get('#letsGetStartedButton').click();
+                cy.get('#page-wrapper > section.carousel > div > article:nth-child(1) > header > h3 > a').click();
+                cy.get('#randomizebutton').click();
+                cy.wait(1000);
+                cy.get('#randomizebutton').should('not.be.visible');
+               // cy.screenshot();
+                cy.wait(3500);
+                cy.get('#randomizebutton').should('be.visible');
+            });
+            it('The randomized drink is in the list', function () {
+                cy.get('#letsGetStartedButton').click();
+                cy.get('#page-wrapper > section.carousel > div > article:nth-child(1) > header > h3 > a').click();
+                cy.wait(500);
+                cy.get('#randomizebutton').click();
+                cy.wait(5000);
+                cy.get('#randomizedDrink').then(($randomizedOutput) => {
+                    console.log($randomizedOutput.text());
+                    let firstDrink = $randomizedOutput.text();
+                    cy.get('#page-wrapper > section.carousel > div > article:nth-child(1) > ul').contains(firstDrink)
+                })
+            });
+            it('Should be able to switch list', function () {
+                cy.get('#page-wrapper > section.carousel > div > article:nth-child(1) > header > h3 > a').click();
+                cy.wait(500);
+                    cy.get('#currentlySelectedPlayList').then(($currentList) => {
+                        let selectedPlayList = $currentList.text();
+                        cy.visit('http://0.0.0.0:8080/#banner');
+                        cy.get('#page-wrapper > section.carousel > div > article:nth-child(4) > header > h3 > a').click();
+                        cy.wait(500);
+                        cy.get('#currentlySelectedPlayList').then(($secondList) => {
+                            expect($secondList.text()).not.to.eq(selectedPlayList)
+                        })
+                })
+            });
+            it('The randomize button text changes after switching list', function () {
+                cy.get('#letsGetStartedButton').click();
+                cy.get('#page-wrapper > section.carousel > div > article:nth-child(1) > header > h3 > a').click();
+                cy.get('#randomizebutton').click();
+                cy.wait(5000);
+                cy.get('#randomizebutton').contains('again');
+                cy.visit('http://0.0.0.0:8080/#banner');
+                cy.get('#page-wrapper > section.carousel > div > article:nth-child(4) > header > h3 > a').click();
+                cy.get('#randomizebutton').then(($buttonText) => {
+                    expect($buttonText.text()).not.to.eq('Randomize from this list again?');
+                    expect($buttonText.text()).to.eq('Randomize!')
+                })
+            });
+            it('Should be able to randomize my drinks twice', function () {
+                cy.get('#letsGetStartedButton').click();
+                cy.get('#page-wrapper > section.carousel > div > article:nth-child(1) > header > h3 > a').click();
+                cy.get('#randomizebutton').click();
+                cy.wait(1000);
+                cy.get('#randomizebutton').should('not.be.visible');
+                cy.wait(3500);
+                cy.get('#randomizebutton').should('be.visible');
+                cy.get('#randomizebutton').then(($buttonText) => {
+                    expect($buttonText.text()).to.eq('Randomize from this list again?');
+                });
+                cy.get('#randomizedDrink').then(($randomizedOutput) => {
+                    expect($randomizedOutput.text()).not.to.eq(' ');
+                });
+                cy.get('#randomizebutton').click();
+                cy.wait(1000);
+                cy.get('#randomizebutton').should('not.be.visible');
+               // cy.screenshot();
+                cy.wait(3500);
+                cy.get('#randomizebutton').should('be.visible');
+                cy.get('#randomizebutton').then(($buttonText) => {
+                    expect($buttonText.text()).to.eq('Randomize from this list again?');
+                });
+                cy.get('#randomizedDrink').then(($randomizedOutput) => {
+                    expect($randomizedOutput.text()).not.to.eq(' ');
+                });
+            });
+        });
+        describe('Footer has hyperlinks', function () {
+            it('Should be able to reach footer', function () {
+                cy.visit('http://0.0.0.0:8080/#footer');
+                cy.get('#footer > div > div > div > section > header > h3').then(($footerText) => {
+                    expect($footerText.text()).to.eq('Wanne reach out?');
+                })});
+            it('Should be able to use footer button github', function () {
+                cy.visit('http://0.0.0.0:8080/#footer');
+                cy.get('#footer > div > div > div > section > ul > li > a')
+                    .should('have.attr', 'href').and('include', 'github.com/bevrand');
             })
-        })
-    })
-    it('Switching list should switch topfive', function () {
-        cy.get('#letsGetStartedButton').click()
-        cy.get("#currentlySelectedPlaylist").then(($currentList) => {
-            const currentList = $currentList.text()
-            cy.get('#playlists > div > div > div:nth-child(4) > a > div').click()
-            cy.get("#currentlySelectedPlaylist").then(($topFiveList) => {
-                expect($topFiveList.text()).not.to.eq(currentList)
-            })
-        })
-    })
-})
+        });
+});
 
-describe('Register', function () {
-    it('Should be able to reach the register page', function () {
-        cy.get('#navbarResponsive > ul > li:nth-child(2) > a').click()
-        cy.url().should('eq', 'http://0.0.0.0/register')
-    })
+/*
 
-    it('Should be able to register a user', function () {
-        cy.get('#navbarResponsive > ul > li:nth-child(2) > a').click()
-        userName = makeRandomString(15)
-        passWord = makeRandomString(10)
-
-        cy.get('#userName')
-        .type(userName).should('have.value', userName)
-        cy.get('#emailAddress')
-        .type(`${userName}@email.com`).should('have.value', `${userName}@email.com`)
-        cy.get('#passWord')
-        .type(passWord).should('have.value', passWord)
-        cy.get('#controlPassWord')
-        .type(passWord).should('have.value', passWord)
-        cy.get('#root > div > div > span > div > form > button').click()
-        cy.url().should('eq', 'http://0.0.0.0/login')
-    })
-    it('Should not be able to register a user twice', function () {
-        cy.get('#navbarResponsive > ul > li:nth-child(2) > a').click()
-        userName = makeRandomString(15)
-        passWord = makeRandomString(10)
-
-        cy.get('#userName')
-        .type(userName).should('have.value', userName)
-        cy.get('#emailAddress')
-        .type(`${userName}@email.com`).should('have.value', `${userName}@email.com`)
-        cy.get('#passWord')
-        .type(passWord).should('have.value', passWord)
-        cy.get('#controlPassWord')
-        .type(passWord).should('have.value', passWord)
-        cy.get('#root > div > div > span > div > form > button').click()
-        cy.url().should('eq', 'http://0.0.0.0/login')
-        cy.get('#navbarResponsive > ul > li:nth-child(5) > a').click()
-        cy.get('#navbarResponsive > ul > li:nth-child(2) > a').click()
-        cy.get('#userName')
-        .type(userName).should('have.value', userName)
-        cy.get('#emailAddress')
-        .type(`${userName}@email.com`).should('have.value', `${userName}@email.com`)
-        cy.get('#passWord')
-        .type(passWord).should('have.value', passWord)
-        cy.get('#controlPassWord')
-        .type(passWord).should('have.value', passWord)
-        cy.get('#root > div > div > span > div > form > button').click()
-        cy.url().should('eq', 'http://0.0.0.0/register')
-
-    })
-})
-
-describe('Login', function () {
-    it('Should be able to reach the login page', function () {
-        cy.get('#navbarResponsive > ul > li:nth-child(1) > a').click()
-        cy.url().should('eq', 'http://0.0.0.0/login')
-    })
-    it('Should be able to login a created user', function () {
-        cy.get('#navbarResponsive > ul > li:nth-child(1) > a').click()
-
-        cy.get('#userName')
-        .type(userName).should('have.value', userName)
-        cy.get('#emailAddress')
-        .type(`${userName}@email.com`).should('have.value', `${userName}@email.com`)
-        cy.get('#passWord')
-        .type(passWord).should('have.value', passWord)
-        cy.get('#root > div > div > span > div > form > button').click()
-        cy.url().should('eq', 'http://0.0.0.0/user')
-        cy.get('#navbarResponsive > ul > li:nth-child(5) > a').click()
-    })
-    it('Should not be able to login with wrong password', function () {
-        cy.get('#navbarResponsive > ul > li:nth-child(1) > a').click()
-
-        cy.get('#userName')
-        .type(userName).should('have.value', userName)
-        cy.get('#emailAddress')
-        .type(`${userName}@email.com`).should('have.value', `${userName}@email.com`)
-        let wrongPassword = 'notthepassword'
-        cy.get('#passWord')
-        .type(wrongPassword).should('have.value', wrongPassword)
-        cy.get('#root > div > div > span > div > form > button').click()
-        cy.url().should('eq', 'http://0.0.0.0/login')
-    })
-    it('Should not be able to login with wrong username', function () {
-        cy.get('#navbarResponsive > ul > li:nth-child(1) > a').click()
-        let wrongUsername = 'nottheusername'
-        cy.get('#userName')
-        .type(wrongUsername).should('have.value', wrongUsername)
-        cy.get('#emailAddress')
-        .type(`${userName}@email.com`).should('have.value', `${userName}@email.com`)
-        cy.get('#passWord')
-        .type(passWord).should('have.value', passWord)
-        cy.get('#root > div > div > span > div > form > button').click()
-        cy.url().should('eq', 'http://0.0.0.0/login')
-    })
-})
-
-describe('Create', function () {
-    it('Should be able to create a list', function () {
-        cy.get('#navbarResponsive > ul > li:nth-child(1) > a').click()
-
-        cy.get('#userName')
-        .type(userName).should('have.value', userName)
-        cy.get('#emailAddress')
-        .type(`${userName}@email.com`).should('have.value', `${userName}@email.com`)
-        cy.get('#passWord')
-        .type(passWord).should('have.value', passWord)
-        cy.get('#root > div > div > span > div > form > button').click()
-        cy.url().should('eq', 'http://0.0.0.0/user')
-        cy.get('#navbarResponsive > ul > li:nth-child(4) > a').click()
-        cy.url().should('eq', 'http://0.0.0.0/create')
-       
-        let listName = makeRandomString(10)
-        let beverages = 'beer, wine, whiskey, whisky'
-
-        cy.get('#displayName')
-        .type(listName).should('have.value', listName)
-        cy.get('#beverages')
-        .type(beverages).should('have.value', beverages)
-        cy.get('#playlistCreator > div > div > div > form > button').click()
-        cy.url().should('eq', 'http://0.0.0.0/user')
-    })
-    it('Should not be able to post a list a name', function () {
-        cy.get('#navbarResponsive > ul > li:nth-child(1) > a').click()
-
-        cy.get('#userName')
-        .type(userName).should('have.value', userName)
-        cy.get('#emailAddress')
-        .type(`${userName}@email.com`).should('have.value', `${userName}@email.com`)
-        cy.get('#passWord')
-        .type(passWord).should('have.value', passWord)
-        cy.get('#root > div > div > span > div > form > button').click()
-        cy.url().should('eq', 'http://0.0.0.0/user')
-        cy.get('#navbarResponsive > ul > li:nth-child(4) > a').click()
-        cy.url().should('eq', 'http://0.0.0.0/create')
-       
-        let beverages = 'beer, wine, whiskey, whisky'
-
-        cy.get('#beverages')
-        .type(beverages).should('have.value', beverages)
-        cy.get('#playlistCreator > div > div > div > form > button').click()
-        cy.url().should('eq', 'http://0.0.0.0/create')
-    })
-    it('Should not be able to post a list without drinks', function () {
-        cy.get('#navbarResponsive > ul > li:nth-child(1) > a').click()
-
-        cy.get('#userName')
-        .type(userName).should('have.value', userName)
-        cy.get('#emailAddress')
-        .type(`${userName}@email.com`).should('have.value', `${userName}@email.com`)
-        cy.get('#passWord')
-        .type(passWord).should('have.value', passWord)
-        cy.get('#root > div > div > span > div > form > button').click()
-        cy.url().should('eq', 'http://0.0.0.0/user')
-        cy.get('#navbarResponsive > ul > li:nth-child(4) > a').click()
-        cy.url().should('eq', 'http://0.0.0.0/create')
-       
-        let listName = makeRandomString(10)
-
-        cy.get('#displayName')
-        .type(listName).should('have.value', listName)
-        cy.get('#playlistCreator > div > div > div > form > button').click()
-        cy.url().should('eq', 'http://0.0.0.0/create')
-    })
-})
 
 function makeRandomString(numberOfChars) {
     let text = ""
@@ -250,3 +132,4 @@ function makeRandomString(numberOfChars) {
 }
 })
 
+*/
