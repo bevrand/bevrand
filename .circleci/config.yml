@@ -209,8 +209,6 @@ workflows:
     jobs:
      - unittest_randomizer:
         context: BeverageRandomizerPROD
-     - unittest_reactapp:
-        context: BeverageRandomizerPROD
      - unittest_proxy:
         context: BeverageRandomizerPROD
      - unittest_playlist:
