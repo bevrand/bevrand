@@ -161,6 +161,8 @@ def start_creation_of_yaml(yaml_services):
         remove_build_or_images('build')
     if CREATE_PASSWORD is True:
         set_random_passwords()
+    if VOLUME is True:
+        set_volumes()
     return
 
 
