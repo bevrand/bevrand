@@ -108,6 +108,7 @@ volume_services = ['dockermongo', 'dockergres']
 jaeger_services_cas = ['jaeger-collector-cas', 'jaeger-query-cas', 'jaeger-agent-cas', 'cassandra', 'cassandra-schema']
 jaeger_services_es = ['els', 'kibana', 'jaeger-collector-els', 'jaeger-agent-els', 'jaeger-query-els']
 
+
 def print_values_at_startup():
     print('Build = ' + str(BUILD))
     if BUILD is False:
@@ -121,6 +122,7 @@ def print_values_at_startup():
     print('Version = ' + VERSION)
     print('Databases only = ' + str(DATABASE_ONLY))
     print('Dataseeder = ' + str(DATASEEDER))
+    print('Outfile = ' + str(OUTFILE))
 
 
 def create_password(length):
