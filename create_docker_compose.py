@@ -104,7 +104,7 @@ test_services = ['componenttest']
 api_services = ['authenticationapi', 'highscoreapi', 'randomizerapi', 'playlistapi', 'proxyapi', 'frontendapi']
 data_seeder_service = ['dataseeder']
 password_services = {'authenticationapi': 'dockergres', 'playlistapi': 'dockermongo'}
-volume_services = ['dockergres', 'dockermongo']
+volume_services = {'dockergres': '/mnt/datavolumedocker/data/postgres:/var/lib/postgresql/data', 'dockermongo': '/mnt/datavolumedocker/data/mongo:/data/db'}
 jaeger_services_cas = ['jaeger-collector-cas', 'jaeger-query-cas', 'jaeger-agent-cas', 'cassandra', 'cassandra-schema']
 jaeger_services_es = ['els', 'kibana', 'jaeger-collector-els', 'jaeger-agent-els', 'jaeger-query-els']
 
@@ -212,7 +212,6 @@ def remove_jaeger_from_env():
     return
 
 
-
 def remove_build_or_images(field):
     to_remove = []
     for service in service_yaml_file:
@@ -273,8 +272,8 @@ def set_random_passwords():
 
 
 def set_volumes():
-    for service in volume_services:
-        s = service_yaml_file[service]
+    for service, volume in volume_services.items():
+        service_yaml_file[service]['volumes'] = volume
     return
 
 

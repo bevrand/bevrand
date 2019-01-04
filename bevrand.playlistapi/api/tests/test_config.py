@@ -13,9 +13,8 @@ class TestDevelopmentConfig(TestCase):
 
     def test_app_is_development(self):
         assert app.config['DEBUG'] == True
-        assert app.config['CONNECTION'] == 'mongodb://0.0.0.0:27017/admin'
-
-
+        connection = 'mongodb://0.0.0.0:27017/admin'
+        assert app.config['CONNECTION'] == connection
 
 class TestTestingConfig(TestCase):
     def create_app(self):

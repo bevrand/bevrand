@@ -11,7 +11,7 @@ class BaseConfig:
 class Development(BaseConfig):
     """Development configuration"""
     DEBUG = True
-    CONNECTION = os.environ.get('MONGO_URL')
+    CONNECTION = 'mongodb://0.0.0.0:27017/admin'
 
 
 class Test(BaseConfig):
