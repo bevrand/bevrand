@@ -1,4 +1,5 @@
 from helpers.random_name_generator import HelperClass
+from typing import List
 
 class AuthenticationModel:
 
@@ -70,3 +71,71 @@ class PlaylistModel:
         result["beverages"] = self.beverages
         return result
 
+class Jwtheader(object):
+
+    alg: str
+    type: str
+
+    def __init__(self, alg: str, type: str):
+        self.alg = alg
+        self.type = type
+
+    @staticmethod
+    def from_dict(obj):
+        alg = obj.get("alg")
+        type = obj.get("type")
+        return Jwtheader(alg, type)
+
+    def to_dict(self):
+        result = {}
+        result["alg"] = self.alg
+        result["type"] = self.type
+        return result
+
+class ProxyModel:
+    beverages: List[str]
+    display_name: str
+    id: str
+    image_url: str
+    list: str
+    user: str
+    iat: int
+    jwtheader: Jwtheader
+    jwttoken: str
+
+    def __init__(self, beverages: List[str], display_name: str, id: str, image_url: str, list: str, user: str, iat: int, jwtheader: Jwtheader, jwttoken: str):
+        self.beverages = beverages
+        self.display_name = display_name
+        self.id = id
+        self.image_url = image_url
+        self.list = list
+        self.user = user
+        self.iat = iat
+        self.jwtheader = jwtheader
+        self.jwttoken = jwttoken
+
+    @staticmethod
+    def from_dict(obj):
+        beverages = obj.get("beverages")
+        display_name = obj.get("displayName")
+        id = obj.get("id")
+        image_url = obj.get("imageUrl")
+        list = obj.get("list")
+        user = obj.get("user")
+        iat = obj.get("iat")
+        jwtheader = Jwtheader.from_dict(obj.get("jwtheader"))
+        jwttoken = obj.get("jwttoken")
+        return ProxyModel(beverages, display_name, id, image_url, list, user, iat, jwtheader, jwttoken)
+
+    def to_dict(self):
+        result: dict = {}
+        result["beverages"] = self.beverages
+        result["displayName"] = self.display_name
+        result["id"] = self.id
+        result["imageUrl"] = self.image_url
+        result["list"] = self.list
+        result["user"] = self.user
+        result["iat"] = self.iat
+        result["jwtheader"] = Jwtheader.to_dict(self.jwtheader)
+        result["jwttoken"] = self.jwttoken
+        return result
