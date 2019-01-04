@@ -101,8 +101,10 @@ yaml_file = {}
 service_yaml_file = {}
 databases_services = ['dockergres', 'dockermongo', 'redis']
 test_services = ['componenttest']
-api_services = ['authenticationapi', 'highscoreapi', 'randomizerapi', 'playlistapi', 'proxyapi', 'reactapp']
+api_services = ['authenticationapi', 'highscoreapi', 'randomizerapi', 'playlistapi', 'proxyapi', 'frontendapi']
 data_seeder_service = ['dataseeder']
+password_services = {'authenticationapi': 'dockergres', 'playlistapi': 'dockermongo'}
+volume_services = ['dockergres', 'dockermongo']
 jaeger_services_cas = ['jaeger-collector-cas', 'jaeger-query-cas', 'jaeger-agent-cas', 'cassandra', 'cassandra-schema']
 jaeger_services_es = ['els', 'kibana', 'jaeger-collector-els', 'jaeger-agent-els', 'jaeger-query-els']
 
@@ -121,8 +123,13 @@ def print_values_at_startup():
     print('Dataseeder = ' + str(DATASEEDER))
 
 
-def create_password_and_users(length):
-    chars = string.ascii_letters + string.digits + '!@#$%^&*(){}[]<>'
+def create_password(length):
+    chars = string.ascii_letters + string.digits + '!'
+    return ''.join(random.sample(chars, length))
+
+
+def create_user(length):
+    chars = string.ascii_letters + string.digits
     return ''.join(random.sample(chars, length))
 
 
@@ -152,6 +159,8 @@ def start_creation_of_yaml(yaml_services):
         remove_build_or_images('image')
     else:
         remove_build_or_images('build')
+    if CREATE_PASSWORD is True:
+        set_random_passwords()
     return
 
 
@@ -172,6 +181,8 @@ def handle_service_creation(service_name, service_yaml):
             if service_name in jaeger_services_cas:
                 service_name = remove_jaeger_db_extension_from_name(service_name)
                 service_yaml_file[service_name] = service_yaml
+    else:
+        remove_jaeger_from_env()
     if TESTS is True:
         if service_name in test_services:
             service_yaml_file[service_name] = service_yaml
@@ -180,6 +191,24 @@ def handle_service_creation(service_name, service_yaml):
     if service_name in databases_services:
         service_yaml_file[service_name] = service_yaml
     return
+
+
+def remove_jaeger_from_env():
+    for service in service_yaml_file:
+        for field in service_yaml_file[service]:
+            if field == 'environment':
+                for env in service_yaml_file[service][field]:
+                    if env == "JAEGER_AGENT_HOST=jaeger-agent":
+                        service_yaml_file[service][field].remove(env)
+                    if env == "JAEGER_AGENT_PORT=6831":
+                        service_yaml_file[service][field].remove(env)
+            if field == 'depends_on':
+                for depends in service_yaml_file[service][field]:
+                    if depends == "jaeger-agent":
+                        service_yaml_file[service][field].remove(depends)
+
+    return
+
 
 
 def remove_build_or_images(field):
@@ -192,9 +221,58 @@ def remove_build_or_images(field):
         service_yaml_file[item].pop(field, None)
     return
 
+
 def set_random_passwords():
-    password = create_password_and_users(32)
-    user_name = create_password_and_users(32)
+    for k, v in password_services.items():
+
+        password = create_password(25)
+        user_name = create_user(15)
+        password_object = PassWordObjects()
+
+        auth_str = password_object.authenticationapi
+        auth_str = auth_str.replace("PLACEHOLDER_PASS", password)
+        auth_str = auth_str.replace("PLACEHOLDER_USER", user_name)
+
+        gres_str = []
+        for str in password_object.dockergres:
+            str = str.replace("PLACEHOLDER_PASS", password)
+            str = str.replace("PLACEHOLDER_USER", user_name)
+            gres_str.append(str)
+
+        play_str = password_object.playlistapi
+        play_str = play_str.replace("PLACEHOLDER_PASS", password)
+        play_str = play_str.replace("PLACEHOLDER_USER", user_name)
+
+        mon_str = []
+        for str in password_object.dockermongo:
+            str = str.replace("PLACEHOLDER_PASS", password)
+            str = str.replace("PLACEHOLDER_USER", user_name)
+            mon_str.append(str)
+
+        if k == 'authenticationapi':
+            service_yaml_file[k]['environment'].append(auth_str)
+            for field in service_yaml_file[k]['environment']:
+                if field == 'ASPNETCORE_ENVIRONMENT="Development"':
+                    service_yaml_file[k]['environment'].remove('ASPNETCORE_ENVIRONMENT="Development"')
+                    service_yaml_file[k]['environment'].append('ASPNETCORE_ENVIRONMENT="Production"')
+            service_yaml_file[v]['environment'].remove('POSTGRES_PASSWORD=postgres')
+            service_yaml_file[v]['environment'].remove('POSTGRES_USER=postgres')
+            for str in gres_str:
+                service_yaml_file[v]['environment'].append(str)
+        elif k == 'playlistapi':
+            service_yaml_file[k]['environment'].remove('MONGO_URL=mongodb://dockermongo:27017/admin')
+            service_yaml_file[k]['environment'].append(play_str)
+            if DATASEEDER is True:
+                service_yaml_file['dataseeder']['environment'].remove('MONGO_URL=mongodb://dockermongo:27017/admin')
+                service_yaml_file['dataseeder']['environment'].append(play_str)
+            for str in mon_str:
+                service_yaml_file[v]['environment'].append(str)
+    return
+
+
+def set_volumes():
+    for service in volume_services:
+        service_yaml_file[service]['volumes'].append('test')
     return
 
 
@@ -204,6 +282,13 @@ def remove_jaeger_db_extension_from_name(service_name):
         service_name = '-'.join(stripped_name[:2])
     return service_name
 
+
+class PassWordObjects(object):
+
+    authenticationapi = 'ConnectionStrings:PostGres=Host=dockergres;Port=5432;Database=bevrand;Uid=PLACEHOLDER_USER;Pwd=PLACEHOLDER_PASS;'
+    dockergres = ['POSTGRES_PASSWORD=PLACEHOLDER_PASS', 'POSTGRES_USER=PLACEHOLDER_USER']
+    dockermongo = ['MONGO_INITDB_ROOT_USERNAME=PLACEHOLDER_USER', 'MONGO_INITDB_ROOT_PASSWORD=PLACEHOLDER_PASS']
+    playlistapi = 'MONGO_URL=mongodb://PLACEHOLDER_USER:PLACEHOLDER_PASS@dockermongo:27017/admin'
 
 print_values_at_startup()
 load_docker_compose_file()

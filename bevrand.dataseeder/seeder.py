@@ -3,9 +3,14 @@
 from pymongo import MongoClient
 import glob
 import json
+import os
 
-#CONNECTION = 'mongodb://localhost:27017'
-CONNECTION = 'mongodb://dockermongo:27017'
+
+
+CONNECTION = os.environ.get('MONGO_URL')
+if CONNECTION is None:
+    CONNECTION = 'mongodb://dockermongo:27017'
+print(CONNECTION)
 
 
 def insert_collections():

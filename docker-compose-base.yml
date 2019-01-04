@@ -12,6 +12,8 @@ services:
     image: mongo:3.6
     ports:
        - 27017:27017
+    environment:
+      - AWESOME_NUMBER = 42
 
   dockergres:
      container_name: dockergres
@@ -32,7 +34,6 @@ services:
     depends_on:
       - dockergres
       - jaeger-agent
-      - jaeger-collector
     links:
       - dockergres
     environment:
@@ -52,7 +53,6 @@ services:
     depends_on:
       - redis
       - jaeger-agent
-      - jaeger-collector
     links:
       - redis
     ports:
@@ -102,7 +102,7 @@ services:
        - dockermongo
     environment:
        - APP_SETTINGS=Production
-       - MONGO_URL=mongodb://dockermongo:27017
+       - MONGO_URL=mongodb://dockermongo:27017/admin
        - JAEGER_AGENT_HOST=jaeger-agent
        - JAEGER_AGENT_PORT=6831
 
@@ -136,6 +136,8 @@ services:
     links:
        - dockermongo
        - dockergres
+    environment:
+       - MONGO_URL=mongodb://dockermongo:27017/admin
 
   componenttest:
     container_name: component_tests

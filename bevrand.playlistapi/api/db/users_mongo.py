@@ -7,9 +7,8 @@ class UsersDb:
 
     #contructor
     def __init__(self, database):
-        self.db = database
-        self.users = database.users
-
+        self.db = database.client.bevrand
+        self.users = database.client.bevrand.users
 
     def get_all_user_lists(self, user_name):
         description_lists = []

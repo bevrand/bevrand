@@ -31,3 +31,5 @@ services:
     links:
        - dockermongo
        - dockergres
+    environment:
+       - MONGO_URL=mongodb://dockermongo:27017/admin

@@ -96,7 +96,7 @@ services:
        - dockermongo
     environment:
        - APP_SETTINGS=Production
-       - MONGO_URL=mongodb://dockermongo:27017
+       - MONGO_URL=mongodb://dockermongo:27017/admin
        - JAEGER_AGENT_HOST=jaeger-agent
        - JAEGER_AGENT_PORT=6831
 
@@ -128,6 +128,8 @@ services:
     links:
        - dockermongo
        - dockergres
+    environment:
+       - MONGO_URL=mongodb://dockermongo:27017/admin
 
     ##################################
     ######### JAEGER ELASTIC #########

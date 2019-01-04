@@ -38,7 +38,7 @@ services:
        - dockermongo
     environment:
        - APP_SETTINGS=Production
-       - MONGO_URL=mongodb://dockermongo:27017
+       - MONGO_URL=mongodb://dockermongo:27017/admin
 
   proxyapi:
     container_name: proxyapi
@@ -86,6 +86,8 @@ services:
     links:
        - dockermongo
        - dockergres
+    environment:
+       - MONGO_URL=mongodb://dockermongo:27017/admin
 
   highscoreapi:
     container_name: highscoreapi

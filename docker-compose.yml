@@ -59,7 +59,7 @@ services:
        - dockermongo
     environment:
        - APP_SETTINGS=Production
-       - MONGO_URL=mongodb://dockermongo:27017
+       - MONGO_URL=mongodb://dockermongo:27017/admin
 
   proxyapi:
     container_name: proxyapi
@@ -90,26 +90,11 @@ services:
     ports:
     - 4580:5000
 
-  reactapp:
-    container_name: reactapp
-    build: ./bevrand.reactapp
-    ports:
-      - 80:80
-    depends_on:
-      - randomizerapi
-      - playlistapi
-      - authenticationapi
-      - proxyapi
-    environment:
-      - NODE_ENV=development
-    links:
-      - proxyapi
-
   frontendapi:
     container_name: frontend
     build: ./bevrand.frontend
     ports:
-    - 8080:80
+    - 80:80
     depends_on:
     - randomizerapi
     - playlistapi
@@ -138,7 +123,6 @@ services:
     - proxyapi
     - highscoreapi
     - dataseeder
-    - reactapp
     links:
     - randomizerapi
     - playlistapi

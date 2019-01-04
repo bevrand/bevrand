@@ -5,10 +5,10 @@ from pymongo import errors
 
 class FrontPageDb:
 
-    #contructor
+    #constructor
     def __init__(self, database):
-        self.db = database
-        self.frontpage = database.frontpagestandard
+        self.db = database.client.bevrand
+        self.frontpage = database.client.bevrand.frontpagestandard
 
     def get_frontpage_beverages(self, list_name):
         try:
