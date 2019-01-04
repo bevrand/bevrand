@@ -121,9 +121,9 @@ def print_values_at_startup():
     print('Dataseeder = ' + str(DATASEEDER))
 
 
-def create_password_and_users():
-    chars = string.ascii_letters + string.digits + '!@#$%^&*()/\{}[]<>'
-    return ''.join(random.sample(chars, 32))
+def create_password_and_users(length):
+    chars = string.ascii_letters + string.digits + '!@#$%^&*(){}[]<>'
+    return ''.join(random.sample(chars, length))
 
 
 def load_docker_compose_file():
@@ -190,6 +190,11 @@ def remove_build_or_images(field):
                 to_remove.append(service)
     for item in to_remove:
         service_yaml_file[item].pop(field, None)
+    return
+
+def set_random_passwords():
+    password = create_password_and_users(32)
+    user_name = create_password_and_users(32)
     return
 
 
