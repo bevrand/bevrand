@@ -52,7 +52,7 @@ parser.add_argument('--databaseonly', type=bool, default=False,
                          '(Default is false, any value will result in True)')
 
 dataseeder_arg = parser.add_argument('--dataseeder', type=bool, default=False,
-                                     help='Whether you want only the dataseeder (Default is true)')
+                                     help='Whether you want only the dataseeder (Default is False)')
 
 parser.add_argument('--generate-passwords', action='store_true',
                     help='Whether you want to create a password (production) or use test passwords'
@@ -104,7 +104,7 @@ test_services = ['componenttest']
 api_services = ['authenticationapi', 'highscoreapi', 'randomizerapi', 'playlistapi', 'proxyapi', 'frontendapi']
 data_seeder_service = ['dataseeder']
 password_services = {'authenticationapi': 'dockergres', 'playlistapi': 'dockermongo'}
-volume_services = {'dockergres': '/mnt/datavolumedocker/data/postgres:/var/lib/postgresql/data', 'dockermongo': '/mnt/datavolumedocker/data/mongo:/data/db'}
+volume_services = ['dockermongo', 'dockergres']
 jaeger_services_cas = ['jaeger-collector-cas', 'jaeger-query-cas', 'jaeger-agent-cas', 'cassandra', 'cassandra-schema']
 jaeger_services_es = ['els', 'kibana', 'jaeger-collector-els', 'jaeger-agent-els', 'jaeger-query-els']
 
@@ -161,8 +161,8 @@ def start_creation_of_yaml(yaml_services):
         remove_build_or_images('build')
     if CREATE_PASSWORD is True:
         set_random_passwords()
-    if VOLUME is True:
-        set_volumes()
+    if VOLUME is False:
+        remove_volumes()
     return
 
 
@@ -271,9 +271,9 @@ def set_random_passwords():
     return
 
 
-def set_volumes():
-    for service, volume in volume_services.items():
-        service_yaml_file[service]['volumes'] = volume
+def remove_volumes():
+    for service in volume_services:
+        service_yaml_file[service].pop('volumes', None)
     return
 
 
@@ -290,6 +290,7 @@ class PassWordObjects(object):
     dockergres = ['POSTGRES_PASSWORD=PLACEHOLDER_PASS', 'POSTGRES_USER=PLACEHOLDER_USER']
     dockermongo = ['MONGO_INITDB_ROOT_USERNAME=PLACEHOLDER_USER', 'MONGO_INITDB_ROOT_PASSWORD=PLACEHOLDER_PASS']
     playlistapi = 'MONGO_URL=mongodb://PLACEHOLDER_USER:PLACEHOLDER_PASS@dockermongo:27017/admin'
+
 
 print_values_at_startup()
 load_docker_compose_file()

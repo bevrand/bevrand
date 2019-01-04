@@ -12,6 +12,8 @@ services:
     image: mongo:3.6
     ports:
        - 27017:27017
+    volumes:
+      - /mnt/datavolumedocker/data/mongo:/data/db
     environment:
       - AWESOME_NUMBER = 42
 
@@ -21,6 +23,8 @@ services:
      image: "bevrand/dockergres:${CIRCLE_SHA1}"
      ports:
        - 5434:5432
+     volumes:
+      - /mnt/datavolumedocker/data/postgres:/var/lib/postgresql/data
      environment:
        - POSTGRES_PASSWORD=postgres
        - POSTGRES_USER=postgres
@@ -150,7 +154,6 @@ services:
     - proxyapi
     - highscoreapi
     - dataseeder
-    - reactapp
     links:
     - randomizerapi
     - playlistapi
