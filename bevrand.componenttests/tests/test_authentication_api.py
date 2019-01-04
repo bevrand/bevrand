@@ -5,7 +5,6 @@ from helpers.models import AuthenticationModel
 import pytest
 import os
 import requests
-import time
 
 url = None
 
