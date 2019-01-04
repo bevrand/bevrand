@@ -58,6 +58,20 @@ services:
     ports:
       - 4580:5000
 
+  frontendapi:
+    container_name: frontend
+    build: ./bevrand.frontend
+    image: "bevrand/frontend:${CIRCLE_SHA1}"
+    ports:
+    - 80:80
+    depends_on:
+    - randomizerapi
+    - playlistapi
+    - authenticationapi
+    - proxyapi
+    links:
+    - proxyapi
+
   randomizerapi:
     container_name: randomizerapi
     build: ./bevrand.randomizerapi
@@ -111,19 +125,6 @@ services:
       - randomizerapi
       - playlistapi
       - authenticationapi
-
-  reactapp:
-    container_name: reactapp
-    build: ./bevrand.reactapp
-    image: "bevrand/reactapp:${CIRCLE_SHA1}"
-    ports:
-      - 80:80
-    depends_on:
-      - proxyapi
-    environment:
-      - NODE_ENV=development
-    links:
-      - proxyapi
 
   dataseeder:
     container_name: dataseeder

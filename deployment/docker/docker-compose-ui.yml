@@ -38,7 +38,7 @@ services:
     container_name: frontend
     image: "bevrand/frontend:${CIRCLE_SHA1}"
     ports:
-    - 8080:80
+    - 80:80
     depends_on:
     - randomizerapi
     - playlistapi

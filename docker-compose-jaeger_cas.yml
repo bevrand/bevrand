@@ -107,23 +107,11 @@ services:
       - authenticationapi
       - highscoreapi
 
-  reactapp:
-    container_name: reactapp
-    build: ./bevrand.reactapp
-    ports:
-      - 80:80
-    depends_on:
-      - proxyapi
-    environment:
-      - NODE_ENV=development
-    links:
-      - proxyapi
-
   frontendapi:
     container_name: frontend
     build: ./bevrand.frontend
     ports:
-    - 8080:80
+    - 80:80
     depends_on:
     - randomizerapi
     - playlistapi

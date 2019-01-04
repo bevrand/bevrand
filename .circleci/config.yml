@@ -261,11 +261,11 @@ workflows:
            - build_golang
            - build_dockergres
            - build_frontend
-          filters:
-            branches:
-              only:
-              - master
-              - develop
+        #  filters:
+        #    branches:
+        #      only:
+        #      - master
+        #      - develop
      #TODO Sonar-scanner
      #- acceptance_test_1:
      #    requires:

@@ -38,6 +38,19 @@ services:
       - JAEGER_AGENT_HOST=jaeger-agent
       - JAEGER_AGENT_PORT=6831
 
+  frontendapi:
+    container_name: frontend
+    build: ./bevrand.frontend
+    ports:
+    - 80:80
+    depends_on:
+    - randomizerapi
+    - playlistapi
+    - authenticationapi
+    - proxyapi
+    links:
+    - proxyapi
+
   highscoreapi:
     container_name: highscoreapi
     build: ./bevrand.highscoreapi
@@ -105,18 +118,6 @@ services:
       - randomizerapi
       - playlistapi
       - authenticationapi
-
-  reactapp:
-    container_name: reactapp
-    build: ./bevrand.reactapp
-    ports:
-      - 80:80
-    depends_on:
-      - proxyapi
-    environment:
-      - NODE_ENV=development
-    links:
-      - proxyapi
 
   dataseeder:
     container_name: dataseeder

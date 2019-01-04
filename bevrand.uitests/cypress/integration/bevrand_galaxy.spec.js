@@ -4,7 +4,7 @@ let passWord = '';
 context('Beverage Randomizer Test', () => {
     beforeEach(() => {
         cy.viewport(360, 640);
-        cy.visit('http://0.0.0.0:8080')
+        cy.visit('http://0.0.0.0')
     }),
 
 
