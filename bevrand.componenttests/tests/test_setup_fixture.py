@@ -11,6 +11,7 @@ class TestFixture(unittest.TestCase):
     attribute_validation_error = "Errors occured when validating"
     unknown_id = HelperClass.random_int_generator(40)
     validation_missing_fields = "Required fields are missing"
+    data_seeded_user = 'marvin'
     test_playlist_body = {
                           "beverages": [
                             "beer",

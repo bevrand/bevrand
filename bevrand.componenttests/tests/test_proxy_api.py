@@ -22,7 +22,7 @@ def setup_config():
 
 
 @pytest.mark.usefixtures("setup_config")
-class ProxyApiTestsPlaylists(test_setup_fixture.TestFixture):
+class ProxyApiTestsPlaylistsPublic(test_setup_fixture.TestFixture):
 
     def test_should_be_able_to_retrieve_all_playlist(self):
         sut = f'{url}/v2/frontpage'
@@ -43,6 +43,15 @@ class ProxyApiTestsPlaylists(test_setup_fixture.TestFixture):
             token = playlist['jwttoken']
             self.assertTrue(token not in tokens)
             tokens.append(token)
+
+
+@pytest.mark.usefixtures("setup_config")
+class ProxyApiTestsPlaylistsPublic(test_setup_fixture.TestFixture):
+
+    def test_should_be_able_to_retrieve_a_user_playlist(self):
+        sut = f'{url}/playlists?username={self.data_seeded_user}'
+        response = self.get_without_auth_header(sut)
+        self.assertEqual(200, response.status_code)
 
 
 @pytest.mark.usefixtures("setup_config")

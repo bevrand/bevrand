@@ -57,7 +57,7 @@ context('Beverage Randomizer Test', () => {
             cy.wait(500);
             cy.get('#currentlySelectedPlayList').then(($currentList) => {
                 let selectedPlayList = $currentList.text();
-                cy.visit('http://0.0.0.0:8080/#banner');
+                cy.visit('http://0.0.0.0/#banner');
                 cy.get('#page-wrapper > section.carousel > div > article:nth-child(4) > header > h3 > a').click();
                 cy.wait(500);
                 cy.get('#currentlySelectedPlayList').then(($secondList) => {
@@ -71,7 +71,7 @@ context('Beverage Randomizer Test', () => {
             cy.get('#randomizebutton').click();
             cy.wait(5000);
             cy.get('#randomizebutton').contains('again');
-            cy.visit('http://0.0.0.0:8080/#banner');
+            cy.visit('http://0.0.0.0/#banner');
             cy.get('#page-wrapper > section.carousel > div > article:nth-child(4) > header > h3 > a').click();
             cy.get('#randomizebutton').then(($buttonText) => {
                 expect($buttonText.text()).not.to.eq('Randomize from this list again?');
@@ -108,12 +108,12 @@ context('Beverage Randomizer Test', () => {
     });
     describe('Footer has hyperlinks', function () {
         it('Should be able to reach footer', function () {
-            cy.visit('http://0.0.0.0:8080/#footer');
+            cy.visit('http://0.0.0.0/#footer');
             cy.get('#footer > div > div > div > section > header > h3').then(($footerText) => {
                 expect($footerText.text()).to.eq('Wanne reach out?');
             })});
         it('Should be able to use footer button github', function () {
-            cy.visit('http://0.0.0.0:8080/#footer');
+            cy.visit('http://0.0.0.0/#footer');
             cy.get('#footer > div > div > div > section > ul > li > a')
                 .should('have.attr', 'href').and('include', 'github.com/bevrand');
         })
