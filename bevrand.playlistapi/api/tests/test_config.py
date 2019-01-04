@@ -1,6 +1,4 @@
-import unittest
-
-from flask import current_app
+import os
 from flask_testing import TestCase
 
 from api.setup import create_app
@@ -27,7 +25,9 @@ class TestTestingConfig(TestCase):
     def test_app_is_testing(self):
         assert app.config['DEBUG'] == True
         assert app.config['TESTING'] == True
-        assert app.config['CONNECTION'] == 'mongodb://0.0.0.0:27017/admin'
+        connection = 'mongodb://0.0.0.0:27017/admin'
+        os.environ["MONGO_URL"] = connection
+        assert app.config['CONNECTION'] == connection
 
 
 class TestProductionConfig(TestCase):

@@ -274,7 +274,7 @@ def set_random_passwords():
 
 def set_volumes():
     for service in volume_services:
-        service_yaml_file[service]['volumes'].append('test')
+        s = service_yaml_file[service]
     return
 
 
