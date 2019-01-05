@@ -1,0 +1,103 @@
+---
+- hosts: do
+  remote_user: root
+  gather_facts: False
+
+  environment:
+    CIRCLE_SHA1: 5e2fa46f36d00afb3e66b7cb81f8beae9cee4f27
+
+  tasks:
+  - name: Creates directory
+    file: path=/root/docker state=directory
+    register: changes_made
+
+  - name: Set authorized key took from file
+    authorized_key:
+      user: root
+      state: present
+      key: "{{ lookup('file', '/home/joerivrij/.ssh/id_rsa.pub') }}"
+
+  - name: Upload first docker-compose for host
+    copy: 
+      src=../../docker-compose-created.yml
+      dest=/root/docker 
+      mode=0644
+
+  - command: "ls -lha /root/docker/"
+    register: dir_out
+
+  - debug: msg="{{ dir_out.stdout_lines }}"
+
+  - name: remove possible old versions
+    yum:
+      name: "{{ item }}"
+      state: absent
+    with_items:
+      - docker
+      - docker-engine 
+      - docker.io
+    become: true
+    when: changes_made.changed
+
+  - name: Install yum utils
+    yum:
+      name: yum-utils
+      state: latest
+
+  - name: Install device-mapper-persistent-data
+    yum:
+      name: device-mapper-persistent-data
+      state: latest
+
+  - name: Install lvm2
+    yum:
+      name: lvm2
+      state: latest
+
+  - name: Add Docker repo
+    get_url:
+      url: https://download.docker.com/linux/centos/docker-ce.repo
+      dest: /etc/yum.repos.d/docer-ce.repo
+    become: yes
+
+  - name: Install Docker
+    package:
+      name: docker-ce
+      state: latest
+    become: yes
+    when: changes_made.changed
+
+  - name: Start Docker service
+    service:
+      name: docker
+      state: started
+      enabled: yes
+    become: yes
+
+  - name: Add user vagrant to docker group
+    user:
+      name: vagrant
+      groups: docker
+      append: yes
+    become: yes
+    when: changes_made.changed    
+
+  - name: Check if Docker Compose is installed
+    command: docker-compose --version
+    register: docker_compose_check
+    ignore_errors: yes
+
+  - name: Download and install Docker Compose
+    get_url:
+      url: https://github.com/docker/compose/releases/download/1.21.2/docker-compose-Linux-x86_64
+      dest: /usr/bin/docker-compose
+      mode: 0755
+    when:
+      - docker_compose_check.msg is defined
+      - docker_compose_check.msg.find('No such file or directory') != -1
+
+  - command: "docker-compose -f /root/docker/docker-compose-created.yml up -d"
+    register: compose_up
+
+  - debug: msg="{{ compose_up }}"
+  

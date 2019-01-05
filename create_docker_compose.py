@@ -75,18 +75,13 @@ PROFILE = args.profile
 
 if PROFILE == 'database-only':
     dataseeder_arg.default = True
+    jaeger_group.default = False
 if PROFILE == 'dev':
     dataseeder_arg.default = True
-    BUILD = True
-    CREATE_PASSWORD = False
-    TESTS = True
-    VOLUME = False
+    jaeger_group.default = True
 if PROFILE == 'prod':
     dataseeder_arg.default = False
-    BUILD = False
-    CREATE_PASSWORD = True
-    TESTS = False
-    VOLUME = True
+    jaeger_group = True
 
 
 USE_STDOUT = args.stdout
