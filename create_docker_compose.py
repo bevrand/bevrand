@@ -2,7 +2,7 @@ import argparse
 import yaml
 import string
 import random
-import os
+import sys
 
 
 parser = argparse.ArgumentParser(description='Create a docker-compose file based on arguments given')
@@ -44,21 +44,21 @@ profile_group = parser.add_mutually_exclusive_group()
 profile_group.add_argument('--no-profile', action='store_const', dest='profile', const='none',
                            help='Same as "--profile none". Contains no images by default, the base profile to use for setting all flags and setings manually')
 
-profile_group.add_argument('--profile', type=str, default='dev', choices=['dev', 'database-only', 'none'],
+profile_group.add_argument('--profile', type=str, default='dev', choices=['prod', 'dev', 'database-only', 'none'],
                            help='Sets the default action based on a particular purpose. All configurations can be made by setting all flags manually, the profiles just give an easier way to achieve this. [dev] builds all services and supporting systems with static passwords, for local development and demos. [database-only] runs only the database containers with data from database seeder, from images, for local development. [none] contains no images by default, the base profile to use for setting all flags and setings manually')
 
 parser.add_argument('--databaseonly', type=bool, default=False,
                     help='Whether you want only the databases and a dataseeder for local development'
                          '(Default is false, any value will result in True)')
 
-dataseeder_arg = parser.add_argument('--dataseeder', type=bool, default=False,
-                                     help='Whether you want only the dataseeder (Default is False)')
+dataseeder_arg = parser.add_argument('--dataseeder', type=bool, default=True,
+                                     help='Whether you want only the dataseeder (Default is True)')
 
 parser.add_argument('--generate-passwords', action='store_true',
                     help='Whether you want to create a password (production) or use test passwords'
                          '(default: %(default)s)')
 # TODO Support stdin
-parser.add_argument('infile', nargs='?', type=argparse.FileType('r'), default='docker-compose.yml',
+parser.add_argument('infile', nargs='?', type=argparse.FileType('r'), default='docker-compose-base.yml',
                     help='Select the docker-compose.yml base file %(default)s')
 
 # TODO Set output to quiet if using stdout
@@ -67,7 +67,7 @@ output_group = parser.add_mutually_exclusive_group()
 
 output_group.add_argument('--stdout', action='store_true')
 outfile_arg = output_group.add_argument('--out', dest='outfile', nargs='?', type=argparse.FileType('w'),
-                                        default='docker-compose-test2.yml')
+                                        default='docker-compose-created.yml')
 parser.print_help()
 args = parser.parse_args()
 
@@ -75,6 +75,19 @@ PROFILE = args.profile
 
 if PROFILE == 'database-only':
     dataseeder_arg.default = True
+if PROFILE == 'dev':
+    dataseeder_arg.default = True
+    BUILD = True
+    CREATE_PASSWORD = False
+    TESTS = True
+    VOLUME = False
+if PROFILE == 'prod':
+    dataseeder_arg.default = False
+    BUILD = False
+    CREATE_PASSWORD = True
+    TESTS = False
+    VOLUME = True
+
 
 USE_STDOUT = args.stdout
 if USE_STDOUT:
@@ -136,7 +149,7 @@ def create_user(length):
 
 
 def load_docker_compose_file():
-    stream = open("docker-compose-base.yml", "r")
+    stream = INFILE
     docs = yaml.load_all(stream)
     for doc in docs:
         for k, v in doc.items():
@@ -145,8 +158,7 @@ def load_docker_compose_file():
 
 
 def write_a_test_compose_file(data):
-    with open('docker-compose-test.yml', 'w') as outfile:
-        yaml.dump(data, outfile, default_flow_style=False)
+    yaml.dump(data, OUTFILE, default_flow_style=False)
 
 
 def set_version_for_yaml(yaml_version):

@@ -79,6 +79,16 @@ jobs:
          docker build -t bevrand/frontend:$CIRCLE_SHA1 ./bevrand.frontend
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/frontend:$CIRCLE_SHA1
+
+  build_els:
+    machine: true
+    steps:
+    - checkout
+    # build the application image
+    - run: |
+        docker build -t bevrand/dockerels:$CIRCLE_SHA1 ./deployment/els
+        docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+        docker push bevrand/dockerels:$CIRCLE_SHA1
   
   build_dotnet:   
     machine: true
@@ -243,6 +253,10 @@ workflows:
          context: BeverageRandomizerPROD
          requires:
           - unittest_proxy
+     - build_els:
+         context: BeverageRandomizerPROD
+         requires:
+         - unittest_proxy
      - component_tests:
          context: BeverageRandomizerPROD
          requires:
@@ -252,6 +266,7 @@ workflows:
            - build_golang
            - build_dockergres
            - build_frontend
+           - build_els
      - ui_tests:
           context: BeverageRandomizerPROD
           requires:
@@ -261,6 +276,7 @@ workflows:
            - build_golang
            - build_dockergres
            - build_frontend
+           - build_els
           filters:
             branches:
               only:

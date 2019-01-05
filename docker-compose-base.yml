@@ -164,7 +164,8 @@ services:
     - PYTHON_ENV=Test
 
   els:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.2
+    image: "bevrand/dockerels:$CIRCLE_SHA1"
+    build: ./deployment/els
     restart: always
     hostname: els
     environment:
