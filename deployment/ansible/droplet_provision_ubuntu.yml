@@ -7,7 +7,7 @@
 
   tasks:
   - name: Creates directory
-    file: path=/root/test state=directory
+    file: path=/root/docker state=directory
     register: changes_made
 
   - name: Set authorized key took from file
@@ -19,10 +19,10 @@
   - name: Upload first docker-compose for host
     copy: 
       src=../../docker-compose-created.yml
-      dest=/root/test 
+      dest=/root/docker
       mode=0644
 
-  - command: "ls /root/test"
+  - command: "ls /root/docker"
     register: dir_out
 
   - debug: msg="{{ dir_out.stdout_lines }}"

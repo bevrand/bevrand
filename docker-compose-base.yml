@@ -67,7 +67,7 @@ services:
     build: ./bevrand.frontend
     image: "bevrand/frontend:${CIRCLE_SHA1}"
     ports:
-    - 80:80
+      - 4541:80
     depends_on:
     - randomizerapi
     - playlistapi
@@ -275,3 +275,12 @@ services:
       image: jaegertracing/jaeger-cassandra-schema
       depends_on:
         - cassandra
+
+  dockernginx:
+    container_name: dockernginx
+    image: "bevrand/dockernginx:$CIRCLE_SHA1"
+    build: ./deployment/nginx
+    links:
+      - frontendapi
+    ports:
+      - "80:5000"

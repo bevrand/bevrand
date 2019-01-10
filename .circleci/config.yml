@@ -79,6 +79,10 @@ jobs:
          docker build -t bevrand/frontend:$CIRCLE_SHA1 ./bevrand.frontend
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/frontend:$CIRCLE_SHA1
+      - run: |
+          docker build -t bevrand/dockernginx:$CIRCLE_SHA1 ./deployment/nginx
+          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+          docker push bevrand/dockernginx:$CIRCLE_SHA1
 
   build_els:
     machine: true

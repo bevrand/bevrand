@@ -1,18 +1,16 @@
 #!/usr/bin/env bash
 
-#set -ex
+set -ex
 
-docker build -t swagfromhome .
+docker build -t dockerswagger .
 
-old_id=$(docker ps | grep :3200 | awk {'print$1'})
+old_id=$(docker ps | grep :4530 | awk {'print$1'})
 echo "${old_id}"
 
 if [  -n "$old_id" ]; then
-docker rm -f "$old_id"
+    docker rm -f "$old_id"
 fi
 
-docker run -d -p 3200:8080 swagfromhome
+#docker rmi $(docker images | grep none | awk '{print$3}')
 
-echo "-------------------------------"
-echo "New container is running:"
-docker ps | grep swagfromhome
+docker run -d -p 4530:8080 --name dockerswagger dockerswagger
