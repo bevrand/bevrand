@@ -30,7 +30,7 @@ jaeger_group.add_argument('--jaeger-backend-db', type=str, default='els', choice
                           help='jaeger db to use (Default is els (elastic) other option is cas (cassandra will only be '
                                'used if --include-jaeger flag is set!')
 
-parser.add_argument('--version', type=str, default='2', choices=["2", "3", "3.1"],
+parser.add_argument('--version', type=str, default='3.1', choices=["2", "3", "3.1"],
                     help='docker-compose version you want to use')
 
 parser.add_argument('--use-volumes', action='store_true',

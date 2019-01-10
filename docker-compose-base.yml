@@ -9,7 +9,7 @@ services:
 
   dockermongo:
     container_name: dockermongo
-    image: mongo:3.6
+    image: mongo:4.0
     ports:
        - 27017:27017
     volumes:
@@ -73,6 +73,7 @@ services:
     - playlistapi
     - authenticationapi
     - proxyapi
+    - highscoreapi
     links:
     - proxyapi
 
@@ -82,11 +83,10 @@ services:
     image: "bevrand/randomizerapi:${CIRCLE_SHA1}"
     ports:
        - 4560:5000 # expose ports - HOST:CONTAINER
-    depends_on:
-       - playlistapi
     links:
-       - playlistapi
        - highscoreapi
+    depends_on:
+       - jaeger-agent
     environment:
        - APP_SETTINGS=Production
        - JAEGER_AGENT_HOST=jaeger-agent
@@ -176,8 +176,6 @@ services:
       memlock:
         soft: -1
         hard: -1
-    volumes:
-    - ./deployment/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     ports:
     - 9200:9200
 

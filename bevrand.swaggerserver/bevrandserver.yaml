@@ -14,13 +14,19 @@ servers:
   - url: http://{environment}/
     variables:
       environment:
-        default: proxyapi
+        default: localhost:4540
         enum:
-          - playlistapi
-          - randomizerapi
-          - authenticationapi
-          - proxyapi
-          - highscoreapi
+          - playlistapi:5000
+          - randomizerapi:5000
+          - authenticationapi:5000
+          - proxyapi:5000
+          - highscoreapi:5000
+
+          - localhost:4550
+          - localhost:4560
+          - localhost:4570
+          - localhost:4540
+          - localhost:4580
 tags:
 - name: "algemeen"
 - name: "shared"
@@ -302,7 +308,7 @@ paths:
       tags:
       - "highscoreapi"
       servers:
-      - url: "http://highscoreapi/"
+      - url: "http://localhost:4580/"
       produces:
       - "application/json"
       summary: "Endpoint to delete a specifc playlist for a user"
@@ -346,7 +352,7 @@ paths:
       tags:
       - "highscoreapi"
       servers:
-      - url: "http://highscoreapi/"
+      - url: "http://localhost:4580/"
       produces:
       - "application/json"
       parameters:
