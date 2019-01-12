@@ -14,7 +14,7 @@
       key: "{{ lookup('file', '/home/joerivrij/.ssh/id_rsa.pub') }}"
 
   - name: Upload first docker-compose for host
-    copy: 
+    copy:
       src=../../docker-compose-created.yml
       dest=/root/docker
       mode=0644
@@ -30,7 +30,7 @@
       state: absent
     with_items:
       - docker
-      - docker-engine 
+      - docker-engine
       - docker.io
     become: true
     when: changes_made.changed
@@ -49,7 +49,7 @@
       - python-pip
     become: true
     when: changes_made.changed
- 
+
   - name: install python modules (for older versions of OS)
     pip:
       name: "{{item}}"
@@ -60,8 +60,8 @@
     - ndg-httpsclient
     - pyasn1
     when: changes_made.changed
-    
-     
+
+
   - name: Ubuntu add docker key
     apt_key:
       url: https://download.docker.com/linux/ubuntu/gpg
@@ -73,8 +73,8 @@
     command: bash -c "echo \"deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\" "
     register: docker_repo_line
     when: changes_made.changed
- 
- 
+
+
   - name: add docker repo
     apt_repository:
       repo: "{{ docker_repo_line.stdout }}"
@@ -82,7 +82,7 @@
     become: true
     changed_when: False
     when: changes_made.changed
-      
+
   - name: install docker ce
     apt:
       name: docker-ce

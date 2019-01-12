@@ -15,9 +15,9 @@
       key: "{{ lookup('file', '/home/joerivrij/.ssh/id_rsa.pub') }}"
 
   - name: Upload first docker-compose for host
-    copy: 
+    copy:
       src=../../docker-compose-created.yml
-      dest=/root/docker 
+      dest=/root/docker
       mode=0644
 
   - command: "ls -lha /root/docker/"
@@ -31,7 +31,7 @@
       state: absent
     with_items:
       - docker
-      - docker-engine 
+      - docker-engine
       - docker.io
     become: true
     when: changes_made.changed
@@ -97,4 +97,3 @@
     register: compose_up
 
   - debug: msg="{{ compose_up }}"
-  

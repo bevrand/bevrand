@@ -180,11 +180,6 @@ jobs:
          docker push bevrand/playlistapi:production
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker pull bevrand/reactapp:$CIRCLE_SHA1
-         docker tag bevrand/reactapp:$CIRCLE_SHA1 bevrand/reactapp:production
-         docker push bevrand/reactapp:production
-      - run: |
-         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker pull bevrand/proxyapi:$CIRCLE_SHA1
          docker tag bevrand/proxyapi:$CIRCLE_SHA1 bevrand/proxyapi:production
          docker push bevrand/proxyapi:production
@@ -203,6 +198,37 @@ jobs:
          docker pull bevrand/highscoreapi:$CIRCLE_SHA1
          docker tag bevrand/highscoreapi:$CIRCLE_SHA1 bevrand/highscoreapi:production
          docker push bevrand/highscoreapi:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/dockergres:$CIRCLE_SHA1
+         docker tag bevrand/dockergres:$CIRCLE_SHA1 bevrand/dockergres:production
+         docker push bevrand/dockergres:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/frontend:$CIRCLE_SHA1
+         docker tag bevrand/frontend:$CIRCLE_SHA1 bevrand/frontend:production
+         docker push bevrand/frontend:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/dockerels:$CIRCLE_SHA1
+         docker tag bevrand/dockerels:$CIRCLE_SHA1 bevrand/dockerels:production
+         docker push bevrand/dockerels:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/dockernginx:$CIRCLE_SHA1
+         docker tag bevrand/dockernginx:$CIRCLE_SHA1 bevrand/dockernginx:production
+         docker push bevrand/dockernginx:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/dataseeder:$CIRCLE_SHA1
+         docker tag bevrand/dataseeder:$CIRCLE_SHA1 bevrand/dataseeder:production
+         docker push bevrand/dataseeder:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/componenttests:$CIRCLE_SHA1
+         docker tag bevrand/componenttests:$CIRCLE_SHA1 bevrand/componenttests:production
+         docker push bevrand/componenttests:production
+
   pause_uptimerobot:
     machine: true
     steps:
@@ -235,7 +261,7 @@ workflows:
         context: BeverageRandomizerPROD
      - unittest_highscore:
         context: BeverageRandomizerPROD
-     
+
      - build_python:
         context: BeverageRandomizerPROD
         requires:
