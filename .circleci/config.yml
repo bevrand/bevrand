@@ -12,7 +12,7 @@ jobs:
     docker:
       - image: circleci/node:8
     steps:
-      - checkout 
+      - checkout
       - run: "cd ./bevrand.proxyapi && npm install"
       - run: "cd ./bevrand.proxyapi && npm test"
 
@@ -20,7 +20,7 @@ jobs:
     docker:
       - image: circleci/python:3.6.1
     steps:
-      - checkout 
+      - checkout
       - run: "cd ./bevrand.randomizerapi && sudo pip install -r requirements.txt"
       - run: "cd ./bevrand.randomizerapi/api/tests && sudo pytest --cov-report term --cov=api"
 
@@ -38,7 +38,7 @@ jobs:
       - checkout
       - run: "cd ./bevrand.highscoreapi && go test"
 
-  build_python:   
+  build_python:
     machine: true
     steps:
       - checkout
@@ -60,7 +60,7 @@ jobs:
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/dataseeder:$CIRCLE_SHA1
 
-  build_node:   
+  build_node:
     machine: true
     steps:
       - checkout
@@ -94,7 +94,7 @@ jobs:
         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
         docker push bevrand/dockerels:$CIRCLE_SHA1
   
-  build_dotnet:   
+  build_dotnet:
     machine: true
     steps:
       - checkout
@@ -124,7 +124,7 @@ jobs:
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/dockergres:$CIRCLE_SHA1
 
-  component_tests:   
+  component_tests:
     machine: true
     steps:
       - checkout
@@ -144,8 +144,7 @@ jobs:
     machine: true
     parallelism: 1
     steps:
-      - checkout    
-
+      - checkout
      # build the application image
       - run: |
          pip install PyYAML
@@ -298,7 +297,7 @@ workflows:
           context: BeverageRandomizerPROD
           filters:
              branches:
-               only: 
+               only:
                - master
           requires:
             - ui_tests
