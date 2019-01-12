@@ -276,7 +276,7 @@ services:
 
   dockernginx:
     container_name: dockernginx
-    image: "bevrand/dockernginx:$CIRCLE_SHA1"
+    image: "bevrand/dockernginx:${CIRCLE_SHA1}"
     build: ./deployment/nginx
     links:
       - frontendapi

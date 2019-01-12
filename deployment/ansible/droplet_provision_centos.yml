@@ -3,9 +3,6 @@
   remote_user: root
   gather_facts: False
 
-  environment:
-    CIRCLE_SHA1: 5e2fa46f36d00afb3e66b7cb81f8beae9cee4f27
-
   tasks:
   - name: Creates directory
     file: path=/root/docker state=directory
