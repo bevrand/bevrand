@@ -41,15 +41,12 @@ services:
        - 4560:5000 # expose ports - HOST:CONTAINER
     depends_on:
        - playlistapi
-       - redis
     links:
        - playlistapi
-       - redis
+       - highscoreapi
     environment:
        - APP_SETTINGS=Production
-       - REDIS_URL=redis
-       - JAEGER_HOST=jaeger-agent
-   
+       - HIGHSCORE_API=http://highscoreapi:5000/api/v1/
 
   playlistapi:
     container_name: playlistapi
@@ -62,8 +59,7 @@ services:
        - dockermongo
     environment:
        - APP_SETTINGS=Production
-       - MONGO_URL=mongodb://dockermongo:27017
-       - JAEGER_HOST=jaeger-agent
+       - MONGO_URL=mongodb://dockermongo:27017/admin
 
   proxyapi:
     container_name: proxyapi
@@ -81,20 +77,31 @@ services:
       - playlistapi
       - authenticationapi
 
-  reactapp:
-    container_name: reactapp
-    build: ./bevrand.reactapp
-    ports:
-      - 80:80
-    depends_on:
-      - randomizerapi
-      - playlistapi
-      - authenticationapi
-      - proxyapi
+  highscoreapi:
+    container_name: highscoreapi
+    build: ./bevrand.highscoreapi
     environment:
-      - NODE_ENV=development
+    - GO_ENV=docker
+    - GIN_MODE=release
+    depends_on:
+    - redis
     links:
-      - proxyapi
+    - redis
+    ports:
+    - 4580:5000
+
+  frontendapi:
+    container_name: frontend
+    build: ./bevrand.frontend
+    ports:
+    - 80:80
+    depends_on:
+    - randomizerapi
+    - playlistapi
+    - authenticationapi
+    - proxyapi
+    links:
+    - proxyapi
 
   dataseeder:
     container_name: dataseeder
@@ -106,19 +113,24 @@ services:
        - dockermongo
        - dockergres
 
-  testsuite:
-    container_name: backend_tests
-    build: ./bevrand.testsuite/bevrand.testsuite
+  componenttest:
+    container_name: component_tests
+    build: ./bevrand.componenttests
     depends_on:
-      - randomizerapi
-      - playlistapi
-      - authenticationapi
-      - proxyapi
+    - randomizerapi
+    - playlistapi
+    - authenticationapi
+    - proxyapi
+    - highscoreapi
+    - dataseeder
     links:
-      - randomizerapi
-      - playlistapi
-      - authenticationapi
-      - proxyapi
+    - randomizerapi
+    - playlistapi
+    - authenticationapi
+    - proxyapi
+    - highscoreapi
     environment:
-      - ASPNETCORE_ENVIRONMENT="Test"
+    - PYTHON_ENV=Test
+
+
       

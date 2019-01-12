@@ -2,13 +2,13 @@ from api.error_handler.error_model import InvalidUsage
 from api.services.map_cursor_to_dict import CursorMapper
 from pymongo import errors
 
+
 class UsersDb:
 
     #contructor
     def __init__(self, database):
-        self.db = database
-        self.users = database.users
-
+        self.db = database.client.bevrand
+        self.users = database.client.bevrand.users
 
     def get_all_user_lists(self, user_name):
         description_lists = []

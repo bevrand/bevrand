@@ -8,4 +8,4 @@ npm install -g artillery
 artillery dino
 
 
-artillery run hello.yml
+artillery run local_testsuite.yml

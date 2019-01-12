@@ -3,15 +3,26 @@
 from pymongo import MongoClient
 import glob
 import json
+import os
 
-#CONNECTION = 'mongodb://localhost:27017'
-CONNECTION = 'mongodb://dockermongo:27017'
+
+
+CONNECTION = os.environ.get('MONGO_URL')
+if CONNECTION is None:
+    CONNECTION = 'mongodb://dockermongo:27017'
+print(CONNECTION)
 
 
 def insert_collections():
     connectionstring = CONNECTION
     client = MongoClient(connectionstring)
     db = client.bevrand
+    try:
+        print("dropping collections")
+        db.users.drop()
+        db.frontpagestandard.drop()
+    except:
+        print("no collection to delete")
     postids = []
     files = get_json_files()
     for file in files:

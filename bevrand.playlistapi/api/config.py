@@ -11,16 +11,17 @@ class BaseConfig:
 class Development(BaseConfig):
     """Development configuration"""
     DEBUG = True
-    CONNECTION = 'mongodb://0.0.0.0:27017'
+    CONNECTION = 'mongodb://0.0.0.0:27017/admin'
 
 
 class Test(BaseConfig):
     """Testing configuration"""
     DEBUG = True
     TESTING = True
-    CONNECTION = 'mongodb://0.0.0.0:27017'
+    CONNECTION = 'mongodb://0.0.0.0:27017/admin'
 
 
 class Production(BaseConfig):
     """Production configuration"""
     DEBUG = False
+

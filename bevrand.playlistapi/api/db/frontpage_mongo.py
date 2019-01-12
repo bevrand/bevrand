@@ -2,12 +2,13 @@ from api.services.map_cursor_to_dict import CursorMapper
 from api.error_handler.error_model import InvalidUsage
 from pymongo import errors
 
+
 class FrontPageDb:
 
-    #contructor
+    #constructor
     def __init__(self, database):
-        self.db = database
-        self.frontpage = database.frontpagestandard
+        self.db = database.client.bevrand
+        self.frontpage = database.client.bevrand.frontpagestandard
 
     def get_frontpage_beverages(self, list_name):
         try:

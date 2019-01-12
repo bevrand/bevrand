@@ -83,9 +83,9 @@ def create_app():
 
 
 def create_mongo(app):
-    mongo_url = app.config["CONNECTION"] + "/bevrand"
+    mongo_url = app.config["CONNECTION"]
+    print(mongo_url)
     return PyMongo(app, uri=mongo_url)
-
 
 app = create_app()
 

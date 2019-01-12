@@ -1,11 +1,7 @@
-import os
-
-
 class BaseConfig:
     """Base configuration"""
     DEBUG = False
     TESTING = False
-    CONNECTION = os.environ.get('REDIS_URL')
 
 class Development(BaseConfig):
     """Development configuration"""
@@ -21,5 +17,6 @@ class Test(BaseConfig):
 class Production(BaseConfig):
     """Production configuration"""
     DEBUG = False
+
 
 

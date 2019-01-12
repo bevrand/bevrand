@@ -25,7 +25,7 @@ const requestRandomizePost = (endpoint) => {
   
     httpPostRequest({
       method: 'POST',
-      url: `${endpoint}/api/randomize`,
+      url: `${endpoint}/api/v1/randomize`,
       qs: req.query,
       body: {
         user,
@@ -50,33 +50,6 @@ const requestRandomizePost = (endpoint) => {
   }
 };
 
-router.get('/redis', (req, res, next) => {
-  const span = tracer.startSpan('redis-request');
-  
-  span.log({
-    event: 'randomize-query-parameters',
-    result: req.query
-  });
-
-  httpRequest({
-    url: config.randomizerApi + req.originalUrl,
-    method: 'GET',
-    span
-  }).then(result => {
-    span.setTag(Tags.HTTP_STATUS_CODE, 200);
-    span.log({
-      event: 'redis-result',
-      result: result
-    });
-    span.finish();
-    return res.send(result);
-  }).catch(err => {
-    span.setTag(Tags.ERROR, true)
-    span.setTag(Tags.HTTP_STATUS_CODE, err.statusCode || 500);
-    span.finish();
-    next(err);
-  })
-});
 
 router.post('/v2/randomize', validateJwtTokenMiddleware, requestRandomizePost(config.randomizerApi));
 
