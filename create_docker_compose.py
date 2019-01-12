@@ -161,6 +161,15 @@ def set_version_for_yaml(yaml_version):
     return
 
 
+def replace_circle_sha_with_tag(tag):
+    for service in service_yaml_file:
+        for image in service_yaml_file[service]:
+            if image == 'image':
+                test = service_yaml_file[service][image]
+                service_yaml_file[service][image] = test.replace("${CIRCLE_SHA1}", tag)
+    return
+
+
 def start_creation_of_yaml(yaml_services):
     for service in yaml_services:
         handle_service_creation(service, yaml_services[service])
@@ -172,6 +181,7 @@ def start_creation_of_yaml(yaml_services):
         set_random_passwords()
     if VOLUME is False:
         remove_volumes()
+    replace_circle_sha_with_tag(TAG)
     return
 
 
