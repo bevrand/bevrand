@@ -130,8 +130,9 @@ jobs:
       - checkout
      # build the application image
       - run: |
+         python create_docker_compose.py --profile component-tests
          docker-compose --version
-         docker-compose -f ./deployment/docker/docker-compose-component.yml up -d
+         docker-compose -f ./docker-compose-created.yml up -d
          docker images
          docker ps -a
      
@@ -147,6 +148,7 @@ jobs:
      # build the application image
       - run: |
          docker-compose --version
+         python3
          docker-compose -f ./deployment/docker/docker-compose-ui.yml up -d
          docker images
          docker ps -a
