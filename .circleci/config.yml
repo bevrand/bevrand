@@ -130,6 +130,7 @@ jobs:
       - checkout
      # build the application image
       - run: |
+         pip install PyYAML
          python create_docker_compose.py --profile component-tests
          docker-compose --version
          docker-compose -f ./docker-compose-created.yml up -d
