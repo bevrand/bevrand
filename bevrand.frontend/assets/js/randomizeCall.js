@@ -78,7 +78,7 @@ function generatePlaylistHtml(playlist) {
     var playlistHtml = "<article>"
         + '<a class="image featured scrolly" onclick=changePlayList("' + playlist.list + '") href="#main"><img src="' + playlist.imageUrl + '" /></a>'
         + '<header>'
-        + '<h3><a class="scrolly" onclick=changePlayList(' + playlist.list + ') href="#main">' + playlist.displayName + '</a></h3>'
+        + '<h3><a class="scrolly" onclick=changePlayList("' + playlist.list + '") href="#main">' + playlist.displayName + '</a></h3>'
         + '</header >'
         + '<ul style="list-style-type:none">' + itemList + '</ul>'
         + '</article >'
