@@ -3,6 +3,7 @@ import yaml
 import string
 import random
 import sys
+import os
 
 
 parser = argparse.ArgumentParser(description='Create a docker-compose file based on arguments given')
@@ -10,7 +11,7 @@ parser = argparse.ArgumentParser(description='Create a docker-compose file based
 # jaeger_group = parser.add_argument_group('jaeger', 'jaeger related settings')
 image_action_group = parser.add_mutually_exclusive_group()
 
-image_action_group.add_argument('--pull-images', dest='image_action', action='store_const',
+image_action_arg = image_action_group.add_argument('--pull-images', dest='image_action', action='store_const',
                                 const='pull', default='build',
                                 help='set image action to perform to pull, skips the build stage (default: %(default)s)')
 
@@ -18,13 +19,13 @@ image_action_group.add_argument('--build-images', dest='image_action', action='s
                                 const='build', default='build',
                                 help='set image action to perform to build, ensures the build stage is executed even if the profile would have set it to pull (default: %(default)s)')
 
-parser.add_argument('--tag', type=str, default='latest',
+tag_action_arg = parser.add_argument('--tag', type=str, default='latest',
                     help='The tag to set for your build images, or the tag that will be used to pull the custom images if --pull-images flag is set (default: %(default)s)')
 
 jaeger_group = parser.add_argument_group('jaeger', 'jaeger related settings')
 
-jaeger_group.add_argument('--include-jaeger', action='store_true',
-                          help='Jaeger containers will be included if this flag is set (default: %(default)s)')
+exclude_jaeger_arg = jaeger_group.add_argument('--exclude-jaeger', action='store_true',
+                          help='Jaeger containers will NOT be included if this flag is set (default: %(default)s)')
 
 jaeger_group.add_argument('--jaeger-backend-db', type=str, default='els', choices=['els', 'cas'],
                           help='jaeger db to use (Default is els (elastic) other option is cas (cassandra will only be '
@@ -33,10 +34,10 @@ jaeger_group.add_argument('--jaeger-backend-db', type=str, default='els', choice
 parser.add_argument('--version', type=str, default='3.1', choices=["2", "3", "3.1"],
                     help='docker-compose version you want to use')
 
-parser.add_argument('--use-volumes', action='store_true',
+use_volume_arg = parser.add_argument('--use-volumes', action='store_true',
                     help='When this flag is set, docker will use volumes for persistent data storage (default: %(default)s)')
 
-parser.add_argument('--run-component-tests', action='store_true',
+run_component_arg = parser.add_argument('--run-component-tests', action='store_true',
                     help='Whether you want componenttests included (default %(default)s)')
 
 profile_group = parser.add_mutually_exclusive_group()
@@ -44,17 +45,13 @@ profile_group = parser.add_mutually_exclusive_group()
 profile_group.add_argument('--no-profile', action='store_const', dest='profile', const='none',
                            help='Same as "--profile none". Contains no images by default, the base profile to use for setting all flags and setings manually')
 
-profile_group.add_argument('--profile', type=str, default='dev', choices=['prod', 'dev', 'database-only', 'none'],
+profile_group.add_argument('--profile', type=str, default='dev', choices=['prod', 'dev', 'database-only', 'ui-tests', 'component-tests', 'none'],
                            help='Sets the default action based on a particular purpose. All configurations can be made by setting all flags manually, the profiles just give an easier way to achieve this. [dev] builds all services and supporting systems with static passwords, for local development and demos. [database-only] runs only the database containers with data from database seeder, from images, for local development. [none] contains no images by default, the base profile to use for setting all flags and setings manually')
-
-parser.add_argument('--databaseonly', type=bool, default=False,
-                    help='Whether you want only the databases and a dataseeder for local development'
-                         '(Default is false, any value will result in True)')
 
 dataseeder_arg = parser.add_argument('--dataseeder', type=bool, default=True,
                                      help='Whether you want only the dataseeder (Default is True)')
 
-parser.add_argument('--generate-passwords', action='store_true',
+pass_generation_arg = parser.add_argument('--generate-passwords', action='store_true',
                     help='Whether you want to create a password (production) or use test passwords'
                          '(default: %(default)s)')
 # TODO Support stdin
@@ -73,15 +70,39 @@ args = parser.parse_args()
 
 PROFILE = args.profile
 
+DATABASE_ONLY = False
+
+''' All databases plus the dataseeder for local development '''
 if PROFILE == 'database-only':
     dataseeder_arg.default = True
-    jaeger_group.default = False
+    exclude_jaeger_arg.default = True
+    DATABASE_ONLY = True
+''' For local development '''
 if PROFILE == 'dev':
+    dataseeder_arg.default = False
+    run_component_arg.default = True
+    pass_generation_arg.default = True
+''' For Circle component tests environment'''
+if PROFILE == 'component-tests':
     dataseeder_arg.default = True
-    jaeger_group.default = True
+    image_action_arg.default = 'pull'
+    tag_action_arg.default = os.environ.get('CIRCLE_SHA1')
+    exclude_jaeger_arg.default = True
+    run_component_arg.default = True
+    pass_generation_arg.default = True
+''' For Circle ui tests environment'''
+if PROFILE == 'ui-tests':
+    dataseeder_arg.default = True
+    image_action_arg.default = 'pull'
+    tag_action_arg.default = os.environ.get('CIRCLE_SHA1')
+    exclude_jaeger_arg.default = True
+    pass_generation_arg.default = True
+''' For production environment'''
 if PROFILE == 'prod':
     dataseeder_arg.default = False
-    jaeger_group = True
+    image_action_arg.default = 'build'
+    tag_action_arg.default = os.environ.get('CIRCLE_SHA1')
+    use_volume_arg.default = True
 
 
 USE_STDOUT = args.stdout
@@ -93,14 +114,13 @@ args = parser.parse_args()
 
 BUILD = args.image_action == 'build'
 TAG = args.tag
-JAEGER = args.include_jaeger
+JAEGER = args.exclude_jaeger == False
 if JAEGER is True:
     JAEGERDB = args.jaeger_backend_db
 VOLUME = args.use_volumes
 VERSION = args.version
 TESTS = args.run_component_tests
-CREATE_PASSWORD = args.generate_passwords
-DATABASE_ONLY = args.databaseonly
+GENERATE_PASSWORD = args.generate_passwords
 DATASEEDER = args.dataseeder
 INFILE = args.infile
 OUTFILE = args.outfile
@@ -126,7 +146,7 @@ def print_values_at_startup():
         print('Jaegerdb = ' + JAEGERDB)
     print('Volume = ' + str(VOLUME))
     print('Tests = ' + str(TESTS))
-    print('Password creation = ' + str(CREATE_PASSWORD))
+    print('Password creation = ' + str(GENERATE_PASSWORD))
     print('Version = ' + VERSION)
     print('Databases only = ' + str(DATABASE_ONLY))
     print('Dataseeder = ' + str(DATASEEDER))
@@ -161,6 +181,15 @@ def set_version_for_yaml(yaml_version):
     return
 
 
+def replace_circle_sha_with_tag(tag):
+    for service in service_yaml_file:
+        for image in service_yaml_file[service]:
+            if image == 'image':
+                test = service_yaml_file[service][image]
+                service_yaml_file[service][image] = test.replace("${CIRCLE_SHA1}", tag)
+    return
+
+
 def start_creation_of_yaml(yaml_services):
     for service in yaml_services:
         handle_service_creation(service, yaml_services[service])
@@ -168,10 +197,25 @@ def start_creation_of_yaml(yaml_services):
         remove_build_or_images('image')
     else:
         remove_build_or_images('build')
-    if CREATE_PASSWORD is True:
-        set_random_passwords()
+    if GENERATE_PASSWORD is True:
+        password = create_password(25)
+        user_name = create_user(15)
+        for client, server in password_services.items():
+            set_passwords(client, server, user_name, password)
+    else:
+        if os.environ.get('MONGO_USERNAME') is not None:
+            mongo_username = os.environ.get('MONGO_USERNAME')
+            mongo_password = os.environ.get('MONGO_PASSWORD')
+            set_passwords('playlistapi', 'dockermongo', mongo_username, mongo_password)
+        if os.environ.get('POSTGRES_USERNAME') is not None:
+            postgres_username = os.environ.get('POSTGRES_USERNAME')
+            postgres_password = os.environ.get('POSTGRES_PASSWORD')
+            set_passwords('authenticationapi', 'dockergres', postgres_username, postgres_password)
     if VOLUME is False:
         remove_volumes()
+
+    if TAG is not None and BUILD is False:
+        replace_circle_sha_with_tag(TAG)
     return
 
 
@@ -232,51 +276,47 @@ def remove_build_or_images(field):
     return
 
 
-def set_random_passwords():
-    for k, v in password_services.items():
+def set_passwords(client, server, user_name, password):
+    password_object = PassWordObjects()
 
-        password = create_password(25)
-        user_name = create_user(15)
-        password_object = PassWordObjects()
+    auth_str = password_object.authenticationapi
+    auth_str = auth_str.replace("PLACEHOLDER_PASS", password)
+    auth_str = auth_str.replace("PLACEHOLDER_USER", user_name)
 
-        auth_str = password_object.authenticationapi
-        auth_str = auth_str.replace("PLACEHOLDER_PASS", password)
-        auth_str = auth_str.replace("PLACEHOLDER_USER", user_name)
+    gres_str = []
+    for str in password_object.dockergres:
+        str = str.replace("PLACEHOLDER_PASS", password)
+        str = str.replace("PLACEHOLDER_USER", user_name)
+        gres_str.append(str)
 
-        gres_str = []
-        for str in password_object.dockergres:
-            str = str.replace("PLACEHOLDER_PASS", password)
-            str = str.replace("PLACEHOLDER_USER", user_name)
-            gres_str.append(str)
+    play_str = password_object.playlistapi
+    play_str = play_str.replace("PLACEHOLDER_PASS", password)
+    play_str = play_str.replace("PLACEHOLDER_USER", user_name)
 
-        play_str = password_object.playlistapi
-        play_str = play_str.replace("PLACEHOLDER_PASS", password)
-        play_str = play_str.replace("PLACEHOLDER_USER", user_name)
+    mon_str = []
+    for str in password_object.dockermongo:
+        str = str.replace("PLACEHOLDER_PASS", password)
+        str = str.replace("PLACEHOLDER_USER", user_name)
+        mon_str.append(str)
 
-        mon_str = []
-        for str in password_object.dockermongo:
-            str = str.replace("PLACEHOLDER_PASS", password)
-            str = str.replace("PLACEHOLDER_USER", user_name)
-            mon_str.append(str)
-
-        if k == 'authenticationapi':
-            service_yaml_file[k]['environment'].append(auth_str)
-            for field in service_yaml_file[k]['environment']:
-                if field == 'ASPNETCORE_ENVIRONMENT="Development"':
-                    service_yaml_file[k]['environment'].remove('ASPNETCORE_ENVIRONMENT="Development"')
-                    service_yaml_file[k]['environment'].append('ASPNETCORE_ENVIRONMENT="Production"')
-            service_yaml_file[v]['environment'].remove('POSTGRES_PASSWORD=postgres')
-            service_yaml_file[v]['environment'].remove('POSTGRES_USER=postgres')
-            for str in gres_str:
-                service_yaml_file[v]['environment'].append(str)
-        elif k == 'playlistapi':
-            service_yaml_file[k]['environment'].remove('MONGO_URL=mongodb://dockermongo:27017/admin')
-            service_yaml_file[k]['environment'].append(play_str)
-            if DATASEEDER is True:
-                service_yaml_file['dataseeder']['environment'].remove('MONGO_URL=mongodb://dockermongo:27017/admin')
-                service_yaml_file['dataseeder']['environment'].append(play_str)
-            for str in mon_str:
-                service_yaml_file[v]['environment'].append(str)
+    if client == 'authenticationapi':
+        service_yaml_file[client]['environment'].append(auth_str)
+        for field in service_yaml_file[client]['environment']:
+            if field == 'ASPNETCORE_ENVIRONMENT="Development"':
+                service_yaml_file[client]['environment'].remove('ASPNETCORE_ENVIRONMENT="Development"')
+                service_yaml_file[client]['environment'].append('ASPNETCORE_ENVIRONMENT="Production"')
+        service_yaml_file[server]['environment'].remove('POSTGRES_PASSWORD=postgres')
+        service_yaml_file[server]['environment'].remove('POSTGRES_USER=postgres')
+        for str in gres_str:
+            service_yaml_file[server]['environment'].append(str)
+    elif client == 'playlistapi':
+        service_yaml_file[client]['environment'].remove('MONGO_URL=mongodb://dockermongo:27017/admin')
+        service_yaml_file[client]['environment'].append(play_str)
+        if DATASEEDER is True:
+            service_yaml_file['dataseeder']['environment'].remove('MONGO_URL=mongodb://dockermongo:27017/admin')
+            service_yaml_file['dataseeder']['environment'].append(play_str)
+        for str in mon_str:
+            service_yaml_file[server]['environment'].append(str)
     return
 
 
