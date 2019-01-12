@@ -213,7 +213,9 @@ def start_creation_of_yaml(yaml_services):
             set_passwords('authenticationapi', 'dockergres', postgres_username, postgres_password)
     if VOLUME is False:
         remove_volumes()
-    replace_circle_sha_with_tag(TAG)
+
+    if TAG is not None and BUILD is False:
+        replace_circle_sha_with_tag(TAG)
     return
 
 
