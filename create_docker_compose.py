@@ -202,14 +202,15 @@ def start_creation_of_yaml(yaml_services):
         user_name = create_user(15)
         for client, server in password_services.items():
             set_passwords(client, server, user_name, password)
-    if os.environ.get('MONGO_USERNAME') is not None:
-        mongo_username = os.environ.get('MONGO_USERNAME')
-        mongo_password = os.environ.get('MONGO_PASSWORD')
-        set_passwords('playlistapi', 'dockermongo', mongo_username, mongo_password)
-    if os.environ.get('POSTGRES_USERNAME') is not None:
-        postgres_username = os.environ.get('POSTGRES_USERNAME')
-        postgres_password = os.environ.get('POSTGRES_PASSWORD')
-        set_passwords('authenticationapi', 'dockergres', postgres_username, postgres_password)
+    else:
+        if os.environ.get('MONGO_USERNAME') is not None:
+            mongo_username = os.environ.get('MONGO_USERNAME')
+            mongo_password = os.environ.get('MONGO_PASSWORD')
+            set_passwords('playlistapi', 'dockermongo', mongo_username, mongo_password)
+        if os.environ.get('POSTGRES_USERNAME') is not None:
+            postgres_username = os.environ.get('POSTGRES_USERNAME')
+            postgres_password = os.environ.get('POSTGRES_PASSWORD')
+            set_passwords('authenticationapi', 'dockergres', postgres_username, postgres_password)
     if VOLUME is False:
         remove_volumes()
     replace_circle_sha_with_tag(TAG)
