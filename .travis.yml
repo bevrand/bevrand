@@ -44,9 +44,12 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
   - docker-compose --version
   - docker --version
-  - docker-compose build
+  - pip install PyYAML
+  - python create_docker_compose.py --profile component-tests --build-images
+  - docker-compose --version
+  - docker-compose -f ./docker-compose-created.yml build
   - docker images
-  - docker-compose up -d
+  - docker-compose -f ./docker-compose-created.yml up -d
   - docker ps -a
 
 script:
