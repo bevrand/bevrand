@@ -1,9 +1,9 @@
-let playlist = [];
-let randomizeList = '';
-let currentPlayList = 'tgif';
-let currentlySelectedPlayList = '';
+var playlist = [];
+var randomizeList = '';
+var currentPlayList = 'tgif';
+var currentlySelectedPlayList = '';
 
-const config = {
+var config = {
     proxyHostname: 'https:' == document.location.protocol ? '' : 'http://localhost:4540'
 };
 
