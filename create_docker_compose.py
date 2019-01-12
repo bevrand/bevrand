@@ -23,8 +23,8 @@ parser.add_argument('--tag', type=str, default='latest',
 
 jaeger_group = parser.add_argument_group('jaeger', 'jaeger related settings')
 
-jaeger_group.add_argument('--include-jaeger', action='store_true',
-                          help='Jaeger containers will be included if this flag is set (default: %(default)s)')
+jaeger_group.add_argument('--exclude-jaeger', action='store_true',
+                          help='Jaeger containers will NOT be included if this flag is set (default: %(default)s)')
 
 jaeger_group.add_argument('--jaeger-backend-db', type=str, default='els', choices=['els', 'cas'],
                           help='jaeger db to use (Default is els (elastic) other option is cas (cassandra will only be '
@@ -93,7 +93,7 @@ args = parser.parse_args()
 
 BUILD = args.image_action == 'build'
 TAG = args.tag
-JAEGER = args.include_jaeger
+JAEGER = args.exclude_jaeger == False
 if JAEGER is True:
     JAEGERDB = args.jaeger_backend_db
 VOLUME = args.use_volumes
