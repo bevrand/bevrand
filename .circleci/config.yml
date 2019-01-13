@@ -29,14 +29,14 @@ jobs:
       - image: microsoft/dotnet:2-sdk
     steps:
       - checkout
-      - run: "cd bevrand.authenticationapi/bevrand.authenticationapi.tests && dotnet test"
+      - run: "cd bevrand.authenticationapi/bevrand.authenticationapi.tests && dotnet test /p:CollectCoverage=true"
 
   unittest_highscore:
     docker:
     - image: circleci/golang:1.11
     steps:
       - checkout
-      - run: "cd ./bevrand.highscoreapi && go test"
+      - run: "cd ./bevrand.highscoreapi && go test -cover"
 
   build_python:   
     machine: true
