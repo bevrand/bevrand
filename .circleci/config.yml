@@ -198,7 +198,19 @@ jobs:
          docker pull bevrand/highscoreapi:$CIRCLE_SHA1
          docker tag bevrand/highscoreapi:$CIRCLE_SHA1 bevrand/highscoreapi:production
          docker push bevrand/highscoreapi:production
-      - run: |
+      commands:
+  PushProductionImageToRegistery:
+    parameters:
+      application:
+        type: string
+    steps:
+      - run:
+          name: Push new production image to docker registry
+          command: |
+            docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+            docker pull bevrand/<< parameters.application >>:$CIRCLE_SHA1
+            docker tag bevrand/<< parameters.application >>:$CIRCLE_SHA1 bevrand/<< parameters.application >>:production
+            docker push bevrand/<< parameters.application >>:production
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker pull bevrand/dockergres:$CIRCLE_SHA1
          docker tag bevrand/dockergres:$CIRCLE_SHA1 bevrand/dockergres:production
