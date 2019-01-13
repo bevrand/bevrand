@@ -16,6 +16,7 @@ require (
 	github.com/uber/jaeger-lib v1.5.0 // indirect
 	github.com/ugorji/go/codec v0.0.0-20181209151446-772ced7fd4c2 // indirect
 	go.uber.org/atomic v1.3.2 // indirect
+	golang.org/x/tools v0.0.0-20190111214448-fc1d57b08d7b // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v8 v8.18.2 // indirect
 	gopkg.in/oauth2.v3 v3.9.3
