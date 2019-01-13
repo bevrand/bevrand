@@ -1,22 +1,18 @@
 swagger: "2.0"
 info:
-  description: "This is a sample server Petstore server.  You can find out more about     Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).      For this sample, you can use the api key `special-key` to test the authorization     filters."
+  description: >-
+    This is the Beverage Randomizer Proxy API. It powers the website hosted at: http://beveragerandomizer.com/ 
+    and reroutes requests to the other microservice API's
   version: "1.0.0"
-  title: "Swagger Petstore"
-  termsOfService: "http://swagger.io/terms/"
+  title: "Beverage Randomizer | Proxy Api"
   contact:
-    email: "apiteam@swagger.io"
-  license:
-    name: "Apache 2.0"
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "localhost:5000"
+    email: "admin@beveragerandomizer.com"
 basePath: "/api"
 tags:
 - name: "frontpage"
-  description: "Everything about your Pets"
-  externalDocs:
-    description: "Find out more"
-    url: "http://swagger.io"
+  description: "Frontpage endpoints"
+- name: "randomize"
+  description: "Randomize API endpoints"
 schemes:
 - "http"
 - "https"
@@ -26,7 +22,7 @@ paths:
       tags:
       - "frontpage"
       summary: "Gets the frontend playlist with JWT"
-      description: "Multiple status values can be provided with comma separated strings"
+      description: "Retrieves the playlists for the frontpage with jwtokens for validating the playlists when randomizing"
       operationId: "findPetsByStatus"
       produces:
       - "application/json"
@@ -36,7 +32,7 @@ paths:
           schema:
             type: "array"
             items:
-              $ref: "#/definitions/Pet"
+              $ref: "#/definitions/Playlist"
         400:
           description: "Invalid status value"
   /v2/randomize/:
@@ -49,77 +45,63 @@ paths:
       parameters:
       - in: "body"
         name: "body"
-        description: "Pet object that needs to be added to the store"
+        description: "Playlist that needs to be randomized, requires valid JWTToken to be present"
         required: true
         schema:
-          $ref: "#/definitions/Pet"
+          $ref: "#/definitions/Playlist"
       responses:
         200:
           description: "successful operation"
           schema:
             type: "array"
             items:
-              $ref: "#/definitions/Pet"
+              $ref: "#/definitions/Playlist"
         400:
-          description: "Invalid status value"
+          description: "Invalid/No playlist given in POST body, jwt token does not validate"
+          schema:
+            $ref: "#/definitions/ErrorMessage"
 definitions:
-  Category:
+  Playlist:
     type: "object"
     properties:
-      id:
-        type: "integer"
-        format: "int64"
-      name:
-        type: "string"
-    xml:
-      name: "Category"
-  Tag:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      name:
-        type: "string"
-    xml:
-      name: "Tag"
-  Pet:
-    type: "object"
-    required:
-    - "name"
-    - "photoUrls"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      category:
-        $ref: "#/definitions/Category"
-      name:
-        type: "string"
-        example: "doggie"
-      photoUrls:
+      beverages:
         type: "array"
-        xml:
-          name: "photoUrl"
-          wrapped: true
         items:
           type: "string"
-      tags:
-        type: "array"
-        xml:
-          name: "tag"
-          wrapped: true
-        items:
-          $ref: "#/definitions/Tag"
-      status:
+      displayName:
         type: "string"
-        description: "pet status in the store"
-        enum:
-        - "available"
-        - "pending"
-        - "sold"
-    xml:
-      name: "Pet"
+        example: "Thank God It's Friday!"
+      id:
+        type: "string"
+        example: "5c3a20ded964b50008dc1794"
+      imageUrl:
+        type: "string"
+      list:
+        type: "string"
+      user:
+        type: "string"
+      iat:
+        type: "integer"
+        format: "int64"
+      jwtheader:
+        type: object
+        properties:
+          alg:
+            type: "string"
+          type:
+            type: "string"
+      jwttoken:
+        type: string
+  ErrorMessage:
+    type: object
+    properties:
+      result:
+        type: string
+      message:
+        type: string
+      httpstatus:
+        type: integer
+        type: int64
 externalDocs:
   description: "Find out more about Swagger"
   url: "http://swagger.io"
