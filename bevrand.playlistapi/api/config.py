@@ -21,6 +21,11 @@ class Test(BaseConfig):
     CONNECTION = 'mongodb://0.0.0.0:27017/admin'
 
 
+class Coverage(BaseConfig):
+    DEBUG = False
+    CONNECTION = 'mongodb://dockermongo:27017/admin'
+
+
 class Production(BaseConfig):
     """Production configuration"""
     DEBUG = False

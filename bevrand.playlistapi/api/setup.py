@@ -16,6 +16,7 @@ except:
 print(JAEGER_HOST)
 FLASK_TRACER = None
 
+
 def create_app():
     # instantiate the app
     swagger_config = {
@@ -58,7 +59,7 @@ def create_app():
     app_settings = 'api.config.' + env
     app.config.from_object(app_settings)
 
-    config = Config(config={'sampler': {'type': 'const', 'param': 1},
+    config = Config(config={'sampler': {'type': 'probabilistic', 'param': 0.1},
                             'logging': True,
                             'local_agent':
                             # Also, provide a hostname of Jaeger instance to send traces to.
@@ -79,6 +80,10 @@ def create_app():
     from api.controllers.public_controller import public_blueprint
     app.register_blueprint(public_blueprint, url_prefix='/api/v1/public')
 
+    if env == 'Coverage':
+        from api.controllers.coverage_controller import coverage_blueprint
+        app.register_blueprint(coverage_blueprint, url_prefix='/api/v1/coverage')
+
     return app
 
 
@@ -87,8 +92,10 @@ def create_mongo(app):
     print(mongo_url)
     return PyMongo(app, uri=mongo_url)
 
+
 app = create_app()
 
 # bind to application package
 api.app = app
 api.mongo = create_mongo(app)
+

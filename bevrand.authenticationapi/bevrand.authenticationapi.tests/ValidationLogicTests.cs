@@ -222,5 +222,37 @@ namespace bevrand.authenticationapi.tests
             var service = new ValidationLogic(mock.Object);
             Assert.Throws<ArgumentException>(() => service.UpdateUserPasswordInDatabase(id, valdationModel));
         }
+        
+        [Fact]
+        public void ShouldBeAbleToUpdateUserIfPassWordsMatch()
+        {
+            var mock = new Mock<IUserRepository>();
+            var id = 1;
+            var password = "someotherpassword";
+            var hashedPassword = PasswordHasher.SetPassword(password);
+
+            var valdationModel = new PutValidateUser
+            {
+                NewPassWord = "newpassword",
+                OldPassWord = "someotherpassword"
+            };
+
+            var newUserModel = new UserModel
+            {
+                Id = id,
+                PassWord = hashedPassword,
+                UserName = "someuser",
+                Active = true,
+                Created = new DateTime(),
+                EmailAddress = "some@email.nl",
+                Updated = new DateTime()
+            };
+            
+            mock.Setup(e => e.GetSingleUser(id)).Returns(newUserModel);
+
+            var service = new ValidationLogic(mock.Object);
+            service.UpdateUserPasswordInDatabase(id, valdationModel);
+            mock.Verify(x => x.Update(It.IsAny<UserModel>()), Times.Exactly(1));
+        }
     }
 }
