@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
       
 commands:
   sayhello:
@@ -241,6 +241,8 @@ workflows:
   version: 2
   build_accept_deploy:
     jobs:
+     - create_production_images:
+        context: BeverageRandomizerPROD
      - unittest_randomizer:
         context: BeverageRandomizerPROD
      - unittest_proxy:
@@ -310,10 +312,7 @@ workflows:
      #- acceptance_test_1:
      #    requires:
      #      - ui_tests
-     - create_production_images:
-          context: BeverageRandomizerPROD
-          requires:
-            - component_tests
+
      - pause_uptimerobot:
          context: BeverageRandomizerPROD
          filters:
