@@ -8,7 +8,6 @@ import os
 
 parser = argparse.ArgumentParser(description='Create a docker-compose file based on arguments given')
 
-# jaeger_group = parser.add_argument_group('jaeger', 'jaeger related settings')
 image_action_group = parser.add_mutually_exclusive_group()
 
 image_action_arg = image_action_group.add_argument('--pull-images', dest='image_action', action='store_const',
