@@ -302,12 +302,7 @@ workflows:
      #      - ui_tests
      - create_production_images:
           context: BeverageRandomizerPROD
-          filters:
-             branches:
-               only: 
-               - master
           requires:
-            - ui_tests
             - component_tests
      - pause_uptimerobot:
          context: BeverageRandomizerPROD
