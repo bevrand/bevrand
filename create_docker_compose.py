@@ -226,10 +226,7 @@ def handle_service_creation(service_name, service_yaml):
             service_yaml_file[service_name] = service_yaml
         return
     if JAEGER is True:
-        if (JAEGERDB == 'els' and service_name in jaeger_services_es)\
-                or (JAEGERDB == 'cas' and service_name in jaeger_services_cas):
-            service_name = remove_jaeger_db_extension_from_name(service_name)
-            service_yaml_file[service_name] = service_yaml
+        service_name = select_jaeger_database(service_name, service_yaml)
     else:
         remove_jaeger_from_env()
     if TESTS is True and service_name in test_services:
@@ -241,7 +238,16 @@ def handle_service_creation(service_name, service_yaml):
     return
 
 
+def select_jaeger_database(service_name, service_yaml):
+    if (JAEGERDB == 'els' and service_name in jaeger_services_es) \
+            or (JAEGERDB == 'cas' and service_name in jaeger_services_cas):
+        service_name = remove_jaeger_db_extension_from_name(service_name)
+        service_yaml_file[service_name] = service_yaml
+    return service_name
+
+
 def remove_jaeger_from_env():
+    """" Removes all Jaeger related environment variables """
     for service in service_yaml_file:
         for field in service_yaml_file[service]:
             if field == 'environment' or field == 'depends_on':
