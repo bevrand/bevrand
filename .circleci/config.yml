@@ -1,55 +1,6 @@
-version: 2.1
-      
-commands:
-  sayhello:
-    description: "A very simple command for demonstration purposes"
-    parameters:
-      to:
-        type: string
-        default: "Hello World"
-    steps:
-      - run: echo << parameters.to >>
-  PushProductionImageToRegistery:
-    description: "Services that need production images pushed"
-    parameters:
-      application:
-        type: string
-    steps:
-      - run:
-          name: Push new production image to docker registry
-          command: |
-            docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-            docker pull bevrand/<< parameters.application >>:$CIRCLE_SHA1
-            docker tag bevrand/<< parameters.application >>:$CIRCLE_SHA1 bevrand/<< parameters.application >>:production
-            docker push bevrand/<< parameters.application >>:production
+version: 2
 
 jobs:
-  create_production_images:
-    machine: true
-    steps:
-      - sayhello:
-          to: "Joost"
-        # build the application image
-      - PushProductionImageToRegistery:
-          application: proxyapi
-      - PushProductionImageToRegistery:
-          application: randomizerapi
-      - PushProductionImageToRegistery:
-          application: authenticationapi
-      - PushProductionImageToRegistery:
-          application: highscoreapi
-      - PushProductionImageToRegistery:
-          application: dockergres
-      - PushProductionImageToRegistery:
-          application: frontend
-      - PushProductionImageToRegistery:
-          application: dockerels
-      - PushProductionImageToRegistery:
-          application: dockernginx
-      - PushProductionImageToRegistery:
-          application: dataseeder
-      - PushProductionImageToRegistery:
-          application: componenttests
   unittest_playlist:
     docker:
       - image: circleci/python:3.6.1
@@ -218,7 +169,66 @@ jobs:
       - store_artifacts:
           path: /home/circleci/project/bevrand.uitests/cypress/screenshots/
 
-
+  create_production_images:
+    machine: true
+    steps:
+      - checkout
+     # build the application image
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/playlistapi:$CIRCLE_SHA1
+         docker tag bevrand/playlistapi:$CIRCLE_SHA1 bevrand/playlistapi:production
+         docker push bevrand/playlistapi:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/proxyapi:$CIRCLE_SHA1
+         docker tag bevrand/proxyapi:$CIRCLE_SHA1 bevrand/proxyapi:production
+         docker push bevrand/proxyapi:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/randomizerapi:$CIRCLE_SHA1
+         docker tag bevrand/randomizerapi:$CIRCLE_SHA1 bevrand/randomizerapi:production
+         docker push bevrand/randomizerapi:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/authenticationapi:$CIRCLE_SHA1
+         docker tag bevrand/authenticationapi:$CIRCLE_SHA1 bevrand/authenticationapi:production
+         docker push bevrand/authenticationapi:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/highscoreapi:$CIRCLE_SHA1
+         docker tag bevrand/highscoreapi:$CIRCLE_SHA1 bevrand/highscoreapi:production
+         docker push bevrand/highscoreapi:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/dockergres:$CIRCLE_SHA1
+         docker tag bevrand/dockergres:$CIRCLE_SHA1 bevrand/dockergres:production
+         docker push bevrand/dockergres:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/frontend:$CIRCLE_SHA1
+         docker tag bevrand/frontend:$CIRCLE_SHA1 bevrand/frontend:production
+         docker push bevrand/frontend:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/dockerels:$CIRCLE_SHA1
+         docker tag bevrand/dockerels:$CIRCLE_SHA1 bevrand/dockerels:production
+         docker push bevrand/dockerels:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/dockernginx:$CIRCLE_SHA1
+         docker tag bevrand/dockernginx:$CIRCLE_SHA1 bevrand/dockernginx:production
+         docker push bevrand/dockernginx:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/dataseeder:$CIRCLE_SHA1
+         docker tag bevrand/dataseeder:$CIRCLE_SHA1 bevrand/dataseeder:production
+         docker push bevrand/dataseeder:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/componenttests:$CIRCLE_SHA1
+         docker tag bevrand/componenttests:$CIRCLE_SHA1 bevrand/componenttests:production
+         docker push bevrand/componenttests:production
 
   pause_uptimerobot:
     machine: true
@@ -242,8 +252,6 @@ workflows:
   version: 2
   build_accept_deploy:
     jobs:
-     - create_production_images:
-        context: BeverageRandomizerPROD
      - unittest_randomizer:
         context: BeverageRandomizerPROD
      - unittest_proxy:
@@ -313,7 +321,15 @@ workflows:
      #- acceptance_test_1:
      #    requires:
      #      - ui_tests
-
+     - create_production_images:
+          context: BeverageRandomizerPROD
+          filters:
+             branches:
+               only:
+               - master
+          requires:
+            - ui_tests
+            - component_tests
      - pause_uptimerobot:
          context: BeverageRandomizerPROD
          filters:
