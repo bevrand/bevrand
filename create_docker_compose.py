@@ -71,17 +71,17 @@ PROFILE = args.profile
 
 DATABASE_ONLY = False
 
-''' All databases plus the dataseeder for local development '''
+# All databases plus the dataseeder for local development
 if PROFILE == 'database-only':
     dataseeder_arg.default = True
     exclude_jaeger_arg.default = True
     DATABASE_ONLY = True
-''' For local development '''
+# For local development
 if PROFILE == 'dev':
     dataseeder_arg.default = False
     run_component_arg.default = True
     pass_generation_arg.default = True
-''' For Circle component tests environment'''
+# For Circle component tests environment
 if PROFILE == 'component-tests':
     dataseeder_arg.default = True
     image_action_arg.default = 'pull'
@@ -89,14 +89,14 @@ if PROFILE == 'component-tests':
     exclude_jaeger_arg.default = True
     run_component_arg.default = True
     pass_generation_arg.default = True
-''' For Circle ui tests environment'''
+# For Circle ui tests environment
 if PROFILE == 'ui-tests':
     dataseeder_arg.default = True
     image_action_arg.default = 'pull'
     tag_action_arg.default = os.environ.get('CIRCLE_SHA1')
     exclude_jaeger_arg.default = True
     pass_generation_arg.default = True
-''' For production environment'''
+# For production environment
 if PROFILE == 'prod':
     dataseeder_arg.default = False
     image_action_arg.default = 'build'
@@ -226,10 +226,8 @@ def handle_service_creation(service_name, service_yaml):
             service_yaml_file[service_name] = service_yaml
         return
     if JAEGER is True:
-        if JAEGERDB == 'els' and service_name in jaeger_services_es:
-            service_name = remove_jaeger_db_extension_from_name(service_name)
-            service_yaml_file[service_name] = service_yaml
-        elif JAEGERDB == 'cas' and service_name in jaeger_services_cas:
+        if (JAEGERDB == 'els' and service_name in jaeger_services_es)\
+                or (JAEGERDB == 'cas' and service_name in jaeger_services_cas):
             service_name = remove_jaeger_db_extension_from_name(service_name)
             service_yaml_file[service_name] = service_yaml
     else:
@@ -247,10 +245,18 @@ def remove_jaeger_from_env():
     for service in service_yaml_file:
         for field in service_yaml_file[service]:
             if field == 'environment' or field == 'depends_on':
-                for env in service_yaml_file[service][field]:
-                    if env == "jaeger-agent" or env.startswith("JAEGER_AGENT"):
-                        service_yaml_file[service][field].remove(env)
+                remove_jaeger_entries(field, service)
     return
+
+
+def remove_jaeger_entries(field, service):
+    """ If the service with given field's entry is "jaeger-agent"
+    or starts with "JAEGER_AGENT",
+    then it is removed from the service yaml """
+
+    for env in service_yaml_file[service][field]:
+        if env == "jaeger-agent" or env.startswith("JAEGER_AGENT"):
+            service_yaml_file[service][field].remove(env)
 
 
 def remove_build_or_images(field):
