@@ -219,27 +219,23 @@ def start_creation_of_yaml(yaml_services):
 
 
 def handle_service_creation(service_name, service_yaml):
-    if DATASEEDER is True:
-        if service_name in data_seeder_service:
-            service_yaml_file[service_name] = service_yaml
+    if DATASEEDER is True and service_name in data_seeder_service:
+        service_yaml_file[service_name] = service_yaml
     if DATABASE_ONLY is True:
         if service_name in databases_services:
             service_yaml_file[service_name] = service_yaml
         return
     if JAEGER is True:
-        if JAEGERDB == 'els':
-            if service_name in jaeger_services_es:
-                service_name = remove_jaeger_db_extension_from_name(service_name)
-                service_yaml_file[service_name] = service_yaml
-        elif JAEGERDB == 'cas':
-            if service_name in jaeger_services_cas:
-                service_name = remove_jaeger_db_extension_from_name(service_name)
-                service_yaml_file[service_name] = service_yaml
+        if JAEGERDB == 'els' and service_name in jaeger_services_es:
+            service_name = remove_jaeger_db_extension_from_name(service_name)
+            service_yaml_file[service_name] = service_yaml
+        elif JAEGERDB == 'cas' and service_name in jaeger_services_cas:
+            service_name = remove_jaeger_db_extension_from_name(service_name)
+            service_yaml_file[service_name] = service_yaml
     else:
         remove_jaeger_from_env()
-    if TESTS is True:
-        if service_name in test_services:
-            service_yaml_file[service_name] = service_yaml
+    if TESTS is True and service_name in test_services:
+        service_yaml_file[service_name] = service_yaml
     if service_name in api_services:
         service_yaml_file[service_name] = service_yaml
     if service_name in databases_services:
