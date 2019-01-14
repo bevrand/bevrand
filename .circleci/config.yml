@@ -189,25 +189,25 @@ jobs:
       - checkout
      # build the application image
       - PushProductionImageToRegistery:
-          application: proxyapi
+          application: "proxyapi"
       - PushProductionImageToRegistery:
-          application: randomizerapi
+          application: "randomizerapi"
       - PushProductionImageToRegistery:
-          application: authenticationapi
+          application: "authenticationapi"
       - PushProductionImageToRegistery:
-          application: highscoreapi
+          application: "highscoreapi"
       - PushProductionImageToRegistery:
-          application: dockergres
+          application: "dockergres"
       - PushProductionImageToRegistery:
-          application: frontend
+          application: "frontend"
       - PushProductionImageToRegistery:
-          application: dockerels
+          application: "dockerels"
       - PushProductionImageToRegistery:
-          application: dockernginx
+          application: "dockernginx"
       - PushProductionImageToRegistery:
-          application: dataseeder
+          application: "dataseeder"
       - PushProductionImageToRegistery:
-          application: componenttests
+          application: "componenttests"
 
   pause_uptimerobot:
     machine: true
