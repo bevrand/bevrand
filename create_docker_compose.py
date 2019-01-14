@@ -246,17 +246,10 @@ def handle_service_creation(service_name, service_yaml):
 def remove_jaeger_from_env():
     for service in service_yaml_file:
         for field in service_yaml_file[service]:
-            if field == 'environment':
+            if field == 'environment' or field == 'depends_on':
                 for env in service_yaml_file[service][field]:
-                    if env == "JAEGER_AGENT_HOST=jaeger-agent":
+                    if env == "jaeger-agent" or env.startswith("JAEGER_AGENT"):
                         service_yaml_file[service][field].remove(env)
-                    if env == "JAEGER_AGENT_PORT=6831":
-                        service_yaml_file[service][field].remove(env)
-            if field == 'depends_on':
-                for depends in service_yaml_file[service][field]:
-                    if depends == "jaeger-agent":
-                        service_yaml_file[service][field].remove(depends)
-
     return
 
 
