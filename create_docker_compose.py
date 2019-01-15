@@ -5,26 +5,25 @@ import random
 import sys
 import os
 
-
 parser = argparse.ArgumentParser(description='Create a docker-compose file based on arguments given')
 
 image_action_group = parser.add_mutually_exclusive_group()
 
 image_action_arg = image_action_group.add_argument('--pull-images', dest='image_action', action='store_const',
-                                const='pull', default='build',
-                                help='set image action to perform to pull, skips the build stage (default: %(default)s)')
+                                                   const='pull', default='build',
+                                                   help='set image action to perform to pull, skips the build stage (default: %(default)s)')
 
 image_action_group.add_argument('--build-images', dest='image_action', action='store_const',
                                 const='build', default='build',
                                 help='set image action to perform to build, ensures the build stage is executed even if the profile would have set it to pull (default: %(default)s)')
 
 tag_action_arg = parser.add_argument('--tag', type=str, default='latest',
-                    help='The tag to set for your build images, or the tag that will be used to pull the custom images if --pull-images flag is set (default: %(default)s)')
+                                     help='The tag to set for your build images, or the tag that will be used to pull the custom images if --pull-images flag is set (default: %(default)s)')
 
 jaeger_group = parser.add_argument_group('jaeger', 'jaeger related settings')
 
 exclude_jaeger_arg = jaeger_group.add_argument('--exclude-jaeger', action='store_true',
-                          help='Jaeger containers will NOT be included if this flag is set (default: %(default)s)')
+                                               help='Jaeger containers will NOT be included if this flag is set (default: %(default)s)')
 
 jaeger_group.add_argument('--jaeger-backend-db', type=str, default='els', choices=['els', 'cas'],
                           help='jaeger db to use (Default is els (elastic) other option is cas (cassandra will only be '
@@ -34,25 +33,26 @@ parser.add_argument('--version', type=str, default='3.1', choices=["2", "3", "3.
                     help='docker-compose version you want to use')
 
 use_volume_arg = parser.add_argument('--use-volumes', action='store_true',
-                    help='When this flag is set, docker will use volumes for persistent data storage (default: %(default)s)')
+                                     help='When this flag is set, docker will use volumes for persistent data storage (default: %(default)s)')
 
 run_component_arg = parser.add_argument('--run-component-tests', action='store_true',
-                    help='Whether you want componenttests included (default %(default)s)')
+                                        help='Whether you want componenttests included (default %(default)s)')
 
 profile_group = parser.add_mutually_exclusive_group()
 
 profile_group.add_argument('--no-profile', action='store_const', dest='profile', const='none',
                            help='Same as "--profile none". Contains no images by default, the base profile to use for setting all flags and setings manually')
 
-profile_group.add_argument('--profile', type=str, default='dev', choices=['prod', 'dev', 'database-only', 'ui-tests', 'component-tests', 'none'],
+profile_group.add_argument('--profile', type=str, default='dev',
+                           choices=['prod', 'dev', 'database-only', 'ui-tests', 'component-tests', 'none'],
                            help='Sets the default action based on a particular purpose. All configurations can be made by setting all flags manually, the profiles just give an easier way to achieve this. [dev] builds all services and supporting systems with static passwords, for local development and demos. [database-only] runs only the database containers with data from database seeder, from images, for local development. [none] contains no images by default, the base profile to use for setting all flags and setings manually')
 
 dataseeder_arg = parser.add_argument('--dataseeder', type=bool, default=True,
                                      help='Whether you want only the dataseeder (Default is True)')
 
 pass_generation_arg = parser.add_argument('--generate-passwords', action='store_true',
-                    help='Whether you want to create a password (production) or use test passwords'
-                         '(default: %(default)s)')
+                                          help='Whether you want to create a password (production) or use test passwords'
+                                               '(default: %(default)s)')
 # TODO Support stdin
 parser.add_argument('infile', nargs='?', type=argparse.FileType('r'), default='docker-compose-base.yml',
                     help='Select the docker-compose.yml base file %(default)s')
@@ -103,7 +103,6 @@ if PROFILE == 'prod':
     tag_action_arg.default = os.environ.get('CIRCLE_SHA1')
     use_volume_arg.default = True
 
-
 USE_STDOUT = args.stdout
 if USE_STDOUT:
     outfile_arg.default = sys.stdout
@@ -113,7 +112,7 @@ args = parser.parse_args()
 
 BUILD = args.image_action == 'build'
 TAG = args.tag
-JAEGER = args.exclude_jaeger == False
+JAEGER = args.exclude_jaeger is False
 if JAEGER is True:
     JAEGERDB = args.jaeger_backend_db
 VOLUME = args.use_volumes
@@ -128,7 +127,8 @@ yaml_file = {}
 service_yaml_file = {}
 databases_services = ['dockergres', 'dockermongo', 'redis']
 test_services = ['componenttest']
-api_services = ['authenticationapi', 'highscoreapi', 'randomizerapi', 'playlistapi', 'proxyapi', 'frontendapi', 'dockernginx']
+api_services = ['authenticationapi', 'highscoreapi', 'randomizerapi', 'playlistapi', 'proxyapi', 'frontendapi',
+                'dockernginx']
 data_seeder_service = ['dataseeder']
 password_services = {'authenticationapi': 'dockergres', 'playlistapi': 'dockermongo'}
 volume_services = ['dockermongo', 'dockergres']
@@ -177,7 +177,6 @@ def write_a_test_compose_file(data):
 
 def set_version_for_yaml(yaml_version):
     yaml_file.update(version=yaml_version, services=service_yaml_file)
-    return
 
 
 def replace_circle_sha_with_tag(tag):
@@ -186,7 +185,6 @@ def replace_circle_sha_with_tag(tag):
             if image == 'image':
                 test = service_yaml_file[service][image]
                 service_yaml_file[service][image] = test.replace("${CIRCLE_SHA1}", tag)
-    return
 
 
 def start_creation_of_yaml(yaml_services):
@@ -215,7 +213,6 @@ def start_creation_of_yaml(yaml_services):
 
     if TAG is not None and BUILD is False:
         replace_circle_sha_with_tag(TAG)
-    return
 
 
 def handle_service_creation(service_name, service_yaml):
@@ -252,7 +249,6 @@ def remove_jaeger_from_env():
         for field in service_yaml_file[service]:
             if field == 'environment' or field == 'depends_on':
                 remove_jaeger_entries(field, service)
-    return
 
 
 def remove_jaeger_entries(field, service):
@@ -273,7 +269,6 @@ def remove_build_or_images(field):
                 to_remove.append(service)
     for item in to_remove:
         service_yaml_file[item].pop(field, None)
-    return
 
 
 def set_passwords(client, server, user_name, password):
@@ -317,13 +312,11 @@ def set_passwords(client, server, user_name, password):
             service_yaml_file['dataseeder']['environment'].append(play_str)
         for environment in mon_str:
             service_yaml_file[server]['environment'].append(environment)
-    return
 
 
 def remove_volumes():
     for service in volume_services:
         service_yaml_file[service].pop('volumes', None)
-    return
 
 
 def remove_jaeger_db_extension_from_name(service_name):
@@ -334,7 +327,6 @@ def remove_jaeger_db_extension_from_name(service_name):
 
 
 class PassWordObjects(object):
-
     authenticationapi = 'ConnectionStrings:PostGres=Host=dockergres;Port=5432;Database=bevrand;Uid=PLACEHOLDER_USER;Pwd=PLACEHOLDER_PASS;'
     dockergres = ['POSTGRES_PASSWORD=PLACEHOLDER_PASS', 'POSTGRES_USER=PLACEHOLDER_USER']
     dockermongo = ['MONGO_INITDB_ROOT_USERNAME=PLACEHOLDER_USER', 'MONGO_INITDB_ROOT_PASSWORD=PLACEHOLDER_PASS']
