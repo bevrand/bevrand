@@ -4,8 +4,9 @@ branch = True
 omit =
     # omit anything in a .local directory anywhere
     */.local/*
+    # jaeger files
+    src/jaeger-client/*
     # omit these files
-    api/setup.py
     api/controllers/coverage_controller.py
 
 [report]
@@ -29,4 +30,4 @@ exclude_lines =
 ignore_errors = True
 
 [html]
-directory = playlist_html_report
+directory = randomizer_html_report

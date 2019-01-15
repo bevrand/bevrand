@@ -11,7 +11,7 @@ namespace bevrand.authenticationapi.tests
         {
             var passWord = "thisisatest";
             var hashedPassword = PasswordHasher.SetPassword(passWord);
-            Assert.NotEqual(passWord, hashedPassword);       
+            Assert.NotEqual(passWord, hashedPassword);
         }
 
         [Fact]

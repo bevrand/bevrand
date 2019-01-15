@@ -3,7 +3,6 @@ from helpers.random_name_generator import HelperClass
 from environment import config
 import pytest
 import os
-import unittest
 
 url = None
 

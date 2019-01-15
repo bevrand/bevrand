@@ -9,7 +9,7 @@ def init_tracer(service):
     logging.getLogger('').handlers = []
     logging.basicConfig(format='%(asctime)s %(message)s', level=log_level)
 
-    config = Config(config={'sampler': {'type': 'const', 'param': 1},
+    config = Config(config={'sampler': {'type': 'probabilistic', 'param': 0.2},
                             'logging': True,
                             'local_agent':
                             # Also, provide a hostname of Jaeger instance to send traces to.

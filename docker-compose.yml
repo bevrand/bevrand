@@ -45,7 +45,7 @@ services:
        - playlistapi
        - highscoreapi
     environment:
-       - APP_SETTINGS=Production
+       - APP_SETTINGS=Coverage
        - HIGHSCORE_API=http://highscoreapi:5000/api/v1/
 
   playlistapi:

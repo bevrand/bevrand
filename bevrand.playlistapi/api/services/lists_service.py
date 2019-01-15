@@ -52,7 +52,8 @@ class ListsService:
     def validate_user_is_not_reserved_keywords(self, user_name):
         reserved_keywords = ['global', 'frontpage', 'bevrand', 'bevragerandomizer']
         if user_name.lower() in reserved_keywords:
-            raise InvalidUsage(user_name + ' is a reserved username and cannot be used for creation or deletion', status_code=403)
+            raise InvalidUsage(user_name + ' is a reserved username and cannot be used for creation or deletion',
+                               status_code=403)
         return
 
     def validate_misc_fields_in_json(self, json_body):

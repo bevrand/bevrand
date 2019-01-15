@@ -23,7 +23,6 @@ class Test(BaseConfig):
 
 class Coverage(BaseConfig):
     DEBUG = False
-    CONNECTION = 'mongodb://dockermongo:27017/admin'
 
 
 class Production(BaseConfig):

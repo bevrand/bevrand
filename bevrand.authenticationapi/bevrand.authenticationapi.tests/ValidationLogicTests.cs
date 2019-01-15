@@ -13,7 +13,6 @@ namespace bevrand.authenticationapi.tests
 {
     public class ValidationLogicTests
     {
-
         [Fact]
         public void CheckForPasswordFailsWhenEmailAndUserAreNullTest()
         {
@@ -43,7 +42,7 @@ namespace bevrand.authenticationapi.tests
                 UserName = "someuser"
             };
 
-            mock.Setup(e => e.GetSingleUser(valdationModel.UserName)).Returns((UserModel)null);
+            mock.Setup(e => e.GetSingleUser(valdationModel.UserName)).Returns((UserModel) null);
 
             var service = new ValidationLogic(mock.Object);
 
@@ -62,7 +61,7 @@ namespace bevrand.authenticationapi.tests
                 UserName = null
             };
 
-            mock.Setup(e => e.GetSingleUserEmail(valdationModel.emailAddress)).Returns((UserModel)null);
+            mock.Setup(e => e.GetSingleUserEmail(valdationModel.emailAddress)).Returns((UserModel) null);
 
             var service = new ValidationLogic(mock.Object);
 
@@ -222,7 +221,7 @@ namespace bevrand.authenticationapi.tests
             var service = new ValidationLogic(mock.Object);
             Assert.Throws<ArgumentException>(() => service.UpdateUserPasswordInDatabase(id, valdationModel));
         }
-        
+
         [Fact]
         public void ShouldBeAbleToUpdateUserIfPassWordsMatch()
         {
@@ -247,7 +246,7 @@ namespace bevrand.authenticationapi.tests
                 EmailAddress = "some@email.nl",
                 Updated = new DateTime()
             };
-            
+
             mock.Setup(e => e.GetSingleUser(id)).Returns(newUserModel);
 
             var service = new ValidationLogic(mock.Object);
