@@ -21,7 +21,7 @@ func PingPong(c *gin.Context) {
 
 func ShowHighScores(user string, playlist string, c *gin.Context, ctx context.Context) ([]Score, int) {
 	span, _ := opentracing.StartSpanFromContext(ctx, "ShowHighScores")
-	span.SetTag("Method", "ShowHighScores")
+	span.SetTag(method, "ShowHighScores")
 	defer span.Finish()
 	key := user + ":" + playlist
 
@@ -34,8 +34,8 @@ func ShowHighScores(user string, playlist string, c *gin.Context, ctx context.Co
 
 	if !exists {
 		span.LogFields(
-			openlog.String("http_status_code", "404"),
-			openlog.String("body", "not found"),
+			openlog.String(statusCode, "404"),
+			openlog.String(spanBody, "not found"),
 		)
 		span.Finish()
 		b, _ := uuid.NewRandom()
@@ -65,15 +65,15 @@ func ShowHighScores(user string, playlist string, c *gin.Context, ctx context.Co
 	body, _ := json.Marshal(redisResult)
 
 	span.LogFields(
-		openlog.String("http_status_code", "200"),
-		openlog.String("body", string(body)),
+		openlog.String(statusCode, "200"),
+		openlog.String(spanBody, string(body)),
 	)
 	return redisResult, http.StatusOK
 }
 
 func CreateNewHighScore(user string, playlist string, drink string, ctx context.Context) {
 	span, _ := opentracing.StartSpanFromContext(ctx, "CreateNewHighScore")
-	span.SetTag("Method", "IncreaseHighScore")
+	span.SetTag(method, "IncreaseHighScore")
 
 	defer span.Finish()
 	key := user + ":" + playlist
@@ -86,8 +86,8 @@ func CreateNewHighScore(user string, playlist string, drink string, ctx context.
 
 	if !exists {
 		span.LogFields(
-			openlog.String("http_status_code", "200"),
-			openlog.String("body", "New entry, setting new key: " + key),
+			openlog.String(statusCode, "200"),
+			openlog.String(spanBody, "New entry, setting new key: " + key),
 		)
 		err = db.Cmd("HMSET", key, drink, 1).Err
 		if err != nil {
@@ -101,8 +101,8 @@ func CreateNewHighScore(user string, playlist string, drink string, ctx context.
 		log.Fatal(err)
 	}
 	span.LogFields(
-		openlog.String("http_status_code", "200"),
-		openlog.String("body", "Increased " + drink + " by 1"),
+		openlog.String(statusCode, "200"),
+		openlog.String(spanBody, "Increased " + drink + " by 1"),
 	)
 
 	IncreaseGlobalCount(drink, ctx)
@@ -111,7 +111,7 @@ func CreateNewHighScore(user string, playlist string, drink string, ctx context.
 
 func IncreaseGlobalCount(drink string, ctx context.Context){
 	span, _ := opentracing.StartSpanFromContext(ctx, "IncreaseGlobalCount")
-	span.SetTag("Method", "GlobalHighscore")
+	span.SetTag(method, "GlobalHighscore")
 
 	defer span.Finish()
 	key := GLOBALNAME + ":" + GLOBALLIST
@@ -124,8 +124,8 @@ func IncreaseGlobalCount(drink string, ctx context.Context){
 
 	if !exists {
 		span.LogFields(
-			openlog.String("http_status_code", "200"),
-			openlog.String("body", "New entry, setting new key: " + key),
+			openlog.String(statusCode, "200"),
+			openlog.String(spanBody, "New entry, setting new key: " + key),
 		)
 		err = db.Cmd("HMSET", key, drink, 1).Err
 		if err != nil {
@@ -139,8 +139,8 @@ func IncreaseGlobalCount(drink string, ctx context.Context){
 		log.Fatal(err)
 	}
 	span.LogFields(
-		openlog.String("http_status_code", "200"),
-		openlog.String("body", "Increased " + drink + " by 1"),
+		openlog.String(statusCode, "200"),
+		openlog.String(spanBody, "Increased " + drink + " by 1"),
 	)
 	return
 }

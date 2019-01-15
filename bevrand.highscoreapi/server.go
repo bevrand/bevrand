@@ -14,6 +14,12 @@ var db *pool.Pool
 var GLOBALNAME = "global"
 var GLOBALLIST = "globalhighscore"
 
+const method = "Method"
+const path = "Path"
+const host = "Host"
+const statusCode = "httpStatusCode"
+const spanBody = "Body"
+
 func ConnectRedis() {
 	var err error
 	// Establish a pool of 10 connections to the Redis server listening on

@@ -37,9 +37,9 @@ func RouteShowAllHighScore(c *gin.Context) {
 	ctx = opentracing.ContextWithSpan(ctx, span)
 
 	span.LogFields(
-		openlog.String("method", c.Request.Method),
-		openlog.String("path", c.Request.URL.Path),
-		openlog.String("host", c.Request.Host),
+		openlog.String(method, c.Request.Method),
+		openlog.String(path, c.Request.URL.Path),
+		openlog.String(host, c.Request.Host),
 	)
 
 	highScores, code := ShowHighScores(GLOBALNAME, GLOBALLIST, c, ctx)
@@ -58,9 +58,9 @@ func RouteShowHighScore(c *gin.Context) {
 	ctx = opentracing.ContextWithSpan(ctx, span)
 
 	span.LogFields(
-		openlog.String("method", c.Request.Method),
-		openlog.String("path", c.Request.URL.Path),
-		openlog.String("host", c.Request.Host),
+		openlog.String(method, c.Request.Method),
+		openlog.String(path, c.Request.URL.Path),
+		openlog.String(host, c.Request.Host),
 	)
 
 	user := c.Param("user")
@@ -109,10 +109,10 @@ func RouteIncrementHighscore(c *gin.Context) {
 	body, _ := json.Marshal(po)
 
 	span.LogFields(
-		openlog.String("method", c.Request.Method),
-		openlog.String("path", c.Request.URL.Path),
-		openlog.String("body", string(body)),
-		openlog.String("host", c.Request.Host),
+		openlog.String(method, c.Request.Method),
+		openlog.String(path, c.Request.URL.Path),
+		openlog.String(spanBody, string(body)),
+		openlog.String(host, c.Request.Host),
 	)
 
 	user := c.Param("user")
@@ -137,15 +137,15 @@ func RouteIncrementHighscore(c *gin.Context) {
 
 func respondWithJson(c *gin.Context, code int, payload interface{}, ctx context.Context) {
 	span, _ := opentracing.StartSpanFromContext(ctx, "Response")
-	span.SetTag("Method", "ResponseWriter")
+	span.SetTag(method, "ResponseWriter")
 
 	response, _ := json.Marshal(payload)
 	c.Writer.Header().Set("Content-Type", "application/json")
 	c.Writer.WriteHeader(code)
 	c.JSON(code, payload)
 	span.LogFields(
-		openlog.String("http_status_code", strconv.Itoa(code)),
-		openlog.String("body", string(response)),
+		openlog.String(statusCode, strconv.Itoa(code)),
+		openlog.String(spanBody, string(response)),
 	)
 	defer span.Finish()
 }
