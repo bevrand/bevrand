@@ -284,20 +284,20 @@ def set_passwords(client, server, user_name, password):
     auth_str = auth_str.replace("PLACEHOLDER_USER", user_name)
 
     gres_str = []
-    for str in password_object.dockergres:
-        str = str.replace("PLACEHOLDER_PASS", password)
-        str = str.replace("PLACEHOLDER_USER", user_name)
-        gres_str.append(str)
+    for password_placeholder in password_object.dockergres:
+        password_placeholder = password_placeholder.replace("PLACEHOLDER_PASS", password)
+        password_placeholder = password_placeholder.replace("PLACEHOLDER_USER", user_name)
+        gres_str.append(password_placeholder)
 
     play_str = password_object.playlistapi
     play_str = play_str.replace("PLACEHOLDER_PASS", password)
     play_str = play_str.replace("PLACEHOLDER_USER", user_name)
 
     mon_str = []
-    for str in password_object.dockermongo:
-        str = str.replace("PLACEHOLDER_PASS", password)
-        str = str.replace("PLACEHOLDER_USER", user_name)
-        mon_str.append(str)
+    for password_placeholder in password_object.dockermongo:
+        password_placeholder = password_placeholder.replace("PLACEHOLDER_PASS", password)
+        password_placeholder = password_placeholder.replace("PLACEHOLDER_USER", user_name)
+        mon_str.append(password_placeholder)
 
     if client == 'authenticationapi':
         service_yaml_file[client]['environment'].append(auth_str)
@@ -307,16 +307,16 @@ def set_passwords(client, server, user_name, password):
                 service_yaml_file[client]['environment'].append('ASPNETCORE_ENVIRONMENT="Production"')
         service_yaml_file[server]['environment'].remove('POSTGRES_PASSWORD=postgres')
         service_yaml_file[server]['environment'].remove('POSTGRES_USER=postgres')
-        for str in gres_str:
-            service_yaml_file[server]['environment'].append(str)
+        for environment in gres_str:
+            service_yaml_file[server]['environment'].append(environment)
     elif client == 'playlistapi':
         service_yaml_file[client]['environment'].remove('MONGO_URL=mongodb://dockermongo:27017/admin')
         service_yaml_file[client]['environment'].append(play_str)
         if DATASEEDER is True:
             service_yaml_file['dataseeder']['environment'].remove('MONGO_URL=mongodb://dockermongo:27017/admin')
             service_yaml_file['dataseeder']['environment'].append(play_str)
-        for str in mon_str:
-            service_yaml_file[server]['environment'].append(str)
+        for environment in mon_str:
+            service_yaml_file[server]['environment'].append(environment)
     return
 
 
