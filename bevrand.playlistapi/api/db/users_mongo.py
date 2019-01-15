@@ -33,7 +33,7 @@ class UsersDb:
     def insert_new_list(self, mongo_object, user_name):
         post_data = mongo_object.__dict__
         try:
-            insert_id = self.users.insert_one(post_data).inserted_id
+            self.users.insert_one(post_data)
         except errors.ConnectionFailure:
             raise InvalidUsage('Could not connect to mongo', status_code=503)
         except errors.OperationFailure:
