@@ -11,7 +11,6 @@ def wait_for_container_to_finish():
         state = status_json[0]['State']
         running = state['Running']
         time.sleep(2)
-    return
 
 
 def check_logs_for_backend():
@@ -31,7 +30,6 @@ def validate_test_results():
         exit(1)
     else:
         exit(0)
-    return
 
 
 validate_test_results()
