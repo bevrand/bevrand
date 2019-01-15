@@ -10,4 +10,3 @@ class MongoObject:
         self.dateinserted = None
         self.dateupdated = None
         self.beverages = beverages
-
