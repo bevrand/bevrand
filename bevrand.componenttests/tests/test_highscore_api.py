@@ -3,7 +3,6 @@ from helpers.random_name_generator import HelperClass
 from environment import config
 import pytest
 import os
-import unittest
 
 url = None
 
@@ -31,7 +30,7 @@ class HighScoreApiTests(test_setup_fixture.TestFixture):
         self.assertEqual(200, response.status_code)
 
     def test_should_be_able_to_post_a_sample_drink(self):
-        sut = url + '/test/test'
+        sut = url + 'test/test/'
         body = {"drink" : "beer"}
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(201, response.status_code)
@@ -39,7 +38,7 @@ class HighScoreApiTests(test_setup_fixture.TestFixture):
     def test_should_be_able_to_post_a_sample_drink_and_retrieve_it(self):
         playlist = HelperClass.random_word_letters_only(25)
         user = HelperClass.random_word_letters_only(25)
-        sut = url + f'/{user}/{playlist}'
+        sut = url + f'{user}/{playlist}/'
         body = {"drink" : "beer"}
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(201, response.status_code)
@@ -51,26 +50,26 @@ class HighScoreApiTests(test_setup_fixture.TestFixture):
     def test_should_get_a_404_for_a_user_and_playlist_that_does_not_exist(self):
         playlist = HelperClass.random_word_letters_only(25)
         user = HelperClass.random_word_letters_only(25)
-        sut = url + f'/{user}/{playlist}'
+        sut = url + f'{user}/{playlist}/'
         resp = self.get_without_auth_header(sut)
         self.assertEqual(404, resp.status_code)
 
     def test_should_get_a_404_for_a_playlist_that_does_not_exist(self):
         playlist = HelperClass.random_word_letters_only(25)
         user = HelperClass.random_word_letters_only(25)
-        sut = url + f'/{user}/{playlist}'
+        sut = url + f'{user}/{playlist}/'
         body = {"drink" : "beer"}
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(201, response.status_code)
         playlist = HelperClass.random_word_letters_only(25)
-        sut = url + f'/{user}/{playlist}'
+        sut = url + f'/{user}/{playlist}/'
         resp = self.get_without_auth_header(sut)
         self.assertEqual(404, resp.status_code)
 
     def test_should_not_be_able_to_post_an_empty_list(self):
         playlist = HelperClass.random_word_letters_only(25)
         user = HelperClass.random_word_letters_only(25)
-        sut = url + f'/{user}/{playlist}'
+        sut = url + f'{user}/{playlist}/'
         body = {}
         response = self.post_without_auth_header(sut, body)
         error_message = response.json()['errorMessage']
@@ -82,7 +81,7 @@ class HighScoreApiTests(test_setup_fixture.TestFixture):
 
     def test_should_not_be_able_to_post_with_user_global(self):
         playlist = HelperClass.random_word_letters_only(25)
-        sut = url + f'/global/{playlist}'
+        sut = url + f'global/{playlist}'
         body = {"drink" : "beer"}
         response = self.post_without_auth_header(sut, body)
         error_message = response.json()['errorMessage']
@@ -95,14 +94,13 @@ class HighScoreApiTests(test_setup_fixture.TestFixture):
     def test_should_be_able_to_post_a_sample_drink_and_retrieve_it_from_global(self):
         playlist = HelperClass.random_word_letters_only(25)
         user = HelperClass.random_word_letters_only(25)
-        sut = url + f'/{user}/{playlist}'
+        sut = url + f'{user}/{playlist}/'
         body = {"drink": "beer"}
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(201, response.status_code)
-        print(url)
         resp = self.get_without_auth_header(url)
         print(resp.json())
-        # self.assertEqual(200, resp.status_code)
-        # json_body = resp.json()
-        # self.assertTrue(len(json_body) >= 1)
+        #self.assertEqual(200, resp.status_code)
+        #json_body = resp.json()
+        #self.assertTrue(len(json_body) >= 1)
 

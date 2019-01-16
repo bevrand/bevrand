@@ -45,7 +45,7 @@ services:
        - playlistapi
        - highscoreapi
     environment:
-       - APP_SETTINGS=Production
+       - APP_SETTINGS=Coverage
        - HIGHSCORE_API=http://highscoreapi:5000/api/v1/
 
   playlistapi:
@@ -58,7 +58,7 @@ services:
     links:
        - dockermongo
     environment:
-       - APP_SETTINGS=Production
+       - APP_SETTINGS=Coverage
        - MONGO_URL=mongodb://dockermongo:27017/admin
 
   proxyapi:

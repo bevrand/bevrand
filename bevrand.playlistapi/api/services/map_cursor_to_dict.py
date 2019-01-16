@@ -13,4 +13,4 @@ class CursorMapper:
         display_name = specified_document['displayName']
         image_url = specified_document['imageUrl']
         front_page_model = MongoObject(id, user_name, list_name, beverages, display_name, image_url)
-        return front_page_model    
+        return front_page_model

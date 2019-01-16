@@ -35,6 +35,3 @@ class Randomizer(object):
         if r.status_code != 201:
             raise InvalidUsage('Error occured while posting to the highscoreapi', status_code=503)
         return
-
-    def queue_drink_to_highscore(self):
-        return

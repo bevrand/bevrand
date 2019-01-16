@@ -1,7 +1,6 @@
-from flask_script import Manager
+from flask_script import Manager, Server
 import unittest
 from api.setup import app
-
 
 manager = Manager(app)
 
