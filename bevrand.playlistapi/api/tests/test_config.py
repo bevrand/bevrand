@@ -7,17 +7,23 @@ app = create_app()
 
 
 class TestDevelopmentConfig(TestCase):
+
+    check_url = '0.0.0.0'
+
     def create_app(self):
         app.config.from_object('api.config.Development')
         return app
 
     def test_app_is_development(self):
         assert app.config['DEBUG']
-        connection = 'mongodb://0.0.0.0:27017/admin'
+        connection = 'mongodb://{0}:27017/admin'.format(self.check_url)
         assert app.config['CONNECTION'] == connection
 
 
 class TestTestingConfig(TestCase):
+
+    check_url = '0.0.0.0'
+
     def create_app(self):
         app.config.from_object('api.config.Test')
         return app
@@ -25,7 +31,7 @@ class TestTestingConfig(TestCase):
     def test_app_is_testing(self):
         assert app.config['DEBUG']
         assert app.config['TESTING']
-        connection = 'mongodb://0.0.0.0:27017/admin'
+        connection = 'mongodb://{0}:27017/admin'.format(self.check_url)
         os.environ["MONGO_URL"] = connection
         assert app.config['CONNECTION'] == connection
 

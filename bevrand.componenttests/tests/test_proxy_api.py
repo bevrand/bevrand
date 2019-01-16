@@ -113,7 +113,7 @@ class ProxyApiTestsRandomizeValidations(test_setup_fixture.TestFixture):
         response = self.get_without_auth_header(front_page_url).json()
         for pl in response:
             playlist = ProxyModel.from_dict(pl)
-            playlist.user = HelperClass.random_word_letters_only(20)
+            playlist.username = HelperClass.random_word_letters_only(20)
             body = ProxyModel.to_dict(playlist)
             response = self.post_without_auth_header(sut, body)
             self.assertEqual(400, response.status_code)
@@ -126,7 +126,7 @@ class ProxyApiTestsRandomizeValidations(test_setup_fixture.TestFixture):
         response = self.get_without_auth_header(front_page_url).json()
         for pl in response:
             playlist = ProxyModel.from_dict(pl)
-            playlist.list = HelperClass.random_word_letters_only(20)
+            playlist.playlist = HelperClass.random_word_letters_only(20)
             body = ProxyModel.to_dict(playlist)
             response = self.post_without_auth_header(sut, body)
             self.assertEqual(400, response.status_code)
