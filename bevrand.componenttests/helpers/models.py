@@ -1,6 +1,7 @@
 from helpers.random_name_generator import HelperClass
 from typing import List
 
+
 class AuthenticationModel:
 
     id: str
@@ -34,13 +35,14 @@ class AuthenticationModel:
         result["password"] = self.password
         return result
 
+
 class PlaylistModel:
 
     display_name: str
     image_url: str
-    beverages: list
+    beverages: List[str]
 
-    def __init__(self, display_name: str, image_url: str, beverages: list):
+    def __init__(self, display_name: str, image_url: str, beverages: List[str]):
         self.display_name = display_name
         self.image_url = image_url
         self.beverages = beverages
@@ -71,6 +73,7 @@ class PlaylistModel:
         result["beverages"] = self.beverages
         return result
 
+
 class Jwtheader(object):
 
     alg: str
@@ -92,24 +95,51 @@ class Jwtheader(object):
         result["type"] = self.type
         return result
 
-class ProxyModel:
-    beverages: List[str]
-    display_name: str
-    id: str
-    image_url: str
-    list: str
-    user: str
+
+class PlayListPostModel(PlaylistModel):
+
+    username: str
+    playlist: str
+
+    def __init__(self, username: str, playlist: str, display_name: str, image_url: str, beverages: List[str]):
+        super().__init__(display_name=display_name, image_url=image_url,
+                         beverages=beverages)
+        self.username = username
+        self.playlist = playlist
+
+    @staticmethod
+    def from_dict(obj):
+        beverages = obj.get("beverages")
+        display_name = obj.get("displayName")
+        image_url = obj.get("imageUrl")
+        playlist = obj.get("list")
+        user = obj.get("user")
+        return PlayListPostModel(playlist=playlist, username=user, display_name=display_name,
+                                 image_url=image_url, beverages=beverages)
+
+    def to_dict(self):
+        result: dict = {}
+        result["beverages"] = self.beverages
+        result["displayName"] = self.display_name
+        result["imageUrl"] = self.image_url
+        result["list"] = self.playlist
+        result["user"] = self.username
+        return result
+
+
+class ProxyModel(PlayListPostModel):
+
+    mongo_id: str
     iat: int
     jwtheader: Jwtheader
     jwttoken: str
 
-    def __init__(self, beverages: List[str], display_name: str, id: str, image_url: str, list: str, user: str, iat: int, jwtheader: Jwtheader, jwttoken: str):
-        self.beverages = beverages
-        self.display_name = display_name
-        self.id = id
-        self.image_url = image_url
-        self.list = list
-        self.user = user
+    def __init__(self, mongo_id: str, playlist_post_model: PlayListPostModel, iat: int,
+                 jwtheader: Jwtheader, jwttoken: str):
+        super().__init__(username=playlist_post_model.username, playlist=playlist_post_model.playlist,
+                         display_name=playlist_post_model.display_name, image_url=playlist_post_model.image_url,
+                         beverages=playlist_post_model.beverages)
+        self.mongo_id = mongo_id
         self.iat = iat
         self.jwtheader = jwtheader
         self.jwttoken = jwttoken
@@ -118,23 +148,25 @@ class ProxyModel:
     def from_dict(obj):
         beverages = obj.get("beverages")
         display_name = obj.get("displayName")
-        id = obj.get("id")
+        mongo_id = obj.get("id")
         image_url = obj.get("imageUrl")
-        list = obj.get("list")
+        playlist = obj.get("list")
         user = obj.get("user")
         iat = obj.get("iat")
         jwtheader = Jwtheader.from_dict(obj.get("jwtheader"))
         jwttoken = obj.get("jwttoken")
-        return ProxyModel(beverages, display_name, id, image_url, list, user, iat, jwtheader, jwttoken)
+        playlist_post_model = PlayListPostModel(username=user, playlist=playlist,
+                                                display_name=display_name, image_url=image_url, beverages=beverages)
+        return ProxyModel(mongo_id, playlist_post_model, iat, jwtheader, jwttoken)
 
     def to_dict(self):
         result: dict = {}
         result["beverages"] = self.beverages
         result["displayName"] = self.display_name
-        result["id"] = self.id
+        result["id"] = self.mongo_id
         result["imageUrl"] = self.image_url
-        result["list"] = self.list
-        result["user"] = self.user
+        result["list"] = self.playlist
+        result["user"] = self.username
         result["iat"] = self.iat
         result["jwtheader"] = Jwtheader.to_dict(self.jwtheader)
         result["jwttoken"] = self.jwttoken

@@ -20,6 +20,10 @@ const host = "Host"
 const statusCode = "httpStatusCode"
 const spanBody = "Body"
 
+const keyExists = "EXISTS"
+const keySet = "HMSET"
+const keyIncrease = "HINCRBY"
+
 func ConnectRedis() {
 	var err error
 	// Establish a pool of 10 connections to the Redis server listening on

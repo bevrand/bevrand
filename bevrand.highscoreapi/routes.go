@@ -3,12 +3,10 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
 	openlog "github.com/opentracing/opentracing-go/log"
-	"gopkg.in/oauth2.v3/utils/uuid"
 	"net/http"
 	"strconv"
 	"strings"
@@ -84,9 +82,7 @@ func RouteIncrementHighscore(c *gin.Context) {
 	var po PostObject
 	decoder := json.NewDecoder(c.Request.Body)
 	if err := decoder.Decode(&po); err != nil {
-		b, _ := uuid.NewRandom()
-		localUuid := fmt.Sprintf("%x-%x-%x-%x-%x",
-			b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
+		localUuid := createGuid()
 		decodingError := ErrorModel{
 			Message: err.Error(),
 			UniqueCode: localUuid}
@@ -96,9 +92,7 @@ func RouteIncrementHighscore(c *gin.Context) {
 	}
 
 	if po.Drink == "" {
-		b, _ := uuid.NewRandom()
-		localUuid := fmt.Sprintf("%x-%x-%x-%x-%x",
-			b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
+		localUuid := createGuid()
 		emptyBodyError := ErrorModel{
 			Message: "You have to provide a body with this request",
 			UniqueCode: localUuid}
@@ -119,9 +113,7 @@ func RouteIncrementHighscore(c *gin.Context) {
 	playlist := c.Param("playList")
 
 	if strings.ToLower(user) == "global" {
-		b, _ := uuid.NewRandom()
-		localUuid := fmt.Sprintf("%x-%x-%x-%x-%x",
-			b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
+		localUuid := createGuid()
 		restrictedUserError := ErrorModel{
 			Message: "Global is a restricted user and cannot be used",
 			UniqueCode: localUuid}

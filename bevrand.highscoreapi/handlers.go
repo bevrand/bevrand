@@ -25,7 +25,7 @@ func ShowHighScores(user string, playlist string, c *gin.Context, ctx context.Co
 	defer span.Finish()
 	key := user + ":" + playlist
 
-	res, err := db.Cmd("EXISTS", key).Int()
+	res, err := db.Cmd(keyExists, key).Int()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -38,9 +38,7 @@ func ShowHighScores(user string, playlist string, c *gin.Context, ctx context.Co
 			openlog.String(spanBody, "not found"),
 		)
 		span.Finish()
-		b, _ := uuid.NewRandom()
-		localUuid := fmt.Sprintf("%x-%x-%x-%x-%x",
-			b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
+		localUuid := createGuid()
 		notFoundError := ErrorModel{
 			Message: "Could not find combination of user: " + user + " & list: " + playlist,
 			UniqueCode: localUuid}
@@ -78,7 +76,7 @@ func CreateNewHighScore(user string, playlist string, drink string, ctx context.
 	defer span.Finish()
 	key := user + ":" + playlist
 
-	res, err := db.Cmd("EXISTS", key).Int()
+	res, err := db.Cmd(keyExists, key).Int()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -89,14 +87,14 @@ func CreateNewHighScore(user string, playlist string, drink string, ctx context.
 			openlog.String(statusCode, "200"),
 			openlog.String(spanBody, "New entry, setting new key: " + key),
 		)
-		err = db.Cmd("HMSET", key, drink, 1).Err
+		err = db.Cmd(keySet, key, drink, 1).Err
 		if err != nil {
 			log.Fatal(err)
 		}
 		return
 	}
 
-	err = db.Cmd("HINCRBY", key, drink, 1).Err
+	err = db.Cmd(keyIncrease, key, drink, 1).Err
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -116,7 +114,7 @@ func IncreaseGlobalCount(drink string, ctx context.Context){
 	defer span.Finish()
 	key := GLOBALNAME + ":" + GLOBALLIST
 
-	res, err := db.Cmd("EXISTS", key).Int()
+	res, err := db.Cmd(keyExists, key).Int()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -127,14 +125,14 @@ func IncreaseGlobalCount(drink string, ctx context.Context){
 			openlog.String(statusCode, "200"),
 			openlog.String(spanBody, "New entry, setting new key: " + key),
 		)
-		err = db.Cmd("HMSET", key, drink, 1).Err
+		err = db.Cmd(keySet, key, drink, 1).Err
 		if err != nil {
 			log.Fatal(err)
 		}
 		return
 	}
 
-	err = db.Cmd("HINCRBY", key, drink, 1).Err
+	err = db.Cmd(keyIncrease, key, drink, 1).Err
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -145,3 +143,10 @@ func IncreaseGlobalCount(drink string, ctx context.Context){
 	return
 }
 
+func createGuid() string {
+	b, _ := uuid.NewRandom()
+	uuid := fmt.Sprintf("%x-%x-%x-%x-%x",
+		b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
+
+	return uuid
+}
