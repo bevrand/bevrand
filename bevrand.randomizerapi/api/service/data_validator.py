@@ -24,4 +24,5 @@ def validate_schema(schema, file):
     v = Validator(schema)
     valid = v.validate(file, schema)
     if not valid:
-        raise InvalidUsage('Errors occured when validating', status_code=400, meta=v.errors)
+        raise InvalidUsage('Errors occured when validating', meta=v.errors)
+    return

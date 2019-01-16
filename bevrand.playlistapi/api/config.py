@@ -21,6 +21,10 @@ class Test(BaseConfig):
     CONNECTION = 'mongodb://localhost:27017/admin'
 
 
+class Coverage(BaseConfig):
+    DEBUG = False
+
+
 class Production(BaseConfig):
     """Production configuration"""
     DEBUG = False

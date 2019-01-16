@@ -8,6 +8,7 @@ from opentracing_instrumentation.client_hooks import install_all_patches
 import logging
 from flask_pymongo import PyMongo
 import os
+import coverage
 
 try:
     JAEGER_HOST = os.environ['JAEGER_AGENT_HOST']
@@ -15,6 +16,8 @@ except:
     JAEGER_HOST = "localhost"
 print(JAEGER_HOST)
 FLASK_TRACER = None
+COV = None
+
 
 
 def create_app():
@@ -51,7 +54,6 @@ def create_app():
     logging.getLogger('').handlers = []
     logging.basicConfig(format='%(asctime)s %(message)s', level=log_level)
 
-
     # set config
     env = getenv('APP_SETTINGS')
     if env is None:
@@ -59,7 +61,7 @@ def create_app():
     app_settings = 'api.config.' + env
     app.config.from_object(app_settings)
 
-    config = Config(config={'sampler': {'type': 'const', 'param': 1},
+    config = Config(config={'sampler': {'type': 'probabilistic', 'param': 0.1},
                             'logging': True,
                             'local_agent':
                             # Also, provide a hostname of Jaeger instance to send traces to.
@@ -74,6 +76,13 @@ def create_app():
     install_all_patches()
 
     # register blueprints
+    # coverage needs to be started as soon as possible to include more lines
+    if env == 'Coverage':
+        api.cov = coverage.Coverage(config_file=".coveragerc")
+        api.cov.start()
+        from api.controllers.coverage_controller import coverage_blueprint
+        app.register_blueprint(coverage_blueprint, url_prefix='/api/v1/coverage')
+
     from api.controllers.private_controller import private_blueprint
     app.register_blueprint(private_blueprint, url_prefix='/api/v1/private')
 

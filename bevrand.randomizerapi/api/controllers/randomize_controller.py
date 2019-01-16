@@ -6,8 +6,10 @@ from api.jaeger import tracing
 from opentracing.ext import tags
 from opentracing.propagation import Format
 
+
 randomize_blueprint = Blueprint('randomize', __name__,)
 tracer = tracing.init_tracer("RandomizerApi")
+
 
 @randomize_blueprint.route('/ping', methods=['GET'])
 def ping_pong():
