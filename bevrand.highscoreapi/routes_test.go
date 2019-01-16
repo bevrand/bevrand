@@ -9,10 +9,12 @@ import (
 	"testing"
 )
 
+const message = "message"
+
 func TestPingPong(t *testing.T) {
 	// Build our expected body
 	body := gin.H{
-		"message": "pong",
+		message: "pong",
 	}
 
 	router := InitRoutes()
@@ -25,12 +27,12 @@ func TestPingPong(t *testing.T) {
 	err := json.Unmarshal([]byte(w.Body.String()), &response)
 
 	// Grab the value & whether or not it exists
-	value, exists := response["message"]
+	value, exists := response[message]
 
 	// Make some assertions on the correctness of the response.
 	assert.Nil(t, err)
 	assert.True(t, exists)
-	assert.Equal(t, body["message"], value)
+	assert.Equal(t, body[message], value)
 }
 
 func performRequest(r http.Handler, method, path string) *httptest.ResponseRecorder {

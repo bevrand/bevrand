@@ -12,11 +12,9 @@ url = None
 @pytest.fixture(scope="module")
 def setup_config():
     env = os.environ.get('PYTHON_ENV')
-    if env == 'Local':
-        env_setting = config.Local()
-    elif env == 'Test':
+    if env == 'Test':
         env_setting = config.Test()
-    else:
+    else:  # If local or other
         env_setting = config.Local()
     global url
     url = env_setting.playlist_url
@@ -239,14 +237,14 @@ class PlayListApiPrivateTests(test_setup_fixture.TestFixture):
         sut = f'{url}/private/{new_user}/{new_playlist}'
         self.post_without_auth_header(sut, body)
         body['beverages'] = ['beer', 'beer', 'beer']
-        newDisplayName = 'newDisplayName'
-        body['displayName'] =  newDisplayName
+        new_display_name = 'newDisplayName'
+        body['displayName'] = new_display_name
         resp = self.put_without_auth_header(sut, body)
         self.assertEqual(204, resp.status_code)
         response = self.get_without_auth_header(sut)
         json_body = response.json()['result']
         self.assertEqual(200, response.status_code)
-        self.assertEqual(newDisplayName, json_body['displayName'])
+        self.assertEqual(new_display_name, json_body['displayName'])
         self.assertEqual('beer', json_body['beverages'][0])
 
     def test_should_not_be_able_to_update_list_that_do_not_exist(self):

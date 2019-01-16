@@ -10,11 +10,9 @@ url = None
 @pytest.fixture(scope="module")
 def setup_config():
     env = os.environ.get('PYTHON_ENV')
-    if env == 'Local':
-        env_setting = config.Local()
-    elif env == 'Test':
+    if env == 'Test':
         env_setting = config.Test()
-    else:
+    else:  # If local or other
         env_setting = config.Local()
     global url
     url = env_setting.highscore_url
@@ -99,8 +97,5 @@ class HighScoreApiTests(test_setup_fixture.TestFixture):
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(201, response.status_code)
         resp = self.get_without_auth_header(url)
-        print(resp.json())
-        #self.assertEqual(200, resp.status_code)
-        #json_body = resp.json()
-        #self.assertTrue(len(json_body) >= 1)
+        self.assertIsNotNone(resp)
 

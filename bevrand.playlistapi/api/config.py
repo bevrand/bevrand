@@ -11,14 +11,14 @@ class BaseConfig:
 class Development(BaseConfig):
     """Development configuration"""
     DEBUG = True
-    CONNECTION = 'mongodb://0.0.0.0:27017/admin'
+    CONNECTION = 'mongodb://localhost:27017/admin'
 
 
 class Test(BaseConfig):
     """Testing configuration"""
     DEBUG = True
     TESTING = True
-    CONNECTION = 'mongodb://0.0.0.0:27017/admin'
+    CONNECTION = 'mongodb://localhost:27017/admin'
 
 
 class Coverage(BaseConfig):

@@ -18,7 +18,7 @@ function changePlayList(playlistName) {
     currentPlayList = playlistName;
     for (var i = 0; i < playlist.length; i++) {
         if (playlist[i]['list'] === playlistName) {
-            randomizeList = playlist[i],
+            randomizeList = playlist[i]
                 currentlySelectedPlayList = playlist[i]['displayName']
         }
         $('#currentlySelectedPlayList')

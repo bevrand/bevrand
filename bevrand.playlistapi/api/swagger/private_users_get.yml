@@ -5,7 +5,7 @@ This method will return an empty array of lists if the user cannot be found
 tags:
   - Private Methods
 parameters:
-  - name: userName
+  - name: username
     type: string
     in: path
     required: true

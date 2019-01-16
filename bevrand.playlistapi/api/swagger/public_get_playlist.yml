@@ -4,7 +4,7 @@ Provide a playlist name
 tags:
   - Public Methods
 parameters:
-  - name: playListName
+  - name: playlist
     type: string
     in: path
     required: true

@@ -19,6 +19,7 @@ FLASK_TRACER = None
 COV = None
 
 
+
 def create_app():
     # instantiate the app
     swagger_config = {

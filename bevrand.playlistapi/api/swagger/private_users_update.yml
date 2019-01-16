@@ -4,12 +4,12 @@ Provide a username playlistname and a json_body
 tags:
   - Private Methods
 parameters:
-  - name: userName
+  - name: username
     type: string
     in: path
     required: true
     description: user you want to update a playlist for
-  - name: playListName
+  - name: playlist
     type: string
     in: path
     required: true

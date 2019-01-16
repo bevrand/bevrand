@@ -11,11 +11,9 @@ url = None
 @pytest.fixture(scope="module")
 def setup_config():
     env = os.environ.get('PYTHON_ENV')
-    if env == 'Local':
-        env_setting = config.Local()
-    elif env == 'Test':
+    if env == 'Test':
         env_setting = config.Test()
-    else:
+    else:  # If local or other
         env_setting = config.Local()
     global url
     url = env_setting.proxy_url
@@ -115,7 +113,7 @@ class ProxyApiTestsRandomizeValidations(test_setup_fixture.TestFixture):
         response = self.get_without_auth_header(front_page_url).json()
         for pl in response:
             playlist = ProxyModel.from_dict(pl)
-            playlist.user = HelperClass.random_word_letters_only(20)
+            playlist.username = HelperClass.random_word_letters_only(20)
             body = ProxyModel.to_dict(playlist)
             response = self.post_without_auth_header(sut, body)
             self.assertEqual(400, response.status_code)
@@ -128,7 +126,7 @@ class ProxyApiTestsRandomizeValidations(test_setup_fixture.TestFixture):
         response = self.get_without_auth_header(front_page_url).json()
         for pl in response:
             playlist = ProxyModel.from_dict(pl)
-            playlist.list = HelperClass.random_word_letters_only(20)
+            playlist.playlist = HelperClass.random_word_letters_only(20)
             body = ProxyModel.to_dict(playlist)
             response = self.post_without_auth_header(sut, body)
             self.assertEqual(400, response.status_code)

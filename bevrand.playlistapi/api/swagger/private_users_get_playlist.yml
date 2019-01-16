@@ -4,12 +4,12 @@ Provide a username and playlist name
 tags:
   - Private Methods
 parameters:
-  - name: userName
+  - name: username
     type: string
     in: path
     required: true
     description: user you want to query
-  - name: playListName
+  - name: playlist
     type: string
     in: path
     required: true

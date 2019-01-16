@@ -1,5 +1,5 @@
 from api.error_handler.error_model import InvalidUsage
-from api.services.map_cursor_to_dict import CursorMapper
+from api.services.mapper import CursorMapper
 from pymongo import errors
 
 
@@ -26,14 +26,12 @@ class UsersDb:
         specified_document = self.users.find_one({'user': user_name, 'list': list_name})
         if specified_document is None:
             raise InvalidUsage('List could not be found', status_code=404)
-        mapper = CursorMapper()
-        users_model = mapper.map_cursor_to_object(specified_document, user_name)
+        users_model = CursorMapper.map_cursor_to_object(specified_document, user_name)
         return users_model
 
-    def insert_new_list(self, mongo_object, user_name):
-        post_data = mongo_object.__dict__
+    def insert_new_list(self, post_data):
         try:
-            insert_id = self.users.insert_one(post_data).inserted_id
+            self.users.insert_one(post_data)
         except errors.ConnectionFailure:
             raise InvalidUsage('Could not connect to mongo', status_code=503)
         except errors.OperationFailure:
@@ -64,12 +62,12 @@ class UsersDb:
         try:
             result = self.users.update_one({'_id': id_to_be_used},
                                     {'$set':
-                                        {"user": updated_object.user,
-                                        "list": updated_object.list,
-                                        "dateupdated": updated_object.dateupdated,
+                                        {"user": updated_object.username,
+                                        "list": updated_object.playlist,
+                                        "dateupdated": updated_object.date_updated,
                                         "beverages": updated_object.beverages,
-                                        "imageUrl": updated_object.imageUrl,
-                                        "displayName": updated_object.displayName
+                                        "imageUrl": updated_object.image_url,
+                                        "displayName": updated_object.display_name
                                         }}, upsert=False)
 
             if result.modified_count == 1:
@@ -97,8 +95,8 @@ class UsersDb:
             raise InvalidUsage('List could not be found', status_code=404)
 
     def update_fields(self, old_document, new_document):
-        if new_document.displayName is None or new_document.displayName.isspace() or new_document.displayName == "":
-            new_document.displayName = old_document['displayName']
-        if new_document.imageUrl is None or new_document.imageUrl.isspace() or new_document.imageUrl == "":
-            new_document.imageUrl = old_document['imageUrl']
+        if new_document.display_name is None or new_document.display_name.isspace() or new_document.display_name == "":
+            new_document.display_name = old_document['displayName']
+        if new_document.image_url is None or new_document.image_url.isspace() or new_document.image_url == "":
+            new_document.image_url = old_document['imageUrl']
         return new_document

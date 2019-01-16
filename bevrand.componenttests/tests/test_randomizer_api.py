@@ -9,11 +9,9 @@ url = None
 @pytest.fixture(scope="module")
 def setup_config():
     env = os.environ.get('PYTHON_ENV')
-    if env == 'Local':
-        env_setting = config.Local()
-    elif env == 'Test':
+    if env == 'Test':
         env_setting = config.Test()
-    else:
+    else:  # If local or other
         env_setting = config.Local()
     global url
     url = env_setting.randomize_url

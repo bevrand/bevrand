@@ -5,7 +5,7 @@ jobs:
     docker:
       - image: circleci/python:3.6.1
     steps:
-      - checkout 
+      - checkout
       - run: "cd ./bevrand.playlistapi && sudo pip install -r requirements.txt"
       - run: "cd ./bevrand.playlistapi/api/tests && sudo pytest --cov-report term --cov=api"
 
@@ -94,7 +94,7 @@ jobs:
         docker build -t bevrand/dockerels:$CIRCLE_SHA1 ./deployment/els
         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
         docker push bevrand/dockerels:$CIRCLE_SHA1
-  
+
   build_dotnet:
     machine: true
     steps:
@@ -137,10 +137,10 @@ jobs:
          docker-compose -f ./docker-compose-created.yml up -d
          docker images
          docker ps -a
-     
+
      #verify the results of the component test
       - run: "cd ./deployment && python validate_backend_test_results.py"
-  
+
   ui_tests:
     machine: true
     parallelism: 1
@@ -233,7 +233,7 @@ jobs:
     machine: true
     steps:
      - run: "curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479363&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479359&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460902&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460904&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\""
- 
+
   deploy:
     machine: true
     steps:
@@ -241,7 +241,7 @@ jobs:
      - run: "pwd && ls -lha"
      - run: "cd ./deployment && sh ./init_terraform.sh"
      - run: "cd ./deployment/terraform_scripts && pwd && ls -lha && sh ../run_terraform.sh"
-  
+
   resume_uptimerobot:
     machine: true
     steps:
@@ -352,4 +352,3 @@ workflows:
               only: master
          requires:
            - deploy
-         

@@ -4,7 +4,7 @@ Provide a username and all lists for that user will be deleted.
 tags:
   - Private Methods
 parameters:
-  - name: userName
+  - name: username
     type: string
     in: path
     required: true

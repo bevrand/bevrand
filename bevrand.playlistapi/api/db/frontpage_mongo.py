@@ -1,4 +1,4 @@
-from api.services.map_cursor_to_dict import CursorMapper
+from api.services.mapper import CursorMapper
 from api.error_handler.error_model import InvalidUsage
 from pymongo import errors
 
@@ -29,7 +29,7 @@ class FrontPageDb:
         mapper = CursorMapper()
         for result in query:
             res = mapper.map_cursor_to_object(result, 'frontpage')
-            users.append(res.__dict__)
+            users.append(res)
         return users
 
 

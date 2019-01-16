@@ -3,12 +3,10 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
 	openlog "github.com/opentracing/opentracing-go/log"
-	"gopkg.in/oauth2.v3/utils/uuid"
 	"net/http"
 	"strconv"
 	"strings"
@@ -37,9 +35,9 @@ func RouteShowAllHighScore(c *gin.Context) {
 	ctx = opentracing.ContextWithSpan(ctx, span)
 
 	span.LogFields(
-		openlog.String("method", c.Request.Method),
-		openlog.String("path", c.Request.URL.Path),
-		openlog.String("host", c.Request.Host),
+		openlog.String(method, c.Request.Method),
+		openlog.String(path, c.Request.URL.Path),
+		openlog.String(host, c.Request.Host),
 	)
 
 	highScores, code := ShowHighScores(GLOBALNAME, GLOBALLIST, c, ctx)
@@ -58,9 +56,9 @@ func RouteShowHighScore(c *gin.Context) {
 	ctx = opentracing.ContextWithSpan(ctx, span)
 
 	span.LogFields(
-		openlog.String("method", c.Request.Method),
-		openlog.String("path", c.Request.URL.Path),
-		openlog.String("host", c.Request.Host),
+		openlog.String(method, c.Request.Method),
+		openlog.String(path, c.Request.URL.Path),
+		openlog.String(host, c.Request.Host),
 	)
 
 	user := c.Param("user")
@@ -84,9 +82,7 @@ func RouteIncrementHighscore(c *gin.Context) {
 	var po PostObject
 	decoder := json.NewDecoder(c.Request.Body)
 	if err := decoder.Decode(&po); err != nil {
-		b, _ := uuid.NewRandom()
-		localUuid := fmt.Sprintf("%x-%x-%x-%x-%x",
-			b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
+		localUuid := createGuid()
 		decodingError := ErrorModel{
 			Message: err.Error(),
 			UniqueCode: localUuid}
@@ -96,9 +92,7 @@ func RouteIncrementHighscore(c *gin.Context) {
 	}
 
 	if po.Drink == "" {
-		b, _ := uuid.NewRandom()
-		localUuid := fmt.Sprintf("%x-%x-%x-%x-%x",
-			b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
+		localUuid := createGuid()
 		emptyBodyError := ErrorModel{
 			Message: "You have to provide a body with this request",
 			UniqueCode: localUuid}
@@ -109,19 +103,17 @@ func RouteIncrementHighscore(c *gin.Context) {
 	body, _ := json.Marshal(po)
 
 	span.LogFields(
-		openlog.String("method", c.Request.Method),
-		openlog.String("path", c.Request.URL.Path),
-		openlog.String("body", string(body)),
-		openlog.String("host", c.Request.Host),
+		openlog.String(method, c.Request.Method),
+		openlog.String(path, c.Request.URL.Path),
+		openlog.String(spanBody, string(body)),
+		openlog.String(host, c.Request.Host),
 	)
 
 	user := c.Param("user")
 	playlist := c.Param("playList")
 
 	if strings.ToLower(user) == "global" {
-		b, _ := uuid.NewRandom()
-		localUuid := fmt.Sprintf("%x-%x-%x-%x-%x",
-			b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
+		localUuid := createGuid()
 		restrictedUserError := ErrorModel{
 			Message: "Global is a restricted user and cannot be used",
 			UniqueCode: localUuid}
@@ -137,15 +129,15 @@ func RouteIncrementHighscore(c *gin.Context) {
 
 func respondWithJson(c *gin.Context, code int, payload interface{}, ctx context.Context) {
 	span, _ := opentracing.StartSpanFromContext(ctx, "Response")
-	span.SetTag("Method", "ResponseWriter")
+	span.SetTag(method, "ResponseWriter")
 
 	response, _ := json.Marshal(payload)
 	c.Writer.Header().Set("Content-Type", "application/json")
 	c.Writer.WriteHeader(code)
 	c.JSON(code, payload)
 	span.LogFields(
-		openlog.String("http_status_code", strconv.Itoa(code)),
-		openlog.String("body", string(response)),
+		openlog.String(statusCode, strconv.Itoa(code)),
+		openlog.String(spanBody, string(response)),
 	)
 	defer span.Finish()
 }
