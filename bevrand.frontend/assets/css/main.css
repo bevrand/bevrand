@@ -1748,7 +1748,6 @@ form select,
 form textarea {
     -webkit-appearance: none;
     display: block;
-    border: 0;
     background: #fafafa;
     width: 100%;
     border-radius: 0.5em;
@@ -2518,8 +2517,8 @@ body.homepage.is-preload #header:after {
         -moz-animation-timing-function: ease-in-out;
     }
     80% {
+		opacity: 1;
         -moz-transform: rotate(60deg) translateY(0);
-        opacity: 1;
         -moz-transform-origin: top left;
         -moz-animation-timing-function: ease-in-out;
     }
