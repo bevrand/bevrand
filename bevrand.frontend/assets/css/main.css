@@ -754,10 +754,6 @@ hr:after {
     .row.gtr-50.gtr-uniform>* {
         padding-top: 20px;
     }
-    .row {
-        margin-top: -40px;
-        margin-left: -40px;
-    }
     .row.gtr-uniform {
         margin-top: -40px;
     }
