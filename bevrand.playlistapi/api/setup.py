@@ -16,6 +16,7 @@ except:
 print(JAEGER_HOST)
 FLASK_TRACER = None
 
+
 def create_app():
     # instantiate the app
     swagger_config = {
@@ -86,6 +87,7 @@ def create_mongo(app):
     mongo_url = app.config["CONNECTION"]
     print(mongo_url)
     return PyMongo(app, uri=mongo_url)
+
 
 app = create_app()
 

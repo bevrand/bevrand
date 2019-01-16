@@ -38,7 +38,7 @@ def front_page_list(playlist):
         service = FrontPageService()
         result = service.retrieve_front_page_list(playlist)
         span.log_kv({"status_code": 200, "result": result})
-        return jsonify({"result": result.__dict__}), 200
+        return jsonify({"result": result}), 200
 
 
 @public_blueprint.errorhandler(InvalidUsage)

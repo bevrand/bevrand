@@ -32,7 +32,7 @@ def specific_list_for_specific_user(username, playlist):
         data_validator.validate_play_list(playlist)
         service = ListsService()
         result = service.get_specific_user_list(username, playlist)
-        return jsonify({"result": result.__dict__}), 200
+        return jsonify({"result": result}), 200
 
 
 @private_blueprint.route('/<username>/<playlist>', methods=['POST'])
@@ -106,4 +106,3 @@ def create_parent_trace():
     parent_span.set_tag('http.method', request.method)
     parent_span.set_tag('body', request.json)
     return parent_span
-
