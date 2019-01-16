@@ -15,6 +15,7 @@ class ObjectMapper:
         for bev in json_object['beverages']:
             tempjson = {"name": bev}
             beverages.append(tempjson)
+        json_object['beverages'] = beverages
         post_model = PlaylistModel.from_dict(json_object)
 
         if post_model.image_url is None:
@@ -31,6 +32,10 @@ class CursorMapper:
 
     @staticmethod
     def map_cursor_to_object(specified_document, username):
+        beverages = []
+        for drinks in specified_document['beverages']:
+            beverages.append(drinks['name'])
+        specified_document['beverages'] = beverages
         mongo_id = str(specified_document['_id'])
         mongo_model = PlaylistModel.from_dict(specified_document)
         mongo_model.username = username

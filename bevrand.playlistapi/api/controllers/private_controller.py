@@ -99,6 +99,7 @@ def handle_invalid_usage(error):
             span.log_kv({"meta": error.meta})
     return response
 
+
 @FLASK_TRACER.trace()
 def create_parent_trace():
     parent_span = FLASK_TRACER.get_span(request)
