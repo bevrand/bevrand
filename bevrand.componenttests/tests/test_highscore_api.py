@@ -97,8 +97,5 @@ class HighScoreApiTests(test_setup_fixture.TestFixture):
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(201, response.status_code)
         resp = self.get_without_auth_header(url)
-        print(resp.json())
-        #self.assertEqual(200, resp.status_code)
-        #json_body = resp.json()
-        #self.assertTrue(len(json_body) >= 1)
+        self.assertIsNotNone(resp)
 
