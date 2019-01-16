@@ -38,9 +38,7 @@ func ShowHighScores(user string, playlist string, c *gin.Context, ctx context.Co
 			openlog.String(spanBody, "not found"),
 		)
 		span.Finish()
-		b, _ := uuid.NewRandom()
-		localUuid := fmt.Sprintf("%x-%x-%x-%x-%x",
-			b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
+		localUuid := createGuid()
 		notFoundError := ErrorModel{
 			Message: "Could not find combination of user: " + user + " & list: " + playlist,
 			UniqueCode: localUuid}
@@ -145,3 +143,10 @@ func IncreaseGlobalCount(drink string, ctx context.Context){
 	return
 }
 
+func createGuid() string {
+	b, _ := uuid.NewRandom()
+	uuid := fmt.Sprintf("%x-%x-%x-%x-%x",
+		b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
+
+	return uuid
+}
