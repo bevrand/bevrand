@@ -129,17 +129,17 @@ class PlayListPostModel(PlaylistModel):
 
 class ProxyModel(PlayListPostModel):
 
-    id: str
+    mongo_id: str
     iat: int
     jwtheader: Jwtheader
     jwttoken: str
 
-    def __init__(self, id: str, playlist_post_model: PlayListPostModel, iat: int,
+    def __init__(self, mongo_id: str, playlist_post_model: PlayListPostModel, iat: int,
                  jwtheader: Jwtheader, jwttoken: str):
         super().__init__(username=playlist_post_model.username, playlist=playlist_post_model.playlist,
                          display_name=playlist_post_model.display_name, image_url=playlist_post_model.image_url,
                          beverages=playlist_post_model.beverages)
-        self.id = id
+        self.mongo_id = mongo_id
         self.iat = iat
         self.jwtheader = jwtheader
         self.jwttoken = jwttoken
@@ -148,7 +148,7 @@ class ProxyModel(PlayListPostModel):
     def from_dict(obj):
         beverages = obj.get("beverages")
         display_name = obj.get("displayName")
-        id = obj.get("id")
+        mongo_id = obj.get("id")
         image_url = obj.get("imageUrl")
         playlist = obj.get("list")
         user = obj.get("user")
@@ -157,13 +157,13 @@ class ProxyModel(PlayListPostModel):
         jwttoken = obj.get("jwttoken")
         playlist_post_model = PlayListPostModel(username=user, playlist=playlist,
                                                 display_name=display_name, image_url=image_url, beverages=beverages)
-        return ProxyModel(id, playlist_post_model, iat, jwtheader, jwttoken)
+        return ProxyModel(mongo_id, playlist_post_model, iat, jwtheader, jwttoken)
 
     def to_dict(self):
         result: dict = {}
         result["beverages"] = self.beverages
         result["displayName"] = self.display_name
-        result["id"] = self.id
+        result["id"] = self.mongo_id
         result["imageUrl"] = self.image_url
         result["list"] = self.playlist
         result["user"] = self.username

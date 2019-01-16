@@ -5,10 +5,10 @@ from api.setup import create_app
 
 app = create_app()
 
+check_url = 'localhost:27017'
+
 
 class TestDevelopmentConfig(TestCase):
-
-    check_url = '0.0.0.0'
 
     def create_app(self):
         app.config.from_object('api.config.Development')
@@ -16,13 +16,11 @@ class TestDevelopmentConfig(TestCase):
 
     def test_app_is_development(self):
         assert app.config['DEBUG']
-        connection = 'mongodb://{0}:27017/admin'.format(self.check_url)
+        connection = 'mongodb://{0}/admin'.format(check_url)
         assert app.config['CONNECTION'] == connection
 
 
 class TestTestingConfig(TestCase):
-
-    check_url = '0.0.0.0'
 
     def create_app(self):
         app.config.from_object('api.config.Test')
@@ -31,7 +29,7 @@ class TestTestingConfig(TestCase):
     def test_app_is_testing(self):
         assert app.config['DEBUG']
         assert app.config['TESTING']
-        connection = 'mongodb://{0}:27017/admin'.format(self.check_url)
+        connection = 'mongodb://{0}/admin'.format(check_url)
         os.environ["MONGO_URL"] = connection
         assert app.config['CONNECTION'] == connection
 
