@@ -1,8 +1,14 @@
-﻿using bevrand.authenticationapi.DAL.Models;
+﻿using System.Collections.Generic;
+using System.Net;
+using bevrand.authenticationapi.DAL.Models;
+using bevrand.authenticationapi.Middleware;
+using bevrand.authenticationapi.Models;
 using bevrand.authenticationapi.Services;
 using bevrand.authenticationapi.ViewModels;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using OpenTracing;
 
 namespace bevrand.authenticationapi.Controllers
 {
@@ -11,25 +17,39 @@ namespace bevrand.authenticationapi.Controllers
     {
 
        private readonly IUsersLogic _usersLogic;
+       private readonly ITracer _tracer;
+       private const string spanName = "user-controller";
 
-       public UsersController(IUsersLogic usersLogic)
+       public UsersController(IUsersLogic usersLogic, ITracer tracer)
        {
            _usersLogic = usersLogic;
+           _tracer = tracer;
        }
 
-
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetAllUsers()
         {
-            var result = _usersLogic.GetAllUsersFromDataBase();
-            return Ok(result);
+            using (var scope = _tracer.BuildSpan(spanName).StartActive(true))
+            {
+                var result = _usersLogic.GetAllUsersFromDataBase();
+                
+                scope.LogResult("Get all users result", result);
+
+                return Ok(result);
+            }
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var result = _usersLogic.GetById(id);
-            return Ok(result);
+            using (var scope = _tracer.BuildSpan(spanName).StartActive(true))
+            {
+                var result = _usersLogic.GetById(id);
+                
+                scope.LogResult("Get user by id", result);
+                
+                return Ok(result);
+            }
         }
 
         [HttpGet("by-email/{emailaddress}", Name = "GetByEmail")]
@@ -39,7 +59,15 @@ namespace bevrand.authenticationapi.Controllers
             return Ok(result);
         }
         
-        
+        /// <summary>
+        /// Returns the user based on the provided <paramref name="username"/>
+        /// </summary>
+        /// <param name="username">Username to search user by in database.</param>
+        /// <response code="200" cref="GetUserModel">Gives the email address and active status of the user with the provided <paramref name="username"/>.</response>
+        /// <response code="404" cref="ErrorModel">Could not find any user with the given <paramref name="username"/>.</response>
+        /// <returns><see cref="GetAllUsersModels"/> response with email address and active status.</returns>
+        [ProducesResponseType(typeof(ErrorModel), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(GetUserModel), (int)HttpStatusCode.OK)]
         [HttpGet("by-username/{username}", Name = "GetByUserName")]
         public IActionResult GetByUserName(string username)
         {
@@ -71,6 +99,3 @@ namespace bevrand.authenticationapi.Controllers
         }
     }
 }
-
-
-

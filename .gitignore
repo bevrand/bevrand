@@ -123,3 +123,4 @@ crash.log
 
 # Exclude node_modules
 node_modules/
+/docker-compose-created.yml

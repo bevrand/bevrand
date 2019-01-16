@@ -1,14 +1,11 @@
 from os import getenv
 from flask import Flask
 from flasgger import Swagger
-from jaeger_client import Config
-from flask_opentracing import FlaskTracer
-from opentracing_instrumentation.client_hooks import install_all_patches
-import logging
+import coverage
 
-JAEGER_HOST = getenv('JAEGER_HOST', 'localhost')
 
 FLASK_TRACER = None
+cov = None
 
 
 def create_app():
@@ -41,24 +38,6 @@ def create_app():
     }
     Swagger(app, config=swagger_config)
 
-    log_level = logging.DEBUG
-    logging.getLogger('').handlers = []
-    logging.basicConfig(format='%(asctime)s %(message)s', level=log_level)
-
-    config = Config(config={'sampler': {'type': 'const', 'param': 1},
-                            'logging': True,
-                            'local_agent':
-                            # Also, provide a hostname of Jaeger instance to send traces to.
-                                {'reporting_host': JAEGER_HOST}},
-                    # Service name can be arbitrary string describing this particular web service.
-                    service_name="randomizer_api")
-
-    jaeger_tracer = config.initialize_tracer()
-    tracer = FlaskTracer(jaeger_tracer)
-    global FLASK_TRACER
-    FLASK_TRACER = tracer
-    install_all_patches()
-
     # set config
     env = getenv('APP_SETTINGS')
     if env is None:
@@ -67,38 +46,13 @@ def create_app():
     app.config.from_object(app_settings)
 
     # register blueprints
+    if env == 'Coverage':
+        global cov
+        cov = coverage.Coverage(config_file=".coveragerc")
+        cov.start()
+        from api.controllers.coverage_controller import coverage_blueprint
+        app.register_blueprint(coverage_blueprint, url_prefix='/api/v1/coverage')
     from api.controllers.randomize_controller import randomize_blueprint
-    app.register_blueprint(randomize_blueprint, url_prefix='/api/randomize')
-
-    from api.controllers.redis_controller import redis_blueprint
-    app.register_blueprint(redis_blueprint, url_prefix='/api/redis')
+    app.register_blueprint(randomize_blueprint, url_prefix='/api/')
 
     return app
-
-'''
-    #set tracing
-    def initialize_tracer():
-        config = Config(
-            config={  # usually read from some yaml config
-                'sampler': {
-                    'type': 'const',
-                    'param': 1,
-                },
-                'local_agent': {
-                    'reporting_host': JAEGER_HOST
-                },
-                'logging': True,
-            },
-            service_name='randomizer_api_docker',
-        )
-        return config.initialize_tracer()  # also sets opentracing.tracer
-
-    jaeger_tracer = initialize_tracer()
-    global JAEGER_TRACER
-    JAEGER_TRACER = jaeger_tracer
-    flask_tracer = FlaskTracer(jaeger_tracer)
-    #install_all_patches()
-    global FLASK_TRACER
-    FLASK_TRACER = flask_tracer
-
-'''

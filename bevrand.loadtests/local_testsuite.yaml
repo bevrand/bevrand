@@ -1,0 +1,12 @@
+config:
+  target: 'http://localhost:4550/api'
+  phases:
+    - duration: 20
+      arrivalRate: 40
+scenarios:
+  - flow:
+    - get:
+        url: "/v1/private/joeri"
+    - get:
+        url: "/v1/public/tgif"
+

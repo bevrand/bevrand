@@ -1,0 +1,77 @@
+Endpoint for creating a new playlist for a user
+Provide a username and a json_body
+---
+tags:
+  - Private Methods
+parameters:
+  - name: username
+    type: string
+    in: path
+    required: true
+    description: user you want to create a playlist for
+  - name: playlist
+    type: string
+    in: path
+    required: true
+    description: playlist you want to create
+  - name: body
+    in: body
+    required: true
+    schema:
+      properties:
+        displayName:
+          type: string
+          description: The name you want people to see
+        imageUrl:
+          type: string
+          description: The image to upload
+        beverages:
+          type: array
+          items:
+            schema:
+                type: string
+      example:
+        displayName: I am so depressed
+        imageUrl: http://whatever.com
+        beverages: [beer, wine]
+definitions:
+  ErrorModel:
+    properties:
+      Error:
+        type: string
+      Meta:
+        type: object
+        properties:
+          validation_error:
+            type: array
+            items:
+              type: string
+responses:
+  201:
+    description: Yout list has been created
+  400:
+    description: BAD REQUEST
+    examples:
+      Validation Error: {
+          "Error": "Errors occured when validating",
+          "Meta": {
+            "user_name": [
+              "min length is 3"
+              ]}}
+      Cannot post this playlist for this user: {
+            "Error": "User and list combination already exists"
+              }
+    schema:
+      $ref: '#/definitions/ErrorModel'
+  403:
+    description: Illegal action was taken
+    examples:
+      FORBIDDEN: {"Error": "Frontpage is a reserved username and cannot be used for creation or deletion"}
+    schema:
+      $ref: '#/definitions/ErrorModel'
+  503:
+    description: No mongo connection could be made, are you running a mongo container?
+    examples:
+      ConnnectionProblem: {"Error": "Could not connect to mongo"}
+    schema:
+      $ref: '#/definitions/ErrorModel'

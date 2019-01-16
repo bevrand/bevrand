@@ -1,0 +1,430 @@
+---
+openapi: 3.0.0
+info:
+  description: "This is a sample server for the Bevrand"
+  version: "1.0.0"
+  title: "Swagger Bevrand"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "admin@beveragerandomizer.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+servers:
+  - url: http://{environment}/
+    variables:
+      environment:
+        default: localhost:4540
+        enum:
+          - playlistapi:5000
+          - randomizerapi:5000
+          - authenticationapi:5000
+          - proxyapi:5000
+          - highscoreapi:5000
+
+          - localhost:4550
+          - localhost:4560
+          - localhost:4570
+          - localhost:4540
+          - localhost:4580
+tags:
+- name: "algemeen"
+- name: "shared"
+  description: "Endpoints all api's share"
+- name: "playlistapi"
+  description: "Api that controls and stores playlists"
+  externalDocs:
+    description: "Wiki page on github"
+    url: "https://github.com/bevrand/bevrand/wiki/PlaylistApi"
+- name: "randomizerapi"
+  description: "Api that controls and stores playlists"
+  externalDocs:
+    description: "Wiki page on github"
+    url: "https://github.com/bevrand/bevrand/wiki/RandomizerApi"
+- name: "authenticationapi"
+  description: "Api that controls and stores users"
+  externalDocs:
+    description: "Wiki page on github"
+    url: "https://github.com/bevrand/bevrand/wiki/AuthenticationApi"
+- name: "proxyapi"
+  description: "Api that controls the flow from the frontend to the backend"
+  externalDocs:
+    description: "Wiki page on github"
+    url: "https://github.com/bevrand/bevrand/wiki/ProxyApi"
+- name: "highscoreapi"
+  description: "Api that controls and stores highscores"
+  externalDocs:
+    description: "Wiki page on github"
+    url: "https://github.com/bevrand/bevrand/wiki/HighscoreApi"
+paths:
+  /ping/: # currently not working due to CORS
+    get:
+      tags:
+      - "algemeen"
+      produces:
+      - "application/json"
+      summary: "Ping the service"
+      responses:
+        200:
+          description: "successful operation"
+  /api/v1/private/{username}/:
+    delete:
+      tags:
+      - "playlistapi"
+      produces:
+      - "application/json"
+      summary: "Endpoint to delete ALL playlists for a user"
+      parameters:
+        - in: "path"
+          name: "username"
+          schema:
+            type: "string"
+          required: true
+          example: "marvin"
+          description: "user you want to delete all lists for"
+      responses:
+        204:
+          description: Lists were successfully deleted
+        400:
+          description: Validation error
+          examples:
+            BAD REQUEST: {
+                "Error": "Errors occured when validating",
+                "Meta": {
+                  "user_name": [
+                    "min length is 3"
+                    ]}}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        404:
+          description: Requested resource does not exist
+          examples:
+            NOT FOUND: {"Error": "User could not be found"}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        503:
+          description: No mongo connection could be made, are you running a mongo container?
+          examples:
+            ConnnectionProblem: {"Error": "Could not connect to mongo"}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+  /api/v1/private/{username}/{playListName}:
+    get:
+      tags:
+      - "playlistapi"
+      produces:
+      - "application/json"
+      summary: "Endpoint to delete a specifc playlist for a user"
+      parameters:
+        - in: "path"
+          name: "username"
+          schema:
+            type: "string"
+          required: true
+          example: "marvin"
+          description: "User you want to get"
+        - in: "path"
+          name: "playListName"
+          schema:
+            type: "string"
+          required: true
+          example: "paranoid"
+          description: "List you want to get"
+      responses:
+        200:
+          description: An array of playlist for a specific user
+          examples:
+            OK: {'result': ['first_list', 'second_list', 'third_list']}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaylistModel'
+        400:
+          description: Validation error
+          examples:
+            BAD REQUEST: {
+                "Error": "Errors occured when validating",
+                "Meta": {
+                  "user_name": [
+                    "min length is 3"
+                    ]}}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        503:
+          description: No mongo connection could be made, are you running a mongo container?
+          examples:
+            ConnnectionProblem: {"Error": "Could not connect to mongo"}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+    delete:
+      tags:
+      - "playlistapi"
+      produces:
+      - "application/json"
+      summary: "Endpoint to delete a specifc playlist for a user"
+      parameters:
+        - in: "path"
+          name: "username"
+          schema:
+            type: "string"
+          required: true
+          example: "marvin"
+          description: "user you want to delete lists for"
+        - in: "path"
+          name: "playListName"
+          schema:
+            type: "string"
+          required: true
+          example: "paranoid"
+          description: "List you want to delete"
+      responses:
+        204:
+          description: Playlist was successfully deleted
+        400:
+          description: Validation error
+          examples:
+            BAD REQUEST: {
+                "Error": "Errors occured when validating",
+                "Meta": {
+                  "user_name": [
+                    "min length is 3"
+                    ]}}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        404:
+          description: Requested resource does not exist
+          examples:
+            NOT FOUND PLAYLIST: {"Error": "List could not be found"}
+            NOT FOUND USER: {"Error": "User could not be found"}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        403:
+          description: Illegal action was taken
+          examples:
+            FORBIDDEN: {"Error": "Frontpage is a reserved username and cannot be used for creation or deletion"}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        503:
+          description: No mongo connection could be made, are you running a mongo container?
+          examples:
+            ConnnectionProblem: {"Error": "Could not connect to mongo"}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+    post:
+      tags:
+      - "playlistapi"
+      produces:
+      - "application/json"
+      parameters:
+        - in: "path"
+          name: "username"
+          schema:
+            type: "string"
+          required: true
+          example: "marvin"
+          description: "User you want to add playlist for"
+        - in: "path"
+          name: "playListName"
+          schema:
+            type: "string"
+          required: true
+          example: "paranoid"
+          description: "Playlist you want to create"
+        - name: body
+          in: body
+          required: true
+          schema:
+            properties:
+              displayName:
+                type: string
+                description: The name you want people to see
+              imageUrl:
+                type: string
+                description: The image to upload
+              beverages:
+                type: array
+                items:
+                  schema:
+                      type: string
+            example:
+              displayName: I am so depressed
+              imageUrl: http://whatever.com
+              beverages: [beer, wine]
+      responses:
+        201:
+          description: Yout list has been created
+        400:
+          description: BAD REQUEST
+          examples:
+            Validation Error: {
+                "Error": "Errors occured when validating",
+                "Meta": {
+                  "user_name": [
+                    "min length is 3"
+                    ]}}
+            Cannot post this playlist for this user: {
+                  "Error": "User and list combination already exists"
+                    }
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        403:
+          description: Illegal action was taken
+          examples:
+            FORBIDDEN: {"Error": "Frontpage is a reserved username and cannot be used for creation or deletion"}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+        503:
+          description: No mongo connection could be made, are you running a mongo container?
+          examples:
+            ConnnectionProblem: {"Error": "Could not connect to mongo"}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+  /api/v1/highscores/{username}/{playListName}:
+    get:
+      tags:
+      - "highscoreapi"
+      servers:
+      - url: "http://localhost:4580/"
+      produces:
+      - "application/json"
+      summary: "Endpoint to delete a specifc playlist for a user"
+      parameters:
+        - in: "path"
+          name: "username"
+          schema:
+            type: "string"
+          required: true
+          example: "marvin"
+          description: "User you want to get"
+        - in: "path"
+          name: "playListName"
+          schema:
+            type: "string"
+          required: true
+          example: "paranoid"
+          description: "List you want to get"
+      responses:
+        200:
+          description: An array of playlist for a specific user
+          examples:
+            OK: {'result': ['first_list', 'second_list', 'third_list']}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaylistModel'
+        400:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModelHighScore'
+        404:
+          description: No such resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModelHighScore'
+    post:
+      tags:
+      - "highscoreapi"
+      servers:
+      - url: "http://localhost:4580/"
+      produces:
+      - "application/json"
+      parameters:
+        - in: "path"
+          name: "username"
+          schema:
+            type: "string"
+          required: true
+          example: "marvin"
+          description: "User you want to add playlist for"
+        - in: "path"
+          name: "playListName"
+          schema:
+            type: "string"
+          required: true
+          example: "paranoid"
+          description: "Playlist you want to create"
+        - name: body
+          in: body
+          required: true
+          schema:
+            properties:
+              drink:
+                type: string
+                description: The beverage you want to append
+            example:
+              drink: beer
+      responses:
+        201:
+          description: Your drink has been appened
+        400:
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModelHighScore'
+
+#-------------------------------
+# Models
+#-------------------------------
+components:
+  schemas:
+    ErrorModel:
+      properties:
+        Error:
+          type: string
+        Meta:
+          type: object
+          properties:
+            validation_error:
+              type: array
+              items:
+                type: string
+    ErrorModelHighScore:
+      properties:
+        errorMessage:
+          type: string
+        uniqueCode:
+          type: uuid
+    PlaylistModel:
+      properties:
+        beverages:
+          type: array
+          items:
+            type: string
+        displayName:
+          type: string
+        id:
+          type: string
+        imageUrl:
+          type: string
+        list:
+          type: string
+        user:
+          type: string

@@ -13,7 +13,8 @@ class InvalidUsage(Exception):
     def to_dict(self):
         rv = dict(self.payload or ())
         rv['Error'] = self.message
-        rv['Meta'] = self.meta
+        if self.meta and self.meta is not None:
+            rv['Meta'] = self.meta
         return rv
 
 

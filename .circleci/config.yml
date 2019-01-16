@@ -1,27 +1,19 @@
 version: 2
+
 jobs:
   unittest_playlist:
     docker:
       - image: circleci/python:3.6.1
     steps:
-      - checkout 
+      - checkout
       - run: "cd ./bevrand.playlistapi && sudo pip install -r requirements.txt"
-      - run: "cd ./bevrand.playlistapi && sudo pytest --cov-report term --cov=api"
-
-  unittest_reactapp:
-    docker:
-      - image: circleci/node:8
-    steps:
-      - checkout 
-      - run: "cd ./bevrand.reactapp && npm install"
-      - run: "cd ./bevrand.reactapp && npm test"
-
+      - run: "cd ./bevrand.playlistapi/api/tests && sudo pytest --cov-report term --cov=api"
 
   unittest_proxy:
     docker:
       - image: circleci/node:8
     steps:
-      - checkout 
+      - checkout
       - run: "cd ./bevrand.proxyapi && npm install"
       - run: "cd ./bevrand.proxyapi && npm test"
 
@@ -29,83 +21,141 @@ jobs:
     docker:
       - image: circleci/python:3.6.1
     steps:
-      - checkout 
+      - checkout
       - run: "cd ./bevrand.randomizerapi && sudo pip install -r requirements.txt"
-      - run: "cd ./bevrand.randomizerapi && sudo pytest --cov-report term --cov=api"
+      - run: "cd ./bevrand.randomizerapi/api/tests && sudo pytest --cov-report term --cov=api"
 
   unittest_authentication:
     docker:
       - image: microsoft/dotnet:2-sdk
     steps:
       - checkout
-      - run: "cd bevrand.authenticationapi/bevrand.authenticationapi.tests && dotnet test"
+      - run: "cd bevrand.authenticationapi/bevrand.authenticationapi.tests && dotnet test /p:CollectCoverage=true /p:Exclude=\"[*]*Startup*%2c[*]*Program*%2c[*]*Controller*\""
 
-  build_python:   
-    machine: true
+  unittest_highscore:
+    docker:
+    - image: circleci/golang:1.11
     steps:
       - checkout
-     # build the application image
-      - run: |
-         docker build -t bevrand/playlistapi:develop ./bevrand.playlistapi
-         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker push bevrand/playlistapi:develop
-      - run: |
-         docker build -t bevrand/randomizerapi:develop ./bevrand.randomizerapi
-         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker push bevrand/randomizerapi:develop
-  build_node:   
-    machine: true
-    steps:
-      - checkout
-     # build the application image
-      - run: |
-         docker build -t bevrand/reactapp:develop ./bevrand.reactapp
-         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker push bevrand/reactapp:develop
-      - run: |
-         docker build -t bevrand/proxyapi:develop ./bevrand.proxyapi
-         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker push bevrand/proxyapi:develop
-  
-  build_dotnet:   
-    machine: true
-    steps:
-      - checkout
-     # build the application image
-      - run: |
-         docker build -t bevrand/authenticationapi:develop ./bevrand.authenticationapi/bevrand.authenticationapi
-         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker push bevrand/authenticationapi:develop
+      - run: "cd ./bevrand.highscoreapi && go test -v -cover"
 
-  component_tests:   
+  build_python:
     machine: true
     steps:
       - checkout
-
      # build the application image
       - run: |
+         docker build -t bevrand/playlistapi:$CIRCLE_SHA1 ./bevrand.playlistapi
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/playlistapi:$CIRCLE_SHA1
+      - run: |
+         docker build -t bevrand/randomizerapi:$CIRCLE_SHA1 ./bevrand.randomizerapi
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/randomizerapi:$CIRCLE_SHA1
+      - run: |
+         docker build -t bevrand/componenttests:$CIRCLE_SHA1 ./bevrand.componenttests
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/componenttests:$CIRCLE_SHA1
+      - run: |
+         docker build -t bevrand/dataseeder:$CIRCLE_SHA1 ./bevrand.dataseeder
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/dataseeder:$CIRCLE_SHA1
+
+  build_node:
+    machine: true
+    steps:
+      - checkout
+     # build the application image
+      - run: |
+         docker build -t bevrand/proxyapi:$CIRCLE_SHA1 ./bevrand.proxyapi
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/proxyapi:$CIRCLE_SHA1
+
+  build_frontend:
+    machine: true
+    steps:
+      - checkout
+     # build the application image
+      - run: |
+         docker build -t bevrand/frontend:$CIRCLE_SHA1 ./bevrand.frontend
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/frontend:$CIRCLE_SHA1
+      - run: |
+          docker build -t bevrand/dockernginx:$CIRCLE_SHA1 ./deployment/nginx
+          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+          docker push bevrand/dockernginx:$CIRCLE_SHA1
+
+  build_els:
+    machine: true
+    steps:
+    - checkout
+    # build the application image
+    - run: |
+        docker build -t bevrand/dockerels:$CIRCLE_SHA1 ./deployment/els
+        docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+        docker push bevrand/dockerels:$CIRCLE_SHA1
+
+  build_dotnet:
+    machine: true
+    steps:
+      - checkout
+     # build the application image
+      - run: |
+         docker build -t bevrand/authenticationapi:$CIRCLE_SHA1 ./bevrand.authenticationapi/bevrand.authenticationapi
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/authenticationapi:$CIRCLE_SHA1
+
+  build_golang:
+    machine: true
+    steps:
+      - checkout
+     # build the application image
+      - run: |
+         docker build -t bevrand/highscoreapi:$CIRCLE_SHA1 ./bevrand.highscoreapi
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/highscoreapi:$CIRCLE_SHA1
+
+  build_dockergres:
+    machine: true
+    steps:
+      - checkout
+     # build the application image
+      - run: |
+         docker build -t bevrand/dockergres:$CIRCLE_SHA1 ./bevrand.dataseeder/db
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/dockergres:$CIRCLE_SHA1
+
+  component_tests:
+    machine: true
+    steps:
+      - checkout
+     # build the application image
+      - run: |
+         pip install PyYAML
+         python create_docker_compose.py --profile component-tests
          docker-compose --version
-         docker-compose -f ./deployment/docker/docker-compose-component.yml up -d
+         docker-compose -f ./docker-compose-created.yml up -d
          docker images
          docker ps -a
-     
+
      #verify the results of the component test
       - run: "cd ./deployment && python validate_backend_test_results.py"
-  
+
   ui_tests:
     machine: true
     parallelism: 1
     steps:
-      - checkout    
-
+      - checkout
      # build the application image
       - run: |
+         pip install PyYAML
+         python create_docker_compose.py --profile ui-tests
          docker-compose --version
-         docker-compose -f ./deployment/docker/docker-compose-ui.yml up -d
+         docker-compose -f ./docker-compose-created.yml up -d
          docker images
          docker ps -a
       #run ui_tests
-      - run: "cd ./bevrand.uitests && npm install"
+      - run: "cd ./bevrand.uitests && npm install --save-dev"
       - run: "cd /home/circleci/project"
 
       - run:
@@ -125,34 +175,65 @@ jobs:
      # build the application image
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker pull bevrand/playlistapi:develop
-         docker tag bevrand/playlistapi:develop bevrand/playlistapi:production
+         docker pull bevrand/playlistapi:$CIRCLE_SHA1
+         docker tag bevrand/playlistapi:$CIRCLE_SHA1 bevrand/playlistapi:production
          docker push bevrand/playlistapi:production
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker pull bevrand/reactapp:develop
-         docker tag bevrand/reactapp:develop bevrand/reactapp:production
-         docker push bevrand/reactapp:production
-      - run: |
-         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker pull bevrand/proxyapi:develop
-         docker tag bevrand/proxyapi:develop bevrand/proxyapi:production
+         docker pull bevrand/proxyapi:$CIRCLE_SHA1
+         docker tag bevrand/proxyapi:$CIRCLE_SHA1 bevrand/proxyapi:production
          docker push bevrand/proxyapi:production
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker pull bevrand/randomizerapi:develop
-         docker tag bevrand/randomizerapi:develop bevrand/randomizerapi:production
+         docker pull bevrand/randomizerapi:$CIRCLE_SHA1
+         docker tag bevrand/randomizerapi:$CIRCLE_SHA1 bevrand/randomizerapi:production
          docker push bevrand/randomizerapi:production
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker pull bevrand/authenticationapi:develop
-         docker tag bevrand/authenticationapi:develop bevrand/authenticationapi:production
-         docker push bevrand/authenticationapi:production    
+         docker pull bevrand/authenticationapi:$CIRCLE_SHA1
+         docker tag bevrand/authenticationapi:$CIRCLE_SHA1 bevrand/authenticationapi:production
+         docker push bevrand/authenticationapi:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/highscoreapi:$CIRCLE_SHA1
+         docker tag bevrand/highscoreapi:$CIRCLE_SHA1 bevrand/highscoreapi:production
+         docker push bevrand/highscoreapi:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/dockergres:$CIRCLE_SHA1
+         docker tag bevrand/dockergres:$CIRCLE_SHA1 bevrand/dockergres:production
+         docker push bevrand/dockergres:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/frontend:$CIRCLE_SHA1
+         docker tag bevrand/frontend:$CIRCLE_SHA1 bevrand/frontend:production
+         docker push bevrand/frontend:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/dockerels:$CIRCLE_SHA1
+         docker tag bevrand/dockerels:$CIRCLE_SHA1 bevrand/dockerels:production
+         docker push bevrand/dockerels:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/dockernginx:$CIRCLE_SHA1
+         docker tag bevrand/dockernginx:$CIRCLE_SHA1 bevrand/dockernginx:production
+         docker push bevrand/dockernginx:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/dataseeder:$CIRCLE_SHA1
+         docker tag bevrand/dataseeder:$CIRCLE_SHA1 bevrand/dataseeder:production
+         docker push bevrand/dataseeder:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/componenttests:$CIRCLE_SHA1
+         docker tag bevrand/componenttests:$CIRCLE_SHA1 bevrand/componenttests:production
+         docker push bevrand/componenttests:production
+
   pause_uptimerobot:
     machine: true
     steps:
      - run: "curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479363&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479359&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460902&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460904&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\""
- 
+
   deploy:
     machine: true
     steps:
@@ -160,7 +241,7 @@ jobs:
      - run: "pwd && ls -lha"
      - run: "cd ./deployment && sh ./init_terraform.sh"
      - run: "cd ./deployment/terraform_scripts && pwd && ls -lha && sh ../run_terraform.sh"
-  
+
   resume_uptimerobot:
     machine: true
     steps:
@@ -172,67 +253,69 @@ workflows:
     jobs:
      - unittest_randomizer:
         context: BeverageRandomizerPROD
-     - unittest_reactapp:
-        context: BeverageRandomizerPROD
      - unittest_proxy:
         context: BeverageRandomizerPROD
      - unittest_playlist:
         context: BeverageRandomizerPROD
      - unittest_authentication:
         context: BeverageRandomizerPROD
-     
+     - unittest_highscore:
+        context: BeverageRandomizerPROD
+
      - build_python:
         context: BeverageRandomizerPROD
-        filters:
-          branches:
-            only: 
-            - develop
-            - master
         requires:
           - unittest_randomizer
           - unittest_playlist
      - build_node:
         context: BeverageRandomizerPROD
-        filters:
-          branches:
-            only: 
-            - develop
-            - master
         requires:
           - unittest_proxy
-          - unittest_reactapp
      - build_dotnet:
         context: BeverageRandomizerPROD
-        filters:
-          branches:
-            only: 
-            - develop
-            - master
         requires:
           - unittest_authentication
-
+     - build_golang:
+         context: BeverageRandomizerPROD
+         requires:
+          - unittest_highscore
+     - build_dockergres:
+         context: BeverageRandomizerPROD
+         requires:
+          - unittest_authentication
+     - build_frontend:
+         context: BeverageRandomizerPROD
+         requires:
+          - unittest_proxy
+     - build_els:
+         context: BeverageRandomizerPROD
+         requires:
+         - unittest_proxy
      - component_tests:
          context: BeverageRandomizerPROD
-         filters:
-            branches:
-              only: 
-              - develop
-              - master
          requires:
            - build_python
            - build_node
            - build_dotnet
+           - build_golang
+           - build_dockergres
+           - build_frontend
+           - build_els
      - ui_tests:
           context: BeverageRandomizerPROD
-          filters:
-             branches:
-               only: 
-               - develop
-               - master
           requires:
            - build_python
            - build_node
            - build_dotnet
+           - build_golang
+           - build_dockergres
+           - build_frontend
+           - build_els
+          filters:
+            branches:
+              only:
+              - master
+              - develop
      #TODO Sonar-scanner
      #- acceptance_test_1:
      #    requires:
@@ -241,7 +324,7 @@ workflows:
           context: BeverageRandomizerPROD
           filters:
              branches:
-               only: 
+               only:
                - master
           requires:
             - ui_tests
@@ -269,4 +352,3 @@ workflows:
               only: master
          requires:
            - deploy
-         

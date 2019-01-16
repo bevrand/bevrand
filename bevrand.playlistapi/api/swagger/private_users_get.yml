@@ -1,0 +1,46 @@
+Endpoint returning a list of playlists for a specific user
+Provide a username and all lists for that user will be returned.
+This method will return an empty array of lists if the user cannot be found
+---
+tags:
+  - Private Methods
+parameters:
+  - name: username
+    type: string
+    in: path
+    required: true
+    description: user you want to query
+definitions:
+  ErrorModel:
+    properties:
+      Error:
+        type: string
+      Meta:
+        type: object
+        properties:
+          validation_error:
+            type: array
+            items:
+              type: string
+responses:
+  200:
+    description: An array of playlist for a specific user
+    examples:
+      OK: {'result': ['first_list', 'second_list', 'third_list']}
+  400:
+    description: Validation error
+    examples:
+      BAD REQUEST: {
+          "Error": "Errors occured when validating",
+          "Meta": {
+            "user_name": [
+              "min length is 3"
+              ]}}
+    schema:
+      $ref: '#/definitions/ErrorModel'
+  503:
+    description: No mongo connection could be made, are you running a mongo container?
+    examples:
+      ConnnectionProblem: {"Error": "Could not connect to mongo"}
+    schema:
+      $ref: '#/definitions/ErrorModel'

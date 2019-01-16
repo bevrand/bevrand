@@ -1,0 +1,284 @@
+version: "2"
+services:
+
+  redis:
+    container_name: redis
+    image: redis
+    ports: #6379
+      - 6379:6379
+
+  dockermongo:
+    container_name: dockermongo
+    image: mongo:4.0
+    ports:
+       - 27017:27017
+    volumes:
+      - /mnt/datavolumedocker/data/mongo:/data/db
+    environment:
+      - AWESOME_NUMBER = 42
+
+  dockergres:
+     container_name: dockergres
+     build: ./bevrand.dataseeder/db
+     image: "bevrand/dockergres:${CIRCLE_SHA1}"
+     ports:
+       - 5434:5432
+     volumes:
+      - /mnt/datavolumedocker/data/postgres:/var/lib/postgresql/data
+     environment:
+       - POSTGRES_PASSWORD=postgres
+       - POSTGRES_USER=postgres
+
+  authenticationapi:
+    container_name: authenticationapi
+    build: ./bevrand.authenticationapi/bevrand.authenticationapi
+    image: "bevrand/authenticationapi:${CIRCLE_SHA1}"
+    ports:
+      - 4570:5000
+    depends_on:
+      - dockergres
+      - jaeger-agent
+    links:
+      - dockergres
+    environment:
+      - ASPNETCORE_ENVIRONMENT="Development"
+      - JAEGER_AGENT_HOST=jaeger-agent
+      - JAEGER_AGENT_PORT=6831
+
+  highscoreapi:
+    container_name: highscoreapi
+    build: ./bevrand.highscoreapi
+    image: "bevrand/highscoreapi:${CIRCLE_SHA1}"
+    environment:
+      - GO_ENV=docker
+      - GIN_MODE=release
+      - JAEGER_AGENT_HOST=jaeger-agent
+      - JAEGER_AGENT_PORT=6831
+    depends_on:
+      - redis
+      - jaeger-agent
+    links:
+      - redis
+    ports:
+      - 4580:5000
+
+  frontendapi:
+    container_name: frontend
+    build: ./bevrand.frontend
+    image: "bevrand/frontend:${CIRCLE_SHA1}"
+    ports:
+      - 4541:80
+    depends_on:
+    - randomizerapi
+    - playlistapi
+    - authenticationapi
+    - proxyapi
+    - highscoreapi
+    links:
+    - proxyapi
+
+  randomizerapi:
+    container_name: randomizerapi
+    build: ./bevrand.randomizerapi
+    image: "bevrand/randomizerapi:${CIRCLE_SHA1}"
+    ports:
+       - 4560:5000 # expose ports - HOST:CONTAINER
+    links:
+       - highscoreapi
+    depends_on:
+       - jaeger-agent
+    environment:
+       - APP_SETTINGS=Production
+       - JAEGER_AGENT_HOST=jaeger-agent
+       - JAEGER_AGENT_PORT=6831
+       - HIGHSCORE_API=http://highscoreapi:5000/api/v1/
+
+  playlistapi:
+    container_name: playlistapi
+    build: ./bevrand.playlistapi
+    image: "bevrand/playlistapi:${CIRCLE_SHA1}"
+    ports:
+       - 4550:5000  # expose ports - HOST:CONTAINER
+    depends_on:
+       - dockermongo
+       - jaeger-agent
+    links:
+       - dockermongo
+    environment:
+       - APP_SETTINGS=Production
+       - MONGO_URL=mongodb://dockermongo:27017/admin
+       - JAEGER_AGENT_HOST=jaeger-agent
+       - JAEGER_AGENT_PORT=6831
+
+  proxyapi:
+    container_name: proxyapi
+    build: ./bevrand.proxyapi
+    image: "bevrand/proxyapi:${CIRCLE_SHA1}"
+    ports:
+      - 4540:5000
+    depends_on:
+      - randomizerapi
+      - playlistapi
+      - authenticationapi
+      - jaeger-agent
+    environment:
+      - NODE_ENV=development
+      - JAEGER_AGENT_HOST=jaeger-agent
+      - JAEGER_AGENT_PORT=6831
+    links:
+      - randomizerapi
+      - playlistapi
+      - authenticationapi
+
+  dataseeder:
+    container_name: dataseeder
+    build: ./bevrand.dataseeder
+    image: "bevrand/dataseeder:${CIRCLE_SHA1}"
+    depends_on:
+       - dockermongo
+       - dockergres
+    links:
+       - dockermongo
+       - dockergres
+    environment:
+       - MONGO_URL=mongodb://dockermongo:27017/admin
+
+  componenttest:
+    container_name: component_tests
+    build: ./bevrand.componenttests
+    image: "bevrand/componenttests:${CIRCLE_SHA1}"
+    depends_on:
+    - randomizerapi
+    - playlistapi
+    - authenticationapi
+    - proxyapi
+    - highscoreapi
+    - dataseeder
+    links:
+    - randomizerapi
+    - playlistapi
+    - authenticationapi
+    - proxyapi
+    - highscoreapi
+    environment:
+    - PYTHON_ENV=Test
+
+  els:
+    image: "bevrand/dockerels:$CIRCLE_SHA1"
+    build: ./deployment/els
+    restart: always
+    hostname: els
+    environment:
+    - cluster.name=docker-cluster
+    - bootstrap.memory_lock=true
+    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+    - 9200:9200
+
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.0.0
+    ports:
+    - "5601:5601"
+    environment:
+      ELASTICSEARCH_URL: http://els:9200
+    depends_on:
+    - els
+
+  jaeger-collector-els:
+    image: jaegertracing/jaeger-collector:latest
+    environment:
+    - SPAN_STORAGE_TYPE=elasticsearch
+    ports:
+    - "14267:14267"
+    - "14268:14268"
+    - "9411:9411"
+    depends_on:
+    - els
+    hostname: jaeger-collector
+    restart: unless-stopped
+    command: ["--span-storage.type=elasticsearch", "--es.server-urls=http://els:9200"]
+
+  jaeger-agent-els:
+    image: jaegertracing/jaeger-agent:latest
+    environment:
+    - SPAN_STORAGE_TYPE=elasticsearch
+    ports:
+    - "5775:5775/udp"
+    - "5778:5778"
+    - "6831:6831/udp"
+    - "6832:6832/udp"
+    depends_on:
+    - els
+    - jaeger-collector
+    restart: unless-stopped
+    hostname: jaeger-agent
+    command: ["--collector.host-port=jaeger-collector:14267"]
+
+  jaeger-query-els:
+    image: jaegertracing/jaeger-query:latest
+    ports:
+    - 16686:16686
+    environment:
+    - SPAN_STORAGE_TYPE=elasticsearch
+    depends_on:
+    - els
+    - jaeger-collector
+    restart: unless-stopped
+    hostname: jaeger-query
+    command: ["--span-storage.type=elasticsearch", "--es.server-urls=http://els:9200", "--es.sniffer=false"]
+
+  jaeger-collector-cas:
+      image: jaegertracing/jaeger-collector
+      command: ["--cassandra.keyspace=jaeger_v1_dc1", "--cassandra.servers=cassandra", "--collector.zipkin.http-port=9411"]
+      ports:
+        - "14269"
+        - "14268:14268"
+        - "14267"
+        - "9411:9411"
+      restart: on-failure
+      depends_on:
+        - cassandra-schema
+
+  jaeger-query-cas:
+      image: jaegertracing/jaeger-query
+      command: ["--cassandra.keyspace=jaeger_v1_dc1", "--cassandra.servers=cassandra"]
+      ports:
+        - "16686:16686"
+        - "16687"
+      restart: on-failure
+      depends_on:
+        - cassandra-schema
+
+  jaeger-agent-cas:
+      image: jaegertracing/jaeger-agent
+      command: ["--collector.host-port=jaeger-collector:14267"]
+      ports:
+        - "5775:5775/udp"
+        - "6831:6831/udp"
+        - "6832:6832/udp"
+        - "5778:5778"
+      restart: on-failure
+      depends_on:
+        - jaeger-collector
+
+  cassandra:
+      image: cassandra:3.9
+
+  cassandra-schema:
+      image: jaegertracing/jaeger-cassandra-schema
+      depends_on:
+        - cassandra
+
+  dockernginx:
+    container_name: dockernginx
+    image: "bevrand/dockernginx:${CIRCLE_SHA1}"
+    build: ./deployment/nginx
+    links:
+      - frontendapi
+    ports:
+      - "80:5000"
