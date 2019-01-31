@@ -2,6 +2,7 @@ from tests import test_setup_fixture
 from environment import config
 from helpers.models import ProxyModel, Jwtheader
 from helpers.random_name_generator import HelperClass
+from random import shuffle
 import pytest
 import os
 
@@ -54,6 +55,30 @@ class ProxyApiTestsPlaylistsPublic(test_setup_fixture.TestFixture):
 
 @pytest.mark.usefixtures("setup_config")
 class ProxyApiTestsRandomizeValidations(test_setup_fixture.TestFixture):
+
+    def test_should_be_able_to_send_json_body_in_random_order(self):
+        sut = f'{url}/v2/randomize'
+        front_page_url = f'{url}/v2/frontpage'
+        response = self.get_without_auth_header(front_page_url).json()
+        for playlist in response:
+            unsorted_playlist = playlist.copy()
+            del unsorted_playlist['displayName']
+            del unsorted_playlist['id']
+            del unsorted_playlist['user']
+            unsorted_playlist['displayName'] = playlist['displayName']
+            unsorted_playlist['user'] = playlist['user']
+            unsorted_playlist['id'] = playlist['id']
+            response = self.post_without_auth_header(sut, unsorted_playlist)
+            self.assertEqual(200, response.status_code)
+
+    def test_should_not_be_able_to_send_beverages_in_random_order(self):
+        sut = f'{url}/v2/randomize'
+        front_page_url = f'{url}/v2/frontpage'
+        response = self.get_without_auth_header(front_page_url).json()
+        for playlist in response:
+            shuffle(playlist['beverages'])
+            response = self.post_without_auth_header(sut, playlist)
+            self.assertEqual(400, response.status_code)
 
     def test_should_not_be_able_to_randomize_lists_with_different_payload_token(self):
         sut = f'{url}/v2/randomize'
