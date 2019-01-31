@@ -1,0 +1,37 @@
+package jaeger
+
+import (
+	"context"
+	"fmt"
+	"github.com/opentracing/opentracing-go"
+	"github.com/uber/jaeger-client-go"
+	"github.com/uber/jaeger-client-go/config"
+	"io"
+)
+
+func InitJaeger(service string, host string) (opentracing.Tracer, io.Closer) {
+	cfg := &config.Configuration{
+		Sampler: &config.SamplerConfig{
+			Type:  "const",
+			Param: 1,
+		},
+		Reporter: &config.ReporterConfig{
+			LogSpans: true,
+			LocalAgentHostPort: host,
+		},
+	}
+	println(cfg)
+
+	tracer, closer, err := cfg.New(service, config.Logger(jaeger.StdLogger))
+	if err != nil {
+		panic(fmt.Sprintf("ERROR: cannot init Jaeger: %v\n", err))
+	}
+	return tracer, closer
+}
+
+func PrintServerInfo(ctx context.Context, serverInfo string){
+	span, _ := opentracing.StartSpanFromContext(ctx, "ServerInfo")
+	defer span.Finish()
+
+	span.LogKV("event", serverInfo)
+}
