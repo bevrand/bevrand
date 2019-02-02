@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+
+<html>
+<head>
+    <title>The Beverage Randomizer</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+</head>
+<body class="homepage is-preload">
+<div id="page-wrapper">
+
+    <!-- Banner -->
+    <section id="banner">
+        <header>
+            <h2>Ron's personal space</h2>
+            <a href="#main"><img src="https://icons-for-free.com/free-icons/png/512/2612585.png"/></a>
+            <a onclick="addNewPlayList()" class="fa fa-plus-circle" style="font-size:48px;color:lawngreen"><span class="label">Add playlist</span></a><br>
+
+            <input type="text" id="playListCreationField" value="Playlist Name"><br>
+
+            <a class="button randomize" id="okPlayListCreation"><strong>Ok</strong></a>
+            <a class="button randomize" id="cancelPlayListCreation"><strong>Cancel</strong></a>
+
+            <ul id="personalPlaylists"> </ul>
+
+        </header>
+    </section>
+
+
+    <!-- Footer -->
+    <div id="footer">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-12">
+
+                    <!-- Contact -->
+                    <section class="contact">
+                        <header>
+                            <h3>Wanna reach out?</h3>
+                        </header>
+                        <p>Our project is open source so feel free to clone from our github.</p>
+                        <ul class="icons">
+                            <li><a href="https://www.github.com/bevrand/bevrand" class="icon fa-github"><span class="label">Github</span></a></li>
+                        </ul>
+
+                    </section>
+
+                    <!-- Copyright -->
+                    <div class="copyright">
+                        <ul class="menu">
+                            <li>&copy; Copyright (c) 2017 bevrand</li><li>Beverage Randomizer</li>
+                        </ul>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Scripts -->
+<script src="assets/js/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="assets/js/jquery.dropotron.min.js"></script>
+<script src="assets/js/jquery.scrolly.min.js"></script>
+<script src="assets/js/jquery.scrollex.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/personalSpace.js"></script>
+</body>
+</html>
