@@ -9,9 +9,8 @@ const { Tags } = require('opentracing');
 const { httpRequest } = require('../lib/tracing/httpRequestWithTracing');
 const { signObjectWithJwtToken } = require('../helpers/jwtToken');
 
-
 /**
- * Gives the complete response from the playlist api at the endpoint /api/frontpage, 
+ * Gives the complete response from the playlist api at the endpoint /api/frontpage,
  * signed with a JWT Token, IssuedAtTime property (iat) and a JWT Header, which describes the algorithm used.
  */
 router.get('/v2/frontpage', (req, res, next) => {
@@ -19,31 +18,33 @@ router.get('/v2/frontpage', (req, res, next) => {
 
   span.log({
     event: 'frontpage-query-parameters',
-    result: req.query
+    result: req.query,
   });
 
   httpRequest({
     method: 'GET',
     url: `${config.playlistApi}/api/v1/public`,
-    span
-  }).then(result => {
-    span.setTag(Tags.HTTP_STATUS_CODE, 200);
+    span,
+  })
+    .then(result => {
+      span.setTag(Tags.HTTP_STATUS_CODE, 200);
 
-    let newResult = JSON.parse(result).result.map(signObjectWithJwtToken);
+      let newResult = JSON.parse(result).result.map(signObjectWithJwtToken);
 
-    span.log({
-      event: 'frontpage-result',
-      result: newResult
+      span.log({
+        event: 'frontpage-result',
+        result: newResult,
+      });
+
+      span.finish();
+      return res.send(newResult);
+    })
+    .catch(err => {
+      span.setTag(Tags.ERROR, true);
+      span.setTag(Tags.HTTP_STATUS_CODE, err.statusCode || 500);
+      span.finish();
+      return next(err);
     });
-
-    span.finish()
-    return res.send(newResult);
-  }).catch(err => {
-    span.setTag(Tags.ERROR, true)
-    span.setTag(Tags.HTTP_STATUS_CODE, err.statusCode || 500);
-    span.finish();
-    return next(err);
-  });
 });
 
 router.get('/playlists', (req, res, next) => {
@@ -51,7 +52,7 @@ router.get('/playlists', (req, res, next) => {
 
   span.log({
     event: 'playlists-query-parameters',
-    result: req.query
+    result: req.query,
   });
 
   const { username } = req.query;
@@ -64,23 +65,24 @@ router.get('/playlists', (req, res, next) => {
   httpRequest({
     url: `${config.playlistApi}/api/v1/private/${username}`,
     method: 'GET',
-    span
-  }).then(result => {
-    let parsedResult = JSON.parse(result).result;
-    console.log(parsedResult);
-    return parsedResult;
+    span,
   })
+    .then(result => {
+      let parsedResult = JSON.parse(result).result;
+      console.log(parsedResult);
+      return parsedResult;
+    })
     .then(result => {
       let promises = result.map(value => {
         const childSpan = tracer.startSpan('playlist-sub-request', {
           childOf: span,
-          tags: { [Tags.SPAN_KIND]: Tags.SPAN_KIND_RPC_SERVER }
+          tags: { [Tags.SPAN_KIND]: Tags.SPAN_KIND_RPC_SERVER },
         });
 
         return httpRequest({
           url: `${config.playlistApi}/api/v1/private/${username}/${value}`,
           method: 'GET',
-          span: childSpan
+          span: childSpan,
         }).then(response => {
           childSpan.setTag(Tags.HTTP_STATUS_CODE, 200);
           childSpan.finish();
@@ -94,11 +96,11 @@ router.get('/playlists', (req, res, next) => {
         console.log('Results of promise all: ', results);
         span.log({
           event: 'playlists-result',
-          result: results
+          result: results,
         });
         span.finish();
         res.send(results);
-      })
+      });
     })
     .catch(err => {
       return next(err);
@@ -106,11 +108,11 @@ router.get('/playlists', (req, res, next) => {
 });
 
 /**
-* Calls the backend playlist api with POST at endpoint /api/v1/private/{username}
-* Takes from the post body (req.body) the properties user, list, and beverages.
-* @param {string} endpoint
-*/
-const requestUserPlaylistPost = (endpoint) => {
+ * Calls the backend playlist api with POST at endpoint /api/v1/private/{username}
+ * Takes from the post body (req.body) the properties user, list, and beverages.
+ * @param {string} endpoint
+ */
+const requestUserPlaylistPost = endpoint => {
   return (req, res) => {
     const { beverages, imageUrl, displayName } = req.body;
     request({
@@ -119,18 +121,15 @@ const requestUserPlaylistPost = (endpoint) => {
       body: {
         beverages,
         imageUrl,
-        displayName
+        displayName,
       },
-      json: true
+      json: true,
     }).pipe(res);
-  }
+  };
 };
 
 router.post('/user', requestUserPlaylistPost(config.playlistApi));
 
 router.get('/user', requestPipeGet(config.playlistApi));
-
-
-
 
 module.exports = { router };

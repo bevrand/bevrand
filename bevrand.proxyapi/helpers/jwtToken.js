@@ -26,10 +26,14 @@ const validateJwtTokenMiddleware = (req, res, next) => {
 };
 
 const signObjectWithJwtToken = object => {
-  let signedItem = jwt.sign(object, config.frontendJwtSecret, { mutatePayload: true });
-  object.jwtheader = JSON.parse(Buffer.from(signedItem.split('.')[0], 'base64').toString("ascii"));
+  let signedItem = jwt.sign(object, config.frontendJwtSecret, {
+    mutatePayload: true,
+  });
+  object.jwtheader = JSON.parse(
+    Buffer.from(signedItem.split('.')[0], 'base64').toString('ascii')
+  );
   object.jwttoken = signedItem.split('.')[2];
   return object;
-}
+};
 
-module.exports = { validateJwtTokenMiddleware, signObjectWithJwtToken }
+module.exports = { validateJwtTokenMiddleware, signObjectWithJwtToken };

@@ -14,28 +14,29 @@ router.get('/highscore', (req, res, next) => {
 
   span.log({
     event: 'highscore-query-parameters',
-    result: req.query
+    result: req.query,
   });
 
   httpRequest({
     url: config.highScoreApi + req.originalUrl,
     method: 'GET',
-    span
-  }).then(result => {
-    span.setTag(Tags.HTTP_STATUS_CODE, 200);
-    span.log({
-      event: 'highscore-result',
-      result: result
-    });
-    span.finish();
-    return res.send(result);
-  }).catch(err => {
-    span.setTag(Tags.ERROR, true)
-    span.setTag(Tags.HTTP_STATUS_CODE, err.statusCode || 500);
-    span.finish();
-    next(err);
+    span,
   })
+    .then(result => {
+      span.setTag(Tags.HTTP_STATUS_CODE, 200);
+      span.log({
+        event: 'highscore-result',
+        result: result,
+      });
+      span.finish();
+      return res.send(result);
+    })
+    .catch(err => {
+      span.setTag(Tags.ERROR, true);
+      span.setTag(Tags.HTTP_STATUS_CODE, err.statusCode || 500);
+      span.finish();
+      next(err);
+    });
 });
 
-
-module.exports = { router }
+module.exports = { router };

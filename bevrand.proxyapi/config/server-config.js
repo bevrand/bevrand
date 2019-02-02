@@ -5,7 +5,7 @@ const joi = require('joi');
  */
 if (process.env.NODE_ENV === 'production') {
   require('dotenv').config({ path: './config/.production.env' });
-} else if(process.env.NODE_ENV === 'development'){
+} else if (process.env.NODE_ENV === 'development') {
   require('dotenv').config({ path: './config/.development.env' });
 } else {
   require('dotenv').config({ path: './config/.local.env' });
@@ -14,32 +14,23 @@ if (process.env.NODE_ENV === 'production') {
 /**
  * environment variables schema
  */
-const envVarsSchema = joi.object({
-  PLAYLIST_API: joi.string()
-    .required(),
-  RANDOMIZER_API: joi.string()
-    .required(),
-  AUTHENTICATION_API: joi.string()
-    .required(),
-  AUTHENTICATION_SECRET: joi.string()
-    .required(),
-  AUTHENTICATION_EXPIRATION_TIME: joi.number()
-    .required(),
-  FRONTEND_JWT_SECRET: joi.string()
-    .required(),
-  PORT: joi.any()
-    .optional(),
-  USEMOCK: joi.boolean()
-    .optional(),
-  DEFAULT_FRONTPAGE_LIST: joi.string()
-    .optional(),
-  JAEGER_AGENT_HOST: joi.string()
-    .optional(),
-  JAEGER_AGENT_PORT: joi.number()
-    .default()
-}).unknown(true);
+const envVarsSchema = joi
+  .object({
+    PLAYLIST_API: joi.string().required(),
+    RANDOMIZER_API: joi.string().required(),
+    AUTHENTICATION_API: joi.string().required(),
+    AUTHENTICATION_SECRET: joi.string().required(),
+    AUTHENTICATION_EXPIRATION_TIME: joi.number().required(),
+    FRONTEND_JWT_SECRET: joi.string().required(),
+    PORT: joi.any().optional(),
+    USEMOCK: joi.boolean().optional(),
+    DEFAULT_FRONTPAGE_LIST: joi.string().optional(),
+    JAEGER_AGENT_HOST: joi.string().optional(),
+    JAEGER_AGENT_PORT: joi.number().default(),
+  })
+  .unknown(true);
 
-const { error, value: envVars } = joi.validate(process.env, envVarsSchema)
+const { error, value: envVars } = joi.validate(process.env, envVarsSchema);
 if (error) {
   throw new Error(`Config validation error: ${error.message}`);
 }
@@ -58,7 +49,7 @@ const config = {
   },
   defaultFrontpageList: envVars.DEFAULT_FRONTPAGE_LIST,
   jaegerAgentHostName: envVars.JAEGER_AGENT_HOST || 'localhost',
-  jaegerAgentPort: envVars.JAEGER_AGENT_PORT || 6831
-}
+  jaegerAgentPort: envVars.JAEGER_AGENT_PORT || 6831,
+};
 
 module.exports = config;

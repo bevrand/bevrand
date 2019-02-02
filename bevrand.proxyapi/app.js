@@ -11,7 +11,7 @@ const app = express();
 
 app.use((req, res, next) => {
   //Only needed when running react app locally
-  if(config.env === 'development' || config.env === 'local'){
+  if (config.env === 'development' || config.env === 'local') {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Content-type,Authorization');
   }
@@ -50,13 +50,12 @@ app.use((req, res, next) => {
 
 // error handler of authentication module
 app.use((err, req, res, next) => {
-  if(err.name === 'InvalidJwtToken') {
+  if (err.name === 'InvalidJwtToken') {
     err.status = 400;
-  }
-  else if(err.name === 'UnauthorizedError') {
+  } else if (err.name === 'UnauthorizedError') {
     err.status = 401;
-  } 
-  next(err);  
+  }
+  next(err);
 });
 
 // error handler
@@ -64,19 +63,18 @@ app.use((err, req, res, next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') !== 'production' ? err : {};
-  
+
   // Only log when not in production env
-  if(req.app.get('env') !== 'production') {
+  if (req.app.get('env') !== 'production') {
     console.error(err);
   }
-  
 
   // render the error page
   let responseStatus = err.status || err.statusCode || 500;
   res.status(responseStatus).send({
     result: 'error',
     message: err.message,
-    httpstatus: responseStatus
+    httpstatus: responseStatus,
   });
 });
 
