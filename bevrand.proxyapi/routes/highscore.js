@@ -1,5 +1,4 @@
 const express = require('express');
-const request = require('request');
 const router = express.Router();
 const config = require('../config');
 const jwt = require('jsonwebtoken');

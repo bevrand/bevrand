@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const config = require('../config');
+const config = require('../../config/variables');
 
 const validateJwtTokenMiddleware = (req, res, next) => {
   try {
@@ -29,9 +29,7 @@ const signObjectWithJwtToken = object => {
   let signedItem = jwt.sign(object, config.frontendJwtSecret, {
     mutatePayload: true,
   });
-  object.jwtheader = JSON.parse(
-    Buffer.from(signedItem.split('.')[0], 'base64').toString('ascii')
-  );
+  object.jwtheader = JSON.parse(Buffer.from(signedItem.split('.')[0], 'base64').toString('ascii'));
   object.jwttoken = signedItem.split('.')[2];
   return object;
 };

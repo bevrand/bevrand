@@ -39,7 +39,7 @@ paths:
     post:
       tags:
         - "randomize"
-      summary: "Gets a random, validated, drink"
+      summary: "Returns a randomized drink"
       produces:
         - "application/json"
       parameters:
@@ -60,6 +60,16 @@ paths:
           description: "Invalid/No playlist given in POST body, jwt token does not validate"
           schema:
             $ref: "#/definitions/ErrorMessage"
+  /playlists/:
+    get:
+      tags:
+        - "playlists"
+      summary: "Returns the playlist for the specified user"
+      produces:
+        - "application/json"
+      parameters:
+        - in:
+          
 definitions:
   Playlist:
     type: "object"

@@ -3,6 +3,7 @@ const joi = require('joi');
 /**
  * Load in Config based on NODE_ENV
  */
+// TODO: make it possible to run with just a .env file
 if (process.env.NODE_ENV === 'production') {
   require('dotenv').config({ path: './config/.production.env' });
 } else if (process.env.NODE_ENV === 'development') {
@@ -36,7 +37,6 @@ if (error) {
 }
 
 const config = {
-  env: envVars.NODE_ENV || 'local',
   playlistApi: envVars.PLAYLIST_API,
   randomizerApi: envVars.RANDOMIZER_API,
   authenticationApi: envVars.AUTHENTICATION_API,
@@ -46,6 +46,7 @@ const config = {
   useMock: envVars.USEMOCK,
   server: {
     port: envVars.PORT,
+    env: envVars.NODE_ENV || 'local',
   },
   defaultFrontpageList: envVars.DEFAULT_FRONTPAGE_LIST,
   jaegerAgentHostName: envVars.JAEGER_AGENT_HOST || 'localhost',
