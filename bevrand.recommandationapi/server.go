@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/joho/godotenv"
 	"github.com/opentracing/opentracing-go"
+	"github.com/urfave/negroni"
 	"log"
 	"net/http"
 	"os"
@@ -53,13 +54,15 @@ func main() {
 	jaeger.PrintServerInfo(ctx, logValue)
 	span.Finish()
 
-
 	serveMux := http.NewServeMux()
-	serveMux.HandleFunc("api/v1/search", handlers.SearchHandler)
-	serveMux.HandleFunc("api/v1/movie/", handlers.MovieHandler)
-	serveMux.HandleFunc("api/v1/graph", handlers.GraphHandler)
+	serveMux.HandleFunc("/api/v1/categories", handlers.CategorieHandler)
+	serveMux.HandleFunc("/api/v1/cocktails", handlers.CocktailHandler)
+	serveMux.HandleFunc("/api/v1/beverages", handlers.BeverageHandler)
+	serveMux.HandleFunc("/api/v1/beveragegroups/", handlers.BeverageGroupHandler)
 
-	panic(http.ListenAndServe(":"+port, serveMux))
+	n := negroni.Classic()
+	n.UseHandler(serveMux)
+	n.Run(":5000")
 
 }
 

@@ -4,23 +4,24 @@ import (
 	"bevrand.recommandationapi/models"
 	"context"
 	"encoding/json"
+	driver "github.com/johnnadratowski/golang-neo4j-bolt-driver"
 	"github.com/opentracing/opentracing-go"
-	"io"
+	openlog "github.com/opentracing/opentracing-go/log"
 	"log"
 	"net/http"
 	"strconv"
-	openlog "github.com/opentracing/opentracing-go/log"
-	driver "github.com/johnnadratowski/golang-neo4j-bolt-driver"
+	"strings"
 )
 
 var (
-	Neo4jURL = ""
+	Neo4jURL = "bolt://localhost:7687"
 )
 
-func SearchHandler(w http.ResponseWriter, req *http.Request) {
+
+func CategorieHandler(w http.ResponseWriter, req *http.Request) {
 	tracer:= opentracing.GlobalTracer()
-	span := tracer.StartSpan("searchHandler")
-	span.SetTag("Method", "searchHandler")
+	span := tracer.StartSpan("CategorieHandler")
+	span.SetTag("Method", "Categories")
 	span.LogFields(
 		openlog.String("method", req.Method),
 		openlog.String("path", req.URL.Path),
@@ -30,22 +31,22 @@ func SearchHandler(w http.ResponseWriter, req *http.Request) {
 	ctx = opentracing.ContextWithSpan(ctx, span)
 	defer span.Finish()
 
-	w.Header().Set("Content-Type", "application/json")
+	v := req.URL.Query()
+	kindQuery := v.Get("kind")
 
-	query := req.URL.Query()["q"][0]
+	if kindQuery == "" {
+		kindQuery = "Beer"
+	}
+
 	cypher := `
-	MATCH
-		(movie:Movie)
-	WHERE
-		movie.title =~ {query}
-	RETURN
-		movie.title as title, movie.tagline as tagline, movie.released as released`
+	MATCH (drink:Beverage)-[:KIND_OF]->(group:BevGroup) WHERE group.name =~ {kindOf} return drink.name, drink.perc, drink.type, drink.country
+	`
 
 	db, err := driver.NewDriver().OpenNeo(Neo4jURL)
 	if err != nil {
 		span.LogFields(
 			openlog.String("http_status_code", "500"),
-			openlog.String("body", "error connecting to neo4j:"),
+			openlog.String("body", "error connecting to neo4j"),
 		)
 		w.WriteHeader(500)
 		w.Write([]byte("An error occurred connecting to the DB"))
@@ -53,12 +54,11 @@ func SearchHandler(w http.ResponseWriter, req *http.Request) {
 	}
 	defer db.Close()
 
-	param := "(?i).*" + query + ".*"
-	data, _, _, err := db.QueryNeoAll(cypher, map[string]interface{}{"query": param})
+	data, _, _, err := db.QueryNeoAll(cypher, map[string]interface{}{"kindOf": "(?i)" + kindQuery})
 	if err != nil {
 		span.LogFields(
 			openlog.String("http_status_code", "500"),
-			openlog.String("body", "eeror querying search:"),
+			openlog.String("body", "error querying search:"),
 		)
 		w.WriteHeader(500)
 		w.Write([]byte("An error occurred querying the DB"))
@@ -68,19 +68,26 @@ func SearchHandler(w http.ResponseWriter, req *http.Request) {
 			openlog.String("http_status_code", "404"),
 		)
 		w.WriteHeader(404)
+		w.Write([]byte("No results found for query"))
 		return
 	}
 
-	results := make([]models.MovieResult, len(data))
+	results := make([]models.BeverageResult, len(data))
 	for idx, row := range data {
-		results[idx] = models.MovieResult{
-		models.Movie{
-				Title:    row[0].(string),
-				Tagline:  row[1].(string),
-				Released: int(row[2].(int64)),
+		country := ""
+		if row[3] != nil {
+			country = row[3].(string)
+		}
+		results[idx] = models.BeverageResult{
+			models.Beverage{
+				Name:    row[0].(string),
+				Perc: int(row[1].(int64)),
+				Type: row[2].(string),
+				Country: country,
 			},
 		}
 	}
+
 	body, err := json.MarshalIndent(results, "", "    ")
 	if err != nil {
 		log.Println(err)
@@ -101,93 +108,10 @@ func SearchHandler(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func MovieHandler(w http.ResponseWriter, req *http.Request) {
-	tracer:= opentracing.GlobalTracer()
-	span := tracer.StartSpan("movieHandler")
-	span.SetTag("Method", "movieHandler")
-	span.LogFields(
-		openlog.String("method", req.Method),
-		openlog.String("path", req.URL.Path),
-		openlog.String("host", req.Host),
-	)
-	ctx := context.Background()
-	ctx = opentracing.ContextWithSpan(ctx, span)
-	defer span.Finish()
-	w.Header().Set("Content-Type", "application/json")
-
-	query := req.URL.Path[len("/movie/"):]
-	cypher := `
-	MATCH
-		(movie:Movie {title:{title}})
-	OPTIONAL MATCH
-		(movie)<-[r]-(person:Person)
-	WITH
-		movie.title as title,
-		collect({name:person.name, job:head(split(lower(type(r)),'_')), role:r.roles}) as cast
-	LIMIT 1
-	UNWIND cast as c
-	RETURN title, c.name as name, c.job as job, c.role as role`
-
-	db, err := driver.NewDriver().OpenNeo(Neo4jURL)
-	if err != nil {
-		span.LogFields(
-			openlog.String("http_status_code", "500"),
-			openlog.String("body", "error connecting to neo4j:"),
-		)
-		w.WriteHeader(500)
-		w.Write([]byte("An error occurred connecting to the DB"))
-		return
-	}
-	defer db.Close()
-
-	data, _, _, err := db.QueryNeoAll(cypher, map[string]interface{}{"title": query})
-	if err != nil {
-		span.LogFields(
-			openlog.String("http_status_code", "500"),
-			openlog.String("body", "error querying movie:"),
-		)
-		log.Println("error querying movie:", err)
-		w.WriteHeader(500)
-		w.Write([]byte("An error occurred querying the DB"))
-		return
-	} else if len(data) == 0 {
-		span.LogFields(
-			openlog.String("http_status_code", "404"),
-		)
-		w.WriteHeader(404)
-		return
-	}
-
-	movie := models.Movie{
-		Title: data[0][0].(string),
-		Cast:  make([]models.Person, len(data)),
-	}
-
-	for idx, row := range data {
-		movie.Cast[idx] = models.Person{
-			Name: row[1].(string),
-			Job:  row[2].(string),
-		}
-		if row[3] != nil {
-			movie.Cast[idx].Role = interfaceSliceToString(row[3].([]interface{}))
-		}
-	}
-
-	err = json.NewEncoder(w).Encode(movie)
-	if err != nil {
-		span.LogFields(
-			openlog.String("http_status_code", "500"),
-			openlog.String("body", "error writing movie response:"),
-		)
-		w.WriteHeader(500)
-		w.Write([]byte("An error occurred writing response"))
-	}
-}
-
-func GraphHandler(w http.ResponseWriter, req *http.Request) {
-	tracer:= opentracing.GlobalTracer()
-	span := tracer.StartSpan("graphHandler")
-	span.SetTag("Method", "graphHandler")
+func BeverageHandler(w http.ResponseWriter, req *http.Request) {
+	tracer := opentracing.GlobalTracer()
+	span := tracer.StartSpan("Beverages")
+	span.SetTag("Method", "Beverages")
 	span.LogFields(
 		openlog.String("method", req.Method),
 		openlog.String("path", req.URL.Path),
@@ -197,14 +121,13 @@ func GraphHandler(w http.ResponseWriter, req *http.Request) {
 	ctx = opentracing.ContextWithSpan(ctx, span)
 	defer span.Finish()
 
+	v := req.URL.Query()
 
-	w.Header().Set("Content-Type", "application/json")
-
-	limits := req.URL.Query()["limit"]
+	limits := v.Get("limit")
 	limit := 50
 	var err error
 	if len(limits) > 0 {
-		limit, err = strconv.Atoi(limits[0])
+		limit, err = strconv.Atoi(limits)
 		if err != nil {
 			span.LogFields(
 				openlog.String("http_status_code", "400"),
@@ -215,13 +138,90 @@ func GraphHandler(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
+	cypher := `MATCH (n:Beverage) RETURN n.name, n.perc, n.type, n.country LIMIT {limit}`
+
+	db, err := driver.NewDriver().OpenNeo(Neo4jURL)
+	if err != nil {
+		span.LogFields(
+			openlog.String("http_status_code", "500"),
+			openlog.String("body", "error connecting to neo4j"),
+		)
+		w.WriteHeader(500)
+		w.Write([]byte("An error occurred connecting to the DB"))
+		return
+	}
+	defer db.Close()
+
+	data, _, _, err := db.QueryNeoAll(cypher, map[string]interface{}{"limit": limit})
+	if err != nil {
+		span.LogFields(
+			openlog.String("http_status_code", "500"),
+			openlog.String("body", "error querying search:"),
+		)
+		w.WriteHeader(500)
+		w.Write([]byte("An error occurred querying the DB"))
+		return
+	} else if len(data) == 0 {
+		span.LogFields(
+			openlog.String("http_status_code", "404"),
+		)
+		w.WriteHeader(404)
+		w.Write([]byte("No results found for query"))
+		return
+	}
+
+	results := make([]models.BeverageResult, len(data))
+	for idx, row := range data {
+		country := ""
+		if row[3] != nil {
+			country = row[3].(string)
+		}
+		results[idx] = models.BeverageResult{
+			models.Beverage{
+				Name:    row[0].(string),
+				Perc: int(row[1].(int64)),
+				Type: row[2].(string),
+				Country: country,
+			},
+		}
+	}
+
+	body, err := json.MarshalIndent(results, "", "    ")
+	if err != nil {
+		log.Println(err)
+	}
+	span.LogFields(
+		openlog.String("http_status_code", "200"),
+		openlog.String("body", string(body)),
+	)
+
+	err = json.NewEncoder(w).Encode(results)
+	if err != nil {
+		span.LogFields(
+			openlog.String("http_status_code", "500"),
+			openlog.String("body", "error writing search response:"),
+		)
+		w.WriteHeader(500)
+		w.Write([]byte("An error occurred writing response"))
+	}
+}
+
+func BeverageGroupHandler(w http.ResponseWriter, req *http.Request) {
+	tracer:= opentracing.GlobalTracer()
+	span := tracer.StartSpan("BeverageGroups")
+	span.SetTag("Method", "BeverageGroups")
+	span.LogFields(
+		openlog.String("method", req.Method),
+		openlog.String("path", req.URL.Path),
+		openlog.String("host", req.Host),
+	)
+	ctx := context.Background()
+	ctx = opentracing.ContextWithSpan(ctx, span)
+	defer span.Finish()
+
 	cypher := `
-	MATCH
-		(m:Movie)<-[:ACTED_IN]-(a:Person)
-	RETURN
-		m.title as movie, collect(a.name) as cast
-	LIMIT
-		{limit}`
+	MATCH (n:BevGroup) RETURN n.name
+	`
 
 	db, err := driver.NewDriver().OpenNeo(Neo4jURL)
 	if err != nil {
@@ -237,84 +237,165 @@ func GraphHandler(w http.ResponseWriter, req *http.Request) {
 
 	stmt, err := db.PrepareNeo(cypher)
 	if err != nil {
-		span.LogFields(
-			openlog.String("http_status_code", "500"),
-			openlog.String("body", "error preparing graph:"),
-		)
+
 		w.WriteHeader(500)
 		w.Write([]byte("An error occurred querying the DB"))
 		return
 	}
 	defer stmt.Close()
 
-	rows, err := stmt.QueryNeo(map[string]interface{}{"limit": limit})
+	rows, err := stmt.QueryNeo(map[string]interface{}{})
 	if err != nil {
-		span.LogFields(
-			openlog.String("http_status_code", "500"),
-			openlog.String("body", "error querying neo4j:"),
-		)
+
 		w.WriteHeader(500)
 		w.Write([]byte("An error occurred querying the DB"))
 		return
 	}
 
-	d3Resp := models.D3Response{}
+	d3Resp := models.D3BevGroupResponse{}
 	row, _, err := rows.NextNeo()
 	for row != nil && err == nil {
 		title := row[0].(string)
-		actors := interfaceSliceToString(row[1].([]interface{}))
-		d3Resp.Nodes = append(d3Resp.Nodes, models.Node{Title: title, Label: "movie"})
-		movIdx := len(d3Resp.Nodes) - 1
-		for _, actor := range actors {
-			idx := -1
-			for i, node := range d3Resp.Nodes {
-				if actor == node.Title && node.Label == "actor" {
-					idx = i
-					break
-				}
-			}
-			if idx == -1 {
-				d3Resp.Nodes = append(d3Resp.Nodes, models.Node{Title: actor, Label: "actor"})
-				d3Resp.Links = append(d3Resp.Links, models.Link{Source: len(d3Resp.Nodes) - 1, Target: movIdx})
-			} else {
-				d3Resp.Links = append(d3Resp.Links, models.Link{Source: idx, Target: movIdx})
-			}
-		}
+		println(row)
+		d3Resp.Nodes = append(d3Resp.Nodes, models.Node{Title: title, Label: "Group"})
+
 		row, _, err = rows.NextNeo()
 	}
 
-	if err != nil && err != io.EOF {
+	err = json.NewEncoder(w).Encode(d3Resp)
+}
+
+func CocktailHandler(w http.ResponseWriter, req *http.Request) {
+	tracer := opentracing.GlobalTracer()
+	span := tracer.StartSpan("CocktailHandler")
+	span.SetTag("Method", "Cocktails")
+	span.LogFields(
+		openlog.String("method", req.Method),
+		openlog.String("path", req.URL.Path),
+		openlog.String("host", req.Host),
+	)
+	ctx := context.Background()
+	ctx = opentracing.ContextWithSpan(ctx, span)
+	defer span.Finish()
+
+	v := req.URL.Query()
+
+	drinks, _ := req.URL.Query()["include"]
+
+	include := v.Get("include")
+	exclude := v.Get("exclude")
+	secondDrink := ""
+
+	if len(drinks) > 1 {
+		log.Println("Url Param 'key' is missing")
+		secondDrink = drinks[1]
+	}
+
+	cypher := `
+	MATCH 
+		(drink:Beverage)-[:PART_OF]->(group:Cocktail) 
+	WHERE 
+		drink.name =~ {name}
+	RETURN
+		group.name, group.alcohol`
+
+	neoMap :=  map[string]interface{}{"name": "(?i)" + include}
+
+	if exclude != "" && secondDrink != "" {
+		cypher =
+		`MATCH
+		(drink:Beverage)-[:PART_OF]->(group:Cocktail)<-[:PART_OF]-(drink2:Beverage),
+		(drink3:Beverage {name: {excludedName}})
+		WHERE
+		drink.name =~ {name} AND drink2.name =~ {secondName} 
+		AND NOT
+		(drink3)-[:PART_OF]->(group)
+		RETURN
+		group.name, group.alcohol`
+
+		neoMap =  map[string]interface{}{"name": "(?i)" + include, "secondName": "(?i)" + secondDrink,
+			"excludedName": strings.Title(exclude)}
+	}
+
+	if exclude != "" && secondDrink == "" {
+		cypher = `
+	MATCH 
+		(drink:Beverage {name: {name}})-[:PART_OF]->(group:Cocktail), (drink2:Beverage {name: {excludedName}}) 
+	WHERE NOT 
+		(drink2)-[:PART_OF]->(group) 
+	RETURN group.name, group.alcohol`
+		neoMap =  map[string]interface{}{"name":  strings.Title(include), "excludedName": strings.Title(exclude)}
+	}
+
+	if secondDrink != "" && exclude == ""{
+		cypher = `
+	MATCH 
+		(drink:Beverage)-[:PART_OF]->(group:Cocktail)<-[:PART_OF]-(drink2:Beverage) 
+	WHERE
+		drink.name =~ {name} AND drink2.name =~ {secondName} 
+	RETURN 
+		group.name, group.alcohol`
+
+		neoMap =  map[string]interface{}{"name": "(?i)" + include, "secondName": "(?i)" + secondDrink}
+	}
+
+	db, err := driver.NewDriver().OpenNeo(Neo4jURL)
+	data, _, _, err := db.QueryNeoAll(cypher, neoMap)
+	if err != nil {
 		span.LogFields(
 			openlog.String("http_status_code", "500"),
-			openlog.String("body", "error querying graph:"),
+			openlog.String("body", "error connecting to neo4j"),
+		)
+		w.WriteHeader(500)
+		w.Write([]byte("An error occurred connecting to the DB"))
+		return
+	}
+	defer db.Close()
+
+	if err != nil {
+		span.LogFields(
+			openlog.String("http_status_code", "500"),
+			openlog.String("body", "error querying search:"),
 		)
 		w.WriteHeader(500)
 		w.Write([]byte("An error occurred querying the DB"))
 		return
-	} else if len(d3Resp.Nodes) == 0 {
+	} else if len(data) == 0 {
 		span.LogFields(
 			openlog.String("http_status_code", "404"),
 		)
 		w.WriteHeader(404)
+		w.Write([]byte("No results found for query"))
 		return
 	}
 
-	err = json.NewEncoder(w).Encode(d3Resp)
+	results := make([]models.CocktailResult, len(data))
+	for idx, row := range data {
+		results[idx] = models.CocktailResult{
+			models.Cocktail{
+				Name:    row[0].(string),
+				Alcohol: row[1].(string),
+			},
+		}
+	}
+
+	body, err := json.MarshalIndent(results, "", "    ")
+	if err != nil {
+		log.Println(err)
+	}
+	span.LogFields(
+		openlog.String("http_status_code", "200"),
+		openlog.String("body", string(body)),
+	)
+
+	err = json.NewEncoder(w).Encode(results)
 	if err != nil {
 		span.LogFields(
 			openlog.String("http_status_code", "500"),
-			openlog.String("body", "error writing graph response:"),
+			openlog.String("body", "error writing search response:"),
 		)
 		w.WriteHeader(500)
 		w.Write([]byte("An error occurred writing response"))
 	}
-}
-
-func interfaceSliceToString(s []interface{}) []string {
-	o := make([]string, len(s))
-	for idx, item := range s {
-		o[idx] = item.(string)
-	}
-	return o
 }
 
