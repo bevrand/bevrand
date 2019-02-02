@@ -21,11 +21,11 @@ func PingPong(c *gin.Context) {
 
 func ShowHighScores(user string, playlist string, c *gin.Context, ctx context.Context) ([]Score, int) {
 	span, _ := opentracing.StartSpanFromContext(ctx, "ShowHighScores")
-	span.SetTag("Method", "ShowHighScores")
+	span.SetTag(method, "ShowHighScores")
 	defer span.Finish()
 	key := user + ":" + playlist
 
-	res, err := db.Cmd("EXISTS", key).Int()
+	res, err := db.Cmd(keyExists, key).Int()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -34,13 +34,11 @@ func ShowHighScores(user string, playlist string, c *gin.Context, ctx context.Co
 
 	if !exists {
 		span.LogFields(
-			openlog.String("http_status_code", "404"),
-			openlog.String("body", "not found"),
+			openlog.String(statusCode, "404"),
+			openlog.String(spanBody, "not found"),
 		)
 		span.Finish()
-		b, _ := uuid.NewRandom()
-		localUuid := fmt.Sprintf("%x-%x-%x-%x-%x",
-			b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
+		localUuid := createGuid()
 		notFoundError := ErrorModel{
 			Message: "Could not find combination of user: " + user + " & list: " + playlist,
 			UniqueCode: localUuid}
@@ -65,20 +63,20 @@ func ShowHighScores(user string, playlist string, c *gin.Context, ctx context.Co
 	body, _ := json.Marshal(redisResult)
 
 	span.LogFields(
-		openlog.String("http_status_code", "200"),
-		openlog.String("body", string(body)),
+		openlog.String(statusCode, "200"),
+		openlog.String(spanBody, string(body)),
 	)
 	return redisResult, http.StatusOK
 }
 
 func CreateNewHighScore(user string, playlist string, drink string, ctx context.Context) {
 	span, _ := opentracing.StartSpanFromContext(ctx, "CreateNewHighScore")
-	span.SetTag("Method", "IncreaseHighScore")
+	span.SetTag(method, "IncreaseHighScore")
 
 	defer span.Finish()
 	key := user + ":" + playlist
 
-	res, err := db.Cmd("EXISTS", key).Int()
+	res, err := db.Cmd(keyExists, key).Int()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -86,23 +84,23 @@ func CreateNewHighScore(user string, playlist string, drink string, ctx context.
 
 	if !exists {
 		span.LogFields(
-			openlog.String("http_status_code", "200"),
-			openlog.String("body", "New entry, setting new key: " + key),
+			openlog.String(statusCode, "200"),
+			openlog.String(spanBody, "New entry, setting new key: " + key),
 		)
-		err = db.Cmd("HMSET", key, drink, 1).Err
+		err = db.Cmd(keySet, key, drink, 1).Err
 		if err != nil {
 			log.Fatal(err)
 		}
 		return
 	}
 
-	err = db.Cmd("HINCRBY", key, drink, 1).Err
+	err = db.Cmd(keyIncrease, key, drink, 1).Err
 	if err != nil {
 		log.Fatal(err)
 	}
 	span.LogFields(
-		openlog.String("http_status_code", "200"),
-		openlog.String("body", "Increased " + drink + " by 1"),
+		openlog.String(statusCode, "200"),
+		openlog.String(spanBody, "Increased " + drink + " by 1"),
 	)
 
 	IncreaseGlobalCount(drink, ctx)
@@ -111,12 +109,12 @@ func CreateNewHighScore(user string, playlist string, drink string, ctx context.
 
 func IncreaseGlobalCount(drink string, ctx context.Context){
 	span, _ := opentracing.StartSpanFromContext(ctx, "IncreaseGlobalCount")
-	span.SetTag("Method", "GlobalHighscore")
+	span.SetTag(method, "GlobalHighscore")
 
 	defer span.Finish()
 	key := GLOBALNAME + ":" + GLOBALLIST
 
-	res, err := db.Cmd("EXISTS", key).Int()
+	res, err := db.Cmd(keyExists, key).Int()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -124,24 +122,31 @@ func IncreaseGlobalCount(drink string, ctx context.Context){
 
 	if !exists {
 		span.LogFields(
-			openlog.String("http_status_code", "200"),
-			openlog.String("body", "New entry, setting new key: " + key),
+			openlog.String(statusCode, "200"),
+			openlog.String(spanBody, "New entry, setting new key: " + key),
 		)
-		err = db.Cmd("HMSET", key, drink, 1).Err
+		err = db.Cmd(keySet, key, drink, 1).Err
 		if err != nil {
 			log.Fatal(err)
 		}
 		return
 	}
 
-	err = db.Cmd("HINCRBY", key, drink, 1).Err
+	err = db.Cmd(keyIncrease, key, drink, 1).Err
 	if err != nil {
 		log.Fatal(err)
 	}
 	span.LogFields(
-		openlog.String("http_status_code", "200"),
-		openlog.String("body", "Increased " + drink + " by 1"),
+		openlog.String(statusCode, "200"),
+		openlog.String(spanBody, "Increased " + drink + " by 1"),
 	)
 	return
 }
 
+func createGuid() string {
+	b, _ := uuid.NewRandom()
+	uuid := fmt.Sprintf("%x-%x-%x-%x-%x",
+		b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
+
+	return uuid
+}

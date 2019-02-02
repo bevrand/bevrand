@@ -12,11 +12,9 @@ url = None
 @pytest.fixture(scope="module")
 def setup_config():
     env = os.environ.get('PYTHON_ENV')
-    if env == 'Local':
-        env_setting = config.Local()
-    elif env == 'Test':
+    if env == 'Test':
         env_setting = config.Test()
-    else:
+    else:  # If local or other
         env_setting = config.Local()
     global url
     url = env_setting.playlist_url
@@ -67,45 +65,45 @@ class PlaylistApiPublicTests(test_setup_fixture.TestFixture):
 class PlayListApiPrivateTests(test_setup_fixture.TestFixture):
 
     def test_should_be_able_to_create_new_playlist_and_user(self):
-        newUser = HelperClass.random_word_letters_only(25)
-        newPlaylist = HelperClass.random_word_letters_only(25)
+        new_user = HelperClass.random_word_letters_only(25)
+        new_playlist = HelperClass.random_word_letters_only(25)
         body = PlaylistModel.create_random_playlist()
-        sut = f'{url}/private/{newUser}/{newPlaylist}'
+        sut = f'{url}/private/{new_user}/{new_playlist}'
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(201, response.status_code)
 
     def test_should_be_able_to_create_playlist_names_should_be_lowercase(self):
-        newUser = HelperClass.random_word_letters_only(25)
-        newPlaylist = HelperClass.random_word_letters_only(25)
+        new_user = HelperClass.random_word_letters_only(25)
+        new_playlist = HelperClass.random_word_letters_only(25)
         body = PlaylistModel.create_random_playlist()
-        sut = f'{url}/private/{newUser}/{newPlaylist}'
+        sut = f'{url}/private/{new_user}/{new_playlist}'
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(201, response.status_code)
 
-        sut = f'{url}/private/{newUser}'
+        sut = f'{url}/private/{new_user}'
         resp = self.get_without_auth_header(sut)
         self.assertEqual(200, resp.status_code)
         for x in resp.json()['result']:
             self.assertTrue(x.islower())
 
     def test_should_be_able_to_create_playlists_for_existing_users(self):
-        newUser = HelperClass.random_word_letters_only(25)
-        newPlaylist = HelperClass.random_word_letters_only(25)
+        new_user = HelperClass.random_word_letters_only(25)
+        new_playlist = HelperClass.random_word_letters_only(25)
         body = PlaylistModel.create_random_playlist()
-        sut = f'{url}/private/{newUser}/{newPlaylist}'
+        sut = f'{url}/private/{new_user}/{new_playlist}'
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(201, response.status_code)
-        newPlaylist = HelperClass.random_word_letters_only(25)
+        new_playlist = HelperClass.random_word_letters_only(25)
         body = PlaylistModel.create_random_playlist()
-        sut = f'{url}/private/{newUser}/{newPlaylist}'
+        sut = f'{url}/private/{new_user}/{new_playlist}'
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(201, response.status_code)
 
     def test_should_not_be_able_to_create_a_playlist_twice(self):
-        newUser = HelperClass.random_word_letters_only(25)
-        newPlaylist = HelperClass.random_word_letters_only(25)
+        new_user = HelperClass.random_word_letters_only(25)
+        new_playlist = HelperClass.random_word_letters_only(25)
         body = PlaylistModel.create_random_playlist()
-        sut = f'{url}/private/{newUser}/{newPlaylist}'
+        sut = f'{url}/private/{new_user}/{new_playlist}'
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(201, response.status_code)
         resp = self.post_without_auth_header(sut, body)
@@ -116,11 +114,11 @@ class PlayListApiPrivateTests(test_setup_fixture.TestFixture):
 
 
     def test_should_not_be_able_to_post_a_playlist_with_one_drink(self):
-        newUser = HelperClass.random_word_letters_only(25)
-        newPlaylist = HelperClass.random_word_letters_only(25)
+        new_user = HelperClass.random_word_letters_only(25)
+        new_playlist = HelperClass.random_word_letters_only(25)
         body = PlaylistModel.create_random_playlist()
         body['beverages'] = ['beer']
-        sut = f'{url}/private/{newUser}/{newPlaylist}'
+        sut = f'{url}/private/{new_user}/{new_playlist}'
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(400, response.status_code)
         error_message = response.json()['Error']
@@ -129,15 +127,15 @@ class PlayListApiPrivateTests(test_setup_fixture.TestFixture):
         self.assertEqual(meta_message['beverages'][0], "min length is 2")
 
     def test_should_be_able_to_create_same_playlist_for_two_users(self):
-        newUser = HelperClass.random_word_letters_only(25)
-        newPlaylist = HelperClass.random_word_letters_only(25)
+        new_user = HelperClass.random_word_letters_only(25)
+        new_playlist = HelperClass.random_word_letters_only(25)
         body = PlaylistModel.create_random_playlist()
-        sut = f'{url}/private/{newUser}/{newPlaylist}'
+        sut = f'{url}/private/{new_user}/{new_playlist}'
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(201, response.status_code)
-        newUser = HelperClass.random_word_letters_only(25)
+        new_user = HelperClass.random_word_letters_only(25)
         body = PlaylistModel.create_random_playlist()
-        sut = f'{url}/private/{newUser}/{newPlaylist}'
+        sut = f'{url}/private/{new_user}/{new_playlist}'
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(201, response.status_code)
 
@@ -166,38 +164,38 @@ class PlayListApiPrivateTests(test_setup_fixture.TestFixture):
         self.assertIsNotNone(response.json())
 
     def test_should_be_able_to_create_new_playlist_and_retrieve_it(self):
-        newUser = HelperClass.random_word_letters_only(25)
-        newPlaylist = HelperClass.random_word_letters_only(25)
+        new_user = HelperClass.random_word_letters_only(25)
+        new_playlist = HelperClass.random_word_letters_only(25)
         body = PlaylistModel.create_random_playlist()
-        sut = f'{url}/private/{newUser}/{newPlaylist}'
+        sut = f'{url}/private/{new_user}/{new_playlist}'
         self.post_without_auth_header(sut, body)
         resp = self.get_without_auth_header(sut)
         self.assertEqual(200, resp.status_code)
-        self.assertEqual(resp.json()['result']['user'], newUser.lower())
+        self.assertEqual(resp.json()['result']['user'], new_user.lower())
 
     def test_should_be_able_to_delete_a_created_playlist(self):
-        newUser = HelperClass.random_word_letters_only(25)
-        newPlaylist = HelperClass.random_word_letters_only(25)
+        new_user = HelperClass.random_word_letters_only(25)
+        new_playlist = HelperClass.random_word_letters_only(25)
         body = PlaylistModel.create_random_playlist()
-        sut = f'{url}/private/{newUser}/{newPlaylist}'
+        sut = f'{url}/private/{new_user}/{new_playlist}'
         self.post_without_auth_header(sut, body)
         resp = self.delete_without_auth_header(sut)
         self.assertEqual(204, resp.status_code)
 
     def test_should_be_able_to_delete_a_created_user(self):
-        newUser = HelperClass.random_word_letters_only(25)
-        newPlaylist = HelperClass.random_word_letters_only(25)
+        new_user = HelperClass.random_word_letters_only(25)
+        new_playlist = HelperClass.random_word_letters_only(25)
         body = PlaylistModel.create_random_playlist()
-        sut = f'{url}/private/{newUser}/{newPlaylist}'
+        sut = f'{url}/private/{new_user}/{new_playlist}'
         self.post_without_auth_header(sut, body)
-        sut = f'{url}/private/{newUser}'
+        sut = f'{url}/private/{new_user}'
         resp = self.delete_without_auth_header(sut)
         self.assertEqual(204, resp.status_code)
 
     def test_should_not_be_able_to_delete_invalid_users(self):
-        newUsers = ['%20', 'o']
-        for newUser in newUsers:
-            sut = f'{url}/private/{newUser}'
+        new_users = ['%20', 'o']
+        for new_user in new_users:
+            sut = f'{url}/private/{new_user}'
             response = self.delete_without_auth_header(sut)
             self.assertEqual(400, response.status_code)
             error_message = response.json()['Error']
@@ -206,8 +204,8 @@ class PlayListApiPrivateTests(test_setup_fixture.TestFixture):
             self.assertEqual(meta_message['user_name'][0], "min length is 3")
 
     def test_should_not_be_able_to_delete_invalid_playlists(self):
-        newPlayLists = ['%20', 'o']
-        for playlist in newPlayLists:
+        new_playlists = ['%20', 'o']
+        for playlist in new_playlists:
             sut = f'{url}/private/username/{playlist}'
             response = self.delete_without_auth_header(sut)
             self.assertEqual(400, response.status_code)
@@ -233,20 +231,20 @@ class PlayListApiPrivateTests(test_setup_fixture.TestFixture):
         self.assertEqual(error_message, "User could not be found")
 
     def test_should_be_able_to_put_a_created_user(self):
-        newUser = HelperClass.random_word_letters_only(25)
-        newPlaylist = HelperClass.random_word_letters_only(25)
+        new_user = HelperClass.random_word_letters_only(25)
+        new_playlist = HelperClass.random_word_letters_only(25)
         body = PlaylistModel.create_random_playlist()
-        sut = f'{url}/private/{newUser}/{newPlaylist}'
+        sut = f'{url}/private/{new_user}/{new_playlist}'
         self.post_without_auth_header(sut, body)
         body['beverages'] = ['beer', 'beer', 'beer']
-        newDisplayName = 'newDisplayName'
-        body['displayName'] =  newDisplayName
+        new_display_name = 'newDisplayName'
+        body['displayName'] = new_display_name
         resp = self.put_without_auth_header(sut, body)
         self.assertEqual(204, resp.status_code)
         response = self.get_without_auth_header(sut)
         json_body = response.json()['result']
         self.assertEqual(200, response.status_code)
-        self.assertEqual(newDisplayName, json_body['displayName'])
+        self.assertEqual(new_display_name, json_body['displayName'])
         self.assertEqual('beer', json_body['beverages'][0])
 
     def test_should_not_be_able_to_update_list_that_do_not_exist(self):
@@ -273,11 +271,11 @@ class PlayListApiValidationTests(test_setup_fixture.TestFixture):
             self.assertTrue(self.validate_string_contains(error_message, keyword))
 
     def test_should_not_be_able_to_post_to_an_invalid_username(self):
-        newUsers = ['%20', 'o']
-        for newUser in newUsers:
-            newPlaylist = HelperClass.random_word_letters_only(25)
+        new_users = ['%20', 'o']
+        for new_user in new_users:
+            new_playlist = HelperClass.random_word_letters_only(25)
             body = PlaylistModel.create_random_playlist()
-            sut = f'{url}/private/{newUser}/{newPlaylist}'
+            sut = f'{url}/private/{new_user}/{new_playlist}'
             response = self.post_without_auth_header(sut, body)
             self.assertEqual(400, response.status_code)
             error_message = response.json()['Error']
@@ -286,9 +284,9 @@ class PlayListApiValidationTests(test_setup_fixture.TestFixture):
             self.assertEqual(meta_message['user_name'][0], "min length is 3")
 
     def test_should_not_be_able_to_get_an_invalid_username(self):
-        newUsers = ['%20', 'o']
-        for newUser in newUsers:
-            sut = f'{url}/private/{newUser}'
+        new_users = ['%20', 'o']
+        for new_user in new_users:
+            sut = f'{url}/private/{new_user}'
             response = self.get_without_auth_header(sut)
             self.assertEqual(400, response.status_code)
             error_message = response.json()['Error']
@@ -297,10 +295,10 @@ class PlayListApiValidationTests(test_setup_fixture.TestFixture):
             self.assertEqual(meta_message['user_name'][0], "min length is 3")
 
     def test_should_not_be_able_to_post_invalid_data_user(self):
-        newUsers = ['%20', 'o']
-        for newUser in newUsers:
+        new_users = ['%20', 'o']
+        for new_user in new_users:
             playlist = 'listname'
-            sut = f'{url}/private/{newUser}/{playlist}'
+            sut = f'{url}/private/{new_user}/{playlist}'
             body = PlaylistModel.create_random_playlist()
             response = self.post_without_auth_header(sut, body)
             self.assertEqual(400, response.status_code)
@@ -380,10 +378,10 @@ class PlayListApiValidationTests(test_setup_fixture.TestFixture):
 
 
     def test_should_not_be_able_to_put_invalid_data_user(self):
-        newUsers = ['%20', 'o']
-        for newUser in newUsers:
+        new_users = ['%20', 'o']
+        for new_user in new_users:
             playlist = 'listname'
-            sut = f'{url}/private/{newUser}/{playlist}'
+            sut = f'{url}/private/{new_user}/{playlist}'
             body = PlaylistModel.create_random_playlist()
             response = self.put_without_auth_header(sut, body)
             self.assertEqual(400, response.status_code)

@@ -29,16 +29,16 @@ def front_page_all_lists():
         return jsonify({"result": result}), 200
 
 
-@public_blueprint.route('/<playListName>', methods=['GET'])
+@public_blueprint.route('/<playlist>', methods=['GET'])
 @swag_from('../swagger/public_get_playlist.yml')
-def front_page_list(playListName):
+def front_page_list(playlist):
     parent_span = create_parent_trace()
     with opentracing.tracer.start_span('playlist_frontpage', child_of=parent_span) as span:
-        data_validator.validate_play_list(playListName)
+        data_validator.validate_play_list(playlist)
         service = FrontPageService()
-        result = service.retrieve_front_page_list(playListName)
+        result = service.retrieve_front_page_list(playlist)
         span.log_kv({"status_code": 200, "result": result})
-        return jsonify({"result": result.__dict__}), 200
+        return jsonify({"result": result}), 200
 
 
 @public_blueprint.errorhandler(InvalidUsage)

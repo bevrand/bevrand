@@ -1,10 +1,11 @@
 version: 2
+
 jobs:
   unittest_playlist:
     docker:
       - image: circleci/python:3.6.1
     steps:
-      - checkout 
+      - checkout
       - run: "cd ./bevrand.playlistapi && sudo pip install -r requirements.txt"
       - run: "cd ./bevrand.playlistapi/api/tests && sudo pytest --cov-report term --cov=api"
 
@@ -12,7 +13,7 @@ jobs:
     docker:
       - image: circleci/node:8
     steps:
-      - checkout 
+      - checkout
       - run: "cd ./bevrand.proxyapi && npm install"
       - run: "cd ./bevrand.proxyapi && npm test"
 
@@ -20,7 +21,7 @@ jobs:
     docker:
       - image: circleci/python:3.6.1
     steps:
-      - checkout 
+      - checkout
       - run: "cd ./bevrand.randomizerapi && sudo pip install -r requirements.txt"
       - run: "cd ./bevrand.randomizerapi/api/tests && sudo pytest --cov-report term --cov=api"
 
@@ -29,16 +30,16 @@ jobs:
       - image: microsoft/dotnet:2-sdk
     steps:
       - checkout
-      - run: "cd bevrand.authenticationapi/bevrand.authenticationapi.tests && dotnet test"
+      - run: "cd bevrand.authenticationapi/bevrand.authenticationapi.tests && dotnet test /p:CollectCoverage=true /p:Exclude=\"[*]*Startup*%2c[*]*Program*%2c[*]*Controller*\""
 
   unittest_highscore:
     docker:
     - image: circleci/golang:1.11
     steps:
       - checkout
-      - run: "cd ./bevrand.highscoreapi && go test"
+      - run: "cd ./bevrand.highscoreapi && go test -v -cover"
 
-  build_python:   
+  build_python:
     machine: true
     steps:
       - checkout
@@ -60,7 +61,7 @@ jobs:
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/dataseeder:$CIRCLE_SHA1
 
-  build_node:   
+  build_node:
     machine: true
     steps:
       - checkout
@@ -93,8 +94,8 @@ jobs:
         docker build -t bevrand/dockerels:$CIRCLE_SHA1 ./deployment/els
         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
         docker push bevrand/dockerels:$CIRCLE_SHA1
-  
-  build_dotnet:   
+
+  build_dotnet:
     machine: true
     steps:
       - checkout
@@ -124,7 +125,7 @@ jobs:
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/dockergres:$CIRCLE_SHA1
 
-  component_tests:   
+  component_tests:
     machine: true
     steps:
       - checkout
@@ -136,16 +137,15 @@ jobs:
          docker-compose -f ./docker-compose-created.yml up -d
          docker images
          docker ps -a
-     
+
      #verify the results of the component test
       - run: "cd ./deployment && python validate_backend_test_results.py"
-  
+
   ui_tests:
     machine: true
     parallelism: 1
     steps:
-      - checkout    
-
+      - checkout
      # build the application image
       - run: |
          pip install PyYAML
@@ -180,11 +180,6 @@ jobs:
          docker push bevrand/playlistapi:production
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker pull bevrand/reactapp:$CIRCLE_SHA1
-         docker tag bevrand/reactapp:$CIRCLE_SHA1 bevrand/reactapp:production
-         docker push bevrand/reactapp:production
-      - run: |
-         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker pull bevrand/proxyapi:$CIRCLE_SHA1
          docker tag bevrand/proxyapi:$CIRCLE_SHA1 bevrand/proxyapi:production
          docker push bevrand/proxyapi:production
@@ -203,11 +198,42 @@ jobs:
          docker pull bevrand/highscoreapi:$CIRCLE_SHA1
          docker tag bevrand/highscoreapi:$CIRCLE_SHA1 bevrand/highscoreapi:production
          docker push bevrand/highscoreapi:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/dockergres:$CIRCLE_SHA1
+         docker tag bevrand/dockergres:$CIRCLE_SHA1 bevrand/dockergres:production
+         docker push bevrand/dockergres:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/frontend:$CIRCLE_SHA1
+         docker tag bevrand/frontend:$CIRCLE_SHA1 bevrand/frontend:production
+         docker push bevrand/frontend:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/dockerels:$CIRCLE_SHA1
+         docker tag bevrand/dockerels:$CIRCLE_SHA1 bevrand/dockerels:production
+         docker push bevrand/dockerels:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/dockernginx:$CIRCLE_SHA1
+         docker tag bevrand/dockernginx:$CIRCLE_SHA1 bevrand/dockernginx:production
+         docker push bevrand/dockernginx:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/dataseeder:$CIRCLE_SHA1
+         docker tag bevrand/dataseeder:$CIRCLE_SHA1 bevrand/dataseeder:production
+         docker push bevrand/dataseeder:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/componenttests:$CIRCLE_SHA1
+         docker tag bevrand/componenttests:$CIRCLE_SHA1 bevrand/componenttests:production
+         docker push bevrand/componenttests:production
+
   pause_uptimerobot:
     machine: true
     steps:
      - run: "curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479363&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479359&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460902&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460904&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\""
- 
+
   deploy:
     machine: true
     steps:
@@ -215,7 +241,7 @@ jobs:
      - run: "pwd && ls -lha"
      - run: "cd ./deployment && sh ./init_terraform.sh"
      - run: "cd ./deployment/terraform_scripts && pwd && ls -lha && sh ../run_terraform.sh"
-  
+
   resume_uptimerobot:
     machine: true
     steps:
@@ -235,7 +261,7 @@ workflows:
         context: BeverageRandomizerPROD
      - unittest_highscore:
         context: BeverageRandomizerPROD
-     
+
      - build_python:
         context: BeverageRandomizerPROD
         requires:
@@ -298,7 +324,7 @@ workflows:
           context: BeverageRandomizerPROD
           filters:
              branches:
-               only: 
+               only:
                - master
           requires:
             - ui_tests
@@ -326,4 +352,3 @@ workflows:
               only: master
          requires:
            - deploy
-         

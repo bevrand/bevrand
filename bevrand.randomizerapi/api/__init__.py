@@ -1,9 +1,11 @@
 from os import getenv
 from flask import Flask
 from flasgger import Swagger
+import coverage
 
 
 FLASK_TRACER = None
+cov = None
 
 
 def create_app():
@@ -44,8 +46,13 @@ def create_app():
     app.config.from_object(app_settings)
 
     # register blueprints
+    if env == 'Coverage':
+        global cov
+        cov = coverage.Coverage(config_file=".coveragerc")
+        cov.start()
+        from api.controllers.coverage_controller import coverage_blueprint
+        app.register_blueprint(coverage_blueprint, url_prefix='/api/v1/coverage')
     from api.controllers.randomize_controller import randomize_blueprint
     app.register_blueprint(randomize_blueprint, url_prefix='/api/')
-
 
     return app
