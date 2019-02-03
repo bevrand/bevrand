@@ -3,7 +3,7 @@ attrs==18.2.0
 certifi>=2017.4.17
 chardet>=3.0.2
 idna>=2.5
-more-itertools==4.3.0
+more-itertools==5.0.0
 pluggy==0.8.0
 py==1.7.0
 pytest==4.0.2
