@@ -1,22 +1,31 @@
+var username = 'joost';
 
 var config = {
     proxyHostname: 'https:' == document.location.protocol ? '' : 'http://localhost:4540'
 };
 
 $(document).ready(function () {
+    $('#personalSpaceUsername')
+        .text(username + "'s personal workspace");
     $('#playListCreationField').hide();
     $('#okPlayListCreation').hide();
     $('#cancelPlayListCreation').hide();
-    getPersonalPlaylists("joost", function (playlists) {
+    getPersonalPlaylists(username, function (playlists) {
         appendPlaylistToWorkspace(playlists);
     });
+    getUserInfo(username, function (userInfo) {
+        $('#emailAddressPersonal')
+            .text(`Email: ${userInfo.emailAddress}`);
+        $('#usernamePersonal')
+            .text(`Username: ${userInfo.username}`);
+    });
+    localStorage.setItem("username", username);
 });
 
 function appendPlaylistToWorkspace(playlists = []) {
     for (var i = 0; i < playlists.length; i++) {
         var playlist = playlists[i];
         var playlistHtml = addPlaylistsToPersonalSpace(playlist);
-        console.log(playlistHtml)
         $('#personalPlaylists').append(playlistHtml);
 
 
@@ -55,12 +64,21 @@ function getPersonalPlaylists(username, callback) {
     });
 }
 
+function getUserInfo(username, callback) {
+    $.ajax({
+        type: "GET",
+        url: `${config.proxyHostname}/api/Users?username=${username}`,
+        success: function (data) {
+            callback(data);
+        }
+    });
+}
+
 function getPersonalPlaylist(username, playlistname, callback) {
     $.ajax({
         type: "GET",
         url: `${config.proxyHostname}/api/playlists?username=${username}&list=${playlistname}`,
         success: function (data) {
-            console.log(data)
             callback(data);
         },
         error: function () {
@@ -82,6 +100,7 @@ $("#cancelPlayListCreation").click(function () {
 });
 
 $("#okPlayListCreation").click(function () {
+    var displayName = document.getElementById("playListCreationField").value;
     var normalizedName = document.getElementById("playListCreationField").value.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
     getPersonalPlaylist("joost", normalizedName, function (playlist) {
         var nameIsNewList = true;
@@ -90,11 +109,24 @@ $("#okPlayListCreation").click(function () {
                 nameIsNewList = false;
             }
         }
-         console.log(nameIsNewList)
         if (nameIsNewList)  {
+            localStorage.setItem("normalizedName", normalizedName);
+            localStorage.setItem("displayName", displayName);
             window.location.href = 'playlistcreation.html';
+        }
+        else {
+            $(".notify").text = "Helloooo"
+            $(".notify").toggleClass("active");
+            $("#notifyType").toggleClass("success");
+
+            setTimeout(function(){
+                $(".notify").removeClass("active");
+                $("#notifyType").removeClass("success");
+            },2000);
+           // alert('Sorry but that playlist is taken')
         }
     })
 
 });
+
 

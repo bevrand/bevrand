@@ -6,6 +6,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <link rel="stylesheet" href="assets/css/main.css" />
+
+
     <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 </head>
 <body class="homepage is-preload">
@@ -14,9 +16,15 @@
     <!-- Banner -->
     <section id="banner">
         <header>
-            <h2>Ron's personal space</h2>
-            <a href="#main"><img src="https://icons-for-free.com/free-icons/png/512/2612585.png"/></a>
-            <a onclick="addNewPlayList()" class="fa fa-plus-circle" style="font-size:48px;color:lawngreen"><span class="label">Add playlist</span></a><br>
+            <h2 id="personalSpaceUsername"></h2><br>
+            <a href="#main"><img src="https://icons-for-free.com/free-icons/png/512/2612585.png" height="125" width="125"/></a><br>
+
+            <h3> Personal info</h3>
+            <h4 id="emailAddressPersonal"> Email: </h4>
+            <h4 id="usernamePersonal"> Username: </h4><br>
+
+            <a onclick="addNewPlayList()" class="fa fa-plus-circle" style="font-size:32px;color:#09E983"><span class="label">Add playlist</span></a><br>
+
 
             <input type="text" id="playListCreationField" value="Playlist Name"><br>
 
@@ -24,6 +32,8 @@
             <a class="button randomize" id="cancelPlayListCreation"><strong>Cancel</strong></a>
 
             <ul id="personalPlaylists"> </ul>
+
+            <div class="notify"><span id="notifyType" class=""></span></div>
 
         </header>
     </section>
@@ -65,7 +75,6 @@
 
 <!-- Scripts -->
 <script src="assets/js/jquery.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="assets/js/jquery.dropotron.min.js"></script>
 <script src="assets/js/jquery.scrolly.min.js"></script>
 <script src="assets/js/jquery.scrollex.min.js"></script>
