@@ -32,21 +32,17 @@ const validateJwtTokenMiddleware = (req, res, next) => {
     let base64requestJwtHeader = buffer1.toString('base64');
 
     let payloadString = JSON.stringify(requestPayload, Object.keys(requestPayload).sort());
-    console.log(payloadString);
     let buffer2 = new Buffer(payloadString);
     let base64requestPayload = buffer2.toString('base64');
 
     let jwtString = base64requestJwtHeader.replace(new RegExp("=", 'g'), "") + "." + base64requestPayload.replace(new RegExp("=", 'g'), "") + "." + requestJwtToken;
 
-    console.log("Going to verify string: [" + jwtString + "]");
-    
     // New, unordered, method
     try {
       jwt.verify(jwtString, config.frontendJwtSecret);
       return next();
     }
     catch(err) {
-      console.log("Could not validate the JWT with ordered method.");
     }
 
     const error = new Error('JWT Token does not validate');
@@ -63,7 +59,7 @@ const signObjectWithJwtToken = object => {
 
   // This sorts the object when serializing it, allowing other libarries (such as GSON) 
   // to call the API with the properties in "wrong" order.
-  stringifiedObject = JSON.stringify(object, Object.keys(object).sort());
+  let stringifiedObject = JSON.stringify(object, Object.keys(object).sort());
 
   let signedItem = jwt.sign(stringifiedObject, config.frontendJwtSecret, { mutatePayload: false });
   //object.iat = JSON.parse(Buffer.from(signedItem.split('.')[1], 'base64').toString("ascii")).iat;
