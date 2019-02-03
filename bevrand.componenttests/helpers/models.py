@@ -77,22 +77,18 @@ class PlaylistModel:
 class Jwtheader(object):
 
     alg: str
-    type: str
 
-    def __init__(self, alg: str, type: str):
+    def __init__(self, alg: str):
         self.alg = alg
-        self.type = type
 
     @staticmethod
     def from_dict(obj):
         alg = obj.get("alg")
-        type = obj.get("type")
-        return Jwtheader(alg, type)
+        return Jwtheader(alg)
 
     def to_dict(self):
         result = {}
         result["alg"] = self.alg
-        result["type"] = self.type
         return result
 
 
