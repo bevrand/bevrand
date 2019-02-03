@@ -41,6 +41,17 @@ app.use('/api', routes.playlist);
 app.use('/api', routes.randomizer);
 app.use('/api', routes.swagger);
 
+// Run after response has been end
+app.use(function(req, res, next) {
+  console.log('before');
+
+  res.on('finish', function() {
+    console.log('after');
+  });
+
+  next();
+});
+
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   let err = new Error('Not Found');

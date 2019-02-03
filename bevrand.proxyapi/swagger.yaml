@@ -1,105 +1,154 @@
-swagger: "2.0"
+swagger: '2.0'
 info:
   description: >-
     This is the Beverage Randomizer Proxy API. It powers the website hosted at: http://beveragerandomizer.com/ 
     and reroutes requests to the other microservice API's
-  version: "1.0.0"
-  title: "Beverage Randomizer | Proxy Api"
+  version: '1.0.0'
+  title: 'Beverage Randomizer | Proxy Api'
   contact:
-    email: "admin@beveragerandomizer.com"
-basePath: "/api"
+    email: 'admin@beveragerandomizer.com'
+basePath: '/api'
 tags:
-- name: "frontpage"
-  description: "Frontpage endpoints"
-- name: "randomize"
-  description: "Randomize API endpoints"
+  - name: 'frontpage'
+    description: 'Frontpage endpoints'
+  - name: 'randomize'
+    description: 'Randomize API endpoints'
 schemes:
-- "http"
-- "https"
+  - 'http'
+  - 'https'
 paths:
-  /v2/frontpage/:
+  /v2/frontpage:
     get:
       tags:
-      - "frontpage"
-      summary: "Gets the frontend playlist with JWT"
-      description: "Retrieves the playlists for the frontpage with jwtokens for validating the playlists when randomizing"
-      operationId: "findPetsByStatus"
+        - 'frontpage'
+      summary: 'Gets the frontend playlist with JWT'
+      description: 'Retrieves the playlists for the frontpage with jwtokens for validating the playlists when randomizing'
+      operationId: 'findPetsByStatus'
       produces:
-      - "application/json"
+        - 'application/json'
       responses:
         200:
-          description: "successful operation"
+          description: 'successful operation'
           schema:
-            type: "array"
+            type: 'array'
             items:
-              $ref: "#/definitions/Playlist"
+              $ref: '#/definitions/Playlist'
         400:
-          description: "Invalid status value"
+          description: 'Invalid status value'
   /v2/randomize/:
     post:
       tags:
-        - "randomize"
-      summary: "Returns a randomized drink"
+        - 'randomize'
+      summary: 'Returns a randomized drink'
       produces:
-        - "application/json"
+        - 'application/json'
       parameters:
-      - in: "body"
-        name: "body"
-        description: "Playlist that needs to be randomized, requires valid JWTToken to be present"
-        required: true
-        schema:
-          $ref: "#/definitions/Playlist"
+        - in: 'body'
+          name: 'body'
+          description: 'Playlist that needs to be randomized, requires valid JWTToken to be present'
+          required: true
+          schema:
+            $ref: '#/definitions/Playlist'
       responses:
         200:
-          description: "successful operation"
+          description: 'successful operation'
           schema:
-            type: "array"
+            type: 'array'
             items:
-              $ref: "#/definitions/Playlist"
+              $ref: '#/definitions/Playlist'
         400:
-          description: "Invalid/No playlist given in POST body, jwt token does not validate"
+          description: 'Invalid/No playlist given in POST body, jwt token does not validate'
           schema:
-            $ref: "#/definitions/ErrorMessage"
-  /playlists/:
+            $ref: '#/definitions/ErrorMessage'
+  /playlists:
     get:
       tags:
-        - "playlists"
-      summary: "Returns the playlist for the specified user"
+        - 'playlists'
+      summary: 'Returns the playlist for the specified user'
       produces:
-        - "application/json"
+        - 'application/json'
       parameters:
-        - in:
-          
+        - name: 'username'
+          in: 'query'
+          description: 'The username for which playlists get retrieved'
+          required: true
+          type: 'string'
+      responses:
+        200:
+          description: 'successful operation'
+          schema:
+            type: 'array'
+            items:
+              $ref: '#/definitions/Playlist'
+  /v1/private/{username}:
+    get:
+      tags:
+        - 'playlists'
+      summary: 'Returns the playlist for the specified user, same as /playlists'
+      produces:
+        - 'application/json'
+      parameters:
+        - name: 'username'
+          in: 'path'
+          description: 'Username for which playlists get retrieved'
+          required: true
+          type: 'string'
+      responses:
+        200:
+          description: 'successful operation'
+          schema:
+            type: 'array'
+            items:
+              $ref: '#/definitions/Playlist'
+  /user:
+    post:
+      tags:
+        - 'user'
+      summary: 'Add new playlist to a user'
+      produces:
+        - 'application/json'
+      parameters:
+        - name: 'body'
+          in: 'body'
+          description: 'Playlist that should be created'
+          required: true
+          schema:
+            $ref: '#/definitions/Playlist'
+      responses:
+        200:
+          description: 'Succesfully added new playlist'
+          schema:
+            $ref: '#/definitions/Playlist'
 definitions:
   Playlist:
-    type: "object"
+    type: 'object'
     properties:
       beverages:
-        type: "array"
+        type: 'array'
         items:
-          type: "string"
+          type: 'string'
       displayName:
-        type: "string"
+        type: 'string'
         example: "Thank God It's Friday!"
       id:
-        type: "string"
-        example: "5c3a20ded964b50008dc1794"
+        type: 'string'
+        example: '5c3a20ded964b50008dc1794'
       imageUrl:
-        type: "string"
+        type: 'string'
       list:
-        type: "string"
+        type: 'string'
       user:
-        type: "string"
+        type: 'string'
       iat:
-        type: "integer"
-        format: "int64"
+        type: 'integer'
+        format: 'int64'
       jwtheader:
         type: object
         properties:
           alg:
-            type: "string"
+            type: 'string'
           type:
-            type: "string"
+            type: 'string'
       jwttoken:
         type: string
   ErrorMessage:
@@ -111,7 +160,6 @@ definitions:
         type: string
       httpstatus:
         type: integer
-        type: int64
 externalDocs:
-  description: "Find out more about Swagger"
-  url: "http://swagger.io"
+  description: 'Find out more about Swagger'
+  url: 'http://swagger.io'
