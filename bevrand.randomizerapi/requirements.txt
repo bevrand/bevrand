@@ -28,7 +28,7 @@ pluggy==0.8.0
 py==1.7.0
 pytest==4.0.1
 pytest-cov==2.6.0
-pytz==2018.7
+pytz==2018.9
 PyYAML==3.13
 requests==2.21.0
 six==1.11.0
