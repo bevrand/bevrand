@@ -14,13 +14,24 @@
     <!-- Banner -->
     <section id="banner">
         <header>
-            <h2>Playlist Creation</h2>
+            <h2>Playlist Creation</h2><br>
 
-            <h3 id="playlistCreationName"></h3>
+            <h3 id="playlistCreationName"></h3><br>
+
+            <a onclick="addNewBeverage()" class="fa fa-plus-circle" style="font-size:32px;color:#09E983"><span class="label">Add beverage</span></a><br>
+            <div class="notify"><span id="notifyType" class="">Something went wrong</span></div>
+
+            <input type="text" placeholder="Beverage Name" id="beverageAdditionField"><br>
 
 
-            <ul id="playListCreationDrinks"> </ul>
+            <a class="button randomize" id="addBeverage"><strong>Ok</strong></a>
+            <a class="button randomize" id="cancelAddBeverage"><strong>Cancel</strong></a>
+
+            <h3 id="beveragesToPost">Beverages:</h3>
+            <ul class="nobull" id="playListCreationDrinks"> </ul>
+            <a class="button randomize" id="getRecommandations"><strong>Need a recommandation?</strong></a><br>
             <a class="button randomize" id="createPlayList"><strong>Submit</strong></a>
+            <a class="button randomize" id="successButton"><strong>Playlist added Let's randomize!</strong></a>
         </header>
     </section>
 

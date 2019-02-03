@@ -4,31 +4,141 @@ var displayName = '';
 var user = '';
 var imageUrl = 'https://static.beveragerandomizer.com/file/beveragerandomizer/images/users/standardimage.png';
 
-
-
 var config = {
     proxyHostname: 'https:' == document.location.protocol ? '' : 'http://localhost:4540'
 };
 
 $(document).ready(function () {
+    $('#beverageAdditionField').hide();
+    $('#addBeverage').hide();
+    $('#cancelAddBeverage').hide();
+    $('#getRecommandations').hide();
+    $('#successButton').hide();
     displayName = localStorage.getItem("displayName");
     normalizedPlayListName = localStorage.getItem("normalizedName");
     user = localStorage.getItem("username");
-    console.log(displayName)
-    console.log(normalizedPlayListName)
 
     $('#playlistCreationName')
-        .text(displayName);
+        .text("Playlist name: " + displayName);
 });
 
+function addNewBeverage() {
+    $('#beverageAdditionField').show();
+    $('#addBeverage').show();
+    $('#cancelAddBeverage').show();
+}
 
-function createPlayList() {
-    var playlist = `{
-        "beverages": ${beverages},
-        "displayName": ${displayName},
-        "imageUrl": ${imageUrl},
-        "list": ${normalizedPlayListName},
-        "user": ${user}
-    }`
+$("#cancelAddBeverage").click(function () {
+    $('#beverageAdditionField').hide();
+    $('#addBeverage').hide();
+    $('#cancelAddBeverage').hide();
+});
+
+$("#addBeverage").click(function () {
+    var beverageName = document.getElementById("beverageAdditionField").value;
+    if (beverageName === "" ||  beverages.includes(beverageName)){
+        return
+    }
+
+    if (beverageName.length <= 1) {
+        document.getElementById("notifyType").textContent = "Your beverage seems to be too short"
+        $(".notify").toggleClass("active");
+        $("#notifyType").toggleClass("success");
+
+        setTimeout(function () {
+            $(".notify").removeClass("active");
+            $("#notifyType").removeClass("success");
+        }, 2000);
+        return
+    }
+
+    beverages.push(beverageName);
+    appendBeverages(beverageName)
+    document.getElementById("beverageAdditionField").value = ""
+});
+
+function appendBeverages(beverage) {
+    var beverageHtml = addDrinksToPlaylist(beverage);
+    $('#playListCreationDrinks').append(beverageHtml);
+
+}
+
+function addDrinksToPlaylist(beverage) {
+    return "<li>" + beverage + " <i style=\"margin-left: 0.5em\" class=\"fa fa-pencil\"></i> <i style=\"margin-left: 0.5em\" class=\"fa fa-trash\"></i></li>"
+
+}
+
+$("#createPlayList").click(function () {
+    var randomizeList = mapDrinksToJson()
+    if (beverages.length <= 1) {
+        document.getElementById("notifyType").textContent = "You need at least two drinks in your list"
+        $(".notify").toggleClass("active");
+        $("#notifyType").toggleClass("success");
+
+        setTimeout(function(){
+            $(".notify").removeClass("active");
+            $("#notifyType").removeClass("success");
+        },2000);
+        return
+    }
+    postDrinkToBackEnd(randomizeList);
+
+});
+
+$("#successButton").click(function ()  {
+    window.location.href = 'profile.html';
+});
+
+function postDrinkToBackEnd(randomizeList) {
+    $.ajax({
+        type: "POST",
+        url: `${config.proxyHostname}/api/user`,
+        data: randomizeList,
+        contentType: "application/json",
+        success: function () {
+            $('#beverageAdditionField').hide();
+            $('#addBeverage').hide();
+            $('#cancelAddBeverage').hide();
+            $('#createPlayList').hide();
+            $('#successButton').show();
+        },
+        error: function (error) {
+            if (error.status === 400) {
+                document.getElementById("notifyType").textContent = error.responseJSON['Error']
+                if (error.responseJSON['Meta'] != null) {
+                    document.getElementById("notifyType").textContent = error.responseJSON['Meta']['beverages'][0]
+                }
+                $(".notify").toggleClass("active");
+                $("#notifyType").toggleClass("success");
+
+                setTimeout(function(){
+                    $(".notify").removeClass("active");
+                    $("#notifyType").removeClass("success");
+                },2000);
+            }
+            if (error.status === 500 || error.status === 503) {
+                document.getElementById("notifyType").textContent = "Servers appear to be down"
+                $(".notify").toggleClass("active");
+                $("#notifyType").toggleClass("success");
+
+                setTimeout(function(){
+                    $(".notify").removeClass("active");
+                    $("#notifyType").removeClass("success");
+                },2000);
+
+            }
+        }
+    });
+}
+
+function mapDrinksToJson() {
+    var playlist = JSON.stringify({
+        beverages: beverages,
+        displayName: displayName,
+        imageUrl: imageUrl,
+        list: normalizedPlayListName,
+        user: user
+    });
+
     return playlist
 }

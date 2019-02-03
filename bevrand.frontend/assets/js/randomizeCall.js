@@ -39,10 +39,14 @@ $("#randomizebutton").click(function () {
             window.setTimeout(function () {
                 $('#randomizedDrink')
                     .text(data.result)
+            })},
+        error: function () {
+            window.setTimeout(function () {
+                $('#randomizedDrink')
+                    .text("Could not get a drink, we are sorry :(")
             });
-        }
-    });
-});
+    }
+})});
 
 function getAllLists(callback) {
     $.ajax({

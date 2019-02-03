@@ -47,7 +47,7 @@ function addPlaylistsToPersonalSpace(playlist) {
         return htmlList + "<li>" + beverage + "</li>";
     }, "");
     var playlistHtml = '<li>'
-        + '<button class="collapsible" >' + playlist.displayName + ' <i class="fa fa-pencil"></i> <i class="fa fa-trash"></i></button>'
+        + '<button class="collapsible" >' + playlist.displayName + '  <i style="margin-left: 0.5em" class="fa fa-pencil"></i> <i style="margin-left: 0.5em" class="fa fa-trash"></i></button>'
         + '<div class="contentpersonalplaylist"><ul style="list-style-type:none">' + itemList + '</ul> </div>'
         + '</li>'
 
@@ -67,7 +67,7 @@ function getPersonalPlaylists(username, callback) {
 function getUserInfo(username, callback) {
     $.ajax({
         type: "GET",
-        url: `${config.proxyHostname}/api/Users?username=${username}`,
+        url: `${config.proxyHostname}/api/Users?by-username=${username}`,
         success: function (data) {
             callback(data);
         }
@@ -115,7 +115,6 @@ $("#okPlayListCreation").click(function () {
             window.location.href = 'playlistcreation.html';
         }
         else {
-            $(".notify").text = "Helloooo"
             $(".notify").toggleClass("active");
             $("#notifyType").toggleClass("success");
 
@@ -123,7 +122,6 @@ $("#okPlayListCreation").click(function () {
                 $(".notify").removeClass("active");
                 $("#notifyType").removeClass("success");
             },2000);
-           // alert('Sorry but that playlist is taken')
         }
     })
 
