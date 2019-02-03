@@ -43,11 +43,10 @@ const validateJwtTokenMiddleware = (req, res, next) => {
       return next();
     }
     catch(err) {
+      const error = new Error('JWT Token does not validate');
+      error.name = 'InvalidJwtToken';
+      throw error;
     }
-
-    const error = new Error('JWT Token does not validate');
-    error.name = 'InvalidJwtToken';
-    throw error;
   } catch (err) {
     return next(err);
   }

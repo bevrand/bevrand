@@ -169,7 +169,7 @@ class ProxyApiTestsRandomizeValidations(test_setup_fixture.TestFixture):
             response = self.post_without_auth_header(sut, body)
             self.assertEqual(400, response.status_code)
 
-    '''This should trigger a playload error'''
+    # This should trigger a playload error
     def test_should_not_be_able_to_randomize_lists_with_different_payload_jwtheader(self):
         sut = f'{url}/v2/randomize'
         front_page_url = f'{url}/v2/frontpage'
