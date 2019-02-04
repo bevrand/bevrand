@@ -46,6 +46,8 @@ $("#randomizebutton").click(function() {
             .show()
         $('#randomizedDrink')
             .show()
+        $('#navbar')
+            .show()
     }, 4500);
 
 

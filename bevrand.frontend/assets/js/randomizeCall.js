@@ -30,6 +30,7 @@ function changePlayList(playlistName) {
 }
 
 $("#randomizebutton").click(function () {
+    $('#navbar').hide();
     $.ajax({
         type: "POST",
         url: `${config.proxyHostname}/api/v2/randomize`,
@@ -39,14 +40,16 @@ $("#randomizebutton").click(function () {
             window.setTimeout(function () {
                 $('#randomizedDrink')
                     .text(data.result)
-            })},
+            })
+        },
         error: function () {
             window.setTimeout(function () {
                 $('#randomizedDrink')
                     .text("Could not get a drink, we are sorry :(")
             });
-    }
-})});
+        }
+    })
+});
 
 function getAllLists(callback) {
     $.ajax({
