@@ -26,7 +26,7 @@ more-itertools==5.0.0
 opentracing>=2,<3
 pluggy==0.8.1
 py==1.7.0
-pytest==4.0.1
+pytest==4.2.0
 pytest-cov==2.6.0
 pytz==2018.9
 PyYAML==3.13
