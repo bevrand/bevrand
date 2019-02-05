@@ -11,7 +11,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/opentracing/opentracing-go v1.0.2
 	github.com/pkg/errors v0.8.0 // indirect
-	github.com/stretchr/testify v1.2.2
+	github.com/stretchr/testify v1.3.0
 	github.com/uber-go/atomic v1.3.2 // indirect
 	github.com/uber/jaeger-client-go v2.14.0+incompatible
 	github.com/uber/jaeger-lib v1.5.0 // indirect
@@ -20,5 +20,5 @@ require (
 	golang.org/x/tools v0.0.0-20190111214448-fc1d57b08d7b // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1
 	gopkg.in/go-playground/validator.v8 v8.18.2 // indirect
-	gopkg.in/oauth2.v3 v3.9.3
+	gopkg.in/oauth2.v3 v3.9.5
 )
