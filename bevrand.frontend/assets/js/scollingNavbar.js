@@ -15,3 +15,4 @@ function scollNavBar() {
         navbar.classList.remove("sticky");
     }
 }
+

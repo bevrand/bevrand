@@ -5,6 +5,8 @@ FROM nginx:stable-alpine
 COPY index.html /usr/share/nginx/html
 COPY profile.html /usr/share/nginx/html
 COPY playlistcreation.html /usr/share/nginx/html
+COPY login.html /usr/share/nginx/html
+COPY register.html /usr/share/nginx/html
 COPY images/ /usr/share/nginx/html/images/
 COPY assets/ /usr/share/nginx/html/assets/
 

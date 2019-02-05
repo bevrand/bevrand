@@ -3242,7 +3242,7 @@ input:focus {
 /* Style the navbar */
 #navbar {
     overflow: hidden;
-    background-color: #FFB245;
+    background-color: #FF9500;
 }
 
 /* Navbar links */
@@ -3266,6 +3266,16 @@ input:focus {
     text-decoration: none;
 }
 
+.navbar-brand {
+    font-family: Open Sans,Helvetica Neue,Arial,sans-serif;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #ff6c00;
+}
+
 /* The sticky class is added to the navbar with JS when it reaches its scroll position */
 .sticky {
     position: fixed;
@@ -3276,4 +3286,11 @@ input:focus {
 /* Add some top padding to the page content to prevent sudden quick movement (as the navigation bar gets a new position at the top of the page (position:fixed and top:0) */
 .sticky + .content {
     padding-top: 60px;
+}
+
+@media (max-width: 992px) {
+    .alert-validate::before {
+        visibility: visible;
+        opacity: 1;
+    }
 }
