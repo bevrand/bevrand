@@ -1,10 +1,12 @@
-var username = 'joost';
+var username = '';
 
 var config = {
     proxyHostname: 'https:' == document.location.protocol ? '' : 'http://localhost:4540'
 };
 
 $(document).ready(function () {
+    username = localStorage.getItem("username");
+
     $('#personalSpaceUsername')
         .text(username + "'s personal workspace");
     $('#playListCreationField').hide();
