@@ -23,7 +23,7 @@ docker-compose -f docker-compose-created.yml build && docker-compose -f docker-c
 
 ### Code Conventions
 [![Code Factor](https://www.codefactor.io/repository/github/bevrand/bevrand/badge?style=plastic)](https://www.codefactor.io/repository/github/bevrand/bevrand/badge?style=plastic)
-[![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
+<!-- [![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com) -->
 
 ### Code Quality
 [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=bevrand&metric=alert_status)](https://sonarcloud.io/dashboard?id=bevrand)
