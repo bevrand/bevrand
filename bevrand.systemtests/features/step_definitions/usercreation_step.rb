@@ -38,8 +38,8 @@ def create_random_user(length)
 end
 
 def create_random_email()
-  firstpart = [*('a'..'z'), *('A'..'Z')].to_a.shuffle[0, 8].join
-  secondpart = [*('a'..'z'), *('A'..'Z')].to_a.shuffle[0, 8].join
+  firstpart = [*('a'..'z'), *('A'..'Z')].to_a.sample(8).join
+  secondpart = [*('a'..'z'), *('A'..'Z')].to_a.sample(8).join
   return "#{firstpart}@#{secondpart}"
 end
 
