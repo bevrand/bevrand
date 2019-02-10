@@ -7,11 +7,12 @@ url = ''
 
 Before do
   if ENV['RUBY_ENV'] == 'Docker'
-    Dotenv.load
+    Dotenv.load('.env.docker')
   else
     Dotenv.load('.env.local')
   end
   url = ENV['proxyapi']
+  puts url
 end
 
 Given /^we have a test environment$/ do

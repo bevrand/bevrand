@@ -7,7 +7,7 @@ url = ''
 
 Before do
   if ENV['RUBY_ENV'] == 'Docker'
-    Dotenv.load
+    Dotenv.load('.env.docker')
   else
     Dotenv.load('.env.local')
   end
