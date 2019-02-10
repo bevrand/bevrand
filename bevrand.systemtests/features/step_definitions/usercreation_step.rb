@@ -35,10 +35,17 @@ def create_random_user(length)
   [*('a'..'z'), *('A'..'Z')].sample(length).join
 end
 
+<<<<<<< HEAD
 def create_random_email
   firstpart = [*('a'..'z'), *('A'..'Z')].sample(8).join
   secondpart = [*('a'..'z'), *('A'..'Z')].sample(8).join
   "#{firstpart}@#{secondpart}"
+=======
+def create_random_email()
+  firstpart = [*('a'..'z'), *('A'..'Z')].to_a.sample(8).join
+  secondpart = [*('a'..'z'), *('A'..'Z')].to_a.sample(8).join
+  return "#{firstpart}@#{secondpart}"
+>>>>>>> 856dae2eb3ce12d847ca82dda5e967bc1753587d
 end
 
 def create_random_password(length)
