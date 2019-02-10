@@ -26,9 +26,9 @@ end
 
 def create_new_user
     { 'userName' => create_random_user(15),
-    'emailAddress' => create_random_email(),
-    'passWord' => create_random_password(10),
-    'active' => true }
+      'emailAddress' => create_random_email(),
+      'passWord' => create_random_password(10),
+      'active' => true }
 end
 
 def create_random_user(length)
@@ -42,6 +42,5 @@ def create_random_email
 end
 
 def create_random_password(length)
-  [*('a'..'z'), *('A'..'Z'), *('0'..'9')]
-      .sample(length).join
+  [*('a'..'z'), *('A'..'Z'), *('0'..'9')].sample(length).join
 end
