@@ -32,31 +32,31 @@ end
 
 When /^we request all playlists$/ do
   front_page_url = "#{url}/v2/frontpage"
-  @jsonResponse = RestClient.get(front_page_url).body
+  @json_response = RestClient.get(front_page_url).body
 end
 
 And /^we randomize from '(.*)'$/ do |playlistName|
-  playlists = JSON.parse(@jsonResponse)
-  for playlist in playlists
+  playlists = JSON.parse(@json_response)
+  playlists.each do |playlist|
     if playlist['list'] == playlistName
       sut = "#{url}/v2/randomize"
       json = JSON.generate(playlist)
-      @tgifPlaylist = playlist
+      @tgif_playlist = playlist
       @result = RestClient.post sut, json, { content_type: :json, accept: :json }
     end
   end
 end
 
 Then /^we should get a random drink from that playlist$/ do
-  beverageResult = JSON.parse(@result.body)
+  beverage_result = JSON.parse(@result.body)
   expect(@result.code).to be 200
-  expect(@tgifPlaylist['beverages']).to include(beverageResult['result'])
+  expect(@tgif_playlist['beverages']).to include(beverage_result['result'])
 end
 
 When /^I randomize from these playlists$/ do
   @results = []
-  playlists = JSON.parse(@jsonResponse)
-  for playlist in playlists
+  playlists = JSON.parse(@json_response)
+  playlists.each do |playlist|
     sut = "#{url}/v2/randomize"
     json = JSON.generate(playlist)
     result = RestClient.post sut, json, { content_type: :json, accept: :json }
