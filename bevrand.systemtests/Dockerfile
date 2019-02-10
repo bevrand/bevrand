@@ -5,7 +5,6 @@ ENV BUILD_PACKAGES build-base
 # Update and install all of the required packages.
 # At the end, remove the apk cache
 RUN apk update && \
-    apk upgrade && \
     apk add $BUILD_PACKAGES && \
     rm -rf /var/cache/apk/*
 
