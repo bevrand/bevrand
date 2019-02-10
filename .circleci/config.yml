@@ -71,6 +71,16 @@ jobs:
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/proxyapi:$CIRCLE_SHA1
 
+  build_ruby:
+    machine: true
+    steps:
+      - checkout
+     # build the application image
+      - run: |
+         docker build -t bevrand/systemtests:$CIRCLE_SHA1 ./bevrand.systemtests
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/systemtests:$CIRCLE_SHA1
+
   build_frontend:
     machine: true
     steps:
@@ -244,6 +254,11 @@ jobs:
          docker pull bevrand/componenttests:$CIRCLE_SHA1
          docker tag bevrand/componenttests:$CIRCLE_SHA1 bevrand/componenttests:production
          docker push bevrand/componenttests:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/systemtests:$CIRCLE_SHA1
+         docker tag bevrand/systemtests:$CIRCLE_SHA1 bevrand/systemtests:production
+         docker push bevrand/systemtests:production
 
   pause_uptimerobot:
     machine: true
@@ -307,6 +322,10 @@ workflows:
          context: BeverageRandomizerPROD
          requires:
          - unittest_proxy
+     - build_ruby:
+         context: BeverageRandomizerPROD
+         requires:
+         - unittest_proxy
      - component_tests:
          context: BeverageRandomizerPROD
          requires:
@@ -327,6 +346,7 @@ workflows:
            - build_dockergres
            - build_frontend
            - build_els
+           - build_ruby
      - ui_tests:
           context: BeverageRandomizerPROD
           requires:
