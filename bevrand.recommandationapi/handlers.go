@@ -1,7 +1,6 @@
-package handlers
+package main
 
 import (
-	"bevrand.recommandationapi/models"
 	"context"
 	"encoding/json"
 	driver "github.com/johnnadratowski/golang-neo4j-bolt-driver"
@@ -13,9 +12,11 @@ import (
 	"strings"
 )
 
-var (
-	neo4jURL = "bolt://localhost:7687"
-)
+// PingPong pongs the ping
+func PingPong(w http.ResponseWriter, req *http.Request) {
+	w.WriteHeader(200)
+	w.Write([]byte("pong"))
+}
 
 // CategorieHandler handles routes for categories of drinks takes a param named kind
 func CategorieHandler(w http.ResponseWriter, req *http.Request) {
@@ -72,14 +73,14 @@ func CategorieHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	results := make([]models.BeverageResult, len(data))
+	results := make([]BeverageResult, len(data))
 	for idx, row := range data {
 		country := ""
 		if row[3] != nil {
 			country = row[3].(string)
 		}
-		results[idx] = models.BeverageResult{
-			models.Beverage{
+		results[idx] = BeverageResult{
+			Beverage{
 				Name:    row[0].(string),
 				Perc:    int(row[1].(int64)),
 				Type:    row[2].(string),
@@ -171,14 +172,14 @@ func BeverageHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	results := make([]models.BeverageResult, len(data))
+	results := make([]BeverageResult, len(data))
 	for idx, row := range data {
 		country := ""
 		if row[3] != nil {
 			country = row[3].(string)
 		}
-		results[idx] = models.BeverageResult{
-			models.Beverage{
+		results[idx] = BeverageResult{
+			Beverage{
 				Name:    row[0].(string),
 				Perc:    int(row[1].(int64)),
 				Type:    row[2].(string),
@@ -254,12 +255,12 @@ func BeverageGroupHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	d3Resp := models.D3BevGroupResponse{}
+	d3Resp := D3BevGroupResponse{}
 	row, _, err := rows.NextNeo()
 	for row != nil && err == nil {
 		title := row[0].(string)
 		println(row)
-		d3Resp.Nodes = append(d3Resp.Nodes, models.Node{Title: title, Label: "Group"})
+		d3Resp.Nodes = append(d3Resp.Nodes, Node{Title: title, Label: "Group"})
 
 		row, _, err = rows.NextNeo()
 	}
@@ -372,10 +373,10 @@ func CocktailHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	results := make([]models.CocktailResult, len(data))
+	results := make([]CocktailResult, len(data))
 	for idx, row := range data {
-		results[idx] = models.CocktailResult{
-			models.Cocktail{
+		results[idx] = CocktailResult{
+			Cocktail{
 				Name:    row[0].(string),
 				Alcohol: row[1].(string),
 			},

@@ -11,7 +11,9 @@ import (
 )
 
 var db *pool.Pool
+// GLOBALNAME is the user name for the global count
 var GLOBALNAME = "global"
+// GLOBALLIST is the playlist name for the global count
 var GLOBALLIST = "globalhighscore"
 
 const method = "Method"
@@ -24,13 +26,14 @@ const keyExists = "EXISTS"
 const keySet = "HMSET"
 const keyIncrease = "HINCRBY"
 
+// ConnectRedis creates a connection to Redis
 func ConnectRedis() {
 	var err error
 	// Establish a pool of 10 connections to the Redis server listening on
 	// port 6379 of the variable that has been used
-	redisUrl := os.Getenv("REDIS_URL") + ":6379"
-	fmt.Println(redisUrl)
-	db, err = pool.New("tcp", redisUrl, 10)
+	redisURL := os.Getenv("REDIS_URL") + ":6379"
+	fmt.Println(redisURL)
+	db, err = pool.New("tcp", redisURL, 10)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -40,9 +43,9 @@ func main() {
 	GetEnvFile()
 	ConnectRedis()
 	//init jaeger
-	jaegerUrl := os.Getenv("JAEGER_AGENT_HOST")
+	jaegerURL := os.Getenv("JAEGER_AGENT_HOST")
 	jaegerPort := os.Getenv("JAEGER_AGENT_PORT")
-	jaegerConfig := jaegerUrl + ":" + jaegerPort
+	jaegerConfig := jaegerURL + ":" + jaegerPort
 	println(jaegerConfig)
 
 	tracer, closer := InitJaeger("HighScoreApi", jaegerConfig)
@@ -65,6 +68,7 @@ func main() {
 	r.Run(":5000")
 }
 
+// GetEnvFile sets env files entries to environment
 func GetEnvFile() {
 	env := os.Getenv("GO_ENV")
 	if "" == env {

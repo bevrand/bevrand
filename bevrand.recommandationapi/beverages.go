@@ -1,4 +1,4 @@
-package models
+package main
 
 // BeverageResult is the result of beverages when searching
 type BeverageResult struct {

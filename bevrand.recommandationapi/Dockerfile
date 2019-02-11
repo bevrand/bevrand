@@ -14,11 +14,11 @@ RUN go mod download
 COPY . .
 
 # Build the binary
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o highscoreapi
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o recommandationapi
 
 # STEP 2 copy to a small image
 FROM alpine
 RUN apk update && apk add git && apk add ca-certificates
-COPY --from=build-env /app/highscoreapi /
+COPY --from=build-env /app/recommandationapi /
 COPY --from=build-env /app/.env.docker /
-CMD ["/highscoreapi"]
+CMD ["/recommandationapi"]

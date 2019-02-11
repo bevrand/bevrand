@@ -125,9 +125,9 @@ OUTFILE = args.outfile
 
 yaml_file = {}
 service_yaml_file = {}
-databases_services = ['dockergres', 'dockermongo', 'redis']
+databases_services = ['dockergres', 'dockermongo', 'redis', 'neo4j']
 test_services = ['componenttest']
-api_services = ['authenticationapi', 'highscoreapi', 'randomizerapi', 'playlistapi', 'proxyapi', 'frontendapi',
+api_services = ['authenticationapi', 'highscoreapi', 'randomizerapi', 'recommandationapi', 'playlistapi', 'proxyapi', 'frontendapi',
                 'dockernginx']
 data_seeder_service = ['dataseeder']
 password_services = {'authenticationapi': 'dockergres', 'playlistapi': 'dockermongo'}

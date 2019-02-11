@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bevrand.recommandationapi/handlers"
 	"bevrand.recommandationapi/jaeger"
 	"context"
 	"fmt"
@@ -10,8 +9,12 @@ import (
 	"github.com/uber/jaeger-client-go/config"
 	"github.com/urfave/negroni"
 	"log"
-	"net/http"
 	"os"
+)
+
+var (
+	// Neo4jURL is the connection string for neo4j
+	Neo4jURL = "bolt://localhost:7687"
 )
 
 func init() {
@@ -24,7 +27,7 @@ func init() {
 	}
 
 	if os.Getenv("NEO4J_URL") != "" {
-		handlers.neo4jURL = os.Getenv("NEO4J_URL")
+		Neo4jURL = os.Getenv("NEO4J_URL")
 	}
 }
 
@@ -64,18 +67,13 @@ func main() {
 	ctx := context.Background()
 	ctx = opentracing.ContextWithSpan(ctx, span)
 
-	logValue := fmt.Sprintf("Starting server on port %s with neo4j %s", port, handlers.Neo4jURL)
+	logValue := fmt.Sprintf("Starting server on port %s with neo4j %s", port, Neo4jURL)
 	jaeger.PrintServerInfo(ctx, logValue)
 	span.Finish()
 
-	serveMux := http.NewServeMux()
-	serveMux.HandleFunc("/api/v1/categories", handlers.CategorieHandler)
-	serveMux.HandleFunc("/api/v1/cocktails", handlers.CocktailHandler)
-	serveMux.HandleFunc("/api/v1/beverages", handlers.BeverageHandler)
-	serveMux.HandleFunc("/api/v1/beveragegroups/", handlers.BeverageGroupHandler)
+	serveMux := InitRoutes()
 
 	n := negroni.Classic()
 	n.UseHandler(serveMux)
 	n.Run(":5000")
-
 }

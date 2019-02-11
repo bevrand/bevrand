@@ -130,6 +130,19 @@ services:
       - playlistapi
       - authenticationapi
 
+  recommandationapi:
+    container_name: recommandationapi
+    build: ./bevrand.recommandationapi
+    image: "bevrand/recommandationapi:${CIRCLE_SHA1}"
+    ports:
+      - 458-:5000
+    depends_on:
+      - proxyapi
+      - neo4j
+      - jaeger-agent
+    environment:
+      - GO_ENV=docker
+
   dataseeder:
     container_name: dataseeder
     build: ./bevrand.dataseeder
@@ -178,7 +191,6 @@ services:
         hard: -1
     ports:
     - 9200:9200
-
 
   kibana:
     image: docker.elastic.co/kibana/kibana:6.0.0
@@ -282,3 +294,10 @@ services:
       - frontendapi
     ports:
       - "80:5000"
+
+  neo4j:
+    container_name: neo4j
+    image: neo4j
+    ports: 
+      - 7474:7474
+      - 7687:7687
