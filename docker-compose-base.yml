@@ -163,6 +163,26 @@ services:
     environment:
     - PYTHON_ENV=Test
 
+  systemtest:
+    container_name: system_tests
+    build: ./bevrand.systemtests
+    image: "bevrand/systemtests:${CIRCLE_SHA1}"
+    depends_on:
+    - randomizerapi
+    - playlistapi
+    - authenticationapi
+    - proxyapi
+    - highscoreapi
+    - dataseeder
+    links:
+    - randomizerapi
+    - playlistapi
+    - authenticationapi
+    - proxyapi
+    - highscoreapi
+    environment:
+    - RUBY_ENV=Docker
+
   els:
     image: "bevrand/dockerels:$CIRCLE_SHA1"
     build: ./deployment/els
