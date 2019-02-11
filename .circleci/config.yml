@@ -45,8 +45,8 @@ jobs:
     steps:
       - checkout
       - run: "export GO_ENV=development"
-      - run: "cd ./bevrand.recommandation && go test -v -cover"
-      - run: "cd ./bevrand.recommandation/jaeger && go test -v -cover"
+      - run: "cd ./bevrand.recommandationapi && go test -v -cover"
+      - run: "cd ./bevrand.recommandationapi/jaeger && go test -v -cover"
 
   build_python:
     machine: true
