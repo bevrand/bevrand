@@ -29,9 +29,9 @@ func init() {
 }
 
 func main() {
-	jaegerUrl := os.Getenv("JAEGER_AGENT_HOST")
+	jaegerURL := os.Getenv("JAEGER_AGENT_HOST")
 	jaegerPort := os.Getenv("JAEGER_AGENT_PORT")
-	jaegerConfig := jaegerUrl + ":" + jaegerPort
+	jaegerConfig := jaegerURL + ":" + jaegerPort
 	println(jaegerConfig)
 
 	cfg := &config.Configuration{

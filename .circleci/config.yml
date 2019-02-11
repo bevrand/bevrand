@@ -279,6 +279,8 @@ workflows:
         context: BeverageRandomizerPROD
      - unittest_highscore:
         context: BeverageRandomizerPROD
+     - unittest_recommandation:
+        context: BeverageRandomizerPROD
 
      - build_python:
         context: BeverageRandomizerPROD
@@ -297,6 +299,7 @@ workflows:
          context: BeverageRandomizerPROD
          requires:
           - unittest_highscore
+          - unittest_recommandation
      - build_dockergres:
          context: BeverageRandomizerPROD
          requires:

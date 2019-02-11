@@ -10,6 +10,6 @@ func TestEnvSetting(t *testing.T) {
 	env := os.Getenv("GO_ENV")
 
 	assert.Equal(t, "development", env)
-	neoUrl := os.Getenv("NEO4J_URL")
-	assert.Equal(t, "bolt://testuser:testuser@localhost:7687", neoUrl)
+	neoURL := os.Getenv("NEO4J_URL")
+	assert.Equal(t, "bolt://testuser:testuser@localhost:7687", neoURL)
 }

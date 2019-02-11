@@ -14,9 +14,10 @@ import (
 )
 
 var (
-	Neo4jURL = "bolt://localhost:7687"
+	neo4jURL = "bolt://localhost:7687"
 )
 
+// CategorieHandler handles routes for categories of drinks takes a param named kind
 func CategorieHandler(w http.ResponseWriter, req *http.Request) {
 	tracer := opentracing.GlobalTracer()
 	span := tracer.StartSpan("CategorieHandler")
@@ -107,6 +108,7 @@ func CategorieHandler(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// BeverageHandler handles routes for beverages only takes a limit for now
 func BeverageHandler(w http.ResponseWriter, req *http.Request) {
 	tracer := opentracing.GlobalTracer()
 	span := tracer.StartSpan("Beverages")
@@ -205,6 +207,7 @@ func BeverageHandler(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// BeverageGroupHandler handles routes for groups of drinks that have subsets of drinks
 func BeverageGroupHandler(w http.ResponseWriter, req *http.Request) {
 	tracer := opentracing.GlobalTracer()
 	span := tracer.StartSpan("BeverageGroups")
@@ -264,6 +267,7 @@ func BeverageGroupHandler(w http.ResponseWriter, req *http.Request) {
 	err = json.NewEncoder(w).Encode(d3Resp)
 }
 
+// CocktailHandler handles routes for cocktails ingredients can be in and excluded
 func CocktailHandler(w http.ResponseWriter, req *http.Request) {
 	tracer := opentracing.GlobalTracer()
 	span := tracer.StartSpan("CocktailHandler")
