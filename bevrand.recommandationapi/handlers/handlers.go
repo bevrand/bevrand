@@ -17,9 +17,8 @@ var (
 	Neo4jURL = "bolt://localhost:7687"
 )
 
-
 func CategorieHandler(w http.ResponseWriter, req *http.Request) {
-	tracer:= opentracing.GlobalTracer()
+	tracer := opentracing.GlobalTracer()
 	span := tracer.StartSpan("CategorieHandler")
 	span.SetTag("Method", "Categories")
 	span.LogFields(
@@ -81,8 +80,8 @@ func CategorieHandler(w http.ResponseWriter, req *http.Request) {
 		results[idx] = models.BeverageResult{
 			models.Beverage{
 				Name:    row[0].(string),
-				Perc: int(row[1].(int64)),
-				Type: row[2].(string),
+				Perc:    int(row[1].(int64)),
+				Type:    row[2].(string),
 				Country: country,
 			},
 		}
@@ -179,8 +178,8 @@ func BeverageHandler(w http.ResponseWriter, req *http.Request) {
 		results[idx] = models.BeverageResult{
 			models.Beverage{
 				Name:    row[0].(string),
-				Perc: int(row[1].(int64)),
-				Type: row[2].(string),
+				Perc:    int(row[1].(int64)),
+				Type:    row[2].(string),
 				Country: country,
 			},
 		}
@@ -207,7 +206,7 @@ func BeverageHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func BeverageGroupHandler(w http.ResponseWriter, req *http.Request) {
-	tracer:= opentracing.GlobalTracer()
+	tracer := opentracing.GlobalTracer()
 	span := tracer.StartSpan("BeverageGroups")
 	span.SetTag("Method", "BeverageGroups")
 	span.LogFields(
@@ -299,11 +298,11 @@ func CocktailHandler(w http.ResponseWriter, req *http.Request) {
 	RETURN
 		group.name, group.alcohol`
 
-	neoMap :=  map[string]interface{}{"name": "(?i)" + include}
+	neoMap := map[string]interface{}{"name": "(?i)" + include}
 
 	if exclude != "" && secondDrink != "" {
 		cypher =
-		`MATCH
+			`MATCH
 		(drink:Beverage)-[:PART_OF]->(group:Cocktail)<-[:PART_OF]-(drink2:Beverage),
 		(drink3:Beverage {name: {excludedName}})
 		WHERE
@@ -313,7 +312,7 @@ func CocktailHandler(w http.ResponseWriter, req *http.Request) {
 		RETURN
 		group.name, group.alcohol`
 
-		neoMap =  map[string]interface{}{"name": "(?i)" + include, "secondName": "(?i)" + secondDrink,
+		neoMap = map[string]interface{}{"name": "(?i)" + include, "secondName": "(?i)" + secondDrink,
 			"excludedName": strings.Title(exclude)}
 	}
 
@@ -324,10 +323,10 @@ func CocktailHandler(w http.ResponseWriter, req *http.Request) {
 	WHERE NOT 
 		(drink2)-[:PART_OF]->(group) 
 	RETURN group.name, group.alcohol`
-		neoMap =  map[string]interface{}{"name":  strings.Title(include), "excludedName": strings.Title(exclude)}
+		neoMap = map[string]interface{}{"name": strings.Title(include), "excludedName": strings.Title(exclude)}
 	}
 
-	if secondDrink != "" && exclude == ""{
+	if secondDrink != "" && exclude == "" {
 		cypher = `
 	MATCH 
 		(drink:Beverage)-[:PART_OF]->(group:Cocktail)<-[:PART_OF]-(drink2:Beverage) 
@@ -336,7 +335,7 @@ func CocktailHandler(w http.ResponseWriter, req *http.Request) {
 	RETURN 
 		group.name, group.alcohol`
 
-		neoMap =  map[string]interface{}{"name": "(?i)" + include, "secondName": "(?i)" + secondDrink}
+		neoMap = map[string]interface{}{"name": "(?i)" + include, "secondName": "(?i)" + secondDrink}
 	}
 
 	db, err := driver.NewDriver().OpenNeo(Neo4jURL)
@@ -398,4 +397,3 @@ func CocktailHandler(w http.ResponseWriter, req *http.Request) {
 		w.Write([]byte("An error occurred writing response"))
 	}
 }
-

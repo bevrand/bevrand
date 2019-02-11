@@ -2,11 +2,12 @@ package main
 
 import (
 	"bevrand.recommandationapi/handlers"
-	"bevrand.recommandationapi/services/jaeger"
+	"bevrand.recommandationapi/jaeger"
 	"context"
 	"fmt"
 	"github.com/joho/godotenv"
 	"github.com/opentracing/opentracing-go"
+	"github.com/uber/jaeger-client-go/config"
 	"github.com/urfave/negroni"
 	"log"
 	"net/http"
@@ -27,14 +28,27 @@ func init() {
 	}
 }
 
-
 func main() {
 	jaegerUrl := os.Getenv("JAEGER_AGENT_HOST")
-	jaegerPort :=  os.Getenv("JAEGER_AGENT_PORT")
+	jaegerPort := os.Getenv("JAEGER_AGENT_PORT")
 	jaegerConfig := jaegerUrl + ":" + jaegerPort
 	println(jaegerConfig)
 
-	tracer, closer := jaeger.InitJaeger("RecommendationApi", jaegerConfig)
+	cfg := &config.Configuration{
+		Sampler: &config.SamplerConfig{
+			Type:  "const",
+			Param: 1,
+		},
+		Reporter: &config.ReporterConfig{
+			LogSpans:           true,
+			LocalAgentHostPort: jaegerConfig,
+		},
+	}
+
+	tracer, closer, err := jaeger.InitJaeger("RecommendationApi", cfg)
+	if err != nil {
+		panic(fmt.Sprintf("ERROR: cannot init Jaeger: %v\n", err))
+	}
 	defer closer.Close()
 	opentracing.SetGlobalTracer(tracer)
 
@@ -65,5 +79,3 @@ func main() {
 	n.Run(":5000")
 
 }
-
-

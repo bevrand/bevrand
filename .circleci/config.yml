@@ -39,6 +39,15 @@ jobs:
       - checkout
       - run: "cd ./bevrand.highscoreapi && go test -v -cover"
 
+  unittest_recommandation:
+    docker:
+    - image: circleci/golang:1.11
+    steps:
+      - checkout
+      - run: "export GO_ENV=development"
+      - run: "cd ./bevrand.recommandation && go test -v -cover"
+      - run: "cd ./bevrand.recommandation/jaeger && go test -v -cover"
+
   build_python:
     machine: true
     steps:
@@ -114,6 +123,10 @@ jobs:
          docker build -t bevrand/highscoreapi:$CIRCLE_SHA1 ./bevrand.highscoreapi
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/highscoreapi:$CIRCLE_SHA1
+      - run: |
+         docker build -t bevrand/recommandationapi:$CIRCLE_SHA1 ./bevrand.recommandationapi
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/recommandationapi:$CIRCLE_SHA1
 
   build_dockergres:
     machine: true
@@ -198,6 +211,11 @@ jobs:
          docker pull bevrand/highscoreapi:$CIRCLE_SHA1
          docker tag bevrand/highscoreapi:$CIRCLE_SHA1 bevrand/highscoreapi:production
          docker push bevrand/highscoreapi:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/recommandationapi:$CIRCLE_SHA1
+         docker tag bevrand/recommandationapi:$CIRCLE_SHA1 bevrand/recommandationapi:production
+         docker push bevrand/recommandationapi:production
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker pull bevrand/dockergres:$CIRCLE_SHA1

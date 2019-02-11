@@ -6,9 +6,9 @@ type BeverageResult struct {
 }
 
 type Beverage struct {
-	Name string `json:"name"`
-	Perc int `json:"perc,omitempty"`
-	Type string `json:"type,omitempty"`
+	Name    string `json:"name"`
+	Perc    int    `json:"perc,omitempty"`
+	Type    string `json:"type,omitempty"`
 	Country string `json:"country,omitempty"`
 }
 
@@ -17,7 +17,7 @@ type CocktailResult struct {
 }
 
 type Cocktail struct {
-	Name string `json:"name"`
+	Name    string `json:"name"`
 	Alcohol string `json:"alcohol,omitempty"`
 }
 
@@ -32,9 +32,9 @@ type D3BeverageResponse struct {
 
 // Node is the graph response node
 type BeverageNode struct {
-	Name string `json:"name"`
-	Perc int `json:"perc"`
-	Type string `json:"type"`
+	Name    string `json:"name"`
+	Perc    int    `json:"perc"`
+	Type    string `json:"type"`
 	Country string `json:"country,omitempty"`
 }
 
