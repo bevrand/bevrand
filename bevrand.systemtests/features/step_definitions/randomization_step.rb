@@ -4,15 +4,20 @@ require 'rest-client'
 require 'dotenv'
 
 url = ''
+first = true
 
 Before do
+  puts first
+  if first
+    sleep(5)
+    first = false
+  end
   if ENV['RUBY_ENV'] == 'Docker'
     Dotenv.load('.env.docker')
   else
     Dotenv.load('.env.local')
   end
   url = ENV['proxyapi']
-  puts url
 end
 
 Given /^we have a test environment$/ do

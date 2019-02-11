@@ -6,11 +6,6 @@ require 'dotenv'
 url = ''
 
 Before do
-  if ENV['RUBY_ENV'] == 'Docker'
-    Dotenv.load('.env.docker')
-  else
-    Dotenv.load('.env.local')
-  end
   url = ENV['proxyapi']
 end
 
