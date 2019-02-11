@@ -24,7 +24,7 @@ func init() {
 	}
 
 	if os.Getenv("NEO4J_URL") != "" {
-		handlers.Neo4jURL = os.Getenv("NEO4J_URL")
+		handlers.neo4jURL = os.Getenv("NEO4J_URL")
 	}
 }
 
