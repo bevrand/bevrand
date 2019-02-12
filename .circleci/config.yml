@@ -79,6 +79,16 @@ jobs:
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/proxyapi:$CIRCLE_SHA1
 
+  build_ruby:
+    machine: true
+    steps:
+      - checkout
+     # build the application image
+      - run: |
+         docker build -t bevrand/systemtests:$CIRCLE_SHA1 ./bevrand.systemtests
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/systemtests:$CIRCLE_SHA1
+
   build_frontend:
     machine: true
     steps:
@@ -93,7 +103,7 @@ jobs:
           docker login -u $DOCKERUSER -p $DOCKERPASSWORD
           docker push bevrand/dockernginx:$CIRCLE_SHA1
 
-  build_els:
+  build_databases:
     machine: true
     steps:
     - checkout
@@ -102,6 +112,10 @@ jobs:
         docker build -t bevrand/dockerels:$CIRCLE_SHA1 ./deployment/els
         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
         docker push bevrand/dockerels:$CIRCLE_SHA1
+    - run: |
+        docker build -t bevrand/dockerneo:$CIRCLE_SHA1 ./deployment/neo4j
+        docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+        docker push bevrand/dockerneo:$CIRCLE_SHA1
 
   build_dotnet:
     machine: true
@@ -152,6 +166,22 @@ jobs:
 
      #verify the results of the component test
       - run: "cd ./deployment && python validate_backend_test_results.py"
+
+  system_tests:
+    machine: true
+    steps:
+      - checkout
+     # build the application image
+      - run: |
+         pip install PyYAML
+         python create_docker_compose.py --profile system-tests
+         docker-compose --version
+         docker-compose -f ./docker-compose-created.yml up -d
+         docker images
+         docker ps -a
+
+     #verify the results of the system test
+      - run: "cd ./deployment && python validate_backend_test_results.py --tests system_tests"
 
   ui_tests:
     machine: true
@@ -232,6 +262,11 @@ jobs:
          docker push bevrand/dockerels:production
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/dockerneo:$CIRCLE_SHA1
+         docker tag bevrand/dockerneo:$CIRCLE_SHA1 bevrand/dockerneo:production
+         docker push bevrand/dockerneo:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker pull bevrand/dockernginx:$CIRCLE_SHA1
          docker tag bevrand/dockernginx:$CIRCLE_SHA1 bevrand/dockernginx:production
          docker push bevrand/dockernginx:production
@@ -245,6 +280,11 @@ jobs:
          docker pull bevrand/componenttests:$CIRCLE_SHA1
          docker tag bevrand/componenttests:$CIRCLE_SHA1 bevrand/componenttests:production
          docker push bevrand/componenttests:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/systemtests:$CIRCLE_SHA1
+         docker tag bevrand/systemtests:$CIRCLE_SHA1 bevrand/systemtests:production
+         docker push bevrand/systemtests:production
 
   pause_uptimerobot:
     machine: true
@@ -307,7 +347,11 @@ workflows:
          context: BeverageRandomizerPROD
          requires:
           - unittest_proxy
-     - build_els:
+     - build_databases:
+         context: BeverageRandomizerPROD
+         requires:
+         - unittest_proxy
+     - build_ruby:
          context: BeverageRandomizerPROD
          requires:
          - unittest_proxy
@@ -320,7 +364,18 @@ workflows:
            - build_golang
            - build_dockergres
            - build_frontend
-           - build_els
+           - build_databases
+     - system_tests:
+         context: BeverageRandomizerPROD
+         requires:
+           - build_python
+           - build_node
+           - build_dotnet
+           - build_golang
+           - build_dockergres
+           - build_frontend
+           - build_databases
+           - build_ruby
      - ui_tests:
           context: BeverageRandomizerPROD
           requires:
@@ -330,7 +385,7 @@ workflows:
            - build_golang
            - build_dockergres
            - build_frontend
-           - build_els
+           - build_databases
           filters:
             branches:
               only:

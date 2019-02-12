@@ -38,13 +38,16 @@ use_volume_arg = parser.add_argument('--use-volumes', action='store_true',
 run_component_arg = parser.add_argument('--run-component-tests', action='store_true',
                                         help='Whether you want componenttests included (default %(default)s)')
 
+run_system_arg = parser.add_argument('--run-system-tests', action='store_true',
+                                        help='Whether you want systemtests included (default %(default)s)')
+
 profile_group = parser.add_mutually_exclusive_group()
 
 profile_group.add_argument('--no-profile', action='store_const', dest='profile', const='none',
                            help='Same as "--profile none". Contains no images by default, the base profile to use for setting all flags and setings manually')
 
 profile_group.add_argument('--profile', type=str, default='dev',
-                           choices=['prod', 'dev', 'database-only', 'ui-tests', 'component-tests', 'none'],
+                           choices=['prod', 'dev', 'database-only', 'ui-tests', 'component-tests', 'system-tests', 'none'],
                            help='Sets the default action based on a particular purpose. All configurations can be made by setting all flags manually, the profiles just give an easier way to achieve this. [dev] builds all services and supporting systems with static passwords, for local development and demos. [database-only] runs only the database containers with data from database seeder, from images, for local development. [none] contains no images by default, the base profile to use for setting all flags and setings manually')
 
 dataseeder_arg = parser.add_argument('--dataseeder', type=bool, default=True,
@@ -80,6 +83,7 @@ if PROFILE == 'database-only':
 if PROFILE == 'dev':
     dataseeder_arg.default = False
     run_component_arg.default = True
+    run_system_arg.default = True
     pass_generation_arg.default = True
 # For Circle component tests environment
 if PROFILE == 'component-tests':
@@ -88,6 +92,14 @@ if PROFILE == 'component-tests':
     tag_action_arg.default = os.environ.get('CIRCLE_SHA1')
     exclude_jaeger_arg.default = True
     run_component_arg.default = True
+    pass_generation_arg.default = True
+# For Circle component tests environment
+if PROFILE == 'system-tests':
+    dataseeder_arg.default = True
+    image_action_arg.default = 'pull'
+    tag_action_arg.default = os.environ.get('CIRCLE_SHA1')
+    exclude_jaeger_arg.default = True
+    run_system_arg.default = True
     pass_generation_arg.default = True
 # For Circle ui tests environment
 if PROFILE == 'ui-tests':
@@ -118,6 +130,7 @@ if JAEGER is True:
 VOLUME = args.use_volumes
 VERSION = args.version
 TESTS = args.run_component_tests
+SYSTEM_TESTS = args.run_system_tests
 GENERATE_PASSWORD = args.generate_passwords
 DATASEEDER = args.dataseeder
 INFILE = args.infile
@@ -128,7 +141,7 @@ service_yaml_file = {}
 databases_services = ['dockergres', 'dockermongo', 'redis', 'neo4j']
 test_services = ['componenttest']
 api_services = ['authenticationapi', 'highscoreapi', 'randomizerapi', 'recommandationapi', 'playlistapi', 'proxyapi', 'frontendapi',
-                'dockernginx']
+systemtest_services = ['systemtest']
 data_seeder_service = ['dataseeder']
 password_services = {'authenticationapi': 'dockergres', 'playlistapi': 'dockermongo'}
 volume_services = ['dockermongo', 'dockergres']
@@ -145,6 +158,7 @@ def print_values_at_startup():
         print('Jaegerdb = ' + JAEGERDB)
     print('Volume = ' + str(VOLUME))
     print('Tests = ' + str(TESTS))
+    print('Systemtest = ' + str(SYSTEM_TESTS))
     print('Password creation = ' + str(GENERATE_PASSWORD))
     print('Version = ' + VERSION)
     print('Databases only = ' + str(DATABASE_ONLY))
@@ -227,6 +241,8 @@ def handle_service_creation(service_name, service_yaml):
     else:
         remove_jaeger_from_env()
     if TESTS is True and service_name in test_services:
+        service_yaml_file[service_name] = service_yaml
+    if SYSTEM_TESTS is True and service_name in systemtest_services:
         service_yaml_file[service_name] = service_yaml
     if service_name in api_services:
         service_yaml_file[service_name] = service_yaml
