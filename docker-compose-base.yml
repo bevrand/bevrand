@@ -135,7 +135,7 @@ services:
     build: ./bevrand.recommandationapi
     image: "bevrand/recommandationapi:${CIRCLE_SHA1}"
     ports:
-      - 4580:5000
+      - 4590:5000
     depends_on:
       - proxyapi
       - neo4j
