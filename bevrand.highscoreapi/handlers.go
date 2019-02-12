@@ -44,7 +44,7 @@ func ShowHighScores(ctx context.Context, user string, playlist string, c *gin.Co
 		notFoundError := ErrorModel{
 			Message:    "Could not find combination of user: " + user + " & list: " + playlist,
 			UniqueCode: localUUID}
-		respondWithJSON(c, http.StatusNotFound, notFoundError, ctx)
+		respondWithJSON(ctx, c, http.StatusNotFound, notFoundError)
 		return nil, 0
 	}
 

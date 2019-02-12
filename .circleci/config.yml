@@ -44,8 +44,7 @@ jobs:
     - image: circleci/golang:1.11
     steps:
       - checkout
-      - run: "export GO_ENV=development"
-      - run: "cd ./bevrand.recommandationapi && go test -v -cover"
+      - run: "export GO_ENV=development && cd ./bevrand.recommandationapi && go test -v -cover"
       - run: "cd ./bevrand.recommandationapi/jaeger && go test -v -cover"
 
   build_python:
