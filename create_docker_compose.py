@@ -141,7 +141,7 @@ service_yaml_file = {}
 databases_services = ['dockergres', 'dockermongo', 'redis', 'neo4j']
 test_services = ['componenttest']
 systemtest_services = ['systemtest']
-api_services = ['authenticationapi', 'highscoreapi', 'randomizerapi', 'recommandationapi', 'playlistapi', 
+api_services = ['authenticationapi', 'highscoreapi', 'randomizerapi', 'recommendationapi', 'playlistapi', 
                 'proxyapi', 'frontendapi', 'dockernginx']
 data_seeder_service = ['dataseeder']
 password_services = {'authenticationapi': 'dockergres', 'playlistapi': 'dockermongo'}
