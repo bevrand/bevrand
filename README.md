@@ -101,7 +101,7 @@ Golang service to process randomized beverages and serve high-score information.
 [![](https://images.microbadger.com/badges/version/bevrand/highscoreapi:production.svg)](https://microbadger.com/images/bevrand/highscoreapi:production "View version details on microbadger.com")
 [![](https://images.microbadger.com/badges/image/bevrand/highscoreapi:production.svg)](https://microbadger.com/images/bevrand/highscoreapi:production "View version details on microbadger.com")
 
-### Recommandation API
+### Recommendation API
 Golang service to make recommendations for playlist creation. Uses Neo4j as a backend
 
 [![go 1.11.5](https://img.shields.io/badge/go-1.11.5-blue.svg)](https://golang.org/doc/go1.11)
