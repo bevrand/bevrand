@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bevrand.recommandationapi/jaeger"
+	"bevrand.recommendationapi/jaeger"
 	"context"
 	"fmt"
 	"github.com/joho/godotenv"

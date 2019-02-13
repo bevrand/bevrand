@@ -39,13 +39,13 @@ jobs:
       - checkout
       - run: "cd ./bevrand.highscoreapi && go test -v -cover"
 
-  unittest_recommandation:
+  unittest_recommendation:
     docker:
     - image: circleci/golang:1.11
     steps:
       - checkout
-      - run: "export GO_ENV=development && cd ./bevrand.recommandationapi && go test -v -cover"
-      - run: "cd ./bevrand.recommandationapi/jaeger && go test -v -cover"
+      - run: "export GO_ENV=development && cd ./bevrand.recommendationapi && go test -v -cover"
+      - run: "cd ./bevrand.recommendationapi/jaeger && go test -v -cover"
 
   build_python:
     machine: true
@@ -137,9 +137,9 @@ jobs:
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/highscoreapi:$CIRCLE_SHA1
       - run: |
-         docker build -t bevrand/recommandationapi:$CIRCLE_SHA1 ./bevrand.recommandationapi
+         docker build -t bevrand/recommendationapi:$CIRCLE_SHA1 ./bevrand.recommendationapi
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker push bevrand/recommandationapi:$CIRCLE_SHA1
+         docker push bevrand/recommendationapi:$CIRCLE_SHA1
 
   build_dockergres:
     machine: true
@@ -242,9 +242,9 @@ jobs:
          docker push bevrand/highscoreapi:production
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker pull bevrand/recommandationapi:$CIRCLE_SHA1
-         docker tag bevrand/recommandationapi:$CIRCLE_SHA1 bevrand/recommandationapi:production
-         docker push bevrand/recommandationapi:production
+         docker pull bevrand/recommendationapi:$CIRCLE_SHA1
+         docker tag bevrand/recommendationapi:$CIRCLE_SHA1 bevrand/recommendationapi:production
+         docker push bevrand/recommendationapi:production
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker pull bevrand/dockergres:$CIRCLE_SHA1
@@ -318,7 +318,7 @@ workflows:
         context: BeverageRandomizerPROD
      - unittest_highscore:
         context: BeverageRandomizerPROD
-     - unittest_recommandation:
+     - unittest_recommendation:
         context: BeverageRandomizerPROD
 
      - build_python:
@@ -338,7 +338,7 @@ workflows:
          context: BeverageRandomizerPROD
          requires:
           - unittest_highscore
-          - unittest_recommandation
+          - unittest_recommendation
      - build_dockergres:
          context: BeverageRandomizerPROD
          requires:

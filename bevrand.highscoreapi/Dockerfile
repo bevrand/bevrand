@@ -1,7 +1,7 @@
 FROM golang:1.11.5-alpine3.8 as build-env
 
 #STEP 1 build the image
-RUN apk update && apk add git
+RUN apk --no-cache add git
 ENV GO111MODULE=on
 RUN mkdir /app
 WORKDIR /app
@@ -17,8 +17,8 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o highscoreapi
 
 # STEP 2 copy to a small image
-FROM alpine
-RUN apk update && apk add git && apk add ca-certificates
+FROM alpine:3.8
+RUN apk --no-cache add ca-certificates
 COPY --from=build-env /app/highscoreapi /
 COPY --from=build-env /app/.env.docker /
 CMD ["/highscoreapi"]

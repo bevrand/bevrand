@@ -319,6 +319,6 @@ services:
     container_name: neo4j
     image: "bevrand/dockerneo:${CIRCLE_SHA1}"
     build: ./deployment/neo4j
-    ports: 
+    ports:
       - "7474:7474"
       - "7687:7687"
