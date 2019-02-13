@@ -109,7 +109,7 @@ Golang service to make recommendations for playlist creation. Uses Neo4j as a ba
 
 [![](https://img.shields.io/docker/pulls/bevrand/recommendationapi.svg?style=flat)](https://hub.docker.com/r/bevrand/recommendationapi "View details on docker hub")
 [![](https://images.microbadger.com/badges/version/bevrand/recommendationapi:production.svg)](https://microbadger.com/images/bevrand/recommendationapi:production "View version details on microbadger.com")
-[![](https://images.microbadger.com/badges/image/bevrand/recommandationapi:production.svg)](https://microbadger.com/images/bevrand/recommandationapi:production "View version details on microbadger.com")
+[![](https://images.microbadger.com/badges/image/bevrand/recommendationapi:production.svg)](https://microbadger.com/images/bevrand/recommendationapi:production "View version details on microbadger.com")
 
 ### Elastic Search
 Elastic Search image with our configuration applied.
