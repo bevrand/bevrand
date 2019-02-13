@@ -101,6 +101,16 @@ Golang service to process randomized beverages and serve high-score information.
 [![](https://images.microbadger.com/badges/version/bevrand/highscoreapi:production.svg)](https://microbadger.com/images/bevrand/highscoreapi:production "View version details on microbadger.com")
 [![](https://images.microbadger.com/badges/image/bevrand/highscoreapi:production.svg)](https://microbadger.com/images/bevrand/highscoreapi:production "View version details on microbadger.com")
 
+### Recommendation API
+Golang service to make recommendations for playlist creation. Uses Neo4j as a backend
+
+[![go 1.11.5](https://img.shields.io/badge/go-1.11.5-blue.svg)](https://golang.org/doc/go1.11)
+[![Go Report Card](https://goreportcard.com/badge/github.com/bevrand/bevrand)](https://goreportcard.com/report/github.com/bevrand/bevrand)
+
+[![](https://img.shields.io/docker/pulls/bevrand/recommendationapi.svg?style=flat)](https://hub.docker.com/r/bevrand/recommendationapi "View details on docker hub")
+[![](https://images.microbadger.com/badges/version/bevrand/recommendationapi:production.svg)](https://microbadger.com/images/bevrand/recommendationapi:production "View version details on microbadger.com")
+[![](https://images.microbadger.com/badges/image/bevrand/recommendationapi:production.svg)](https://microbadger.com/images/bevrand/recommendationapi:production "View version details on microbadger.com")
+
 ### Elastic Search
 Elastic Search image with our configuration applied.
 

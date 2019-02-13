@@ -39,6 +39,14 @@ jobs:
       - checkout
       - run: "cd ./bevrand.highscoreapi && go test -v -cover"
 
+  unittest_recommendation:
+    docker:
+    - image: circleci/golang:1.11
+    steps:
+      - checkout
+      - run: "export GO_ENV=development && cd ./bevrand.recommendationapi && go test -v -cover"
+      - run: "cd ./bevrand.recommendationapi/jaeger && go test -v -cover"
+
   build_python:
     machine: true
     steps:
@@ -95,7 +103,7 @@ jobs:
           docker login -u $DOCKERUSER -p $DOCKERPASSWORD
           docker push bevrand/dockernginx:$CIRCLE_SHA1
 
-  build_els:
+  build_databases:
     machine: true
     steps:
     - checkout
@@ -104,6 +112,10 @@ jobs:
         docker build -t bevrand/dockerels:$CIRCLE_SHA1 ./deployment/els
         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
         docker push bevrand/dockerels:$CIRCLE_SHA1
+    - run: |
+        docker build -t bevrand/dockerneo:$CIRCLE_SHA1 ./deployment/neo4j
+        docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+        docker push bevrand/dockerneo:$CIRCLE_SHA1
 
   build_dotnet:
     machine: true
@@ -124,6 +136,10 @@ jobs:
          docker build -t bevrand/highscoreapi:$CIRCLE_SHA1 ./bevrand.highscoreapi
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/highscoreapi:$CIRCLE_SHA1
+      - run: |
+         docker build -t bevrand/recommendationapi:$CIRCLE_SHA1 ./bevrand.recommendationapi
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/recommendationapi:$CIRCLE_SHA1
 
   build_dockergres:
     machine: true
@@ -226,6 +242,11 @@ jobs:
          docker push bevrand/highscoreapi:production
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/recommendationapi:$CIRCLE_SHA1
+         docker tag bevrand/recommendationapi:$CIRCLE_SHA1 bevrand/recommendationapi:production
+         docker push bevrand/recommendationapi:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker pull bevrand/dockergres:$CIRCLE_SHA1
          docker tag bevrand/dockergres:$CIRCLE_SHA1 bevrand/dockergres:production
          docker push bevrand/dockergres:production
@@ -239,6 +260,11 @@ jobs:
          docker pull bevrand/dockerels:$CIRCLE_SHA1
          docker tag bevrand/dockerels:$CIRCLE_SHA1 bevrand/dockerels:production
          docker push bevrand/dockerels:production
+      - run: |
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker pull bevrand/dockerneo:$CIRCLE_SHA1
+         docker tag bevrand/dockerneo:$CIRCLE_SHA1 bevrand/dockerneo:production
+         docker push bevrand/dockerneo:production
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker pull bevrand/dockernginx:$CIRCLE_SHA1
@@ -292,6 +318,8 @@ workflows:
         context: BeverageRandomizerPROD
      - unittest_highscore:
         context: BeverageRandomizerPROD
+     - unittest_recommendation:
+        context: BeverageRandomizerPROD
 
      - build_python:
         context: BeverageRandomizerPROD
@@ -310,6 +338,7 @@ workflows:
          context: BeverageRandomizerPROD
          requires:
           - unittest_highscore
+          - unittest_recommendation
      - build_dockergres:
          context: BeverageRandomizerPROD
          requires:
@@ -318,7 +347,7 @@ workflows:
          context: BeverageRandomizerPROD
          requires:
           - unittest_proxy
-     - build_els:
+     - build_databases:
          context: BeverageRandomizerPROD
          requires:
          - unittest_proxy
@@ -335,7 +364,7 @@ workflows:
            - build_golang
            - build_dockergres
            - build_frontend
-           - build_els
+           - build_databases
      - system_tests:
          context: BeverageRandomizerPROD
          requires:
@@ -345,7 +374,7 @@ workflows:
            - build_golang
            - build_dockergres
            - build_frontend
-           - build_els
+           - build_databases
            - build_ruby
      - ui_tests:
           context: BeverageRandomizerPROD
@@ -356,7 +385,7 @@ workflows:
            - build_golang
            - build_dockergres
            - build_frontend
-           - build_els
+           - build_databases
           filters:
             branches:
               only:
