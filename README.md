@@ -14,8 +14,13 @@ docker-compose -f docker-compose-created.yml build && docker-compose -f docker-c
 
 ## Automated checks
 ### Build Status
-[![Build Status](https://travis-ci.org/bevrand/bevrand.svg?branch=master)](https://travis-ci.org/bevrand/bevrand)
-[![CircleCI](https://circleci.com/gh/bevrand/bevrand.svg?style=svg)](https://circleci.com/gh/bevrand/bevrand)
+Travis CI
+
+[![Build Status](https://img.shields.io/travis/bevrand/bevrand.svg?style=flat)](https://travis-ci.org/bevrand/bevrand)
+
+CircleCI
+
+[![CircleCI](https://img.shields.io/circleci/project/github/bevrand/bevrand.svg?style=flat)](https://circleci.com/gh/bevrand/bevrand)
 
 ### Licensing
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fbevrand%2Fbevrand.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fbevrand%2Fbevrand?ref=badge_shield)
@@ -26,6 +31,8 @@ docker-compose -f docker-compose-created.yml build && docker-compose -f docker-c
 <!-- [![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com) -->
 
 ### Code Quality
+[![Maintainability](https://api.codeclimate.com/v1/badges/adeebe7e99a8d049645c/maintainability)](https://codeclimate.com/github/bevrand/bevrand/maintainability)
+
 [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=bevrand&metric=alert_status)](https://sonarcloud.io/dashboard?id=bevrand)
 
 [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=bevrand&metric=bugs)](https://sonarcloud.io/dashboard?id=bevrand)
