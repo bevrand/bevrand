@@ -14,8 +14,13 @@ docker-compose -f docker-compose-created.yml build && docker-compose -f docker-c
 
 ## Automated checks
 ### Build Status
-[![Build Status](https://travis-ci.org/bevrand/bevrand.svg?branch=master)](https://travis-ci.org/bevrand/bevrand)
-[![CircleCI](https://circleci.com/gh/bevrand/bevrand.svg?style=svg)](https://circleci.com/gh/bevrand/bevrand)
+Travis CI
+
+[![Build Status](https://img.shields.io/travis/bevrand/bevrand.svg?style=flat)](https://travis-ci.org/bevrand/bevrand)
+
+CircleCI
+
+[![CircleCI](https://img.shields.io/circleci/project/github/bevrand/bevrand.svg?style=flat)](https://circleci.com/gh/bevrand/bevrand)
 
 ### Licensing
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fbevrand%2Fbevrand.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fbevrand%2Fbevrand?ref=badge_shield)
@@ -26,6 +31,8 @@ docker-compose -f docker-compose-created.yml build && docker-compose -f docker-c
 <!-- [![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com) -->
 
 ### Code Quality
+[![Maintainability](https://api.codeclimate.com/v1/badges/adeebe7e99a8d049645c/maintainability)](https://codeclimate.com/github/bevrand/bevrand/maintainability)
+
 [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=bevrand&metric=alert_status)](https://sonarcloud.io/dashboard?id=bevrand)
 
 [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=bevrand&metric=bugs)](https://sonarcloud.io/dashboard?id=bevrand)
@@ -100,6 +107,16 @@ Golang service to process randomized beverages and serve high-score information.
 [![](https://img.shields.io/docker/pulls/bevrand/highscoreapi.svg?style=flat)](https://hub.docker.com/r/bevrand/highscoreapi "View details on docker hub")
 [![](https://images.microbadger.com/badges/version/bevrand/highscoreapi:production.svg)](https://microbadger.com/images/bevrand/highscoreapi:production "View version details on microbadger.com")
 [![](https://images.microbadger.com/badges/image/bevrand/highscoreapi:production.svg)](https://microbadger.com/images/bevrand/highscoreapi:production "View version details on microbadger.com")
+
+### Recommendation API
+Golang service to make recommendations for playlist creation. Uses Neo4j as a backend
+
+[![go 1.11.5](https://img.shields.io/badge/go-1.11.5-blue.svg)](https://golang.org/doc/go1.11)
+[![Go Report Card](https://goreportcard.com/badge/github.com/bevrand/bevrand)](https://goreportcard.com/report/github.com/bevrand/bevrand)
+
+[![](https://img.shields.io/docker/pulls/bevrand/recommendationapi.svg?style=flat)](https://hub.docker.com/r/bevrand/recommendationapi "View details on docker hub")
+[![](https://images.microbadger.com/badges/version/bevrand/recommendationapi:production.svg)](https://microbadger.com/images/bevrand/recommendationapi:production "View version details on microbadger.com")
+[![](https://images.microbadger.com/badges/image/bevrand/recommendationapi:production.svg)](https://microbadger.com/images/bevrand/recommendationapi:production "View version details on microbadger.com")
 
 ### Elastic Search
 Elastic Search image with our configuration applied.

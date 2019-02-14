@@ -12,20 +12,21 @@ import (
 	"strings"
 )
 
-
+// InitRoutes creates a gin router
 func InitRoutes() *gin.Engine {
 	r := gin.Default()
 
 	//pingpong
 	r.GET("/ping", PingPong)
 	//redis
-	r.GET("/api/v1/highscores/:user/:playList/",  RouteShowHighScore)
-	r.GET("/api/v1/highscores/",  RouteShowAllHighScore)
+	r.GET("/api/v1/highscores/:user/:playList/", RouteShowHighScore)
+	r.GET("/api/v1/highscores/", RouteShowAllHighScore)
 	r.POST("/api/v1/highscores/:user/:playList/", RouteIncrementHighscore)
 
 	return r
 }
 
+// RouteShowAllHighScore route to get the global count
 func RouteShowAllHighScore(c *gin.Context) {
 	spanCtx, _ := opentracing.GlobalTracer().Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(c.Request.Header))
 	span := opentracing.GlobalTracer().StartSpan("ShowGlobalHighScore", ext.RPCServerOption(spanCtx))
@@ -40,13 +41,14 @@ func RouteShowAllHighScore(c *gin.Context) {
 		openlog.String(host, c.Request.Host),
 	)
 
-	highScores, code := ShowHighScores(GLOBALNAME, GLOBALLIST, c, ctx)
+	highScores, code := ShowHighScores(ctx, GLOBALNAME, GLOBALLIST, c)
 	if highScores != nil {
-		respondWithJson(c, code, highScores, ctx)
+		respondWithJSON(ctx, c, code, highScores)
 	}
 	span.Finish()
 }
 
+// RouteShowHighScore route for returning a user and playlist highscore
 func RouteShowHighScore(c *gin.Context) {
 	spanCtx, _ := opentracing.GlobalTracer().Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(c.Request.Header))
 	span := opentracing.GlobalTracer().StartSpan("ShowHighScore", ext.RPCServerOption(spanCtx))
@@ -63,14 +65,14 @@ func RouteShowHighScore(c *gin.Context) {
 
 	user := c.Param("user")
 	playlist := c.Param("playList")
-	highScores, code := ShowHighScores(user, playlist, c, ctx)
+	highScores, code := ShowHighScores(ctx, user, playlist, c)
 	if highScores != nil {
-		respondWithJson(c, code, highScores, ctx)
+		respondWithJSON(ctx, c, code, highScores)
 	}
 	span.Finish()
 }
 
-
+// RouteIncrementHighscore route for increasing a highscore and also increases global count
 func RouteIncrementHighscore(c *gin.Context) {
 	spanCtx, _ := opentracing.GlobalTracer().Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(c.Request.Header))
 	span := opentracing.GlobalTracer().StartSpan("IncrementHighScore", ext.RPCServerOption(spanCtx))
@@ -82,22 +84,22 @@ func RouteIncrementHighscore(c *gin.Context) {
 	var po PostObject
 	decoder := json.NewDecoder(c.Request.Body)
 	if err := decoder.Decode(&po); err != nil {
-		localUuid := createGuid()
+		localUUID := createGUID()
 		decodingError := ErrorModel{
-			Message: err.Error(),
-			UniqueCode: localUuid}
+			Message:    err.Error(),
+			UniqueCode: localUUID}
 
-		respondWithJson(c, http.StatusBadRequest, decodingError, ctx)
+		respondWithJSON(ctx, c, http.StatusBadRequest, decodingError)
 		return
 	}
 
 	if po.Drink == "" {
-		localUuid := createGuid()
+		localUUID := createGUID()
 		emptyBodyError := ErrorModel{
-			Message: "You have to provide a body with this request",
-			UniqueCode: localUuid}
+			Message:    "You have to provide a body with this request",
+			UniqueCode: localUUID}
 
-		respondWithJson(c, http.StatusBadRequest, emptyBodyError, ctx)
+		respondWithJSON(ctx, c, http.StatusBadRequest, emptyBodyError)
 	}
 
 	body, _ := json.Marshal(po)
@@ -113,21 +115,22 @@ func RouteIncrementHighscore(c *gin.Context) {
 	playlist := c.Param("playList")
 
 	if strings.ToLower(user) == "global" {
-		localUuid := createGuid()
+		localUUID := createGUID()
 		restrictedUserError := ErrorModel{
-			Message: "Global is a restricted user and cannot be used",
-			UniqueCode: localUuid}
+			Message:    "Global is a restricted user and cannot be used",
+			UniqueCode: localUUID}
 
-		respondWithJson(c, http.StatusBadRequest, restrictedUserError, ctx)
+		respondWithJSON(ctx, c, http.StatusBadRequest, restrictedUserError)
 	}
 
-	CreateNewHighScore(user, playlist, po.Drink, ctx)
+	CreateNewHighScore(ctx, user, playlist, po.Drink)
 
 	c.Writer.WriteHeader(http.StatusCreated)
 	span.Finish()
 }
 
-func respondWithJson(c *gin.Context, code int, payload interface{}, ctx context.Context) {
+// respondWithJSON returns formed JSON
+func respondWithJSON(ctx context.Context, c *gin.Context, code int, payload interface{}) {
 	span, _ := opentracing.StartSpanFromContext(ctx, "Response")
 	span.SetTag(method, "ResponseWriter")
 
