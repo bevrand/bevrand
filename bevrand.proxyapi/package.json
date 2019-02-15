@@ -23,7 +23,7 @@
     "morgan": "~1.9.1",
     "opentracing": "^0.14.3",
     "request": "^2.88.0",
-    "request-promise": "^4.2.2",
+    "request-promise": "^4.2.4",
     "swagger-ui-express": "^4.0.2",
     "yamljs": "^0.3.0"
   },
