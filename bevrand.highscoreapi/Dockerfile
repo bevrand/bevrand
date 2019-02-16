@@ -8,7 +8,7 @@ WORKDIR /app
 
 # Create a group and user
 RUN addgroup --system --gid 4580 appgroup \
-&& adduser --system -u 4580 --ingroup d --shell /bin/sh appuser
+&& adduser --system -u 4580 --ingroup appgroup --shell /bin/sh appuser
 
 COPY go.mod .
 COPY go.sum .
