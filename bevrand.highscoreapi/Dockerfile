@@ -14,22 +14,31 @@ RUN go mod download
 COPY . .
 
 # Build the binary
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o highscoreapi
-
-# STEP 2 copy to a small image
-FROM alpine:3.9
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -a -installsuffix cgo -o highscoreapi
 
 # Create a group and user
 RUN addgroup --system --gid 4580 appgroup \
 && adduser --system -u 4580 --ingroup appgroup --shell /bin/sh appuser
 
-RUN apk --no-cache add ca-certificates
-COPY --from=build-env /app/highscoreapi /
+# Make app directory content read-only (dotnet is executed, not program)
+RUN chown -R 4580:4580 /app/ && chmod -R u-x+X,go-rwx /app/ && chmod u+x /app/highscoreapi
+
+#Based on https://medium.com/@chemidy/create-the-smallest-and-secured-golang-docker-image-based-on-scratch-4752223b7324
+# STEP 2 copy to a small image
+FROM scratch
+
+# Import the user and group files from the builder.
+COPY --from=build-env /etc/passwd /etc/passwd
+
+# Copy application and settings
+COPY --from=build-env /app/highscoreapi /app/
 COPY --from=build-env /app/.env.docker /
 
-# Make app directory content read-only (dotnet is executed, not program)
-RUN chown 4580:4580 /highscoreapi &&  chown -R 4580:4580 /.env.docker && chmod 0500 /highscoreapi && chmod 0400 /.env.docker
-# Drop user
-USER appuser
+# Set sane defaults
+ENV GO_ENV=docker
+ENV GIN_MODE=release
 
-CMD ["/highscoreapi"]
+# Drop user
+USER appuser:appgroup
+
+CMD ["/app/highscoreapi"]

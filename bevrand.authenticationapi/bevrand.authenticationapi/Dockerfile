@@ -19,8 +19,8 @@ COPY --from=build-env /app/out .
 RUN addgroup --system --gid 4570 appgroup \
 && adduser --system -uid 4570 --ingroup appgroup --shell /bin/sh appuser
 # Make app directory content not writable
-RUN chown -R 4570:4570 ./ && chmod -R 0500 ./
+RUN chown -R 4570:4570 ./ && chmod -R u-x+X,go-rwx ./
 # Drop user
-USER appuser
+USER appuser:appgroup
 
 ENTRYPOINT ["dotnet", "bevrand.authenticationapi.dll"]
