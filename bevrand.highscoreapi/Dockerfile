@@ -22,7 +22,7 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -a -installsuffix cgo -o highscoreapi
 
 # Make app directory content read-only, except for go executable
-RUN chown -R 4580:4580 /app/ && chmod -R u-x+X,go-rwx /app/ && chmod u+x /app/highscoreapi
+# RUN chown -R 4580:4580 /app/ && chmod -R u-x+X,go-rwx /app/ && chmod u+x /app/highscoreapi
 
 #Based on https://medium.com/@chemidy/create-the-smallest-and-secured-golang-docker-image-based-on-scratch-4752223b7324
 # STEP 2 copy to a small image
