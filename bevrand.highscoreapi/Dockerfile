@@ -21,14 +21,14 @@ FROM alpine:3.9
 
 # Create a group and user
 RUN addgroup --system --gid 4580 appgroup \
-&& adduser --system -uid 4580 --ingroup appgroup --shell /bin/sh appuser
+&& adduser --system -u 4580 --ingroup appgroup --shell /bin/sh appuser
 
 RUN apk --no-cache add ca-certificates
 COPY --from=build-env /app/highscoreapi /
 COPY --from=build-env /app/.env.docker /
 
 # Make app directory content read-only (dotnet is executed, not program)
-RUN chown -R 4580:4580 /app && chmod 0500 /highscoreapi && chmod 0400 /app/.env.docker
+RUN chown 4580:4580 /highscoreapi &&  chown -R 4580:4580 /.env.docker && chmod 0500 /highscoreapi && chmod 0400 /.env.docker
 # Drop user
 USER appuser
 
