@@ -18,7 +18,18 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o high
 
 # STEP 2 copy to a small image
 FROM alpine:3.9
+
+# Create a group and user
+RUN addgroup --system --gid 4580 appgroup \
+&& adduser --system -uid 4580 --ingroup appgroup --shell /bin/sh appuser
+
 RUN apk --no-cache add ca-certificates
 COPY --from=build-env /app/highscoreapi /
 COPY --from=build-env /app/.env.docker /
+
+# Make app directory content read-only (dotnet is executed, not program)
+RUN chown -R 4580:4580 /app && chmod 0500 /highscoreapi && chmod 0400 /app/.env.docker
+# Drop user
+USER appuser
+
 CMD ["/highscoreapi"]
