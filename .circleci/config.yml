@@ -401,7 +401,6 @@ workflows:
               - /dependabot/npm_and_yarn/bevrand\.uitests/.*/
               - /dependabot/npm_and_yarn/bevrand.uitests/.*
               - /dependabot/npm_and_yarn/bevrand.uitests/.*/
-              - /dependabot\/npm_and_yarn\/bevrand.uitests\/.*\/
               - /dependabot\/npm_and_yarn\/bevrand\.uitests\/.*\/
               - /dependabot/npm_and_yarn/bevrand\.uitests/.*/
               - \/dependabot/npm_and_yarn/bevrand\.uitests/.*
