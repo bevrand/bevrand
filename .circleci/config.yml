@@ -391,16 +391,6 @@ workflows:
               only:
               - master
               - develop
-              - dependabot/npm_and_yarn/bevrand\.uitests/.*
-              - dependabot/npm_and_yarn/bevrand\.uitests/.*/
-              - dependabot/npm_and_yarn/bevrand.uitests/.*
-              - dependabot/npm_and_yarn/bevrand.uitests/.*/
-              - /dependabot/npm_and_yarn/bevrand\.uitests/.*/
-              - /dependabot/npm_and_yarn/bevrand\.uitests/.*
-              - /dependabot/npm_and_yarn/bevrand\.uitests/.*/
-              - /dependabot/npm_and_yarn/bevrand.uitests/.*
-              - /dependabot/npm_and_yarn/bevrand.uitests/.*/
-              - /dependabot/npm_and_yarn/bevrand\.uitests/.*/
               - \/dependabot/npm_and_yarn/bevrand\.uitests/.*
               - \/dependabot/npm_and_yarn/bevrand\.uitests/.*/
               - \/dependabot/npm_and_yarn/bevrand.uitests/.*
