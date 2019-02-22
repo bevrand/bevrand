@@ -25,7 +25,7 @@ mistune==0.8.4
 more-itertools==6.0.0
 opentracing>=2,<3
 pluggy==0.8.1
-py==1.7.0
+py==1.8.0
 pytest==4.3.0
 pytest-cov==2.6.1
 pytz==2018.9
