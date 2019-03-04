@@ -19,7 +19,7 @@ idna==2.8
 itsdangerous==1.1.0
 -e git+https://github.com/yurishkuro/jaeger-client-python.git@d631596415cb549a4e8314cc25d6c53fab710528#egg=jaeger-client
 Jinja2==2.10
-jsonschema==3.0.0
+jsonschema==3.0.1
 MarkupSafe==1.1.1
 mistune==0.8.4
 more-itertools==6.0.0
