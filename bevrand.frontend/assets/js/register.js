@@ -13,7 +13,7 @@ $( "#registrationForm").submit(function( event ) {
     var password = $('#passwordField').val();
     var passwordCheck = $('#passwordVerificationField').val();
 
-    var passwordValid = validatePassword(password, passwordCheck, 5, 20);
+    var passwordValid = validatePassword(password, passwordCheck, 4, 20);
 
     var username = $('#usernameField').val()
     var usernameValid = validateUsername(username, 3, 20);
@@ -115,11 +115,11 @@ function registerUser(userList) {
         data: userList,
         contentType: "application/json",
         success: function (data) {
-            console.log(data)
             username = data['username']
             id = data['id']
             localStorage.setItem("username", username);
             localStorage.setItem("id", id);
+            localStorage.setItem("loggedOn", "loggedOn");
             $("#signUpText").value = "Welcome " + username + "!";
             $("#registerButton").hide();
             $("#successButton").show();

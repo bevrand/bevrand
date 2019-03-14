@@ -13,9 +13,17 @@ var config = {
 $(document).ready(function () {
     username = localStorage.getItem("username");
     loggedOn = localStorage.getItem("loggedOn");
-    console.log(loggedOn)
     if (loggedOn === "loggedOn") {
         getUserPlaylist(function(userPlaylists) {
+            if (userPlaylists.length === 0) {
+                var playlistHtml = "<article>"
+                    + '<header>'
+                    + '<h3><a class="scrolly" href="/profile.html">You do not have any playlists! Create one in your Profile</a></h3>'
+                    + '</header >'
+                    + '</article >'
+
+                $('.reel').append(playlistHtml);
+            }
             $('#navlinkLogin').hide();
             $('#navlinkRegister').hide();
             $('#navlinkLogout').show();
@@ -38,10 +46,15 @@ $(document).ready(function () {
 
 $("#navlinkLogout").click(function () {
     localStorage.setItem("loggedOn", "");
+    localStorage.setItem("username", "");
 
     $('.reel').html("");
 
     getAllLists(function (playlists) {
+        $('#randomizebutton')
+            .text("Randomize!");
+        $('#randomizedDrink').hide();
+
         $('#navlinkLogin').show();
         $('#navlinkRegister').show();
         $('#navlinkLogout').hide();

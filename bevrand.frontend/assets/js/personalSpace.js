@@ -104,7 +104,7 @@ $("#cancelPlayListCreation").click(function () {
 $("#okPlayListCreation").click(function () {
     var displayName = document.getElementById("playListCreationField").value;
     var normalizedName = document.getElementById("playListCreationField").value.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
-    getPersonalPlaylist("joost", normalizedName, function (playlist) {
+    getPersonalPlaylist(username, normalizedName, function (playlist) {
         var nameIsNewList = true;
         for (var i = 0; i < playlist.length; i++) {
             if (playlist[i]['list'] === normalizedName) {
