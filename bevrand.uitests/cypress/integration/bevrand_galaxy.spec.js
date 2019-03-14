@@ -28,7 +28,7 @@ context('Beverage Randomizer Test', () => {
     describe('Randomize functionality works', function () {
         it('Should be able to randomize my drinks', function () {
             cy.get('#letsGetStartedButton').click();
-            cy.get('#page-wrapper > section.carousel > div > article:nth-child(1) > header > h3 > a').click();
+            cy.get('#page-wrapper > section.carousel > div > article:nth-child(1) > a > img').click();
             cy.get('#randomizebutton').click();
             cy.wait(1000);
             cy.get('#randomizebutton').should('not.be.visible');
@@ -105,12 +105,12 @@ context('Beverage Randomizer Test', () => {
     describe('Footer has hyperlinks', function () {
         it('Should be able to reach footer', function () {
             cy.visit('http://0.0.0.0/#footer');
-            cy.get('#footer > div > div > div > section > header > h3').then(($footerText) => {
+            cy.get('#footer > section > header > h3').then(($footerText) => {
                 expect($footerText.text()).to.eq('Wanne reach out?');
             })});
         it('Should be able to use footer button github', function () {
             cy.visit('http://0.0.0.0/#footer');
-            cy.get('#footer > div > div > div > section > ul > li > a')
+            cy.get('#footer > section > a')
                 .should('have.attr', 'href').and('include', 'github.com/bevrand');
         })
     });

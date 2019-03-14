@@ -50,6 +50,4 @@ $("#randomizebutton").click(function() {
             .show()
     }, 4500);
 
-
-
 });

@@ -3,12 +3,49 @@ var randomizeList = '';
 var currentPlayList = 'tgif';
 var currentlySelectedPlayList = '';
 
+var loggedOn = "";
+var username = "";
+
 var config = {
     proxyHostname: 'https:' == document.location.protocol ? '' : 'http://localhost:4540'
 };
 
 $(document).ready(function () {
+    username = localStorage.getItem("username");
+    loggedOn = localStorage.getItem("loggedOn");
+    console.log(loggedOn)
+    if (loggedOn === "loggedOn") {
+        getUserPlaylist(function(userPlaylists) {
+            $('#navlinkLogin').hide();
+            $('#navlinkRegister').hide();
+            $('#navlinkLogout').show();
+            $('#navlinkProfile').show();
+            setGlobalVariables(userPlaylists);
+            appendPlaylistsToCarrousel(userPlaylists);
+        });
+    }
+    else {
+        getAllLists(function (playlists) {
+            $('#navlinkLogin').show();
+            $('#navlinkRegister').show();
+            $('#navlinkLogout').hide();
+            $('#navlinkProfile').hide();
+            setGlobalVariables(playlists);
+            appendPlaylistsToCarrousel(playlists);
+        });
+    }
+});
+
+$("#navlinkLogout").click(function () {
+    localStorage.setItem("loggedOn", "");
+
+    $('.reel').html("");
+
     getAllLists(function (playlists) {
+        $('#navlinkLogin').show();
+        $('#navlinkRegister').show();
+        $('#navlinkLogout').hide();
+        $('#navlinkProfile').hide();
         setGlobalVariables(playlists);
         appendPlaylistsToCarrousel(playlists);
     });
@@ -55,6 +92,16 @@ function getAllLists(callback) {
     $.ajax({
         type: "GET",
         url: `${config.proxyHostname}/api/v2/frontpage`,
+        success: function (data) {
+            callback(data);
+        }
+    });
+}
+
+function getUserPlaylist(callback) {
+    $.ajax({
+        type: "GET",
+        url: `${config.proxyHostname}/api/playlists?username=${username}`,
         success: function (data) {
             callback(data);
         }

@@ -3,17 +3,40 @@ var config = {
     proxyHostname: 'https:' == document.location.protocol ? '' : 'http://localhost:4540'
 };
 
+
+var username = "";
+var loggedOn = "";
+
 $(document).ready(function () {
     $('#loggedOnButton').hide();
+    $('#logoutButton').hide();
+    loggedOn = localStorage.getItem("loggedOn");
+    if (loggedOn === "loggedOn"){
+        $('#loginButton').hide();
+        $('#loggedOnButton').show();
+        $('#logoutButton').show();
+        username = localStorage.getItem("username");
+        $('#loginForm').textContent = `Welcome ${username}`
+    }
 });
 
-$( "#loginForm").submit(function( event ) {
+$("#loginForm").submit(function( event ) {
     var password = $('#passwordField').val();
     var email = $('#emailField').val()
+    var username = "joeri";
 
-    var userToLogon = mapUsertoJson("usertotestwith", email, password);
-    loginUser(userToLogon)
-    event.preventDefault()
+    var userToLogon = mapUsertoJson(username, email, password);
+    loginUser(userToLogon);
+    localStorage.setItem("username", username);
+    localStorage.setItem("loggedOn", "loggedOn");
+    event.preventDefault();
+});
+
+$("#logoutButton").click(function () {
+    $('#logoutButton').hide();
+    $('#loginButton').show();
+    $('#loggedOnButton').hide();
+    localStorage.setItem("loggedOn", "");
 });
 
 function loginUser(userList) {
@@ -26,6 +49,7 @@ function loginUser(userList) {
             console.log(data)
             $('#loginButton').hide();
             $('#loggedOnButton').show();
+            $('#logoutButton').show();
             return
         },
         error: function (error) {
