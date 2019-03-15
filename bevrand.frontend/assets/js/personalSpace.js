@@ -1,11 +1,14 @@
 var username = '';
+var token = '';
 
 var config = {
     proxyHostname: 'https:' == document.location.protocol ? '' : 'http://localhost:4540'
 };
 
 $(document).ready(function () {
-    username = localStorage.getItem("username");
+    token = localStorage.getItem("jwt");
+    var jwtDecoded = parseJwt(token);
+    username = jwtDecoded['username'];
 
     $('#personalSpaceUsername')
         .text(username + "'s personal workspace");
@@ -126,7 +129,12 @@ $("#okPlayListCreation").click(function () {
             },2000);
         }
     })
-
 });
+
+function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    return JSON.parse(window.atob(base64));
+}
 
 

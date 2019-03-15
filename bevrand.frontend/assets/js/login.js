@@ -3,31 +3,30 @@ var config = {
     proxyHostname: 'https:' == document.location.protocol ? '' : 'http://localhost:4540'
 };
 
-
-var username = "";
-var loggedOn = "";
+var token = "";
 
 $(document).ready(function () {
     $('#loggedOnButton').hide();
-    loggedOn = localStorage.getItem("loggedOn");
-    username = localStorage.getItem("username");
+    $('#profileButton').hide();
+    token = localStorage.getItem("jwt");
 
-    if (loggedOn === "loggedOn"){
+    if (token){
+        console.log(token)
         $('#loginButton').hide();
         $('#loggedOnButton').show();
-        username = localStorage.getItem("username");
+        $('#profileButton').show();
+        var username = parseJwt(token)['username'];
         $('#loginForm').textContent = `Welcome ${username}`
     }
 });
 
 $("#loginForm").submit(function( event ) {
     var password = $('#passwordField').val();
-    var email = $('#emailField').val()
+    var email = $('#emailField').val();
+    var username = $('#usernameField').val();
 
     var userToLogon = mapUsertoJson(username, email, password);
     loginUser(userToLogon);
-    localStorage.setItem("username", username);
-    localStorage.setItem("loggedOn", "loggedOn");
     event.preventDefault();
 });
 
@@ -38,9 +37,10 @@ function loginUser(userList) {
         data: userList,
         contentType: "application/json",
         success: function (data) {
-            console.log(data)
-            $('#loginButton').hide();
+            localStorage.setItem("jwt", data['token']);
             $('#loggedOnButton').show();
+            $('#profileButton').show();
+            $('#loginButton').hide();
             return
         },
         error: function (error) {
@@ -78,4 +78,10 @@ function mapUsertoJson(username, email, password) {
     });
 
     return userList
+}
+
+function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    return JSON.parse(window.atob(base64));
 }

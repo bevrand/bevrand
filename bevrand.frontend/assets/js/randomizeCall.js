@@ -3,7 +3,7 @@ var randomizeList = '';
 var currentPlayList = 'tgif';
 var currentlySelectedPlayList = '';
 
-var loggedOn = "";
+var token = "";
 var username = "";
 
 var config = {
@@ -11,9 +11,10 @@ var config = {
 };
 
 $(document).ready(function () {
-    username = localStorage.getItem("username");
-    loggedOn = localStorage.getItem("loggedOn");
-    if (loggedOn === "loggedOn") {
+    token = localStorage.getItem("jwt");
+    if (token) {
+        var jwtDecoded = parseJwt(token);
+        username = jwtDecoded['username'];
         getUserPlaylist(function(userPlaylists) {
             if (userPlaylists.length === 0) {
                 var playlistHtml = "<article>"
@@ -45,8 +46,7 @@ $(document).ready(function () {
 });
 
 $("#navlinkLogout").click(function () {
-    localStorage.setItem("loggedOn", "");
-    localStorage.setItem("username", "");
+    localStorage.setItem("jwt", "");
 
     $('.reel').html("");
 
@@ -151,5 +151,12 @@ function generatePlaylistHtml(playlist) {
         + '</article >'
     return playlistHtml;
 }
+
+function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    return JSON.parse(window.atob(base64));
+}
+
 // A $( document ).ready() block.
 

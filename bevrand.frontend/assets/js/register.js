@@ -105,7 +105,7 @@ function validatePasswordsAreEqual(password, checkPassword){
 }
 
 $("#successButton").click(function ()  {
-    window.location.href = 'profile.html';
+    window.location.href = '/login.html';
 });
 
 function registerUser(userList) {
@@ -115,11 +115,8 @@ function registerUser(userList) {
         data: userList,
         contentType: "application/json",
         success: function (data) {
-            username = data['username']
-            id = data['id']
-            localStorage.setItem("username", username);
-            localStorage.setItem("id", id);
-            localStorage.setItem("loggedOn", "loggedOn");
+            username = data['username'];
+            id = data['id'];
             $("#signUpText").value = "Welcome " + username + "!";
             $("#registerButton").hide();
             $("#successButton").show();

@@ -1,7 +1,7 @@
 var beverages = [];
 var normalizedPlayListName = '';
 var displayName = '';
-var user = '';
+var username = '';
 var imageUrl = 'https://static.beveragerandomizer.com/file/beveragerandomizer/images/users/standardimage.png';
 
 var config = {
@@ -16,7 +16,8 @@ $(document).ready(function () {
     $('#successButton').hide();
     displayName = localStorage.getItem("displayName");
     normalizedPlayListName = localStorage.getItem("normalizedName");
-    user = localStorage.getItem("username");
+    token = localStorage.getItem("jwt");
+    username = parseJwt(token)['username'];
 
     $('#playlistCreationName')
         .text("Playlist name: " + displayName);
@@ -137,8 +138,14 @@ function mapDrinksToJson() {
         displayName: displayName,
         imageUrl: imageUrl,
         list: normalizedPlayListName,
-        user: user
+        user: username
     });
 
     return playlist
+}
+
+function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    return JSON.parse(window.atob(base64));
 }
