@@ -1087,3 +1087,7 @@ input:focus {
         opacity: 1;
     }
 }
+
+.fa:hover {
+    cursor: pointer;
+}

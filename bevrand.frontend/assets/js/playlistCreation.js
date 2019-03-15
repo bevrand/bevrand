@@ -16,6 +16,10 @@ $(document).ready(function () {
     $('#successButton').hide();
     displayName = localStorage.getItem("displayName");
     normalizedPlayListName = localStorage.getItem("normalizedName");
+    var storedBeverages = localStorage.getItem("beverages");
+    if (storedBeverages) {
+        beverages = storedBeverages;
+    }
     token = localStorage.getItem("jwt");
     username = parseJwt(token)['username'];
 
@@ -38,11 +42,19 @@ $("#cancelAddBeverage").click(function () {
 $("#addBeverage").click(function () {
     var beverageName = document.getElementById("beverageAdditionField").value;
     if (beverageName === "" ||  beverages.includes(beverageName)){
+        document.getElementById("notifyType").textContent = "This drink is already included";
+        $(".notify").toggleClass("active");
+        $("#notifyType").toggleClass("success");
+
+        setTimeout(function () {
+            $(".notify").removeClass("active");
+            $("#notifyType").removeClass("success");
+        }, 1000);
         return
     }
 
     if (beverageName.length <= 1) {
-        document.getElementById("notifyType").textContent = "Your beverage seems to be too short"
+        document.getElementById("notifyType").textContent = "Your beverage seems to be too short";
         $(".notify").toggleClass("active");
         $("#notifyType").toggleClass("success");
 
@@ -58,21 +70,37 @@ $("#addBeverage").click(function () {
     document.getElementById("beverageAdditionField").value = ""
 });
 
+function deleteDrink(link) {
+    var text = link.parentNode.textContent;
+    for (var i = 0; i < beverages.length; i++) {
+        if (text.trim() === beverages[i].trim()){
+            beverages.splice(i, 1);
+        }
+    }
+    link.parentNode.parentNode.removeChild(link.parentNode);
+}
+
+function editDrink(link) {
+    var text = link.parentNode.textContent.trim();
+    document.getElementById("beverageAdditionField").value = text;
+    deleteDrink(link)
+}
+
+
 function appendBeverages(beverage) {
     var beverageHtml = addDrinksToPlaylist(beverage);
     $('#playListCreationDrinks').append(beverageHtml);
-
 }
 
 function addDrinksToPlaylist(beverage) {
-    return "<li>" + beverage + " <i style=\"margin-left: 0.5em\" class=\"fa fa-pencil\"></i> <i style=\"margin-left: 0.5em\" class=\"fa fa-trash\"></i></li>"
+    return "<li>" + beverage + " <i onclick=\"editDrink(this)\" style=\"margin-left: 0.5em\" class=\"fa fa-pencil\"></i> <i onclick=\"deleteDrink(this)\" style=\"margin-left: 0.5em\" class=\"fa fa-trash\"></i></li>"
 
 }
 
 $("#createPlayList").click(function () {
-    var randomizeList = mapDrinksToJson()
+    var randomizeList = mapDrinksToJson();
     if (beverages.length <= 1) {
-        document.getElementById("notifyType").textContent = "You need at least two drinks in your list"
+        document.getElementById("notifyType").textContent = "You need at least two drinks in your list";
         $(".notify").toggleClass("active");
         $("#notifyType").toggleClass("success");
 
