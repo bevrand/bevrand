@@ -28,7 +28,7 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "eslint": "^5.15.2",
+    "eslint": "^5.15.3",
     "jest": "^24.5.0"
   },
   "eslintConfig": {
