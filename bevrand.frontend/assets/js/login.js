@@ -14,7 +14,6 @@ $(document).ready(function () {
         console.log(token);
         var username = parseJwt(token)['username'];
         toggleLoginFields(username);
-        document.getElementById("loginForm").innerHTML = `Welcome ${username}`
     }
 });
 
@@ -51,7 +50,7 @@ function loginUser(userList) {
                 },4000);
             }
             if (error.status === 500 || error.status === 503) {
-                document.getElementById("notifyType").textContent = "Servers appear to be down"
+                document.getElementById("notifyType").textContent = "Servers appear to be down";
                 $(".notify").toggleClass("active");
                 $("#notifyType").toggleClass("success");
 
@@ -65,7 +64,7 @@ function loginUser(userList) {
 }
 
 function toggleLoginFields(username) {
-    document.getElementById("welcomeBannerText").textContent = `Welcome ${username}`
+    document.getElementById("welcomeBannerText").textContent = `Welcome ${username}`;
     $('#loginButton').hide();
     $('#loggedOnButton').show();
     $('#profileButton').show();
@@ -73,6 +72,9 @@ function toggleLoginFields(username) {
     $('#usernameField').hide();
     $('#emailField').hide();
     $('#passwordField').hide();
+
+    $('#accountText').hide();
+    $('#registerLink').hide();
 }
 
 function mapUsertoJson(username, email, password) {
