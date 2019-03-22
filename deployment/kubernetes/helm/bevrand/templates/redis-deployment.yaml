@@ -22,4 +22,4 @@ spec:
     spec:
       containers:
       - image: redis:alpine
-        name: redis
+        name: {{ include "bevrand.name" . }}-dockerredis
