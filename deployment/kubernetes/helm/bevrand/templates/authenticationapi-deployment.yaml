@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "bevrand.name" . }}-authenticationapi
+  labels:
+    app.kubernetes.io/name: {{ include "bevrand.name" . }}-authenticationapi
+    helm.sh/chart: {{ include "bevrand.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "bevrand.name" . }}-authenticationapi
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "bevrand.name" . }}-authenticationapi
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+      - env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: '"Production"'
+        - name: ConnectionStrings__Postgres
+          value: '"Host=dockergres;Port=5432;Database=bevrand;Uid=6ZxJYKvpk8oLF7w;Pwd=iYhZ91kRvBX2FlyW0VTjx4!6o;"'
+        image: bevrand/authenticationapi:production
+        imagePullPolicy: Always
+        name: {{ include "bevrand.name" . }}-authenticationapi
+        ports:
+        - containerPort: 5000
+        resources: {}
+        restartPolicy: Always
+status: {}

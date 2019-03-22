@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dockerneo
+  labels:
+    app.kubernetes.io/name: {{ include "bevrand.name" . }}-dockerneo
+    helm.sh/chart: {{ include "bevrand.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 7474
+      name: neo4jport
+      targetPort: 7474
+    - port: 7687
+      name: otherneo4jport
+      targetPort: 7687
+  selector:
+    app.kubernetes.io/name: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
