@@ -61,9 +61,7 @@ function getPersonalPlaylists(username, callback) {
     $.ajax({
         type: "GET",
         url: `${config.proxyHostname}/api/playlists?username=${username}`,
-        success: function (data) {
-            callback(data);
-        }
+        success: callback
     });
 }
 
@@ -71,9 +69,7 @@ function getUserInfo(username, callback) {
     $.ajax({
         type: "GET",
         url: `${config.proxyHostname}/api/Users?by-username=${username}`,
-        success: function (data) {
-            callback(data);
-        }
+        success: callback
     });
 }
 
@@ -81,12 +77,7 @@ function getPersonalPlaylist(username, playlistname, callback) {
     $.ajax({
         type: "GET",
         url: `${config.proxyHostname}/api/playlists?username=${username}&list=${playlistname}`,
-        success: function (data) {
-            callback(data);
-        },
-        error: function () {
-            callback(true)
-        }
+        success: callback
     });
 }
 
@@ -104,7 +95,9 @@ $("#cancelPlayListCreation").click(function () {
 
 $("#okPlayListCreation").click(function () {
     var displayName = document.getElementById("playListCreationField").value;
-    var normalizedName = document.getElementById("playListCreationField").value.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+    var normalizedName = document.getElementById("playListCreationField").value
+        .replace(/[^a-zA-Z0-9]/g, "")
+        .toLowerCase();
     getPersonalPlaylist(username, normalizedName, function (playlist) {
         var nameIsNewList = true;
         for (var i = 0; i < playlist.length; i++) {
