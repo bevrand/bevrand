@@ -16,15 +16,15 @@
         <!-- Banner -->
         <section id="banner">
             <header>
-                <form id="loginForm"><h2>Welcome!</h2><br>
+                <form id="loginForm"><h2 id="welcomeBannerText">Welcome!</h2><br>
                     <div class="notify"><span id="notifyType" class="">Not a user</span></div>
                     <input type="email" placeholder="Email" id="emailField"><br>
                     <input type="text" autocomplete="false" id="usernameField" placeholder="Username"><br>
                     <input type="password" placeholder="Password" id="passwordField"><br>
 
                     <input type="submit" value="Login" class="button randomize" id="loginButton">
-                    <a class="button randomize" href="/index.html" id="loggedOnButton"><strong>Randomize!</strong></a>
-                    <a class="button randomize" href="/profile.html" id="profileButton"><strong>Profile</strong></a>
+                    <a class="button randomize" href="/index.html" id="loggedOnButton"><strong>Start Randomizing!</strong></a>
+                    <a class="button randomize" href="/profile.html" id="profileButton"><strong>Create Playlists</strong></a>
                     <div class="text-center p-t-115" id="signUpText">
 						<span class="txt1" id="accountText">
 							Don’t have an account?
@@ -42,7 +42,7 @@
             <!-- Contact -->
             <section class="contact">
                 <header>
-                    <h3>Wanne reach out?</h3>
+                    <h3>Wanna reach out?</h3>
                 </header>
                 <p>Our project is open source so feel free to clone from our github.</p>
                 <a href="https://www.github.com/bevrand/bevrand" class="icon fa-github"><span class="label">Github</span></a>
@@ -66,5 +66,6 @@
 <script src="assets/js/util.js"></script>
 <script src="assets/js/main.js"></script>
 <script src="assets/js/login.js"></script>
+<script src="assets/js/jwtParser.js"></script>
 </body>
 </html>

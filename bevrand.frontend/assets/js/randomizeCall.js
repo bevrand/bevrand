@@ -142,21 +142,12 @@ function generatePlaylistHtml(playlist) {
     var itemList = playlist.beverages.reduce(function (htmlList, beverage) {
         return htmlList + "<li>" + beverage + "</li>";
     }, "");
-    var playlistHtml = "<article>"
+    return "<article>"
         + '<a class="image featured scrolly" onclick=changePlayList("' + playlist.list + '") href="#main"><img src="' + playlist.imageUrl + '" /></a>'
         + '<header>'
         + '<h3><a class="scrolly" onclick=changePlayList("' + playlist.list + '") href="#main">' + playlist.displayName + '</a></h3>'
         + '</header >'
         + '<ul style="list-style-type:none">' + itemList + '</ul>'
         + '</article >'
-    return playlistHtml;
 }
-
-function parseJwt (token) {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    return JSON.parse(window.atob(base64));
-}
-
-// A $( document ).ready() block.
 

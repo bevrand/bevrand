@@ -51,12 +51,10 @@ function addPlaylistsToPersonalSpace(playlist) {
     var itemList = playlist.beverages.reduce(function (htmlList, beverage) {
         return htmlList + "<li>" + beverage + "</li>";
     }, "");
-    var playlistHtml = '<li>'
+    return '<li>'
         + '<button class="collapsible" >' + playlist.displayName + '  <i style="margin-left: 0.5em" class="fa fa-pencil"></i> <i style="margin-left: 0.5em" class="fa fa-trash"></i></button>'
         + '<div class="contentpersonalplaylist"><ul style="list-style-type:none">' + itemList + '</ul> </div>'
         + '</li>'
-
-    return playlistHtml;
 }
 
 function getPersonalPlaylists(username, callback) {
@@ -131,10 +129,6 @@ $("#okPlayListCreation").click(function () {
     })
 });
 
-function parseJwt (token) {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    return JSON.parse(window.atob(base64));
-}
+
 
 

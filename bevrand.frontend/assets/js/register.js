@@ -105,7 +105,7 @@ function validatePasswordsAreEqual(password, checkPassword){
 }
 
 $("#successButton").click(function ()  {
-    window.location.href = '/login.html';
+    window.location.href = '/profile.html';
 });
 
 function registerUser(userList) {
@@ -117,10 +117,8 @@ function registerUser(userList) {
         success: function (data) {
             username = data['username'];
             id = data['id'];
-            $("#signUpText").value = "Welcome " + username + "!";
-            $("#registerButton").hide();
-            $("#successButton").show();
-            return
+            toggleRegisterFields(username);
+            loginUser(userList);
         },
         error: function (error) {
             if (error.status === 400) {
@@ -156,18 +154,17 @@ function registerUser(userList) {
                     $("#notifyType").removeClass("success");
                 },4000);
             }
-
         }
     });
 }
 
-function mapUsertoJson(username, email, password) {
-    var userList = JSON.stringify({
-        "userName": username,
-        "emailAddress": email,
-        "passWord": password,
-        "active": true
-    });
+function toggleRegisterFields(username) {
+    document.getElementById("signUpText").textContent = "Welcome " + username + "!";
+    $("#registerButton").hide();
+    $("#successButton").show();
 
-    return userList
+    $("#usernameField").hide();
+    $("#emailField").hide();
+    $("#passwordField").hide();
+    $("#passwordVerificationField").hide();
 }
