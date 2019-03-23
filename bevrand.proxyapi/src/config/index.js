@@ -5,11 +5,11 @@ const joi = require('joi');
  */
 // TODO: make it possible to run with just a .env file
 if (process.env.NODE_ENV === 'production') {
-  require('dotenv').config({ path: './config/.production.env' });
+  require('dotenv').config({ path: './src/config/.production.env' });
 } else if (process.env.NODE_ENV === 'development') {
-  require('dotenv').config({ path: './config/.development.env' });
+  require('dotenv').config({ path: './src/config/.development.env' });
 } else {
-  require('dotenv').config();
+  require('dotenv').config({ path: './src/config/.local.env' });
 }
 
 /**
