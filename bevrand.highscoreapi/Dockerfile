@@ -1,4 +1,4 @@
-FROM golang:1.11.5-alpine3.8 as build-env
+FROM golang:1.11.6-alpine3.8 as build-env
 
 #STEP 1 build the image
 RUN apk --no-cache add git

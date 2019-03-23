@@ -105,7 +105,7 @@ context('Beverage Randomizer Test', () => {
             it('Should be able to reach footer', function () {
                 cy.visit('http://0.0.0.0/#footer');
                 cy.get('#footer > section > header > h3').then(($footerText) => {
-                    expect($footerText.text()).to.eq('Wanne reach out?');
+                    expect($footerText.text()).to.eq('Wanna reach out?');
                 })});
             it('Should be able to use footer button github', function () {
                 cy.visit('http://0.0.0.0/#footer');
