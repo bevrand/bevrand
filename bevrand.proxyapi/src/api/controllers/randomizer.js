@@ -1,6 +1,6 @@
 const { httpPostRequest } = require('../utils/tracing/httpRequestWithTracing');
 const { Tags } = require('opentracing');
-const tracer = require('../lib/tracing/tracerClass');
+const tracer = require('../utils/tracing/tracerClass');
 
 /**
  * Calls the backend randomize api with POST at endpoint /api/randomize

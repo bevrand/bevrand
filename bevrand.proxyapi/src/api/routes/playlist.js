@@ -1,7 +1,7 @@
 const express = require('express');
 const controller = require('../controllers/playlist');
 const { reRouteTo } = require('../middlewares/reRouteRequest');
-const { playlistApi } = require('../../config/variables');
+const { playlistApi } = require('../../config');
 const { validateJwtHeader } = require('../middlewares/jwt');
 
 const router = express.Router();
@@ -17,7 +17,7 @@ router.get(/public/, reRouteTo(playlistApi));
 
 // prettier-ignore
 router.route(/private/)
-  .all(validateJwtHeader())
+  .all(validateJwtHeader)
   .get(controller.playlists)
   .post(reRouteTo(playlistApi))
   .put(reRouteTo(playlistApi))

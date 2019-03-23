@@ -9,7 +9,7 @@ if (process.env.NODE_ENV === 'production') {
 } else if (process.env.NODE_ENV === 'development') {
   require('dotenv').config({ path: './config/.development.env' });
 } else {
-  require('dotenv').config({ path: './config/.local.env' });
+  require('dotenv').config();
 }
 
 /**

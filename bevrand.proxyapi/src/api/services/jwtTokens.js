@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const config = require('../../config/variables');
+const config = require('../../config');
 
 // Old method: validateJwtTokenMiddleware function (req, res, next) { requestJwtToken = req.body.jwttoken, delete req.body.jwtheader, req.body.jwttoken }
 

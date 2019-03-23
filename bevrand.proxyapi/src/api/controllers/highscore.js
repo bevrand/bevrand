@@ -1,7 +1,7 @@
-const config = require('../config');
-const tracer = require('../lib/tracing/tracerClass');
+const config = require('../../config');
+const tracer = require('../utils/tracing/tracerClass');
 const { Tags } = require('opentracing');
-const { httpRequest } = require('../lib/tracing/httpRequestWithTracing');
+const { httpRequest } = require('../utils/tracing/httpRequestWithTracing');
 
 const handleHighscore = (req, res, next) => {
   const span = tracer.startSpan('highscore-request');

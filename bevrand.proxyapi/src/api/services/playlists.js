@@ -1,9 +1,9 @@
-const { httpRequest } = require('../lib/tracing/httpRequestWithTracing');
-const config = require('../../config/variables');
+const { httpRequest } = require('../utils/tracing/httpRequestWithTracing');
+const config = require('../../config');
 const { Tags } = require('opentracing');
 const tracer = require('../utils/tracing/tracerClass');
 const Promise = require('bluebird');
-const { signObjectWithJwtToken } = require('../helpers/jwtToken');
+const { signObject } = require('../services/jwtTokens');
 
 exports.getAllPlaylists = async (username, span) => {
   const response = await httpRequest({
@@ -14,12 +14,12 @@ exports.getAllPlaylists = async (username, span) => {
 
   span.setTag(Tags.HTTP_STATUS_CODE, 200);
 
+  const { result } = JSON.parse(response);
+  
   span.log({
     event: 'playlists-for-user',
     result: result,
   });
-
-  const { result } = JSON.parse(response);
 
   const playlists = await Promise.all(
     result.map(value => {
@@ -36,13 +36,12 @@ exports.getAllPlaylists = async (username, span) => {
         childSpan.setTag(Tags.HTTP_STATUS_CODE, 200);
         childSpan.finish();
         const parsedResponse = JSON.parse(response).result;
-        const signedResponse = signObjectWithJwtToken(parsedResponse);
+        const signedResponse = signObject(parsedResponse);
         return signedResponse;
       });
     })
   );
 
-  console.log('Results of promise all: ', playlists);
   span.log({
     event: 'playlists-result',
     result: playlists,

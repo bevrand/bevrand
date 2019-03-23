@@ -1,9 +1,9 @@
-const config = require('../config');
+const config = require('../../config');
 const playlistService = require('../services/playlists');
-const tracer = require('../lib/tracing/tracerClass');
+const tracer = require('../utils/tracing/tracerClass');
 const { Tags } = require('opentracing');
-const { httpRequest } = require('../lib/tracing/httpRequestWithTracing');
-const { signObjectWithJwtToken } = require('../helpers/jwtToken');
+const { httpRequest } = require('../utils/tracing/httpRequestWithTracing');
+const { signObject } = require('../services/jwtTokens');
 
 /**
  * Gives the complete response from the playlist api at the endpoint /api/frontpage,
@@ -26,7 +26,7 @@ exports.frontpage = async (req, res, next) => {
 
     span.setTag(Tags.HTTP_STATUS_CODE, 200);
 
-    let newResult = JSON.parse(result).result.map(signObjectWithJwtToken);
+    let newResult = JSON.parse(result).result.map(signObject);
 
     span.log({
       event: 'frontpage-result',

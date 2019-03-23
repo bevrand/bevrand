@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken');
+const { Tags } = require('opentracing');
 const {
   httpPostRequest,
   httpRequest,
 } = require('../utils/tracing/httpRequestWithTracing');
-const { Tags } = require('opentracing');
 const tracer = require('../utils/tracing/tracerClass');
 
 const handleLogin = (authenticationUrl, secret, expirationTime) => {
