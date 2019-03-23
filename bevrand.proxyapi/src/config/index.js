@@ -23,7 +23,7 @@ const envVarsSchema = joi
     AUTHENTICATION_SECRET: joi.string().required(),
     AUTHENTICATION_EXPIRATION_TIME: joi.number().required(),
     FRONTEND_JWT_SECRET: joi.string().required(),
-    PORT: joi.any().optional(),
+    PORT: joi.any().optional().default(5000),
     USEMOCK: joi.boolean().optional(),
     DEFAULT_FRONTPAGE_LIST: joi.string().optional(),
     JAEGER_AGENT_HOST: joi.string().optional(),
