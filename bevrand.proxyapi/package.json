@@ -3,11 +3,12 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node server.js",
+    "start": "node ./server/server.js",
     "lint": "eslint .",
     "test": "jest --coverage"
   },
   "dependencies": {
+    "10": "0.0.1",
     "bluebird": "^3.5.3",
     "body-parser": "~1.18.3",
     "cookie-parser": "~1.4.3",
@@ -31,7 +32,7 @@
     "eslint": "^5.9.0",
     "eslint-config-prettier": "^4.0.0",
     "eslint-plugin-prettier": "^3.0.1",
-    "jest": "^23.6.0",
+    "jest": "^24.5.0",
     "prettier": "^1.16.3"
   },
   "eslintConfig": {

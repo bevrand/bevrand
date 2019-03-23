@@ -150,19 +150,9 @@ const registerUser = authenticationUrl => {
   };
 };
 
-router.post(
-  '/login',
-  handleLogin(
-    config.authenticationApi,
-    config.authenticationSecret,
-    config.authenticationExpirationTime
-  )
-);
 
-router.post('/register', registerUser(config.authenticationApi));
 
 module.exports = {
-  router,
   handleLogin,
   registerUser,
 };

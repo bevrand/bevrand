@@ -7,6 +7,12 @@
   },
   "parserOptions": { "ecmaVersion": 2018 },
   "rules": {
-    "no-console": "warn"
+    "no-console": "warn",
+    "import/order": ["error", {"groups":["builtin", "external", "parent", "sibling", "index"] }],
+    "indent": "warn",
+    "no-use-before-define": ["error", {
+      "functions": false,
+      "classes": true
+    }]
   }
 }
