@@ -171,7 +171,6 @@ i {
 
 a {
     color: inherit;
-    border-bottom: solid 1px rgba(128, 128, 128, 0.15);
     text-decoration: none;
     -moz-transition: background-color 0.35s ease-in-out, color 0.35s ease-in-out, border-bottom-color 0.35s ease-in-out;
     -webkit-transition: background-color 0.35s ease-in-out, color 0.35s ease-in-out, border-bottom-color 0.35s ease-in-out;
@@ -955,3 +954,181 @@ body.homepage.is-preload #header:after {
 .carousel article p {
     text-align: center;
 }
+
+.collapsible {
+    background-color: #FF9B0D;
+    margin-top: 10px;
+    margin-bottom: 1px;
+    color: white;
+    cursor: pointer;
+    padding: 18px;
+    width: 75%;
+    border: none;
+    text-align: center;
+    outline: none;
+    font-size: 20px;
+}
+
+.active, .collapsible:hover {
+    background-color: #424242;
+}
+
+.contentpersonalplaylist {
+    margin: auto;
+    padding: 0 18px;
+    display: none;
+    overflow: hidden;
+    width: 75%;
+    background-color: #ffa500;
+    text-align: center;
+    font-size: 15px;
+}
+
+.notify{
+    position: relative;
+    margin: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    top:0px;
+    width:80%;
+    height:0;
+    box-sizing:border-box;
+    color:white;
+    text-align:center;
+    background:#FF9500;
+    overflow:hidden;
+    box-sizing:border-box;
+    transition:height .2s;
+}
+
+#notifyType:before{
+    display:block;
+    margin-top:15px;
+}
+
+.active{
+    height:50px;
+}
+
+input,
+span,
+label,
+textarea {
+    font-family: 'Ubuntu', sans-serif;
+    margin: auto;
+    display: block;
+    padding: 5px;
+    border: none;
+    font-size: 22px;
+}
+
+textarea:focus,
+input:focus {
+    outline: 0;
+}
+
+.nobull {
+    list-style-type: none;
+}
+
+/* Style the navbar */
+#navbar {
+    overflow: hidden;
+    background-color: #FF9500;
+}
+
+/* Navbar links */
+.navbar-header {
+    float: left;
+    margin: 0.5em;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 4px;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 2em;
+}
+
+.navbar-icon {
+    float: right;
+    margin: 0.5em;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 4px;
+    text-decoration: none;
+}
+
+/* The sticky class is added to the navbar with JS when it reaches its scroll position */
+.sticky {
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+
+/* Add some top padding to the page content to prevent sudden quick movement (as the navigation bar gets a new position at the top of the page (position:fixed and top:0) */
+.sticky + .content {
+    padding-top: 60px;
+}
+
+@media (max-width: 992px) {
+    .alert-validate::before {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+.fa:hover {
+    cursor: pointer;
+}
+
+.sidebar {
+    height: 30%;
+    width: 0;
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    right: 0;
+    background-color: #424242;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.sidebar a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #f1f1f1;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    color: #818181;
+    }
+
+.sidebar .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+    .sidebar {padding-top: 15px;}
+    .sidebar a {font-size: 18px;}
+}
+
+#readablemain {
+    background-color: #7C7C7C;
+    text-align: center;
+    padding: 4.5em 0 4.5em 0;
+    margin-bottom: 0;
+}
+
+
