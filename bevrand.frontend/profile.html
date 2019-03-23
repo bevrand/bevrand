@@ -12,18 +12,25 @@
 <body class="homepage is-preload">
 <div id="page-wrapper">
     <div id="navbar">
-        <a class="navbar-brand" href="index.html">The Beverage Randomizer</a>
-        <i class="fa fa-user" style="font-size:32px"></i>
-    </div>
+        <a class="navbar-header" href="index.html">bevrand</a>
+        <div id="iconSideBar" class="sidebar">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNavbar()">×</a>
+            <a href="index.html">Home</a>
+            <a id="navlinkProfile" href="profile.html">Profile</a>
+            <a id="navlinkLogout" href="index.html">Logout</a>
+        </div>
 
+        <div id="closedSideBar">
+            <a class="fa fa-user fa-2x navbar-icon" id="userIconNavbar" onclick="openNavbar()"></a>
+        </div>
+    </div>
     <!-- Banner -->
-    <section id="banner">
+    <section id="readablemain">
         <header>
             <h2 id="personalSpaceUsername"></h2><br>
             <a href="#main"><img src="https://icons-for-free.com/free-icons/png/512/2612585.png" height="125" width="125"/></a><br>
 
             <h3> Personal info</h3>
-            <h4 id="emailAddressPersonal"> Email: </h4>
             <h4 id="usernamePersonal"> Username: </h4><br>
 
             <a onclick="addNewPlayList()" class="fa fa-plus-circle" style="font-size:32px;color:#09E983"><span class="label">Add playlist</span></a><br>
@@ -36,8 +43,6 @@
             <a class="button randomize" id="cancelPlayListCreation"><strong>Cancel</strong></a>
 
             <ul class="nobull" id="personalPlaylists"> </ul>
-
-
 
         </header>
     </section>
@@ -72,5 +77,7 @@
 <script src="assets/js/main.js"></script>
 <script src="assets/js/personalSpace.js"></script>
 <script src="assets/js/jwtParser.js"></script>
+<script src="assets/js/navbar.js"></script>
+<script src="assets/js/randomizeCall.js"></script>
 </body>
 </html>

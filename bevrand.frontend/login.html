@@ -11,20 +11,29 @@
     <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 </head>
 <body class="homepage is-preload">
-    <div id="page-wrapper">
+<div id="page-wrapper">
+    <div id="navbar">
+        <a class="navbar-header" href="index.html">bevrand</a>
+        <div id="iconSideBar" class="sidebar">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNavbar()">×</a>
+            <a href="index.html">Home</a>
+        </div>
+
+        <div id="closedSideBar">
+            <a class="fa fa-user fa-2x navbar-icon" id="userIconNavbar" onclick="openNavbar()"></a>
+        </div>
+    </div>
 
         <!-- Banner -->
-        <section id="banner">
-            <header>
+    <section id="readablemain">
                 <form id="loginForm"><h2 id="welcomeBannerText">Welcome!</h2><br>
+                <h3 id="redirectionText">Redirecting you to your profile</h3>
                     <div class="notify"><span id="notifyType" class="">Not a user</span></div>
                     <input type="email" placeholder="Email" id="emailField"><br>
                     <input type="text" autocomplete="false" id="usernameField" placeholder="Username"><br>
                     <input type="password" placeholder="Password" id="passwordField"><br>
 
                     <input type="submit" value="Login" class="button randomize" id="loginButton">
-                    <a class="button randomize" href="/index.html" id="loggedOnButton"><strong>Start Randomizing!</strong></a>
-                    <a class="button randomize" href="/profile.html" id="profileButton"><strong>Create Playlists</strong></a>
                     <div class="text-center p-t-115" id="signUpText">
 						<span class="txt1" id="accountText">
 							Don’t have an account?
@@ -34,7 +43,6 @@
                         </a>
                     </div>
                 </form>
-            </header>
         </section>
 
         <!-- Footer -->
@@ -67,5 +75,7 @@
 <script src="assets/js/main.js"></script>
 <script src="assets/js/login.js"></script>
 <script src="assets/js/jwtParser.js"></script>
+<script src="assets/js/navbar.js"></script>
+<script src="assets/js/redirection.js"></script>
 </body>
 </html>

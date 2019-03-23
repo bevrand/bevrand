@@ -6,14 +6,14 @@ var config = {
 };
 
 $(document).ready(function () {
-    $('#successButton').hide();
+    $("#redirectionText").hide();
 });
 
 $( "#registrationForm").submit(function( event ) {
     var password = $('#passwordField').val();
     var passwordCheck = $('#passwordVerificationField').val();
 
-    var passwordValid = validatePassword(password, passwordCheck, 4, 20);
+    var passwordValid = validatePassword(password, passwordCheck, 3, 20);
 
     var username = $('#usernameField').val()
     var usernameValid = validateUsername(username, 3, 20);
@@ -26,7 +26,9 @@ $( "#registrationForm").submit(function( event ) {
     }
     var userList = mapUsertoJson(username, email, password);
     registerUser(userList);
-    event.preventDefault()
+    event.preventDefault();
+
+    redirectToHomepage(6);
 });
 
 
@@ -72,7 +74,7 @@ function validatePassword(password, checkPassword, min, max)
     var validated = validatePasswordsAreEqual(password, checkPassword)
     if (!validated){
         document.getElementById("notifyType").textContent =
-            "Password are not equal"
+            "Password are not equal";
         $(".notify").toggleClass("active");
         $("#notifyType").toggleClass("success");
 
@@ -87,7 +89,7 @@ function validatePassword(password, checkPassword, min, max)
     if (passwordLength >= max || passwordLength < min)
     {
         document.getElementById("notifyType").textContent =
-            "Password length should be between "+ min +" to "+max
+            "Password length should be between "+ min +" to "+max;
         $(".notify").toggleClass("active");
         $("#notifyType").toggleClass("success");
 
@@ -103,10 +105,6 @@ function validatePassword(password, checkPassword, min, max)
 function validatePasswordsAreEqual(password, checkPassword){
     return password === checkPassword;
 }
-
-$("#successButton").click(function ()  {
-    window.location.href = '/profile.html';
-});
 
 function registerUser(userList) {
     $.ajax({
@@ -159,10 +157,10 @@ function registerUser(userList) {
 }
 
 function toggleRegisterFields(username) {
-    document.getElementById("signUpText").textContent = "Welcome " + username + "!";
+    document.getElementById("signUpText").textContent = "Registration of  " + username + " successful";
     $("#registerButton").hide();
-    $("#successButton").show();
 
+    $("#redirectionText").show();
     $("#usernameField").hide();
     $("#emailField").hide();
     $("#passwordField").hide();

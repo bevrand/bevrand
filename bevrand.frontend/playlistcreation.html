@@ -9,12 +9,19 @@
     <link rel="shortcut icon" href="images/favicon.ico">
     <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 </head>
-<body class="homepage is-preload">
 <div id="page-wrapper">
     <div id="navbar">
-        <a class="navbar-brand" href="home.html">The Beverage Randomizer</a>
-        <a class="nav-link" id="navlinkProfile" href="/profile.html">Profile</a>
-        <i class="fa fa-user" style="font-size:32px"></i>
+        <a class="navbar-header" href="index.html">bevrand</a>
+        <div id="iconSideBar" class="sidebar">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNavbar()">×</a>
+            <a href="index.html">Home</a>
+            <a id="navlinkProfile" href="profile.html">Profile</a>
+            <a id="navlinkLogout" href="index.html">Logout</a>
+        </div>
+
+        <div id="closedSideBar">
+            <a class="fa fa-user fa-2x navbar-icon" id="userIconNavbar" onclick="openNavbar()"></a>
+        </div>
     </div>
 
     <!-- Banner -->
@@ -24,11 +31,10 @@
 
             <h3 id="playlistCreationName"></h3><br>
 
-            <a onclick="addNewBeverage()" class="fa fa-plus-circle" style="font-size:32px;color:#09E983"><span class="label">Add beverage</span></a><br>
+            <a onclick="addNewBeverage()" class="fa fa-plus-circle fa-4x" style="color:#09E983"><span class="label">Add beverage</span></a><br>
             <div class="notify"><span id="notifyType" class="">Something went wrong</span></div>
 
             <input type="text" placeholder="Beverage Name" id="beverageAdditionField"><br>
-
 
             <a class="button randomize" id="addBeverage"><strong>Ok</strong></a>
             <a class="button randomize" id="cancelAddBeverage"><strong>Cancel</strong></a>
@@ -71,5 +77,6 @@
 <script src="assets/js/main.js"></script>
 <script src="assets/js/playlistCreation.js"></script>
 <script src="assets/js/jwtParser.js"></script>
+<script src="assets/js/navbar.js"></script>
 </body>
 </html>

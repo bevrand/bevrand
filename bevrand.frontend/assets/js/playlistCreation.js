@@ -115,7 +115,7 @@ $("#createPlayList").click(function () {
 });
 
 $("#successButton").click(function ()  {
-    window.location.href = 'profile.html';
+    window.location.href = 'index.html';
 });
 
 function postDrinkToBackEnd(randomizeList) {

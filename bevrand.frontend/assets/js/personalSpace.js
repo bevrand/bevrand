@@ -15,6 +15,10 @@ $(document).ready(function () {
     $('#playListCreationField').hide();
     $('#okPlayListCreation').hide();
     $('#cancelPlayListCreation').hide();
+
+    $('#usernamePersonal')
+        .text("Username: " + username);
+
     getPersonalPlaylists(username, function (playlists) {
         appendPlaylistToWorkspace(playlists);
     });

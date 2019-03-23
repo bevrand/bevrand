@@ -6,14 +6,15 @@ var config = {
 var token = "";
 
 $(document).ready(function () {
-    $('#loggedOnButton').hide();
-    $('#profileButton').hide();
+    $("#redirectionText").hide();
     token = localStorage.getItem("jwt");
 
     if (token){
         console.log(token);
         var username = parseJwt(token)['username'];
         toggleLoginFields(username);
+        $("#redirectionText").show();
+        redirectToHomepage(3);
     }
 });
 
@@ -26,6 +27,9 @@ $("#loginForm").submit(function( event ) {
     loginUser(userToLogon);
     toggleLoginFields(username);
     event.preventDefault();
+
+    $("#redirectionText").show();
+    redirectToHomepage(3);
 });
 
 function loginUser(userList) {
@@ -66,8 +70,6 @@ function loginUser(userList) {
 function toggleLoginFields(username) {
     document.getElementById("welcomeBannerText").textContent = `Welcome ${username}`;
     $('#loginButton').hide();
-    $('#loggedOnButton').show();
-    $('#profileButton').show();
 
     $('#usernameField').hide();
     $('#emailField').hide();

@@ -13,15 +13,22 @@
 <body class="homepage is-preload">
 <div id="page-wrapper">
     <div id="navbar">
-        <a class="navbar-brand" href="index.html">The Beverage Randomizer</a>
-        <i class="fa fa-user" style="font-size:32px"></i>
+        <a class="navbar-header" href="index.html">bevrand</a>
+        <div id="iconSideBar" class="sidebar">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNavbar()">×</a>
+            <a href="index.html">Home</a>
+            <a id="navlinkLogin" href="login.html">Login</a>
+        </div>
+
+        <div id="closedSideBar">
+            <a class="fa fa-user fa-2x navbar-icon" id="userIconNavbar" onclick="openNavbar()"></a>
+        </div>
     </div>
 
-    <!-- Banner -->
-    <section id="banner">
-        <header>
-
-            <h2 id="signUpText">Thank you for signing up!</h2>
+    <!-- Main -->
+    <section id="readablemain">
+            <h2 id="signUpText">Start your Adventure now!</h2>
+            <h3 id="redirectionText">Redirecting you to your profile</h3>
             <h3 id="playlistCreationName"></h3><br>
             <form id="registrationForm"><br>
 
@@ -32,10 +39,7 @@
             <input type="password" placeholder="Re-type Password" id="passwordVerificationField" required><br>
 
             <input type="submit" value="Sign up!" class="button randomize" id="registerButton">
-
-            <a class="button randomize" id="successButton"><strong>Success! Click Here</strong></a>
             </form >
-        </header>
     </section>
 
     <!-- Footer -->
@@ -69,5 +73,7 @@
 <script src="assets/js/register.js"></script>
 <script src="assets/js/login.js"></script>
 <script src="assets/js/jwtParser.js"></script>
+<script src="assets/js/navbar.js"></script>
+<script src="assets/js/redirection.js"></script>
 </body>
 </html>
