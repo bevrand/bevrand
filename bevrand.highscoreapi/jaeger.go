@@ -9,7 +9,7 @@ import (
 	"io"
 )
 
-// Init returns an instance of Jaeger Tracer that samples 100% of traces and logs all spans to stdout.
+// InitJaeger returns an instance of Jaeger Tracer that samples 100% of traces and logs all spans to stdout.
 func InitJaeger(service string, host string) (opentracing.Tracer, io.Closer) {
 	cfg := &config.Configuration{
 		Sampler: &config.SamplerConfig{
@@ -17,7 +17,7 @@ func InitJaeger(service string, host string) (opentracing.Tracer, io.Closer) {
 			Param: 1,
 		},
 		Reporter: &config.ReporterConfig{
-			LogSpans: true,
+			LogSpans:           true,
 			LocalAgentHostPort: host,
 		},
 	}
@@ -30,7 +30,8 @@ func InitJaeger(service string, host string) (opentracing.Tracer, io.Closer) {
 	return tracer, closer
 }
 
-func PrintServerInfo(ctx context.Context, serverInfo string){
+// PrintServerInfo prints some server information to jaeger
+func PrintServerInfo(ctx context.Context, serverInfo string) {
 	span, _ := opentracing.StartSpanFromContext(ctx, "ServerInfo")
 	defer span.Finish()
 

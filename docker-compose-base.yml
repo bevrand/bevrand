@@ -130,6 +130,19 @@ services:
       - playlistapi
       - authenticationapi
 
+  recommendationapi:
+    container_name: recommendationapi
+    build: ./bevrand.recommendationapi
+    image: "bevrand/recommendationapi:${CIRCLE_SHA1}"
+    ports:
+      - 4590:5000
+    depends_on:
+      - proxyapi
+      - neo4j
+      - jaeger-agent
+    environment:
+      - GO_ENV=docker
+
   dataseeder:
     container_name: dataseeder
     build: ./bevrand.dataseeder
@@ -163,6 +176,26 @@ services:
     environment:
     - PYTHON_ENV=Test
 
+  systemtest:
+    container_name: system_tests
+    build: ./bevrand.systemtests
+    image: "bevrand/systemtests:${CIRCLE_SHA1}"
+    depends_on:
+    - randomizerapi
+    - playlistapi
+    - authenticationapi
+    - proxyapi
+    - highscoreapi
+    - dataseeder
+    links:
+    - randomizerapi
+    - playlistapi
+    - authenticationapi
+    - proxyapi
+    - highscoreapi
+    environment:
+    - RUBY_ENV=Docker
+
   els:
     image: "bevrand/dockerels:$CIRCLE_SHA1"
     build: ./deployment/els
@@ -178,7 +211,6 @@ services:
         hard: -1
     ports:
     - 9200:9200
-
 
   kibana:
     image: docker.elastic.co/kibana/kibana:6.0.0
@@ -282,3 +314,11 @@ services:
       - frontendapi
     ports:
       - "80:5000"
+
+  neo4j:
+    container_name: neo4j
+    image: "bevrand/dockerneo:${CIRCLE_SHA1}"
+    build: ./deployment/neo4j
+    ports:
+      - "7474:7474"
+      - "7687:7687"

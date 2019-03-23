@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestInitJaeger(t *testing.T){
+func TestInitJaeger(t *testing.T) {
 	expectedName := "testjaeger"
 	tracer, _ := InitJaeger(expectedName, "localhost:4570")
 
@@ -12,4 +12,3 @@ func TestInitJaeger(t *testing.T){
 		t.Errorf("tracer not returned")
 	}
 }
-
