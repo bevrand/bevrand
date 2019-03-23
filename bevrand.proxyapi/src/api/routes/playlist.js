@@ -16,10 +16,12 @@ router.get('/playlists', controller.playlists);
 router.get(/public/, reRouteTo(playlistApi));
 
 // prettier-ignore
-router
-  .route(/private/)
-    .all(validateJwtHeader())
-    .get(controller.playlists)
-    .post(reRouteTo(playlistApi))
-    .put(reRouteTo(playlistApi))
-    .delete(reRouteTo(playlistApi));
+router.route(/private/)
+  .all(validateJwtHeader())
+  .get(controller.playlists)
+  .post(reRouteTo(playlistApi))
+  .put(reRouteTo(playlistApi))
+  .delete(reRouteTo(playlistApi));
+
+
+module.exports = router;

@@ -1,7 +1,4 @@
-const {
-  httpPostRequest,
-  httpRequest,
-} = require('../utils/tracing/httpRequestWithTracing');
+const { httpPostRequest } = require('../utils/tracing/httpRequestWithTracing');
 const { Tags } = require('opentracing');
 const tracer = require('../lib/tracing/tracerClass');
 
@@ -32,20 +29,19 @@ const requestRandomizePost = endpoint => {
       },
       span,
     }).then(result => {
-        span.setTag(Tags.HTTP_STATUS_CODE, 200);
-        span.log({
-          event: 'randomize-result',
-          result: result,
-        });
-        span.finish();
-        return res.send(result);
-      })
-      .catch(err => {
-        span.setTag(Tags.ERROR, true);
-        span.setTag(Tags.HTTP_STATUS_CODE, err.statusCode || 500);
-        span.finish();
-        return next(err);
+      span.setTag(Tags.HTTP_STATUS_CODE, 200);
+      span.log({
+        event: 'randomize-result',
+        result: result,
       });
+      span.finish();
+      return res.send(result);
+    }).catch(err => {
+      span.setTag(Tags.ERROR, true);
+      span.setTag(Tags.HTTP_STATUS_CODE, err.statusCode || 500);
+      span.finish();
+      return next(err);
+    });
   };
 };
 

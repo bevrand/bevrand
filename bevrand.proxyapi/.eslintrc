@@ -8,8 +8,7 @@
   "parserOptions": { "ecmaVersion": 2018 },
   "rules": {
     "no-console": "warn",
-    "import/order": ["error", {"groups":["builtin", "external", "parent", "sibling", "index"] }],
-    "indent": "warn",
+    "indent": ["warn", 2],
     "no-use-before-define": ["error", {
       "functions": false,
       "classes": true

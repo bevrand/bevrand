@@ -1,7 +1,4 @@
 const config = require('../config');
-const jwt = require('jsonwebtoken');
-const Promise = require('bluebird');
-const { requestPipeGet } = require('../helpers/requestPipes');
 const tracer = require('../lib/tracing/tracerClass');
 const { Tags } = require('opentracing');
 const { httpRequest } = require('../lib/tracing/httpRequestWithTracing');

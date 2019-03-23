@@ -1,13 +1,14 @@
 const express = require('express');
-const router = express.Router();
-
 const { validateJwtTokenMiddleware } = require('./../helpers/jwtToken');
 const config = require('../config');
+const controller = require('../controllers/randomizer');
+
+const router = express.Router();
 
 router.post(
   '/v2/randomize',
   validateJwtTokenMiddleware,
-  requestRandomizePost(config.randomizerApi)
+  controller.requestRandomizePost(config.randomizerApi)
 );
 
-module.exports = { router };
+module.exports = router;

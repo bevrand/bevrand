@@ -1,8 +1,8 @@
 const express = require('express');
-const config = require('../config');
-const router = express.Router();
 const controller = require('../controllers/highscore');
+
+const router = express.Router();
 
 router.get('/highscore', controller.handleHighscore);
 
-module.exports = { router };
+module.exports = router;

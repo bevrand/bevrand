@@ -14,4 +14,4 @@ router.post(
 
 router.post('/register', registerUser(config.authenticationApi));
 
-module.exports = { router };
+module.exports = router;
