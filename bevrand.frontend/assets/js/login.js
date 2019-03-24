@@ -35,7 +35,7 @@ $("#loginForm").submit(function( event ) {
 function loginUser(userList) {
     $.ajax({
         type: "POST",
-        url: `${config.proxyHostname}/api/login`,
+        url: `${config.proxyHostname}/authentication-api/login`,
         data: userList,
         contentType: "application/json",
         success: function (data) {

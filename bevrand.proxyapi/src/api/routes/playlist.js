@@ -12,8 +12,8 @@ router.get('/v2/frontpage', controller.frontpage);
 
 router.get('/playlists', controller.playlists);
 
-// catch all other route possibilities for this path, and send them directly to playlist api
-router.get(/public/, reRouteTo(playlistApi));
+// TODO: only reroute requests with public path to playlistApi
+// router.get(/public/, reRouteTo(playlistApi));
 
 // prettier-ignore
 router.route(/private/)
@@ -22,6 +22,8 @@ router.route(/private/)
   .post(reRouteTo(playlistApi))
   .put(reRouteTo(playlistApi))
   .delete(reRouteTo(playlistApi));
+
+router.use(reRouteTo(playlistApi));
 
 
 module.exports = router;

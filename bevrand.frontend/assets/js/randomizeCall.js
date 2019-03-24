@@ -83,7 +83,7 @@ $("#randomizebutton").click(function () {
     $('#navbar').hide();
     $.ajax({
         type: "POST",
-        url: `${config.proxyHostname}/api/v2/randomize`,
+        url: `${config.proxyHostname}/randomize-api/v2/randomize`,
         data: JSON.stringify(randomizeList),
         contentType: "application/json",
         success: function (data) {
@@ -104,7 +104,7 @@ $("#randomizebutton").click(function () {
 function getAllLists(callback) {
     $.ajax({
         type: "GET",
-        url: `${config.proxyHostname}/api/v2/frontpage`,
+        url: `${config.proxyHostname}/playlist-api/v2/frontpage`,
         success: function (data) {
             callback(data);
         }
@@ -114,7 +114,7 @@ function getAllLists(callback) {
 function getUserPlaylist(callback) {
     $.ajax({
         type: "GET",
-        url: `${config.proxyHostname}/api/playlists?username=${username}`,
+        url: `${config.proxyHostname}/playlist-api/private?username=${username}`,
         success: function (data) {
             callback(data);
         }

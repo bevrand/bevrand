@@ -2,16 +2,16 @@ const express = require('express');
 
 const router = express.Router();
 
-router.use('/auth', require('./authentication'));
-router.use('/highscore', require('./highscore'));
-router.use('/playlist', require('./playlist'));
-router.use('/randomizer', require('./randomizer'));
+router.use('/authentication-api', require('./authentication'));
+router.use('/highscore-api', require('./highscore'));
+router.use('/playlist-api', require('./playlist'));
+router.use('/randomize-api', require('./randomizer'));
 
 // Backwards compatibility:
-router.use('/', require('./authentication'));
-router.use('/', require('./highscore'));
-router.use('/', require('./playlist'));
-router.use('/', require('./randomizer'));
+router.use('/api', require('./authentication'));
+router.use('/api', require('./highscore'));
+router.use('/api', require('./playlist'));
+router.use('/api', require('./randomizer'));
 
 
 module.exports = router;

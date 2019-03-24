@@ -5,13 +5,13 @@ The proxy-api aims to provide a gateway to the different microservices of the Be
 ## Routes
 |                 |path                        |Protected |  Methods   |
 |-----------------|----------------------------|-------|---|
-|Login            |`/auth/login`               | false | POST  |
-|Register         |`/auth/register`            | false | POST  |
-|Highscore        |`/highscore/highscore`      | false | GET  |
-|Frontpage        |`/playlist/v2/frontpage`    | false | GET  |
-|Public playlists |`/playlists/playlists`      | false | GET  |
-|Private playlists|`/playlists/private`        | true  | GET,POST,PUT,DELETE  |
-|Randomize        |`/randomizer/v2/randomize`  | false | POST  |
+|Login            |`/authentication-api/login`               | false | POST  |
+|Register         |`/authentication-api/register`            | false | POST  |
+|Highscore        |`/highscore-api/highscore`      | false | GET  |
+|Frontpage        |`/playlist-api/v2/frontpage`    | false | GET  |
+|Public playlists |`/playlist-api/playlists`      | false | GET  |
+|Private playlists|`/playlist-api/private`        | true  | GET,POST,PUT,DELETE  |
+|Randomize        |`/randomize-api/v2/randomize`  | false | POST  |
 
 
 ## Getting Started
