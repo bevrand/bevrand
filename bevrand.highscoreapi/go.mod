@@ -9,7 +9,7 @@ require (
 	github.com/mediocregopher/radix.v2 v0.0.0-20181115013041-b67df6e626f9
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
-	github.com/opentracing/opentracing-go v1.0.2
+	github.com/opentracing/opentracing-go v1.1.0
 	github.com/pkg/errors v0.8.0 // indirect
 	github.com/stretchr/testify v1.3.0
 	github.com/uber-go/atomic v1.3.2 // indirect
