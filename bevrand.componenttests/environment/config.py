@@ -33,7 +33,4 @@ class Test(BaseConfig):
     proxy_url = "http://proxyapi:5000"
     proxy_endpoints = Proxy()
     highscore_url = "http://highscoreapi:5000/api/v1/highscores/"
-    recommendation_url = "http://recommendation:5000/api/v1/"
-
-
-
+    recommendation_url = "http://recommendationapi:5000/api/v1/"
