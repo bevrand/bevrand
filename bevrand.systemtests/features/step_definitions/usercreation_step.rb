@@ -11,7 +11,7 @@ end
 
 When /^we create a new user$/ do
   user = create_new_user
-  sut = "#{url}/register"
+  sut = "#{url}/authentication-api/register"
   @result = RestClient.post sut, user, { content_type: :json, accept: :json }
 end
 
