@@ -10,6 +10,7 @@ import (
 	"gopkg.in/oauth2.v3/utils/uuid"
 	"log"
 	"net/http"
+	"sort"
 	"strconv"
 )
 
@@ -68,6 +69,11 @@ func ShowHighScores(ctx context.Context, user string, playlist string, c *gin.Co
 		openlog.String(statusCode, "200"),
 		openlog.String(spanBody, string(body)),
 	)
+
+	sort.Slice(redisResult, func(i, j int) bool {
+		return redisResult[i].Rolled > redisResult[j].Rolled
+	})
+
 	return redisResult, http.StatusOK
 }
 
