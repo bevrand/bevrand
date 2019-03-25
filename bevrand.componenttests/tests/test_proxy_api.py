@@ -30,7 +30,7 @@ class ProxyApiTestsPlaylistsPublic(test_setup_fixture.TestFixture):
 
 class ProxyApiTestsPlaylistsPrivate(test_setup_fixture.TestFixture):
     def test_should_be_able_to_retrieve_a_user_playlist(self):
-        sut = f'{self.proxy_url}{self.proxy_endpoints.playlist_private}?username={self.data_seeded_user}'
+        sut = f'{self.proxy_url}{self.proxy_endpoints.playlist_private}/{self.data_seeded_user}'
         print(sut)
         response = self.get_without_auth_header(sut)
         self.assertEqual(200, response.status_code)

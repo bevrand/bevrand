@@ -65,7 +65,7 @@ class PlayListApiPrivateTests(test_setup_fixture.TestFixture):
         resp = self.get_without_auth_header(sut)
         self.assertEqual(200, resp.status_code)
         for x in resp.json()['result']:
-            self.assertTrue(x.islower())
+            self.assertTrue(x['list'].islower())
 
     def test_should_be_able_to_create_playlists_for_existing_users(self):
         new_user = HelperClass.random_word_letters_only(25)
