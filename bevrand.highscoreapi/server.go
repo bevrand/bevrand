@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bevrand.highscoreapi/jaeger"
 	"context"
 	"fmt"
 	"github.com/joho/godotenv"
@@ -11,8 +12,10 @@ import (
 )
 
 var db *pool.Pool
+
 // GLOBALNAME is the user name for the global count
 var GLOBALNAME = "global"
+
 // GLOBALLIST is the playlist name for the global count
 var GLOBALLIST = "globalhighscore"
 
@@ -48,7 +51,7 @@ func main() {
 	jaegerConfig := jaegerURL + ":" + jaegerPort
 	println(jaegerConfig)
 
-	tracer, closer := InitJaeger("HighScoreApi", jaegerConfig)
+	tracer, closer := jaeger.InitJaeger("HighScoreApi", jaegerConfig)
 	defer closer.Close()
 	opentracing.SetGlobalTracer(tracer)
 
@@ -60,7 +63,7 @@ func main() {
 	ctx = opentracing.ContextWithSpan(ctx, span)
 
 	logValue := fmt.Sprintf("Starting server for HighScores!")
-	PrintServerInfo(ctx, logValue)
+	jaeger.PrintServerInfo(ctx, logValue)
 	span.Finish()
 
 	//init router
@@ -77,6 +80,6 @@ func GetEnvFile() {
 
 	err := godotenv.Load(".env." + env)
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 }

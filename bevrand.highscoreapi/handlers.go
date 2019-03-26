@@ -100,6 +100,7 @@ func CreateNewHighScore(ctx context.Context, user string, playlist string, drink
 		if err != nil {
 			log.Fatal(err)
 		}
+		IncreaseGlobalCount(ctx, drink)
 		return
 	}
 

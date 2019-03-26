@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"github.com/alicebob/miniredis"
 	"github.com/gin-gonic/gin"
@@ -46,7 +47,7 @@ func TestRouteShowAllHighScore(t *testing.T) {
 	defer s.Close()
 
 	// create a new pool
-	db, err =  pool.New("tcp", s.Addr(), 2)
+	db, err = pool.New("tcp", s.Addr(), 2)
 	if err != nil {
 		panic(err)
 	}
@@ -85,7 +86,7 @@ func TestRouteShowHighScoreNonExistent(t *testing.T) {
 	defer s.Close()
 
 	// create a new pool
-	db, err =  pool.New("tcp", s.Addr(), 2)
+	db, err = pool.New("tcp", s.Addr(), 2)
 	if err != nil {
 		panic(err)
 	}
@@ -104,7 +105,7 @@ func TestRouteShowHighScore(t *testing.T) {
 	defer s.Close()
 
 	// create a new pool
-	db, err =  pool.New("tcp", s.Addr(), 2)
+	db, err = pool.New("tcp", s.Addr(), 2)
 	if err != nil {
 		panic(err)
 	}
@@ -133,6 +134,117 @@ func TestRouteShowHighScore(t *testing.T) {
 	for _, resp := range response {
 		assert.Contains(t, drinks, resp.Drink)
 	}
+}
+
+func TestRouteIncrementHighscore(t *testing.T) {
+	s, err := miniredis.Run()
+	if err != nil {
+		panic(err)
+	}
+	defer s.Close()
+
+	// create a new pool
+	db, err = pool.New("tcp", s.Addr(), 2)
+	if err != nil {
+		panic(err)
+	}
+
+	router := InitRoutes()
+
+	drink := PostObject{"beer"}
+	body, err := json.Marshal(drink)
+	if err != nil {
+		panic(err)
+	}
+	req, _ := http.NewRequest("POST", "/api/v1/highscores/marvin/paranoid/", bytes.NewBuffer(body))
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	assert.Equal(t, http.StatusCreated, w.Code)
+}
+
+func TestRouteIncrementHighscoreWithBadBody(t *testing.T) {
+	s, err := miniredis.Run()
+	if err != nil {
+		panic(err)
+	}
+	defer s.Close()
+
+	// create a new pool
+	db, err = pool.New("tcp", s.Addr(), 2)
+	if err != nil {
+		panic(err)
+	}
+
+	router := InitRoutes()
+
+	drink := ErrorModel{"beer", "someuniquecode"}
+	body, err := json.Marshal(drink)
+	if err != nil {
+		panic(err)
+	}
+	req, _ := http.NewRequest("POST", "/api/v1/highscores/marvin/paranoid/", bytes.NewBuffer(body))
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	assert.Equal(t, http.StatusBadRequest, w.Code)
+
+	var response ErrorModel
+	err = json.Unmarshal([]byte(w.Body.String()), &response)
+	assert.Contains(t, response.Message, "have to provide a body")
+}
+
+func TestRouteIncrementHighscoreWithNilBody(t *testing.T) {
+	s, err := miniredis.Run()
+	if err != nil {
+		panic(err)
+	}
+	defer s.Close()
+
+	// create a new pool
+	db, err = pool.New("tcp", s.Addr(), 2)
+	if err != nil {
+		panic(err)
+	}
+
+	router := InitRoutes()
+
+	req, _ := http.NewRequest("POST", "/api/v1/highscores/marvin/paranoid/", bytes.NewBuffer(nil))
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	assert.Equal(t, http.StatusBadRequest, w.Code)
+
+	var response ErrorModel
+	err = json.Unmarshal([]byte(w.Body.String()), &response)
+	assert.Contains(t, response.Message, "EOF")
+}
+
+func TestRouteIncrementHighscoreGlobalUser(t *testing.T) {
+	s, err := miniredis.Run()
+	if err != nil {
+		panic(err)
+	}
+	defer s.Close()
+
+	// create a new pool
+	db, err = pool.New("tcp", s.Addr(), 2)
+	if err != nil {
+		panic(err)
+	}
+
+	router := InitRoutes()
+
+	drink := PostObject{"beer"}
+	body, err := json.Marshal(drink)
+	if err != nil {
+		panic(err)
+	}
+	req, _ := http.NewRequest("POST", "/api/v1/highscores/global/paranoid/", bytes.NewBuffer(body))
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	assert.Equal(t, http.StatusBadRequest, w.Code)
+
+	var response ErrorModel
+	err = json.Unmarshal([]byte(w.Body.String()), &response)
+	assert.Contains(t, response.Message, "is a restricted user")
 }
 
 func performRequest(r http.Handler, method, path string) *httptest.ResponseRecorder {
