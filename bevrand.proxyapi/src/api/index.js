@@ -1,10 +1,10 @@
 const express = require('express');
 const logger = require('morgan');
+const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const swaggerUi = require('swagger-ui-express');
 const yamljs = require('yamljs');
-const config = require('../config');
 const routes = require('./routes');
 const { errorHandler, setHttpStatus, notFoundHandler } = require('./middlewares/errorHandling');
 
@@ -13,13 +13,13 @@ const swaggerDocument = yamljs.load('swagger.yaml');
 const app = express();
 
 app.use((req, res, next) => {
-  //Only needed when running react app locally
-  if (config.env === 'development' || config.env === 'local') {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-type,Authorization');
-  }
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+
   next();
 });
+
+app.options('*', cors());
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -41,6 +41,5 @@ app.use(notFoundHandler);
 app.use(setHttpStatus);
 
 app.use(errorHandler);
-
 
 module.exports = app;

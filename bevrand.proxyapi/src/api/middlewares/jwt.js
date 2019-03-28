@@ -1,8 +1,8 @@
-const { validateSignedPayload } = require('../services/jwtTokens');
+const { validateSignedPayloadImproved } = require('../services/jwtTokens');
 
 exports.validateJwtInBody = (req, res, next) => {
   try {
-    validateSignedPayload(req.body);
+    validateSignedPayloadImproved(req.body);
 
     // Remove jwttoken before sending it to randomize api
     delete req.body.jwtheader;
