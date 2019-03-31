@@ -22,9 +22,9 @@ spec:
       containers:
       - env:
         - name: POSTGRES_PASSWORD
-          value: postgres
+          value: 98ospUMC4Xgd3TR0Fih5n1AVv
         - name: POSTGRES_USER
-          value: postgres
+          value: aj2TKQFBLpUOG1g
         image: bevrand/dockergres:production
         name: {{ include "bevrand.name" . }}-dockergres
         ports:

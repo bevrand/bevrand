@@ -105,12 +105,12 @@ context('Beverage Randomizer Test', () => {
     describe('Footer has hyperlinks', function () {
         it('Should be able to reach footer', function () {
             cy.visit('http://0.0.0.0/#footer');
-            cy.get('#footer > div > div > div > section > header > h3').then(($footerText) => {
-                expect($footerText.text()).to.eq('Wanne reach out?');
+            cy.get('#footer > section > header > h3').then(($footerText) => {
+                expect($footerText.text()).to.eq('Wanna reach out?');
             })});
         it('Should be able to use footer button github', function () {
             cy.visit('http://0.0.0.0/#footer');
-            cy.get('#footer > div > div > div > section > ul > li > a')
+            cy.get('#footer > section > a')
                 .should('have.attr', 'href').and('include', 'github.com/bevrand');
         })
     });

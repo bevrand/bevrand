@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "bevrand.name" . }}-highscoreapi
+  name: highscoreapi
   labels:
     app.kubernetes.io/name: {{ include "bevrand.name" . }}-highscoreapi
     helm.sh/chart: {{ include "bevrand.chart" . }}
@@ -11,5 +11,5 @@ spec:
   ports:
     - port: {{ .Values.service.port }}
   selector:
-    app.kubernetes.io/name: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "bevrand.name" . }}-highscoreapi
     app.kubernetes.io/instance: {{ .Release.Name }}

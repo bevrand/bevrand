@@ -1,8 +1,6 @@
 <!DOCTYPE HTML>
 <!--
-	Helios by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+	Beverage randomizer!!!
 -->
 <html>
 	<head>
@@ -10,10 +8,27 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" href="assets/css/beerglass.css" />
+		<link rel="stylesheet" href="assets/css/responsive.min.css" />
+		<link rel="shortcut icon" href="images/favicon.ico">
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 	</head>
 	<body class="homepage is-preload">
 		<div id="page-wrapper">
+			<div id="navbar">
+				<a class="navbar-header" href="#header">bevrand</a>
+				<div id="iconSideBar" class="sidebar">
+					<a href="javascript:void(0)" class="closebtn" onclick="closeNavbar()">×</a>
+					<a id="navlinkLogin" href="login.html">Login</a>
+					<a id="navlinkRegister" href="register.html">Register</a>
+					<a id="navlinkProfile" href="profile.html">Profile</a>
+					<a id="navlinkLogout" href="#header">Logout</a>
+				</div>
+
+				<div id="closedSideBar">
+					<a class="fa fa-user fa-2x navbar-icon" id="userIconNavbar" onclick="openNavbar()"></a>
+				</div>
+			</div>
 
 			<!-- Header -->
 				<div id="header">
@@ -44,7 +59,7 @@
 
 			<!-- Carousel -->
 				<section class="carousel">
-					<div class="reel">
+					<div class="reel" id="playlistCarousel">
 						<!-- Playlist articles will be placed here -->>
 					</div>
 				</section>
@@ -81,7 +96,7 @@
 						  </div>
 						<h2 id="randomizedDrink"></h2>
 						<div class="randomizeButton">
-							<a class="button randomize" id="randomizebutton"><strong>Randomize!</strong></a>
+							<a class="button" id="randomizebutton"><strong>Randomize!</strong></a>
 						</div>
 					</article>
 
@@ -89,47 +104,35 @@
 
 			<!-- Footer -->
 				<div id="footer">
-					<div class="container">
+					<!-- Contact -->
+						<section class="contact">
+							<header>
+								<h3>Wanna reach out?</h3>
+							</header>
+							<p>Our project is open source so feel free to clone from our github.</p>
+							<a href="https://www.github.com/bevrand/bevrand" class="icon fa-github"><span class="label">Github</span></a>
+						</section>
 
-						<div class="row">
-							<div class="col-12">
-
-								<!-- Contact -->
-									<section class="contact">
-										<header>
-											<h3>Wanne reach out?</h3>
-										</header>
-										<p>Our project is open source so feel free to clone from our github.</p>
-										<ul class="icons">
-											<li><a href="https://www.github.com/bevrand/bevrand" class="icon fa-github"><span class="label">Github</span></a></li>
-										</ul>
-									</section>
-
-								<!-- Copyright -->
-									<div class="copyright">
-										<ul class="menu">
-											<li>&copy; Copyright (c) 2017 bevrand</li><li>Beverage Randomizer</li>
-										</ul>
-									</div>
-
-							</div>
-
+					<!-- Copyright -->
+						<div class="copyright">
+							<a>&copy; Copyright (c) 2017 bevrand</a><br>
+							<a>Beverage Randomizer</a>
 						</div>
-					</div>
+						</div>
 				</div>
 
-		</div>
-
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.dropotron.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
-			<script src="assets/js/beerglass.js"></script>
-			<script src="assets/js/randomizeCall.js"></script>
+<!-- Scripts -->
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/jquery.dropotron.min.js"></script>
+<script src="assets/js/jquery.scrolly.min.js"></script>
+<script src="assets/js/jquery.scrollex.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/beerGlass.js"></script>
+<script src="assets/js/randomizeCall.js"></script>
+<script src="assets/js/jwtParser.js"></script>
+<script src="assets/js/navbar.js"></script>
 	</body>
 </html>

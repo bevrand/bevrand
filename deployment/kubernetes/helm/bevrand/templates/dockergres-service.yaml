@@ -11,8 +11,6 @@ spec:
   type: ClusterIP
   ports:
     - port: 5432
-      targetPort: 5432
-      name: postgresport
   selector:
-    app.kubernetes.io/name: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "bevrand.name" . }}-dockergres
     app.kubernetes.io/instance: {{ .Release.Name }}

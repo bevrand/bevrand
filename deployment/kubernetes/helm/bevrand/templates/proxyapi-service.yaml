@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "bevrand.name" . }}-proxyapi
+  name: proxyapi
   labels:
     app.kubernetes.io/name: {{ include "bevrand.name" . }}-proxyapi
     helm.sh/chart: {{ include "bevrand.chart" . }}
@@ -11,5 +11,5 @@ spec:
   ports:
     - port: {{ .Values.service.port }}
   selector:
-    app.kubernetes.io/name: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "bevrand.name" . }}-proxyapi
     app.kubernetes.io/instance: {{ .Release.Name }}

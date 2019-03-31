@@ -3,39 +3,42 @@ $("#randomizebutton").click(function() {
     $("#randomizebutton").hide();
     $('#randomizedDrink').hide();
 
-    $('#liquid') // Lower liquid level
-        .animate({
-            height: '-10px'
-        }, 2000);
-
-    $('.beer-foam') // Lower beer foam
-        .animate({
-            bottom: '20px'
-        }, 1700);
+    $('.pour').css({
+        height: '0px',
+        marginTop: '0px'});
 
     $('.pour') // Start pouring down
-        .delay(0)
         .animate({
             height: '360px'
         }, 2500)
         .slideDown(500);
-        //.delay(1600);
+
+    $('#liquid') // Lower liquid level
+        .animate({
+            height: '-10px'
+        }, 1200);
+
+    $('.beer-foam') // Lower beer foam
+        .animate({
+            bottom: '20px'
+        }, 1000);
 
     $('#liquid') // I Said Fill 'Er Up!
-        //.delay(100)
+        .delay(1000)
         .animate({
             height: '200px'
-        }, 2150);
+        }, 2000);
 
     $('.beer-foam') // Keep that Foam Rollin' Toward the Top! Yahooo!
-        //.delay(100)
+        .delay(1000)
         .animate({
             bottom: '200px'
-        }, 2800);
+        }, 2400);
 
     $('.pour') // Stop pouring beer
         .animate({
-            height: '0px'
+            height: '0px',
+            marginTop: '360px'
         }, 1500)
         //.delay(1600)
         .slideUp(500);
@@ -46,8 +49,8 @@ $("#randomizebutton").click(function() {
             .show()
         $('#randomizedDrink')
             .show()
+        $('#navbar')
+            .show()
     }, 4500);
-
-
 
 });

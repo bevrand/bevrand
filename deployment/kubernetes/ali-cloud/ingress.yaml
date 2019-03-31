@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/service-weight: ''
+  creationTimestamp: '2019-03-31T13:32:30Z'
+  generation: 7
+  name: bevrand-public
+  namespace: default
+  resourceVersion: '1568839'
+  selfLink: /apis/extensions/v1beta1/namespaces/default/ingresses/bevrand-public
+  uid: 6eccb419-53b9-11e9-a92e-fef524d35c7b
+spec:
+  rules:
+    - http:
+        paths:
+          - backend:
+              serviceName: proxyapi
+              servicePort: 5000
+            path: /api
+    - http:
+        paths:
+          - backend:
+              serviceName: authenticationapi
+              servicePort: 5000
+            path: /swagger
+    - http:
+        paths:
+          - backend:
+              serviceName: authenticationapi
+              servicePort: 5000
+            path: /api/Users
+    - http:
+        paths:
+          - backend:
+              serviceName: frontend
+              servicePort: 80
+            path: /
+status:
+  loadBalancer:
+    ingress:
+      - ip: 47.254.141.133

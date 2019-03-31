@@ -22,9 +22,9 @@ spec:
       containers:
       - env:
         - name: ASPNETCORE_ENVIRONMENT
-          value: '"Production"'
+          value: Production
         - name: ConnectionStrings__Postgres
-          value: '"Host=dockergres;Port=5432;Database=bevrand;Uid=6ZxJYKvpk8oLF7w;Pwd=iYhZ91kRvBX2FlyW0VTjx4!6o;"'
+          value: Host=dockergres;Port=5432;Database=bevrand;Uid=aj2TKQFBLpUOG1g;Pwd=98ospUMC4Xgd3TR0Fih5n1AVv;
         image: bevrand/authenticationapi:production
         imagePullPolicy: Always
         name: {{ include "bevrand.name" . }}-authenticationapi

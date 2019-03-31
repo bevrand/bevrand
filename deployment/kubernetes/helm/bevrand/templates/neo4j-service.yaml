@@ -12,10 +12,8 @@ spec:
   ports:
     - port: 7474
       name: neo4jport
-      targetPort: 7474
     - port: 7687
       name: otherneo4jport
-      targetPort: 7687
   selector:
-    app.kubernetes.io/name: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "bevrand.name" . }}-dockerneo
     app.kubernetes.io/instance: {{ .Release.Name }}
