@@ -1,4 +1,3 @@
-var username = '';
 var id = '';
 
 var config = {
@@ -111,7 +110,6 @@ function registerUser(userList) {
         data: userList,
         contentType: "application/json",
         success: function (data) {
-            username = data['username'];
             id = data['id'];
             $("#registerButton").hide();
             $("#usernameField").hide();
