@@ -31,7 +31,7 @@ $( "#registrationForm").submit(function( event ) {
 
 function validateUsername(username, min, max) {
     var usernameLength = username.length;
-    if (usernameLength >= max || usernameLength < min)
+    if (usernameLength > max || usernameLength < min)
     {
         document.getElementById("notifyType").textContent =
             "Username length should be between "+ min +" to "+max
@@ -50,7 +50,7 @@ function validateUsername(username, min, max) {
 
 function validateEmail(email, min, max) {
     var emailLength = email.length;
-    if (emailLength >= max || emailLength < min)
+    if (emailLength > max || emailLength < min)
     {
         document.getElementById("notifyType").textContent =
             "Email length should be between "+ min +" to "+max;
@@ -83,7 +83,7 @@ function validatePassword(password, checkPassword, min, max)
         return false;
     }
     var passwordLength = password.length;
-    if (passwordLength >= max || passwordLength < min)
+    if (passwordLength > max || passwordLength < min)
     {
         document.getElementById("notifyType").textContent =
             "Password length should be between "+ min +" to "+max;
