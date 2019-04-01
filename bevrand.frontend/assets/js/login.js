@@ -11,8 +11,8 @@ $(document).ready(function () {
     token = localStorage.getItem("jwt");
 
     if (token){
-        var username = parseJwt(token)['username'];
-        toggleLoginFields(username);
+        username = parseJwt(token)['username'];
+        toggleLoginFields();
         $("#redirectionText").show();
         redirectToHomepage(3);
     }
