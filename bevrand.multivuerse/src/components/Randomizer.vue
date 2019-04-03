@@ -1,8 +1,9 @@
 <template>
     <!-- Main -->
-    <div class="wrapper style2">
+    <div class="wrapper style2" v-bind:style="height=50">
         <div id="main" class="container special">
-            <h3 class="playlisttext" id="currentlySelectedPlayList"> {{$parent.selectedPlaylistText}} </h3>
+            <br>
+            <h3 class="randomizedtext" id="currentlySelectedPlayList"> {{$parent.selectedPlaylistDisplayName}} </h3>
             <div class="container style2">
                 <div class="pour"></div>
                 <div id="beaker">
@@ -25,8 +26,16 @@
                     </div>
                 </div>
             </div>
-            <h2 id="randomizedDrink" v-if="!isHidden">{{drink}}</h2>
-            <a class="randomizeButton" v-if="!isHidden" id="randomizebutton" v-on:click="randomizeDrink"><strong>Randomize!</strong></a>
+            <transition name="bounce">
+            <h3 id="randomizedDrink" class="randomizedtext" v-if="!isHidden">{{drink}}</h3>
+            </transition>
+            <transition name="fade">
+            <button class="randomizeButton"
+                    v-if="!isHidden"
+                    id="randomizebutton"
+                    v-on:click="randomizeDrink">
+                <strong>Randomize!</strong></button>
+            </transition>
         </div>
     </div>
 </template>
@@ -40,12 +49,13 @@ let $ = JQuery;
         data() {
             return {
                 isHidden: false,
-                drink: "Press Randomize Button!"
+                drink: "Press Randomize Button!",
             }
         },
         methods: {
             randomizeDrink: function() {
             this.isHidden = true;
+            this.drink = this.randomize();
             $('.pour').css({
                 height: '0px',
                 marginTop: '0px'});
@@ -86,53 +96,62 @@ let $ = JQuery;
                 //.delay(1600)
                 .slideUp(500);
 
-                setTimeout(function(){
-                    self.isHidden = false;
-                }, 4500);
+                setTimeout(() => this.isHidden=false, 4000 );
         },
 
         randomize: function () {
-            axios.get("http://0.0.0.0:4540/api/v2/randomize")
-                .then((response) => {
-                    this.playlists = response.data;
-                })
-                .catch(e => {
-                    this.errors.push(e)
-                })
+            this.$apiClient({
+                method: 'post',
+                url: 'http://0.0.0.0:4540/api/v2/randomize',
+                data: this.$parent.selectedPlaylist
+
+            })
+            .then((response) => {
+                this.drink = response.data['result'];
+            })
+            .catch(e => {
+                this.errors.push(e)
+            })
         },
-        setPlaylist: function (displayName) {
-            this.$emit("selectedPlaylist", displayName);
-        }
     }
 }
 </script>
 
 <style scoped>
 
-    .playlisttext {
-        margin-top: 5em;
-        margin-bottom: 20px;
+    .randomizedtext {
+        font-weight: bold;
+        margin-top: 0.5em;
+        margin-bottom: 1em;
+        font-size: 1.5em;
         text-align: center;
-        font-weight: 400;
+
     }
 
     .randomizeButton {
-        position: center;
-        display: inline-block;
+        margin:0 auto;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         background: #FF9500;
         color: #FFFFFF;
         text-align: center;
-        border-radius: 0.5em;
+        width: 7em;
+        height: 7em;
+        border-radius: 100%;
         text-decoration: none;
-        padding: 0.65em 3em 0.65em 3em;
         cursor: pointer;
         outline: 0;
         font-weight: 400;
-        -moz-transition: background-color 0.35s ease-in-out, color 0.35s ease-in-out, border-bottom-color 0.35s ease-in-out;
-        -webkit-transition: background-color 0.35s ease-in-out, color 0.35s ease-in-out, border-bottom-color 0.35s ease-in-out;
-        -ms-transition: background-color 0.35s ease-in-out, color 0.35s ease-in-out, border-bottom-color 0.35s ease-in-out;
-        transition: background-color 0.35s ease-in-out, color 0.35s ease-in-out, border-bottom-color 0.35s ease-in-out;
     }
+    button:hover,
+    .button:hover {
+        color: #fff;
+        background: #ffa500;
+    }
+
     /* Main */
 
     #main {
@@ -444,6 +463,43 @@ let $ = JQuery;
         -webkit-animation-name: drunk;
         -moz-animation-name: drunk;
         animation-name: drunk;
+    }
+
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity .5s;
+    }
+    .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+        opacity: 0;
+    }
+
+    .bounce-enter-active {
+        animation: bounce-in .5s;
+    }
+    .bounce-leave-active {
+        animation: bounce-in .5s reverse;
+    }
+
+    @keyframes bounce-in {
+        0% {
+            transform: scale(0);
+        }
+        50% {
+            transform: scale(1.5);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    .wrapper {
+        height: 35em;
+        background: #7A2F9E;
+        margin: 0 0 2em 0;
+        padding: 6em 0 6em 0;
+    }
+
+    .wrapper.style2 {
+        padding-top: 0;
     }
 
 </style>

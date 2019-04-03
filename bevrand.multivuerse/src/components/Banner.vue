@@ -2,7 +2,6 @@
     <!-- Home -->
     <div id="top" class="toppage">
         <header>
-            <h1>Hi. You're looking at <strong>bevrand</strong>.</h1>
             <p>
                 All those Beverage choices bringing you down? Feeling lucky? <br>
                 Choose a list below, click Randomize and let fate decide!
@@ -26,7 +25,10 @@
         box-shadow: inset 0px 1px 0px 0px rgba(0, 0, 0, 0.05), inset 0px 2px 3px 0px rgba(0, 0, 0, 0.1);
         padding: 8em 0 8em 0;
         text-align: center;
+        height: 40em;
         position: relative;
+        background-image: url("../assets/images/header02.jpg");
+        opacity: 0.9;
     }
 
     .toppage::after {

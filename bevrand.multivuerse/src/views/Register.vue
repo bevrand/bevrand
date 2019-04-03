@@ -39,7 +39,5 @@
     #readablemain {
         background-color: #7C7C7C;
         text-align: center;
-        padding: 4.5em 0 4.5em 0;
-        margin-bottom: 0;
     }
 </style>

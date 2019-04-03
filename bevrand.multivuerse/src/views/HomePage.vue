@@ -1,12 +1,11 @@
 <template>
-    <div>
+    <div id="homepage">
     <navbar></navbar>
     <banner></banner>
     <landingarea></landingarea>
-    <playlistselection></playlistselection>
+    <playlistselection v-on:setPlaylistToParent="setPlayList"></playlistselection>
     <randomizer></randomizer>
     <foot></foot>
-    <router-view @selectedPlaylist="setPlayList" />
     </div>
 </template>
 
@@ -16,14 +15,14 @@
     import PlaylistSelection from '../components/PlaylistSelection.vue'
     import Randomizer from '../components/Randomizer.vue'
     import Footer from '../components/Footer.vue'
-    import Navbar from "../components/Navbar";
+    import Navbar from "../components/Navbar.vue";
 
     export default {
         name: 'homepage',
         data () {
             return {
                 selectedPlaylist: null,
-                selectedPlaylistText: "select playlist"
+                selectedPlaylistDisplayName: "select playlist"
             }
         },
 
@@ -37,12 +36,17 @@
         },
         methods: {
             setPlayList(playlist) {
-                console.log(playlist)
                 this.selectedPlaylist = playlist;
-                this.selectedPlaylistText = playlist;
-            }
+                this.selectedPlaylistDisplayName = playlist['displayName'];
+            },
         },
         computed: {
         },
     }
 </script>
+
+<style scoped>
+    #homepage {
+        background-color: #ffffff;
+    }
+</style>

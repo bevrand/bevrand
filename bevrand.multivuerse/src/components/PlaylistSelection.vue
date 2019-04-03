@@ -1,58 +1,70 @@
 <template>
     <!-- Carousel -->
-    <section class="carousel">
-        <div class="reel" id="playlistCarousel">
-            <article v-for="playlist of playlists">
-                <a class="image featured" href="#main" @click='setPlaylist(playlist)'><img :src="playlist.imageUrl" :alt="playlistImageUrl" ></a>
-                <h3><a class="playlistselector" href="#main" @click='setPlaylist(playlist)' id="playlistName"> {{ playlist.displayName }} </a></h3>
+        <carousel :perPageCustom="[[320, 1], [768, 2], [1024, 3]]"
+                  :loop="true"
+                  :mouseDrag="true" id="playlistCarousel">
+            <slide v-for="playlist of playlists">
+                <span class="label">
+                <a class="image featured" href="#main" v-smooth-scroll="{ duration: 1000 }" v-on:click="setPlaylistToParent(playlist)"><img :src="playlist.imageUrl" ></a>
+                <a class="playlistselector" href="#main" v-smooth-scroll="{ duration: 1000 }" v-on:click="setPlaylistToParent(playlist)" id="playlistName"><h3>{{ playlist.displayName }}</h3>  </a>
                 <ul id="beverageList">
                     <li v-for="beverage of playlist.beverages" >
                         {{ beverage }}
                     </li>
                 </ul>
-            </article>
-        </div>
-        </section>
+                </span>
+            </slide>
+
+</carousel>
 </template>
 
 <script>
-import axios from 'axios';
+import { Carousel, Slide } from 'vue-carousel';
 
     export default {
         name: "PlaylistSelection",
         data() {
             return {
                 playlists: [],
-                errors: []
+                errors: [],
             }
         },
         created() {
-            this.getAllPlaylists();
+
         },
         methods: {
             getAllPlaylists: function () {
-                    axios.get("http://0.0.0.0:4540/api/v2/frontpage")
+                this.$apiClient.get("http://0.0.0.0:4540/api/v2/frontpage")
                         .then((response) => {
                             this.playlists = response.data;
+                            if (this.$parent.selectedPlaylist === null) {
+                                this.setPlaylistToParent(response.data[0])
+                            }
                         })
                         .catch(e => {
                             this.errors.push(e)
                         })
                 },
-            setPlaylist: function (playlist) {
-                console.log(playlist)
-                this.$emit("selectedPlaylist", playlist['displayName']);
-            }
-        }
+            setPlaylistToParent: function (selectedPlayList) {
+                this.$emit("setPlaylistToParent", selectedPlayList);
+            },
+
+        },
+        mounted() {
+            this.getAllPlaylists()
+        },
+        components: {
+            Carousel,
+            Slide,
+        },
     }
 </script>
 
 <style scoped>
 
-    /* Image */
-
     .playlistselector {
         cursor: pointer;
+        margin: 0 0 2em 0;
     }
 
     .image {
@@ -70,7 +82,7 @@ import axios from 'axios';
     .image.featured {
         display: block;
         width: 100%;
-        margin: 0 0 4em 0;
+        margin: 0 0 0 0;
         cursor: pointer;
     }
 
@@ -78,102 +90,17 @@ import axios from 'axios';
         list-style-type: none;
     }
 
-    .carousel {
-        position: relative;
-        overflow: hidden;
-        padding: 2em 0 2em 0;
-        margin-bottom: 0;
-    }
 
-    .carousel .forward,
-    .carousel .backward {
-        position: absolute;
-        top: 50%;
-        width: 6em;
-        height: 12em;
-        margin-top: -6em;
-        cursor: pointer;
-    }
-
-    .carousel .forward:before,
-    .carousel .backward:before {
-        content: '';
-        display: block;
-        width: 6em;
-        height: 6em;
-        border-radius: 100%;
-        background-color: rgba(72, 57, 73, 0.5);
-        position: absolute;
-        top: 50%;
-        margin-top: -3em;
-        -moz-transition: background-color 0.35s ease-in-out;
-        -webkit-transition: background-color 0.35s ease-in-out;
-        -o-transition: background-color 0.35s ease-in-out;
-        -ms-transition: background-color 0.35s ease-in-out;
-        transition: background-color 0.35s ease-in-out;
-        -webkit-backface-visibility: hidden;
-    }
-
-    .carousel .forward:after,
-    .carousel .backward:after {
-        content: '';
-        width: 3em;
-        height: 3em;
-        position: absolute;
-        top: 50%;
-        margin: -1.5em 0 0 0;
-        background: url("../assets/images/arrow.svg") no-repeat center center;
-    }
-
-    .carousel .forward:hover:before,
-    .carousel .backward:hover:before {
-        background-color: rgba(239, 131, 118, 0.75);
-    }
-
-    .carousel .forward {
-        right: 0;
-    }
-
-    .carousel .forward:before {
-        right: -3em;
-    }
-
-    .carousel .forward:after {
-        right: -0.25em;
-    }
-
-    .carousel .backward {
-        left: 0;
-    }
-
-    .carousel .backward:before {
-        left: -3em;
-    }
-
-    .carousel .backward:after {
-        left: -0.25em;
-        -moz-transform: scaleX(-1);
-        -webkit-transform: scaleX(-1);
-        -ms-transform: scaleX(-1);
-        transform: scaleX(-1);
-    }
-
-    .carousel .reel {
-        white-space: nowrap;
-        position: relative;
-        -webkit-overflow-scrolling: touch;
-        padding: 0 2em 0 2em;
-    }
-
-    .carousel article {
+    .VueCarousel-slide {
         display: inline-block;
-        width: 18em;
+        width: 80%;
         background: #FF9B0D;
+        border-style: solid;
+        border-width: 2em;
+        border-color: #ffffff;
         text-align: center;
-        padding: 0 1em 3em 1em;
-        margin: 0 2em 0 0;
         white-space: normal;
-        height: 25em;
+        height: 35em;
         overflow: auto;
         opacity: 1;
         -moz-transition: opacity 0.75s ease-in-out;
@@ -182,21 +109,25 @@ import axios from 'axios';
         transition: opacity 0.75s ease-in-out;
     }
 
-    .carousel article.loading {
-        opacity: 0;
-    }
-
-    .carousel article .image {
+    .label {
         position: relative;
-        left: -1em;
         top: 0;
         width: auto;
-        margin-right: -2em;
-        margin-bottom: 3em;
     }
 
-    .carousel article p {
+    .label .image {
+        position: relative;
+        width: auto;
+        margin-bottom: 1em;
+    }
+
+    .label h3 {
+        margin-bottom: 1em;
+        font-size: 1.5em;
+        cursor: pointer;
+        font-weight: bold;
         text-align: center;
     }
+
 
 </style>

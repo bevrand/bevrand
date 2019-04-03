@@ -25,9 +25,10 @@
 
 <style scoped>
     #footer {
+        text-align: center;
         position: relative;
         overflow: hidden;
-        padding: 6em 0 6em 0;
+        padding: 2em;
         background: #424242;
         color: #fff;
     }
@@ -35,6 +36,16 @@
     #footer .icon.circled {
         background: #fff;
         color: #2b252c;
+    }
+
+    #footer h3 {
+        margin-bottom: 1em;
+        font-size: 1.5em;
+        text-align: center;
+    }
+
+    #footer p {
+        text-align: center;
     }
 
     #footer header {
@@ -48,7 +59,6 @@
 
     #footer .contact p {
         text-align: center;
-        margin: 0 0 3em 0;
     }
 
     #footer .copyright {

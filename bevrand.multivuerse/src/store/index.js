@@ -7,7 +7,6 @@ export default new Vuex.Store({
     state: {
         title: 'MultiVuerse',
         token: "",
-        selectedPlaylist: 'Please select a playlist',
         lastUpdated: null
     }
 })
