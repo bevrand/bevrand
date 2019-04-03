@@ -64,7 +64,7 @@ function addPlaylistsToPersonalSpace(playlist) {
 function getPersonalPlaylists(username, callback) {
     $.ajax({
         type: "GET",
-        url: `${config.proxyHostname}/playlist-api/private?username=${username}`,
+        url: `${config.proxyHostname}/playlist-api/v1/private/${username}`,
         success: callback
     });
 }
@@ -72,15 +72,15 @@ function getPersonalPlaylists(username, callback) {
 function getUserInfo(username, callback) {
     $.ajax({
         type: "GET",
-        url: `${config.proxyHostname}/playlist-api/Users?by-username=${username}`,
+        url: `${config.proxyHostname}/authentication-api/Users/by-username/${username}`,
         success: callback
     });
 }
 
-function getPersonalPlaylist(username, playlistname, callback) {
+function getPersonalPlaylist(username, playlistName, callback) {
     $.ajax({
         type: "GET",
-        url: `${config.proxyHostname}/playlist-api/private?username=${username}&list=${playlistname}`,
+        url: `${config.proxyHostname}/playlist-api/private/${username}/${playlistName}`,
         success: callback
     });
 }

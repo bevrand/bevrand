@@ -1,6 +1,10 @@
 const request = require('request');
 
-const requestPath = (apiName, path) => (apiName ? path.replace(apiName, 'api') : path);
+const requestPath = (apiName, path) => {
+  let testje = apiName ? path.replace(apiName, 'api') : path
+  console.log(testje)
+  return testje
+};
 
 /**
  * Util to pipe requests to another endpoint
