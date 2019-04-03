@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dockerneo
+  labels:
+    app.kubernetes.io/name: {{ include "bevrand.name" . }}-dockerneo
+    helm.sh/chart: {{ include "bevrand.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "bevrand.name" . }}-dockerneo
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "bevrand.name" . }}-dockerneo
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+      - env:
+        - name: TEST
+          value: kubernetes
+        image: bevrand/dockerneo:production
+        name: {{ include "bevrand.name" . }}-dockerneo
+        ports:
+        - containerPort: 7474
+          name: neo4jport
+        - containerPort: 7687
+          name: otherneo4jport
+        resources: {}
+        restartPolicy: Always
+status: {}

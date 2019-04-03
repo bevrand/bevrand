@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "bevrand.name" . }}-recommendationapi
+  labels:
+    app.kubernetes.io/name: {{ include "bevrand.name" . }}-recommendationapi
+    helm.sh/chart: {{ include "bevrand.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "bevrand.name" . }}-recommendationapi
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "bevrand.name" . }}-recommendationapi
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+      - env:
+        - name: GO_ENV
+          value: docker
+        image: bevrand/recommendationapi:production
+        imagePullPolicy: Always
+        name: {{ include "bevrand.name" . }}-recommendationapi
+        ports:
+        - containerPort: 5000
+        resources: {}
+        restartPolicy: Always
+status: {}

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dockermongo
+  labels:
+    app.kubernetes.io/name: {{ include "bevrand.name" . }}-dockermongo
+    helm.sh/chart: {{ include "bevrand.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 27017
+  selector:
+    app.kubernetes.io/name: {{ include "bevrand.name" . }}-dockermongo
+    app.kubernetes.io/instance: {{ .Release.Name }}

@@ -14,7 +14,7 @@
       state: present
       key: "{{ lookup('file', '/home/joerivrij/.ssh/id_rsa.pub') }}"
 
-  - name: Upload first docker-compose for host
+  - name: Upload docker-compose for host
     copy:
       src=../../docker-compose-created.yml
       dest=/root/docker

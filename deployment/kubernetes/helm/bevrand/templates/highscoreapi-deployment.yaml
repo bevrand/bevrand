@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "bevrand.name" . }}-highscoreapi
+  labels:
+    app.kubernetes.io/name: {{ include "bevrand.name" . }}-highscoreapi
+    helm.sh/chart: {{ include "bevrand.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "bevrand.name" . }}-highscoreapi
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "bevrand.name" . }}-highscoreapi
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+      - env:
+        - name: GO_ENV
+          value: docker
+        - name: GIN_MODE
+          value: release
+        image: bevrand/highscoreapi:production
+        imagePullPolicy: Always
+        name: {{ include "bevrand.name" . }}-highscoreapi
+        ports:
+        - containerPort: 5000
+        resources: {}
+        restartPolicy: Always
+status: {}

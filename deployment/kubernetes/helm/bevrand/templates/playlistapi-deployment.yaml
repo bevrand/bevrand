@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "bevrand.name" . }}-playlistapi
+  labels:
+    app.kubernetes.io/name: {{ include "bevrand.name" . }}-playlistapi
+    helm.sh/chart: {{ include "bevrand.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "bevrand.name" . }}-playlistapi
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "bevrand.name" . }}-playlistapi
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+      - env:
+        - name: APP_SETTINGS
+          value: Production
+        - name: MONGO_URL
+          value: mongodb://6ZxJYKvpk8oLF7w:iYhZ91kRvBX2FlyW0VTjx4!6o@dockermongo:27017/admin
+        image: bevrand/playlistapi:production
+        imagePullPolicy: Always
+        name: {{ include "bevrand.name" . }}-playlistapi
+        ports:
+        - containerPort: 5000
+        resources: {}
+        restartPolicy: Always
+status: {}

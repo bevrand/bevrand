@@ -22,13 +22,13 @@ Jinja2==2.10
 jsonschema==3.0.1
 MarkupSafe==1.1.1
 mistune==0.8.4
-more-itertools==6.0.0
+more-itertools==7.0.0
 opentracing==2.0.0
 opentracing-instrumentation==2.4.3
 pluggy==0.9.0
 py==1.8.0
 pymongo==3.7.2
-pytest==4.3.1
+pytest==4.4.0
 pytest-cov==2.6.1
 pytz==2018.9
 requests==2.21.0
@@ -37,6 +37,6 @@ threadloop==1.0.2
 thrift==0.11.0
 tornado==5.1.1
 urllib3==1.24.1
-Werkzeug==0.15.1
+Werkzeug==0.15.2
 wrapt==1.11.1
 zope.interface==4.6.0
