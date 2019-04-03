@@ -7,7 +7,7 @@ const { signObject } = require('../services/jwtTokens');
 
 exports.getAllPlaylists = async (username, span) => {
   const response = await httpRequest({
-    url: `${config.playlistApi}/private/${username}`,
+    url: `${config.playlistApi}/api/v1/private/${username}`,
     method: 'GET',
     span,
   });
@@ -15,7 +15,7 @@ exports.getAllPlaylists = async (username, span) => {
   span.setTag(Tags.HTTP_STATUS_CODE, 200);
 
   const { result } = JSON.parse(response);
-  
+
   span.log({
     event: 'playlists-for-user',
     result: result,
