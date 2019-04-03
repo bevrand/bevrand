@@ -10,8 +10,6 @@ const router = express.Router();
 
 router.get('/v2/frontpage', controller.frontpage);
 
-router.get('/playlists', controller.playlists);
-
 // TODO: only reroute requests with public path to playlistApi
 // router.get(/public/, reRouteTo(playlistApi));
 
@@ -19,11 +17,10 @@ router.get('/playlists', controller.playlists);
 router.route(/private/)
   .all(validateJwtHeader)
   .get(controller.playlists)
-  .post(reRouteTo(playlistApi))
-  .put(reRouteTo(playlistApi))
-  .delete(reRouteTo(playlistApi));
+  .post(reRouteTo(playlistApi, 'playlist-api'))
+  .put(reRouteTo(playlistApi, 'playlist-api'))
+  .delete(reRouteTo(playlistApi, 'playlist-api'));
 
-router.use(reRouteTo(playlistApi));
-
+router.use(reRouteTo(playlistApi, 'playlist-api'));
 
 module.exports = router;

@@ -3,6 +3,6 @@ const controller = require('../controllers/highscore');
 
 const router = express.Router();
 
-router.get('/highscore', controller.handleHighscore);
+router.get('/highscores', controller.handleHighscore);
 
 module.exports = router;

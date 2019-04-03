@@ -10,4 +10,4 @@ RUN npm ci --only=production
 COPY . /usr/src/app
 
 EXPOSE 5000
-CMD ["npm", "start"]
+CMD ["node", "./src/server.js"]

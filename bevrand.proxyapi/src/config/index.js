@@ -19,11 +19,16 @@ const envVarsSchema = joi
   .object({
     PLAYLIST_API: joi.string().required(),
     RANDOMIZER_API: joi.string().required(),
+    HIGHSCORE_API: joi.string().required(),
+    RECOMMENDATION_API: joi.string().required(),
     AUTHENTICATION_API: joi.string().required(),
     AUTHENTICATION_SECRET: joi.string().required(),
     AUTHENTICATION_EXPIRATION_TIME: joi.number().required(),
     FRONTEND_JWT_SECRET: joi.string().required(),
-    PORT: joi.any().optional().default(5000),
+    PORT: joi
+      .any()
+      .optional()
+      .default(5000),
     USEMOCK: joi.boolean().optional(),
     DEFAULT_FRONTPAGE_LIST: joi.string().optional(),
     JAEGER_AGENT_HOST: joi.string().optional(),
@@ -39,6 +44,8 @@ if (error) {
 const config = {
   playlistApi: envVars.PLAYLIST_API,
   randomizerApi: envVars.RANDOMIZER_API,
+  highscoreApi: envVars.HIGHSCORE_API,
+  recommendationApi: envVars.RECOMMENDATION_API,
   authenticationApi: envVars.AUTHENTICATION_API,
   authenticationSecret: envVars.AUTHENTICATION_SECRET,
   authenticationExpirationTime: envVars.AUTHENTICATION_EXPIRATION_TIME,

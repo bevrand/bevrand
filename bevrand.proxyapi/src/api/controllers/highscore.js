@@ -12,7 +12,7 @@ const handleHighscore = (req, res, next) => {
   });
 
   httpRequest({
-    url: config.highScoreApi + req.originalUrl,
+    url: config.highscoreApi + req.originalUrl.replace('highscore-api', 'api'),
     method: 'GET',
     span,
   })
@@ -20,7 +20,7 @@ const handleHighscore = (req, res, next) => {
       span.setTag(Tags.HTTP_STATUS_CODE, 200);
       span.log({
         event: 'highscore-result',
-        result: result,
+        result,
       });
       span.finish();
       return res.send(result);
@@ -31,6 +31,6 @@ const handleHighscore = (req, res, next) => {
       span.finish();
       next(err);
     });
-}
+};
 
 module.exports = { handleHighscore };
