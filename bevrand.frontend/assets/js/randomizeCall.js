@@ -114,7 +114,7 @@ function getAllLists(callback) {
 function getUserPlaylist(callback) {
     $.ajax({
         type: "GET",
-        url: `${config.proxyHostname}/playlist-api/private?username=${username}`,
+        url: `${config.proxyHostname}/playlist-api/v1/private/${username}`,
         success: function (data) {
             callback(data);
         }

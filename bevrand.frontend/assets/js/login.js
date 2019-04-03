@@ -81,9 +81,9 @@ function toggleLoginFields(username) {
 
 function mapUsertoJson(username, email, password) {
     return JSON.stringify({
-        "userName": username,
+        "username": username,
         "emailAddress": email,
-        "passWord": password,
+        "password": password,
     });
 
 }

@@ -7,10 +7,10 @@ The proxy-api aims to provide a gateway to the different microservices of the Be
 |-----------------|----------------------------|-------|---|
 |Login            |`/authentication-api/login`               | false | POST  |
 |Register         |`/authentication-api/register`            | false | POST  |
-|Highscore        |`/highscore-api/highscore`      | false | GET  |
+|Highscore        |`/highscore-api/v1/highscores`      | false | GET  |
 |Frontpage        |`/playlist-api/v2/frontpage`    | false | GET  |
-|Public playlists |`/playlist-api/playlists`      | false | GET  |
-|Private playlists|`/playlist-api/private`        | true  | GET,POST,PUT,DELETE  |
+|Public playlists |`/playlist-api/v1/public`      | false | GET  |
+|Private playlists|`/playlist-api/v1/private`        | true  | GET,POST,PUT,DELETE  |
 |Randomize        |`/randomize-api/v2/randomize`  | false | POST  |
 
 
