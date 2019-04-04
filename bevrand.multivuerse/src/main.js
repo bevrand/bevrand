@@ -6,13 +6,15 @@ import router from './router'
 import store from './store'
 import axios from 'axios';
 import VueCarousel from 'vue-carousel';
-import vueSmoothScroll from 'vue2-smooth-scroll'
+import vueSmoothScroll from 'vue2-smooth-scroll';
+import VueAlertify from 'vue-alertify';
 
 Vue.config.productionTip = false;
 
 Vue.http = Vue.prototype.$apiClient = axios;
 
 Vue.use(vueSmoothScroll);
+Vue.use(VueAlertify);
 
 /* eslint-disable no-new */
 new Vue({
@@ -21,7 +23,6 @@ new Vue({
   router,
   store,
   VueCarousel,
-  vueSmoothScroll,
   template: '<App/>'
 }).$mount('#app');
 

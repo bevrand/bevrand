@@ -122,7 +122,7 @@ let $ = JQuery;
     .randomizedtext {
         font-weight: bold;
         margin-top: 0.5em;
-        margin-bottom: 1em;
+        margin-bottom: 0.5em;
         font-size: 1.5em;
         text-align: center;
 

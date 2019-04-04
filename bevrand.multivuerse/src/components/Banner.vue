@@ -1,12 +1,13 @@
 <template>
     <!-- Home -->
-    <div id="top" class="toppage">
+    <div id="header" class="toppage">
         <header>
-            <p>
-                All those Beverage choices bringing you down? Feeling lucky? <br>
-                Choose a list below, click Randomize and let fate decide!
-            </p>
+            <h1 id="logo">The Beverage Randomizer</h1>
+            <p>Let fate quench your thirst!</p>
         </header>
+        <footer>
+            <a href="#playlistCarousel" class="letsGetStartedButton" v-smooth-scroll="{ duration: 1500 }" id="letsGetStartedButton"><strong>Let's Go!</strong></a>
+        </footer>
     </div>
 </template>
 
@@ -21,32 +22,56 @@
 
 <style scoped>
 
-    .toppage {
-        box-shadow: inset 0px 1px 0px 0px rgba(0, 0, 0, 0.05), inset 0px 2px 3px 0px rgba(0, 0, 0, 0.1);
-        padding: 8em 0 8em 0;
+    #header {
+        position: relative;
+        background-image: url("../assets/images/header02.jpg");
+        background-size: cover;
+        background-position: center center;
+        background-attachment: fixed;
+        color: #fff;
         text-align: center;
-        height: 40em;
+        padding: 7.5em 0 2em 0;
+        cursor: default;
+        opacity: 0.9;
+    }
+
+    #header .inner {
         position: relative;
-        background-image: url("../assets/images/header02.jpg");
-        opacity: 0.9;
-    }
-
-    .toppage::after {
-        background-image: url("../assets/images/header02.jpg");
-        opacity: 0.9;
-        position: absolute;
-        content: "";
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: -1;
-    }
-
-    .image {
+        z-index: 1;
+        margin: 0;
         display: inline-block;
-        position: relative;
-        height: 25%;
-        width: 25%;
+        vertical-align: middle;
     }
+
+    #header header {
+        display: inline-block;
+    }
+
+    h1 {
+        font-weight: bold;
+        margin-top: 0.5em;
+        margin-bottom: 1em;
+        font-size: 2em;
+        text-align: center;
+    }
+
+    .letsGetStartedButton {
+        margin:0 auto;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: #FF9500;
+        color: #FFFFFF;
+        text-align: center;
+        width: 5em;
+        height: 5em;
+        border-radius: 100%;
+        text-decoration: none;
+        cursor: pointer;
+        outline: 0;
+        font-weight: 400;
+    }
+
 </style>
