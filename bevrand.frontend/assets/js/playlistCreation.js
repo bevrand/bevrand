@@ -98,7 +98,7 @@ function addDrinksToPlaylist(beverage) {
 }
 
 $("#createPlayList").click(function () {
-    var randomizeList = mapDrinksToJson();
+    var playlistToPost = mapDrinksToJson();
     if (beverages.length <= 1) {
         document.getElementById("notifyType").textContent = "You need at least two drinks in your list";
         $(".notify").toggleClass("active");
@@ -110,7 +110,7 @@ $("#createPlayList").click(function () {
         },2000);
         return
     }
-    postDrinkToBackEnd(randomizeList);
+    postDrinkToBackEnd(playlistToPost);
 
 });
 
@@ -121,7 +121,7 @@ $("#successButton").click(function ()  {
 function postDrinkToBackEnd(randomizeList) {
     $.ajax({
         type: "POST",
-        url: `${config.proxyHostname}/playlist-api/user`,
+        url: `${config.proxyHostname}/playlist-api/v1/${username}/${normalizedPlayListName}`,
         data: randomizeList,
         contentType: "application/json",
         success: function () {
@@ -165,8 +165,6 @@ function mapDrinksToJson() {
         beverages: beverages,
         displayName: displayName,
         imageUrl: imageUrl,
-        list: normalizedPlayListName,
-        user: username
     });
 
     return playlist

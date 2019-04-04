@@ -1,3 +1,5 @@
+require 'dotenv'
+
 module Fixture
 
   def load_env
@@ -36,6 +38,14 @@ class FixtureData
 
   def create_random_password(length)
     [*('a'..'z'), *('A'..'Z'), *('0'..'9')].sample(length).join
+  end
+
+  def create_new_playlist
+    {
+        "displayName": "I am so depressed",
+        "imageUrl": "http://whatever.com",
+        "beverages": %w(beer wine coke)
+    }
   end
 
 end

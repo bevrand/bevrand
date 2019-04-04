@@ -1,7 +1,6 @@
 require 'uri'
 require 'json'
 require 'rest-client'
-require 'dotenv'
 
 Before do
   @fixture = load_env
