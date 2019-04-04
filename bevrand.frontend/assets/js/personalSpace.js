@@ -9,9 +9,15 @@ $(document).ready(function () {
     token = localStorage.getItem("jwt");
     var jwtDecoded = parseJwt(token);
     username = jwtDecoded['username'];
+    var emailAddress = "place@holder.nl"
 
     $('#personalSpaceUsername')
         .text(username + "'s personal workspace");
+    $('#usernamePersonal')
+        .text(`Username: ${username}`);
+    $('#emailAddressPersonal')
+        .text(`Email: ${emailAddress}`);
+
     $('#playListCreationField').hide();
     $('#okPlayListCreation').hide();
     $('#cancelPlayListCreation').hide();
@@ -22,12 +28,7 @@ $(document).ready(function () {
     getPersonalPlaylists(username, function (playlists) {
         appendPlaylistToWorkspace(playlists);
     });
-    getUserInfo(username, function (userInfo) {
-        $('#emailAddressPersonal')
-            .text(`Email: ${userInfo.emailAddress}`);
-        $('#usernamePersonal')
-            .text(`Username: ${userInfo.username}`);
-    });
+
     localStorage.setItem("username", username);
 });
 
@@ -65,14 +66,6 @@ function getPersonalPlaylists(username, callback) {
     $.ajax({
         type: "GET",
         url: `${config.proxyHostname}/playlist-api/v1/private/${username}`,
-        success: callback
-    });
-}
-
-function getUserInfo(username, callback) {
-    $.ajax({
-        type: "GET",
-        url: `${config.proxyHostname}/authentication-api/Users/by-username/${username}`,
         success: callback
     });
 }
