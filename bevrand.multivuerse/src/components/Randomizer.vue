@@ -146,10 +146,16 @@ let $ = JQuery;
         outline: 0;
         font-weight: 400;
     }
-    button:hover,
-    .button:hover {
+
+
+    .randomizeButton:hover {
         color: #fff;
-        background: #ffa500;
+        background: #7A2F9E;
+        letter-spacing: 1px;
+        -webkit-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+        -moz-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+        box-shadow: 5px 40px -10px rgba(0,0,0,0.57);
+        transition: all 0.4s ease 0s;
     }
 
     /* Main */

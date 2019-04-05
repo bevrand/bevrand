@@ -3,52 +3,143 @@
         <h2>Welcome!</h2>
         <form id="loginForm" @submit="checkLoginForm">
             <section class="inputarea">
+                <FloatingLabel
+                        :config="{
+                            label: 'Username',
+                            name: 'username',
+                            color: {
+                              focusColor: '#ff9500',
+                              lineColor: '#ff9500',
+                              blurredColor: 'rgba(3, 23, 40, 0.34)'
+                            },
+                            hasClearButton: false
+                          }"
+                >
+                    <input
+                        type="text"
+                        class="inputfield"
+                        v-model="username"
+                        id="username"
+                    />
+                </FloatingLabel>
+                <br />
+                <FloatingLabel
+                        :config="{
+                        label: 'Email',
+                        name: 'email',
+                        color: {
+                          focusColor: '#ff9500',
+                          lineColor: '#ff9500',
+                          blurredColor: 'rgba(3, 23, 40, 0.34)'
+                        },
+                        hasClearButton: false
+                      }"
+                >
                 <input type="email"
                        placeholder="Email"
                        v-model="email"
                        class="inputfield"
                        id="email">
+                </FloatingLabel>
                 <br>
+                <FloatingLabel
+                        :config="{
+                        label: 'Password',
+                        name: 'password',
+                        color: {
+                          focusColor: '#ff9500',
+                          lineColor: '#ff9500',
+                          blurredColor: 'rgba(3, 23, 40, 0.34)'
+                        },
+                        hasClearButton: false
+                      }"
+                >
                 <input type="password"
                        id="password"
                        placeholder="Password"
                        v-model="password"
                        class="inputfield"
                        autocomplete="off">
+                </FloatingLabel>
                 <br>
-                <button
+                <button v-if="!loggingIn"
                         id="loginButton"
                         class="loginbutton">Login
                 </button>
+                <circles-to-rhombuses-spinner v-if="loggingIn"
+                        :animation-duration="1200"
+                        :circles-num="4"
+                        :circle-size="15"
+                        color="#ff9500"
+                />
             </section>
         </form>
     </div>
 </template>
 
 <script>
+    import FloatingLabel from "vue-simple-floating-labels";
+    import { CirclesToRhombusesSpinner } from 'epic-spinners'
+
     export default {
         name: "LoginArea",
         data() {
             return {
                 email: '',
                 password: '',
+                username: '',
                 token: '',
+                loggingIn: false,
+                count: 3
             }
         },
-
+        components: {
+            FloatingLabel,
+            CirclesToRhombusesSpinner
+        },
         methods: {
             checkLoginForm: function (e) {
                 if(!this.email || !this.password) {
                     this.alert("Missing a required field")
                 }
                 else {
+                    this.loggingIn = true;
+                    this.count = 5;
                     this.login()
                 }
                 e.preventDefault();
             },
 
             login: function () {
-                this.alert("logged in")
+                this.$apiClient({
+                    method: 'post',
+                    url: 'http://0.0.0.0:4540/api/login',
+                    data: {
+                        "emailAddress" : this.emailAddress,
+                        "passWord": this.password,
+                        "userName": this.username
+                    }
+                })
+                    .then((response) => {
+                        this.token = response.data['token'];
+                        this.$store.commit('setToken', response.data);
+                        window.setInterval(() => {
+                            if (this.count === 0) {
+                                this.loggingIn = false;
+                                this.$router.push({name: 'reroutePage', params: {username: this.username}});
+                            }
+                            this.count--;
+                        }, 1000);
+                    })
+                    .catch(e => {
+                        window.setInterval(() => {
+                            if (this.count === 0) {
+                                this.loggingIn = false;
+                                this.alert("Login failed")
+                            }
+                            this.count--;
+                        }, 1000);
+                    })
             },
             alert: function(text){
                 this.$alertify.alertWithTitle(text, () =>
@@ -58,10 +149,31 @@
     }
 </script>
 
-<style scoped>
 
+<style scoped>
     .inputarea {
         margin-top: 2em;
+        margin-left: 22em;
+        margin-right: 22em;
+        text-align: center;
+    }
+
+    @media screen and (max-width: 1366px) {
+        .inputarea {
+            margin-top: 2em;
+            margin-left: 10em;
+            margin-right: 10em;
+            text-align: center;
+        }
+    }
+
+    @media screen and (max-width: 650px) {
+        .inputarea {
+            margin-top: 2em;
+            margin-left: 1em;
+            margin-right: 1em;
+            text-align: center;
+        }
     }
 
     h2 {
@@ -71,12 +183,11 @@
         text-align: center;
     }
 
-
     #loginButton {
         position: relative;
         display: inline-block;
-        background: #FF9500;
-        color: #FFFFFF;
+        background: #ff9500;
+        color: #ffffff;
         text-align: center;
         border-radius: 0.5em;
         text-decoration: none;
@@ -87,31 +198,34 @@
         outline: 0;
         font-weight: 400;
         font-size: 1em;
-        font-family: 'Ubuntu', sans-serif;
-        -moz-transition: background-color 0.35s ease-in-out, color 0.35s ease-in-out, border-bottom-color 0.35s ease-in-out;
-        -webkit-transition: background-color 0.35s ease-in-out, color 0.35s ease-in-out, border-bottom-color 0.35s ease-in-out;
-        -ms-transition: background-color 0.35s ease-in-out, color 0.35s ease-in-out, border-bottom-color 0.35s ease-in-out;
-        transition: background-color 0.35s ease-in-out, color 0.35s ease-in-out, border-bottom-color 0.35s ease-in-out;
+        font-family: "Ubuntu", sans-serif;
+        -moz-transition: background-color 0.35s ease-in-out, color 0.35s ease-in-out,
+        border-bottom-color 0.35s ease-in-out;
+        -webkit-transition: background-color 0.35s ease-in-out,
+        color 0.35s ease-in-out, border-bottom-color 0.35s ease-in-out;
+        -ms-transition: background-color 0.35s ease-in-out, color 0.35s ease-in-out,
+        border-bottom-color 0.35s ease-in-out;
+        transition: background-color 0.35s ease-in-out, color 0.35s ease-in-out,
+        border-bottom-color 0.35s ease-in-out;
     }
 
     #loginButton:hover {
         color: #fff;
-        background: #ffa500;
+        background: #424242;
+        letter-spacing: 1px;
+        -webkit-box-shadow: 0px 5px 40px -10px rgba(0, 0, 0, 0.57);
+        -moz-box-shadow: 0px 5px 40px -10px rgba(0, 0, 0, 0.57);
+        box-shadow: 5px 40px -10px rgba(0, 0, 0, 0.57);
+        transition: all 0.4s ease 0s;
     }
 
-    label {
-        font-family: 'Ubuntu', sans-serif;
-        display: block;
-        padding: 5px;
-        font-size: 1.5em;
-    }
     .inputfield {
-        font-family: 'Ubuntu', sans-serif;
+        font-family: "Ubuntu", sans-serif;
         margin: auto;
         display: block;
         padding: 5px;
         border: none;
-        font-size: 22px;
+        font-size: 16px;
+        width: 8em;
     }
-
 </style>

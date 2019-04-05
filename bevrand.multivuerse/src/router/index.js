@@ -25,6 +25,11 @@ export default new Router({
             path: '/profile/',
             name: 'profilePage',
             component: () => import("../views/Profile")
-        }
+        },
+        {
+            path: '/reroute/:username',
+            name: 'reroutePage',
+            component: () => import("../views/ReRoutePage")
+        },
     ]
 })
