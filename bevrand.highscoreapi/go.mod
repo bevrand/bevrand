@@ -21,5 +21,5 @@ require (
 	golang.org/x/tools v0.0.0-20190111214448-fc1d57b08d7b // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1
 	gopkg.in/go-playground/validator.v8 v8.18.2 // indirect
-	gopkg.in/oauth2.v3 v3.9.5
+	gopkg.in/oauth2.v3 v3.10.0
 )
