@@ -7,6 +7,7 @@
           :config="{
             label: 'Username',
             name: 'username',
+            line: false,
             color: {
               focusColor: '#00FA9A',
               errorColor: '#ff0000',
@@ -29,6 +30,7 @@
           :config="{
             label: 'Email',
             name: 'email',
+            line: false,
             color: {
               focusColor: '#00FA9A',
               errorColor: '#ff0000',
@@ -39,14 +41,17 @@
             hasClearButton: false
           }"
         >
-        <input type="email" v-model="email" id="email" />
+        <input type="email"
+               v-model="email"
+               id="email"
+               class="inputfield"/>
         </FloatingLabel>
         <br />
         <FloatingLabel
           :config="{
             label: 'Password',
             name: 'password',
-            line: true,
+            line: false,
             color: {
               focusColor: '#00FA9A',
               errorColor: '#ff0000',
@@ -60,6 +65,7 @@
           <input
             type="password"
             id="password"
+            class="inputfield"
             v-model="password"
             autocomplete="off"
           />
@@ -75,7 +81,7 @@
               lineColor: '#00FA9A',
               blurredColor: 'rgba(3, 23, 40, 0.34)'
             },
-            line: true,
+            line: false,
             hasError: hasError,
             hasClearButton: false
           }"
@@ -83,6 +89,7 @@
           <input
             type="password"
             id="repeat-password"
+            class="inputfield"
             v-model="confirmPassword"
             autocomplete="off"
           />
@@ -266,5 +273,6 @@ h2 {
   border: none;
   font-size: 16px;
   width: 8em;
+  background-color: white !important;
 }
 </style>
