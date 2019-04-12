@@ -3,9 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/alicebob/miniredis"
 	"github.com/gin-gonic/gin"
-	"github.com/mediocregopher/radix.v2/pool"
 	"github.com/stretchr/testify/assert"
 	"log"
 	"net/http"
@@ -14,6 +12,8 @@ import (
 )
 
 const message = "message"
+
+var drinkList = [3]string{"beer", "wine", "coke"}
 
 func TestPingPong(t *testing.T) {
 	// Build our expected body
@@ -40,149 +40,95 @@ func TestPingPong(t *testing.T) {
 }
 
 func TestRouteShowAllHighScore(t *testing.T) {
-	s, err := miniredis.Run()
-	if err != nil {
-		panic(err)
-	}
-	defer s.Close()
-
-	// create a new pool
-	db, err = pool.New("tcp", s.Addr(), 2)
-	if err != nil {
-		panic(err)
-	}
+	createMockDatabase()
 
 	key := GLOBALNAME + ":" + GLOBALLIST
-	drinks := [3]string{"beer", "wine", "coke"}
 
-	for _, drink := range drinks {
+	for _, drink := range drinkList {
 		// set key that will be expected
-		err = db.Cmd(keySet, key, drink, 1).Err
-		if err != nil {
-			log.Fatal(err)
-		}
+		setDrinksInRedis(key, drink)
 	}
 
 	router := InitRoutes()
 
-	w := performRequest(router, "GET", "/api/v1/highscores/")
+	w := performRequest(router, "GET", prefixURL)
 	assert.Equal(t, http.StatusOK, w.Code)
 
 	// Convert the JSON response to a map
 	var response []Score
-	err = json.Unmarshal([]byte(w.Body.String()), &response)
+	err := json.Unmarshal([]byte(w.Body.String()), &response)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Make some assertions on the correctness of the response.
 	for _, resp := range response {
-		assert.Contains(t, drinks, resp.Drink)
+		assert.Contains(t, drinkList, resp.Drink)
 	}
 }
 
 func TestRouteShowHighScoreNonExistent(t *testing.T) {
-	s, err := miniredis.Run()
-	if err != nil {
-		panic(err)
-	}
-	defer s.Close()
-
-	// create a new pool
-	db, err = pool.New("tcp", s.Addr(), 2)
-	if err != nil {
-		panic(err)
-	}
+	createMockDatabase()
 
 	router := InitRoutes()
 
-	w := performRequest(router, "GET", "/api/v1/highscores/marvin/paranoid/")
+	w := performRequest(router, "GET", marvinURL)
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }
 
 func TestRouteShowHighScore(t *testing.T) {
-	s, err := miniredis.Run()
-	if err != nil {
-		panic(err)
-	}
-	defer s.Close()
+	createMockDatabase()
 
-	// create a new pool
-	db, err = pool.New("tcp", s.Addr(), 2)
-	if err != nil {
-		panic(err)
-	}
-
-	key := "marvin:paranoid"
-	drinks := [3]string{"beer", "wine", "coke"}
-
-	for _, drink := range drinks {
+	for _, drink := range drinkList {
 		// set key that will be expected
-		err = db.Cmd(keySet, key, drink, 1).Err
-		if err != nil {
-			log.Fatal(err)
-		}
+		setDrinksInRedis(userKey, drink)
 	}
 
 	router := InitRoutes()
 
-	w := performRequest(router, "GET", "/api/v1/highscores/marvin/paranoid/")
+	w := performRequest(router, "GET", marvinURL)
 	assert.Equal(t, http.StatusOK, w.Code)
 
 	// Convert the JSON response to a map
 	var response []Score
-	err = json.Unmarshal([]byte(w.Body.String()), &response)
+	err := json.Unmarshal([]byte(w.Body.String()), &response)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Make some assertions on the correctness of the response.
 	for _, resp := range response {
-		assert.Contains(t, drinks, resp.Drink)
+		assert.Contains(t, drinkList, resp.Drink)
 	}
 }
 
 func TestRouteIncrementHighscore(t *testing.T) {
-	s, err := miniredis.Run()
-	if err != nil {
-		panic(err)
-	}
-	defer s.Close()
-
-	// create a new pool
-	db, err = pool.New("tcp", s.Addr(), 2)
-	if err != nil {
-		panic(err)
-	}
+	createMockDatabase()
 
 	router := InitRoutes()
 
-	drink := PostObject{"beer"}
+	drink := PostObject{drink}
 	body, err := json.Marshal(drink)
 	if err != nil {
 		panic(err)
 	}
-	req, _ := http.NewRequest("POST", "/api/v1/highscores/marvin/paranoid/", bytes.NewBuffer(body))
+	req, _ := http.NewRequest("POST", marvinURL, bytes.NewBuffer(body))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusCreated, w.Code)
 }
 
 func TestRouteIncrementHighscoreWithBadBody(t *testing.T) {
-	s, err := miniredis.Run()
-	if err != nil {
-		panic(err)
-	}
-	defer s.Close()
-
-	// create a new pool
-	db, err = pool.New("tcp", s.Addr(), 2)
-	if err != nil {
-		panic(err)
-	}
+	createMockDatabase()
 
 	router := InitRoutes()
 
-	drink := ErrorModel{"beer", "someuniquecode"}
-	body, err := json.Marshal(drink)
+	errorDrink := ErrorModel{drink, "someuniquecode"}
+	body, err := json.Marshal(errorDrink)
 	if err != nil {
 		panic(err)
 	}
-	req, _ := http.NewRequest("POST", "/api/v1/highscores/marvin/paranoid/", bytes.NewBuffer(body))
+	req, _ := http.NewRequest("POST", marvinURL, bytes.NewBuffer(body))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusBadRequest, w.Code)
@@ -193,51 +139,34 @@ func TestRouteIncrementHighscoreWithBadBody(t *testing.T) {
 }
 
 func TestRouteIncrementHighscoreWithNilBody(t *testing.T) {
-	s, err := miniredis.Run()
-	if err != nil {
-		panic(err)
-	}
-	defer s.Close()
-
-	// create a new pool
-	db, err = pool.New("tcp", s.Addr(), 2)
-	if err != nil {
-		panic(err)
-	}
+	createMockDatabase()
 
 	router := InitRoutes()
 
-	req, _ := http.NewRequest("POST", "/api/v1/highscores/marvin/paranoid/", bytes.NewBuffer(nil))
+	req, _ := http.NewRequest("POST", marvinURL, bytes.NewBuffer(nil))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 
 	var response ErrorModel
-	err = json.Unmarshal([]byte(w.Body.String()), &response)
+	err := json.Unmarshal([]byte(w.Body.String()), &response)
+	if err != nil {
+		panic(err)
+	}
 	assert.Contains(t, response.Message, "EOF")
 }
 
 func TestRouteIncrementHighscoreGlobalUser(t *testing.T) {
-	s, err := miniredis.Run()
-	if err != nil {
-		panic(err)
-	}
-	defer s.Close()
-
-	// create a new pool
-	db, err = pool.New("tcp", s.Addr(), 2)
-	if err != nil {
-		panic(err)
-	}
+	createMockDatabase()
 
 	router := InitRoutes()
 
-	drink := PostObject{"beer"}
-	body, err := json.Marshal(drink)
+	errorDrink := PostObject{drink}
+	body, err := json.Marshal(errorDrink)
 	if err != nil {
 		panic(err)
 	}
-	req, _ := http.NewRequest("POST", "/api/v1/highscores/global/paranoid/", bytes.NewBuffer(body))
+	req, _ := http.NewRequest("POST", prefixURL+"/global/paranoid/", bytes.NewBuffer(body))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusBadRequest, w.Code)
