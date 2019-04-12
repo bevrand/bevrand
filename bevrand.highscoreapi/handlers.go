@@ -85,18 +85,14 @@ func CreateNewHighScore(ctx context.Context, user string, playlist string, drink
 	defer span.Finish()
 	key := user + ":" + playlist
 
-	res, err := db.Cmd(keyExists, key).Int()
-	if err != nil {
-		log.Fatal(err)
-	}
-	exists := res != 0
+	exists := keyExistsInRedis(key)
 
 	if !exists {
 		span.LogFields(
 			openlog.String(statusCode, "200"),
 			openlog.String(spanBody, "New entry, setting new key: "+key),
 		)
-		err = db.Cmd(keySet, key, drink, 1).Err
+		err := db.Cmd(keySet, key, drink, 1).Err
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -104,7 +100,7 @@ func CreateNewHighScore(ctx context.Context, user string, playlist string, drink
 		return
 	}
 
-	err = db.Cmd(keyIncrease, key, drink, 1).Err
+	err := db.Cmd(keyIncrease, key, drink, 1).Err
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -125,25 +121,21 @@ func IncreaseGlobalCount(ctx context.Context, drink string) {
 	defer span.Finish()
 	key := GLOBALNAME + ":" + GLOBALLIST
 
-	res, err := db.Cmd(keyExists, key).Int()
-	if err != nil {
-		log.Fatal(err)
-	}
-	exists := res != 0
+	exists := keyExistsInRedis(key)
 
 	if !exists {
 		span.LogFields(
 			openlog.String(statusCode, "200"),
 			openlog.String(spanBody, "New entry, setting new key: "+key),
 		)
-		err = db.Cmd(keySet, key, drink, 1).Err
+		err := db.Cmd(keySet, key, drink, 1).Err
 		if err != nil {
 			log.Fatal(err)
 		}
 		return
 	}
 
-	err = db.Cmd(keyIncrease, key, drink, 1).Err
+	err := db.Cmd(keyIncrease, key, drink, 1).Err
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -160,4 +152,13 @@ func createGUID() string {
 		b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
 
 	return uuid
+}
+
+func keyExistsInRedis(key string) bool {
+	res, err := db.Cmd(keyExists, key).Int()
+	if err != nil {
+		log.Fatal(err)
+	}
+	exists := res != 0
+	return exists
 }

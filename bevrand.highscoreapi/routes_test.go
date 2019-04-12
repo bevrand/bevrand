@@ -166,7 +166,7 @@ func TestRouteIncrementHighscoreGlobalUser(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	req, _ := http.NewRequest("POST", prefixURL+"/global/paranoid/", bytes.NewBuffer(body))
+	req, _ := http.NewRequest("POST", prefixURL+"global/paranoid/", bytes.NewBuffer(body))
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusBadRequest, w.Code)
