@@ -15,7 +15,7 @@ variable "docker_droplet_name" {
 
 variable "droplet_image_name" {
   #default = "docker-16-04"
-  default = "ubuntu-18-04-x64"
+  default = "centos-7.6-x64"
 }
 
 variable "droplet_region" {

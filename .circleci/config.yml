@@ -295,6 +295,7 @@ jobs:
     machine: true
     steps:
      - checkout
+     - run: "python create_docker_compose.py --profile prod"
      - run: "pwd && ls -lha"
      - run: "cd ./deployment && sh ./init_terraform.sh"
      - run: "cd ./deployment/terraform_scripts && pwd && ls -lha && sh ../run_terraform.sh"

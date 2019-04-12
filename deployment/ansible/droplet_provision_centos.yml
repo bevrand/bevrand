@@ -2,6 +2,10 @@
 - hosts: do
   remote_user: root
   gather_facts: False
+  become: yes
+
+  vars:
+    ssh_key: "{{ ssh_key }}"
 
   tasks:
   - name: Creates directory
@@ -12,7 +16,7 @@
     authorized_key:
       user: root
       state: present
-      key: "{{ lookup('file', '/home/joerivrij/.ssh/id_rsa.pub') }}"
+      key: "{{ ssh_key }}"
 
   - name: Upload docker-compose for host
     copy:
@@ -92,6 +96,10 @@
     when:
       - docker_compose_check.msg is defined
       - docker_compose_check.msg.find('No such file or directory') != -1
+
+  - name: Mount datavolume
+    command: mount -o discard,defaults /dev/disk/by-id/scsi-0DO_Volume_datavolumedocker /mnt/datavolumedocker
+    ignore_errors: no
 
   - command: "docker-compose -f /root/docker/docker-compose-created.yml up -d"
     register: compose_up
