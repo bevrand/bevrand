@@ -31,5 +31,10 @@ export default new Router({
             name: 'reroutePage',
             component: () => import("../views/ReRoutePage")
         },
+        {
+            path: '/playlistcreation/:displayName',
+            name: 'playlistCreationPage',
+            component: () => import("../views/PlaylistCreationPage")
+        },
     ]
 })

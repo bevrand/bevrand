@@ -20,6 +20,27 @@ export default new Vuex.Store({
             state.username = state.jwtData.username;
             state.id = state.jwtData.id;
             state.loggedIn = true;
+            localStorage.setItem('token', authResponse['token']);
+        },
+
+        getTokenFromStorage: (state) => {
+            let token = localStorage.getItem('token');
+            if (token !== null){
+                state.token = token;
+                state.jwtData =  JSON.parse(atob(token.split('.')[1]));
+                state.username = state.jwtData.username;
+                state.id = state.jwtData.id;
+                state.loggedIn = true;
+            }
+        },
+
+        logOut: (state) => {
+            state.token = null;
+            state.jwtData =  null;
+            state.username = null;
+            state.id = null;
+            state.loggedIn = false;
+            localStorage.setItem('token', null);
         }
-    }
+    },
 })

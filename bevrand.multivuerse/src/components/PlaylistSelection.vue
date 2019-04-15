@@ -11,7 +11,42 @@
                     <li v-for="beverage of playlist.beverages" >
                         {{ beverage }}
                     </li>
+                    <li>
+                    <router-link
+                        tag="button"
+                        id="linkToAllDrinks"
+                        :to="{ name: 'profilePage' }">
+                    Show me all drinks!
+                    </router-link>
+                    </li>
                 </ul>
+                </span>
+            </slide>
+            <slide v-if="!loggedIn">
+                <span class="label">
+                    <router-link :to="{ name: 'loginPage' }">
+                    <a class="image featured"><img src="../assets/images/header02.jpg"></a>
+                    </router-link>
+                    <router-link
+                            tag="h3"
+                            id="LoginAndRegister"
+                            :to="{ name: 'loginPage' }">
+                    Create your own playlist
+                    </router-link>
+                    <a>In order to create your own playlists you need to be registered</a>
+                </span>
+            </slide>
+            <slide v-if="loggedIn">
+                <span class="label">
+                    <router-link :to="{ name: 'profilePage' }">
+                    <a class="image featured"><img src="../assets/images/header02.jpg"></a>
+                    </router-link>
+                    <router-link
+                            tag="h3"
+                            id="LoginAndRegister"
+                            :to="{ name: 'profilePage' }">
+                    Create more playlists!
+                    </router-link>
                 </span>
             </slide>
 
@@ -27,6 +62,8 @@ import { Carousel, Slide } from 'vue-carousel';
             return {
                 playlists: [],
                 errors: [],
+                username: this.$store.state.username,
+                loggedIn: this.$store.state.loggedIn
             }
         },
         created() {
@@ -45,13 +82,30 @@ import { Carousel, Slide } from 'vue-carousel';
                             this.errors.push(e)
                         })
                 },
+            getAllUserPlaylists: function () {
+                this.$apiClient.get(`http://0.0.0.0:4540/api/playlists?username=joeri`)
+                    .then((response) => {
+                        this.playlists = response.data;
+                        if (this.$parent.selectedPlaylist === null) {
+                            this.setPlaylistToParent(response.data[0])
+                        }
+                    })
+                    .catch(e => {
+                        this.errors.push(e)
+                    })
+            },
             setPlaylistToParent: function (selectedPlayList) {
                 this.$emit("setPlaylistToParent", selectedPlayList);
             },
 
         },
         mounted() {
-            this.getAllPlaylists()
+            if (this.loggedIn) {
+                this.getAllUserPlaylists()
+            }
+            else {
+                this.getAllPlaylists()
+            }
         },
         components: {
             Carousel,
@@ -94,19 +148,25 @@ import { Carousel, Slide } from 'vue-carousel';
     .VueCarousel-slide {
         display: inline-block;
         width: 80%;
+        height: 45em;
         background: #FF9B0D;
         border-style: solid;
         border-width: 2em;
         border-color: #ffffff;
         text-align: center;
         white-space: normal;
-        height: 35em;
         overflow: auto;
         opacity: 1;
         -moz-transition: opacity 0.75s ease-in-out;
         -webkit-transition: opacity 0.75s ease-in-out;
         -ms-transition: opacity 0.75s ease-in-out;
         transition: opacity 0.75s ease-in-out;
+    }
+
+    @media screen and (max-width: 412px) {
+        .VueCarousel-slide {
+            height: 35em;
+        }
     }
 
     .label {

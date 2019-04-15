@@ -7,14 +7,14 @@ import store from './store'
 import axios from 'axios';
 import VueCarousel from 'vue-carousel';
 import vueSmoothScroll from 'vue2-smooth-scroll';
-import VueAlertify from 'vue-alertify';
+import VueSwal from 'vue-swal'
 
 Vue.config.productionTip = false;
 
 Vue.http = Vue.prototype.$apiClient = axios;
 
 Vue.use(vueSmoothScroll);
-Vue.use(VueAlertify);
+Vue.use(VueSwal);
 
 /* eslint-disable no-new */
 new Vue({

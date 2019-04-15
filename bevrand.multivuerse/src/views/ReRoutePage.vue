@@ -3,7 +3,7 @@
     <navbar></navbar>
         <section class="reroute">
         <h2>{{username}}, your adventure starts here!</h2>
-            <orbit-spinner v-if="animate"
+            <fulfilling-square-spinner v-if="animate"
                     :animation-duration="1200"
                     :size="100"
                     :color="'#fff'"
@@ -18,7 +18,7 @@
 <script>
 import Footer from "../components/Footer.vue"
 import Navbar from "../components/Navbar.vue"
-import {OrbitSpinner} from 'epic-spinners'
+import { FulfillingSquareSpinner } from 'epic-spinners'
 
     export default {
         name: 'reroutePage',
@@ -39,7 +39,7 @@ import {OrbitSpinner} from 'epic-spinners'
         components: {
             'navbar': Navbar,
             'foot': Footer,
-            OrbitSpinner,
+            FulfillingSquareSpinner,
         },
 
         methods: {

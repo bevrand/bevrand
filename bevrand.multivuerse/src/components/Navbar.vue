@@ -30,6 +30,12 @@
                         :to="{ name: 'profilePage' }">
                     Profile
                 </router-link>
+                <a
+                        v-on:click="logoutUser"
+                        v-if="isLoggedIn"
+                        id="navlinkLogout">
+                    Logout
+                </a>
             </Slide>
         </main>
     </div>
@@ -42,13 +48,17 @@ import { Slide } from 'vue-burger-menu'
         name: "Navbar",
         data() {
             return {
-                isLoggedIn: false
+                isLoggedIn: this.$store.state.loggedIn
             }
         },
         components: {
             Slide
         },
         methods: {
+            logoutUser: function () {
+                this.$store.commit('logOut');
+                this.$router.push({ name: 'loginPage' });
+            }
         },
     }
 
@@ -59,6 +69,10 @@ import { Slide } from 'vue-burger-menu'
     #navbar {
         height: 3em;
         background-color: #FF9500;
+    }
+
+    a {
+        cursor: pointer;
     }
 
     /* Navbar links */

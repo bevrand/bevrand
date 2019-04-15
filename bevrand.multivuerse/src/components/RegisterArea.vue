@@ -3,109 +3,49 @@
     <h2>Your adventure starts here!</h2>
     <form id="registerForm" @submit="checkForm">
       <section class="inputarea">
-        <FloatingLabel
-          :config="{
-            label: 'Username',
-            name: 'username',
-            line: false,
-            color: {
-              focusColor: '#00FA9A',
-              errorColor: '#ff0000',
-              lineColor: '#00FA9A',
-              blurredColor: 'rgba(3, 23, 40, 0.34)'
-            },
-            hasError: usernameValidation,
-            hasClearButton: false
-          }"
-        >
           <input
             type="text"
             class="inputfield"
+            placeholder="Username"
             v-model="username"
             id="username"
           />
-        </FloatingLabel>
         <br />
-        <FloatingLabel
-          :config="{
-            label: 'Email',
-            name: 'email',
-            line: false,
-            color: {
-              focusColor: '#00FA9A',
-              errorColor: '#ff0000',
-              lineColor: '#00FA9A',
-              blurredColor: 'rgba(3, 23, 40, 0.34)'
-            },
-            hasError: !emailValidation,
-            hasClearButton: false
-          }"
-        >
-        <input type="email"
-               v-model="email"
-               id="email"
-               class="inputfield"/>
-        </FloatingLabel>
+        <input
+           type="email"
+           v-model="email"
+           placeholder="Email"
+           id="email"
+           class="inputfield"/>
         <br />
-        <FloatingLabel
-          :config="{
-            label: 'Password',
-            name: 'password',
-            line: false,
-            color: {
-              focusColor: '#00FA9A',
-              errorColor: '#ff0000',
-              lineColor: '#00FA9A',
-              blurredColor: 'rgba(3, 23, 40, 0.34)'
-            },
-            hasError: hasError,
-            hasClearButton: false
-          }"
-        >
           <input
             type="password"
             id="password"
+            placeholder="Password"
             class="inputfield"
             v-model="password"
             autocomplete="off"
           />
-        </FloatingLabel>
         <br />
-        <FloatingLabel
-          :config="{
-            label: 'Retype Password',
-            name: 'confirmPassword',
-            color: {
-              focusColor: '#00FA9A',
-              errorColor: '#ff0000',
-              lineColor: '#00FA9A',
-              blurredColor: 'rgba(3, 23, 40, 0.34)'
-            },
-            line: false,
-            hasError: hasError,
-            hasClearButton: false
-          }"
-        >
           <input
             type="password"
             id="repeat-password"
             class="inputfield"
+            placeholder="Repeat Password"
             v-model="confirmPassword"
             autocomplete="off"
           />
-        </FloatingLabel>
-        <small v-if="hasError" style="color: #f00; font-weight: bold"
-          >Passwords do not match</small
-        >
         <br />
-        <button id="signUpButton" class="signupbutton">Sign Up</button>
+        <button
+                id="signUpButton"
+                class="signupbutton"
+                :disabled="!hasError">Sign Up</button>
       </section>
     </form>
   </div>
 </template>
 
 <script>
-import FloatingLabel from "vue-simple-floating-labels";
 
 export default {
   name: "Register",
@@ -119,7 +59,6 @@ export default {
     };
   },
   components: {
-    FloatingLabel
   },
   computed: {
     hasError() {
@@ -130,7 +69,7 @@ export default {
       return re.test(this.email);
     },
     usernameValidation() {
-      return this.username.length < 4 || this.username.length > 21;
+      return this.username.length < 3 || this.username.length > 21;
     }
   },
   methods: {
@@ -165,7 +104,6 @@ export default {
       })
         .then(response => {
             this.$router.push({ name: 'reroutePage', params: { username: this.username } });
-          this.alert(response.data + "done!");
         })
         .catch(e => {
           let errorText = 'Something went wrong';
@@ -188,9 +126,7 @@ export default {
         });
     },
     alert: function(text) {
-      this.$alertify.alertWithTitle(text, () =>
-        this.$alertify.warning("alert is closed")
-      );
+      this.$swal("Error!", text, "error")
     }
   }
 };
@@ -272,7 +208,9 @@ h2 {
   padding: 5px;
   border: none;
   font-size: 16px;
-  width: 8em;
-  background-color: white !important;
+  width: 75%;
+  color: #424242;
+  background-color: white;
 }
+
 </style>

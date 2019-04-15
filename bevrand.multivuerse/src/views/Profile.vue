@@ -9,7 +9,7 @@
 <script>
     import Footer from '../components/Footer.vue'
     import Navbar from "../components/Navbar.vue"
-    import PlayListCreation from "../components/PlaylistCreation.vue"
+    import PlayListCreation from "../components/ProfileArea.vue"
 
     export default {
         name: "profile",

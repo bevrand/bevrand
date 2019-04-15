@@ -3,74 +3,44 @@
         <h2>Welcome!</h2>
         <form id="loginForm" @submit="checkLoginForm">
             <section class="inputarea">
-                <FloatingLabel
-                        :config="{
-                            label: 'Username',
-                            name: 'username',
-                            color: {
-                              focusColor: '#ff9500',
-                              lineColor: '#ff9500',
-                              blurredColor: 'rgba(3, 23, 40, 0.34)'
-                            },
-                            hasClearButton: false
-                          }"
-                >
-                    <input
-                        type="text"
-                        class="inputfield"
-                        v-model="username"
-                        id="username"
-                    />
-                </FloatingLabel>
+                <input
+                    type="text"
+                    placeholder="Username"
+                    class="inputfield"
+                    v-model="username"
+                    id="username"
+                />
                 <br />
-                <FloatingLabel
-                        :config="{
-                        label: 'Email',
-                        name: 'email',
-                        color: {
-                          focusColor: '#ff9500',
-                          lineColor: '#ff9500',
-                          blurredColor: 'rgba(3, 23, 40, 0.34)'
-                        },
-                        hasClearButton: false
-                      }"
-                >
                 <input type="email"
-                       placeholder="Email"
                        v-model="email"
+                       placeholder="Email"
                        class="inputfield"
                        id="email">
-                </FloatingLabel>
                 <br>
-                <FloatingLabel
-                        :config="{
-                        label: 'Password',
-                        name: 'password',
-                        color: {
-                          focusColor: '#ff9500',
-                          lineColor: '#ff9500',
-                          blurredColor: 'rgba(3, 23, 40, 0.34)'
-                        },
-                        hasClearButton: false
-                      }"
-                >
                 <input type="password"
                        id="password"
                        placeholder="Password"
                        v-model="password"
                        class="inputfield"
                        autocomplete="off">
-                </FloatingLabel>
                 <br>
                 <button v-if="!loggingIn"
                         id="loginButton"
                         class="loginbutton">Login
                 </button>
+                <h4>Don't have an Account?</h4>
+                <router-link
+                        tag="a"
+                        id="navlinkRegister"
+                        :to="{ name: 'registerPage' }">
+                    Sign up here!
+                </router-link>
                 <circles-to-rhombuses-spinner v-if="loggingIn"
                         :animation-duration="1200"
                         :circles-num="4"
                         :circle-size="15"
                         color="#ff9500"
+                        class="spinner"
                 />
             </section>
         </form>
@@ -78,7 +48,6 @@
 </template>
 
 <script>
-    import FloatingLabel from "vue-simple-floating-labels";
     import { CirclesToRhombusesSpinner } from 'epic-spinners'
 
     export default {
@@ -94,7 +63,6 @@
             }
         },
         components: {
-            FloatingLabel,
             CirclesToRhombusesSpinner
         },
         methods: {
@@ -104,7 +72,7 @@
                 }
                 else {
                     this.loggingIn = true;
-                    this.count = 5;
+                    this.count = 3;
                     this.login()
                 }
                 e.preventDefault();
@@ -126,7 +94,7 @@
                         window.setInterval(() => {
                             if (this.count === 0) {
                                 this.loggingIn = false;
-                                this.$router.push({name: 'reroutePage', params: {username: this.username}});
+                                this.$router.push({name: 'profilePage', params: {username: this.username}});
                             }
                             this.count--;
                         }, 1000);
@@ -142,8 +110,7 @@
                     })
             },
             alert: function(text){
-                this.$alertify.alertWithTitle(text, () =>
-                    this.$alertify.warning("alert is closed"))
+                this.$swal("Error!", text, "error")
             },
         }
     }
@@ -152,9 +119,7 @@
 
 <style scoped>
     .inputarea {
-        margin-top: 2em;
-        margin-left: 22em;
-        margin-right: 22em;
+        margin: 2em 22em 1em;
         text-align: center;
     }
 
@@ -226,6 +191,30 @@
         padding: 5px;
         border: none;
         font-size: 16px;
-        width: 8em;
+        width: 75%;
+        color: #424242;
+        background-color: white;
     }
+
+    .spinner {
+        margin-top: 2em;
+        margin-bottom: 4em;
+        margin-left: 45%;
+        text-align: center;
+    }
+
+    @media screen and (max-width: 1366px) {
+        .spinner {
+            margin: 2em 10em 3em 35%;
+            text-align: center;
+        }
+    }
+
+    @media screen and (max-width: 650px) {
+        .spinner {
+            margin: 1em 1em 2em 30%;
+            text-align: center;
+        }
+    }
+
 </style>
