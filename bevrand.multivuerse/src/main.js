@@ -8,11 +8,18 @@ import axios from 'axios';
 import VueCarousel from 'vue-carousel';
 import vueSmoothScroll from 'vue2-smooth-scroll';
 import VueSwal from 'vue-swal'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faPencilAlt, faTrash, faPlusCircle, faDice, faGlassMartini } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+library.add(faPencilAlt, faTrash, faPlusCircle, faDice, faGlassMartini );
 
 Vue.config.productionTip = false;
 
 Vue.http = Vue.prototype.$apiClient = axios;
+Vue.prototype.$proxyUrl = store.state.proxyUrl;
 
+Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.use(vueSmoothScroll);
 Vue.use(VueSwal);
 

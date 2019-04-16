@@ -81,7 +81,7 @@
             login: function () {
                 this.$apiClient({
                     method: 'post',
-                    url: 'http://0.0.0.0:4540/api/login',
+                    url: `${this.$proxyUrl}/api/login`,
                     data: {
                         "emailAddress" : this.emailAddress,
                         "passWord": this.password,
@@ -110,7 +110,7 @@
                     })
             },
             alert: function(text){
-                this.$swal("Error!", text, "error")
+                this.$swal("Something went wrong", text, "error")
             },
         }
     }

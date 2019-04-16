@@ -81,10 +81,11 @@ if PROFILE == 'database-only':
     DATABASE_ONLY = True
 # For local development
 if PROFILE == 'dev':
-    dataseeder_arg.default = False
-    run_component_arg.default = True
-    run_system_arg.default = True
+    dataseeder_arg.default = True
+    run_component_arg.default = False
+    run_system_arg.default = False
     pass_generation_arg.default = True
+    exclude_jaeger_arg.default = True
 # For Circle component tests environment
 if PROFILE == 'component-tests':
     dataseeder_arg.default = True
@@ -142,7 +143,7 @@ databases_services = ['dockergres', 'dockermongo', 'redis', 'neo4j']
 test_services = ['componenttest']
 systemtest_services = ['systemtest']
 api_services = ['authenticationapi', 'highscoreapi', 'randomizerapi', 'recommendationapi', 'playlistapi', 
-                'proxyapi', 'frontendapi', 'dockernginx']
+                'proxyapi', 'frontendapi', 'dockernginx', 'multivuerse']
 data_seeder_service = ['dataseeder']
 password_services = {'authenticationapi': 'dockergres', 'playlistapi': 'dockermongo'}
 volume_services = ['dockermongo', 'dockergres']

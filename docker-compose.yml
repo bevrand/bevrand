@@ -29,8 +29,6 @@ services:
       - 4570:5000
     depends_on:
       - dockergres
-    links:
-      - dockergres
     environment:
       - ASPNETCORE_ENVIRONMENT="Development"
 
@@ -41,9 +39,6 @@ services:
        - 4560:5000 # expose ports - HOST:CONTAINER
     depends_on:
        - playlistapi
-    links:
-       - playlistapi
-       - highscoreapi
     environment:
        - APP_SETTINGS=Coverage
        - HIGHSCORE_API=http://highscoreapi:5000/api/v1/
@@ -54,8 +49,6 @@ services:
     ports:
        - 4550:5000  # expose ports - HOST:CONTAINER
     depends_on:
-       - dockermongo
-    links:
        - dockermongo
     environment:
        - APP_SETTINGS=Coverage
@@ -72,10 +65,6 @@ services:
       - authenticationapi
     environment:
       - NODE_ENV=development
-    links:
-      - randomizerapi
-      - playlistapi
-      - authenticationapi
 
   highscoreapi:
     container_name: highscoreapi
@@ -84,8 +73,6 @@ services:
     - GO_ENV=docker
     - GIN_MODE=release
     depends_on:
-    - redis
-    links:
     - redis
     ports:
     - 4580:5000
@@ -100,7 +87,19 @@ services:
     - playlistapi
     - authenticationapi
     - proxyapi
-    links:
+
+  multivuerse:
+    container_name: multivuerse
+    build: ./bevrand.multivuerse
+    environment:
+    - NODE_ENV=production
+    - PROXY_API_URL=http://localhost:4540
+    ports:
+    - 8081:80
+    depends_on:
+    - randomizerapi
+    - playlistapi
+    - authenticationapi
     - proxyapi
 
   dataseeder:
@@ -109,29 +108,3 @@ services:
     depends_on:
        - dockermongo
        - dockergres
-    links:
-       - dockermongo
-       - dockergres
-
-  componenttest:
-    container_name: component_tests
-    build: ./bevrand.componenttests
-    depends_on:
-    - randomizerapi
-    - playlistapi
-    - authenticationapi
-    - proxyapi
-    - highscoreapi
-    - dataseeder
-    links:
-    - randomizerapi
-    - playlistapi
-    - authenticationapi
-    - proxyapi
-    - highscoreapi
-    environment:
-    - PYTHON_ENV=Test
-
-
-
-      

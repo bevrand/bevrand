@@ -11,22 +11,18 @@
                aria-label="Search through site content">
         <br>
         <a>Filtering on: {{ searchTerm }}</a>
-        <button v-on:click="filterList">Filter</button>
+        <button v-on:click="filterList(searchTerm)">Filter</button>
 
         <br>
 
-        <a v-on:click="addNewPlaylist" class="fa fa-plus-circle" style="font-size:32px;color:#09E983;cursor:pointer"><br>
-        <span class="playlistaddition">Add playlist</span></a><br>
+        <a class="hover-add"><font-awesome-icon v-on:click="addNewPlaylist" icon="plus-circle" size="2x"/><br>
+        <span class="playlistaddition">Create Playlist</span></a><br>
         <br>
         <span v-for="(playlist, index) in playlists" :key="index" class="playlistcollapisble">
                 <a class="collapsible" v-on:click="showItems = index"> {{playlist.displayName}}
-                    <i style="margin-left: 0.5em;cursor:pointer"
-                       class="fa fa-pencil"
-                    v-on:click="editPlaylist(playlist)">
-                    </i>
-                    <i style="margin-left: 0.5em;cursor:pointer"
-                       class="fa fa-trash"
-                       v-on:click="deletePlaylist(index)"></i>
+                    <a class="hover-edit"><font-awesome-icon icon="pencil-alt" class="icons" v-on:click="editPlaylist(playlist)"/></a>
+                    <a class="hover-delete"><font-awesome-icon icon="trash" class="icons" v-on:click="deletePlaylist(index)" /></a>
+                    <a class="hover-play"><font-awesome-icon icon="dice" class="icons"/></a>
                 </a>
                 <ul id="beverageList" v-show="showItems === index">
                     <li v-for="beverage of playlist.beverages" >
@@ -56,7 +52,7 @@
 
         methods: {
             getAllUserPlaylists: function () {
-                this.$apiClient.get(`http://0.0.0.0:4540/api/playlists?username=${this.username}`)
+                this.$apiClient.get(`${this.$proxyUrl}/api/playlists?username=${this.username}`)
                     .then((response) => {
                         this.playlists = response.data;
                     })
@@ -66,7 +62,7 @@
             },
 
             validateEnteredPlaylist: function(playlistName) {
-                return this.$apiClient.get(`http://0.0.0.0:4540/api/playlists?username=joeri&list=${playlistName}`)
+                return this.$apiClient.get(`${this.$proxyUrl}/api/playlists?username=joeri&list=${playlistName}`)
                     .then((response) => {
                         response['data'].forEach(function(resp) {
                             if (resp.displayName.toLowerCase() === playlistName.toLowerCase()) {
@@ -87,15 +83,16 @@
                 this.$router.push({name: 'editPage', params: {info: playlist}});
             },
 
-            filterList: function () {
-                let somethhing = this.playlists.forEach(function(resp) {
-
-                    let what = RegExp('es*').test(resp.displayName)
-                    if(what) {
-                        console.log(resp)
+            filterList: function (term) {
+                let templist = []
+                this.playlists.forEach(function(playlist) {
+                    let matched = RegExp(`aa*`).test(playlist.displayName)
+                    if (matched) {
+                        console.log(playlist)
+                        templist.push(playlist)
                     }
-                })
-                console.log(somethhing)
+                });
+                this.playlists = templist
             },
 
             deletePlaylist: function (index) {
@@ -185,7 +182,7 @@
     }
 
     .playlistcollapisble {
-        background-color: #FF9500;
+        background-color: #B4B4B4;
         margin-left: 20em;
         margin-right: 20em;
         margin-top: 2em;
@@ -214,14 +211,44 @@
     }
 
     .collapsible {
-        color: #fff;
-        background-color: #FF9500;
+        color: #ffffff;
+        background-color: #B4B4B4;
         margin: 0.5em;
         display: block;
         text-align: center;
         padding: 1px;
         text-decoration: none;
         font-size: 1.5em;
+    }
+
+    .hover-add {
+        margin-left: 1em;
+        color: #68ff27;
+        text-align: center;
+    }
+
+    .hover-delete {
+        margin-left: 0.5em;
+    }
+
+    .hover-delete:hover {
+        color: #ff271a;
+    }
+
+    .hover-edit {
+        margin-left: 0.5em;
+    }
+
+    .hover-edit:hover {
+        color: #3cfaff;
+    }
+
+    .hover-play {
+        margin-left: 0.5em;
+    }
+
+    .hover-play:hover {
+        color: #FF9500;
     }
 
 </style>

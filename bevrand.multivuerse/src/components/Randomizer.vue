@@ -102,7 +102,7 @@ let $ = JQuery;
         randomize: function () {
             this.$apiClient({
                 method: 'post',
-                url: 'http://0.0.0.0:4540/api/v2/randomize',
+                url: `${this.$proxyUrl}/api/v2/randomize`,
                 data: this.$parent.selectedPlaylist
 
             })

@@ -5,26 +5,36 @@
             <span class="label">
                 <a class="image featured" ><img :src="imageUrl" ></a><br>
                 <button v-on:click="setImage"> Change Image</button>
-                <a class="playlistselector" id="playlistName"><h3> Name: {{ displayName }}</h3>  </a>
-                <h3>Beverages:</h3><br>
+                <a class="playlistselector" id="playlistName"><h3> Playlist: {{ displayName }}</h3>  </a>
+                <h3 style="margin-bottom: 0.5em">Beverages:</h3><br>
                 <ul id="beverageList">
                     <li v-for="(beverage, index) in beverages" :key="index" >
                         {{ beverage }}
                         <a class="hover-edit">
-                        <i @click="editDrink(index)"
-                           style="margin-left: 0.5em"
-                           class="fa fa-pencil">
-                        </i>
+                        <font-awesome-icon icon="pencil-alt" class="icons" v-on:click="editDrink(index)"/>
                         </a>
                         <a class="hover-delete">
-                        <i @click="removeDrink(index)"
-                           style="margin-left: 0.5em"
-                           class="fa fa-trash">
-                        </i>
+                        <font-awesome-icon icon="trash" class="icons" v-on:click="removeDrink(index)" />
                         </a>
                     </li>
                 </ul>
                 </span>
+
+            <div v-if="expandPopularDrinks">
+
+                <button class="circledbutton"
+                        v-for="(item, index) in popularDrinks"
+                        :key="index"
+                        style="background-color: orange"
+                        v-on:click="() => setPopularDrink(item)">
+                    <span>{{item}}</span>
+                </button>
+
+            </div>
+
+            <a v-if="!expandPopularDrinks" class="hover-popular"><font-awesome-icon v-on:click="showPopularDrinks" icon="glass-martini" size="2x"/>
+                <br>Show popular Drinks</a>
+
             <div>
                 <input
                         v-model="drink"
@@ -33,15 +43,12 @@
                         class="adddrink"
                         value=""
                 />
-                <a class="hover-add"><i @click="addBeverage()"
-                   style="margin-left: 0.5em"
-                   class="fa fa-plus-circle">
-                </i></a>
+                <a class="hover-add"><font-awesome-icon v-on:click="addBeverage()" icon="plus-circle" size="lg"/></a>
                 <br>
-                <button @click="createNewPlaylist()"
+                <button v-on:click="createNewPlaylist()"
                         v-if="beverages.length >= 2"
                         id="submitButton"
-                        class="submitbutton">Submit</button>
+                        class="submitbutton">Save this playlist</button>
         </div>
         </div>
         <foot></foot>
@@ -64,6 +71,8 @@
                 normalizedPlayListName: '',
                 username: this.$store.state.username,
                 imageUrl: 'https://static.beveragerandomizer.com/file/beveragerandomizer/images/users/standardimage.png',
+                popularDrinks: ['Beer', 'Red Wine', 'White Wine', 'Vodka', 'Whiskey', 'Tequila'],
+                expandPopularDrinks: false,
             };
         },
         mounted() {
@@ -138,9 +147,9 @@
                         confirm: {
                             text: "Change",
                             closeModal: true,
+                            },
                         },
-                    },
-                })
+                    })
                     .then(value => {
                         if (value == null) {
                             this.$swal.stopLoading();
@@ -161,7 +170,7 @@
             createNewPlaylist () {
                 this.$apiClient({
                     method: "post",
-                    url: "http://localhost:4540/api/user",
+                    url: `${this.$proxyUrl}/api/user`,
                     data: {
                         "beverages": this.beverages,
                         "displayName": this.displayName,
@@ -178,6 +187,16 @@
                         this.$swal("Error", "Something went wrong", "error")
                     })
                 },
+                setPopularDrink (beverage) {
+                    if (!this.beverages.indexOf(beverage) < 1) {
+                        this.beverages.push(beverage);
+                    }
+                    this.expandPopularDrinks = !this.expandPopularDrinks;
+                },
+
+                showPopularDrinks () {
+                    this.expandPopularDrinks = !this.expandPopularDrinks;
+                }
             },
     };
 </script>
@@ -231,24 +250,57 @@
         text-align: center;
     }
 
+    .hover-add {
+        margin-left: 1em;
+    }
+
     .hover-add:hover {
         color: #68ff27;
-        cursor: pointer;
+    }
+
+    .hover-popular {
+        color: #ff9500;
+    }
+
+    .hover-delete {
+        margin-left: 0.5em;
     }
 
     .hover-delete:hover {
         color: #ff271a;
-        cursor: pointer;
+    }
+
+    .hover-edit {
+        margin-left: 0.5em;
     }
 
     .hover-edit:hover {
         color: #3cfaff;
-        cursor: pointer;
     }
 
     .adddrink {
         margin-bottom: 2em;
         font-family: "Ubuntu", sans-serif;
+    }
+
+    .circledbutton{
+        position: relative;
+        height: 3em;
+        margin-left: 0.5em;
+        margin-bottom: 0.5em;
+        width: 9em;
+        font-size:13px;
+        font-family:arial, helvetica, sans-serif;
+        padding: 10px 10px 10px 10px;
+        text-shadow: -1px -1px 0 rgba(0,0,0,0.3);
+        font-weight:bold;
+        text-align: center;
+        color: #FFFFFF;
+        background-color: #FF9500;
+    }
+
+    .circledbutton:hover{
+        background: #7A2F9E;
     }
 
     .submitbutton {

@@ -5,13 +5,13 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        token : null,
+        token : "",
         loggedIn: false,
         username: "",
         id: "",
         email: "",
         jwtData: null,
-        proxyUrl: process.env.ROOT_PROXY_API
+        proxyUrl: process.env.VUE_APP_PROXY_API
     },
     mutations: {
         setToken : (state, authResponse) => {
@@ -25,7 +25,7 @@ export default new Vuex.Store({
 
         getTokenFromStorage: (state) => {
             let token = localStorage.getItem('token');
-            if (token !== null){
+            if (token !== "null" || token == null) {
                 state.token = token;
                 state.jwtData =  JSON.parse(atob(token.split('.')[1]));
                 state.username = state.jwtData.username;

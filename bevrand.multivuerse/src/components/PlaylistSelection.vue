@@ -71,7 +71,7 @@ import { Carousel, Slide } from 'vue-carousel';
         },
         methods: {
             getAllPlaylists: function () {
-                this.$apiClient.get("http://0.0.0.0:4540/api/v2/frontpage")
+                this.$apiClient.get(`${this.$proxyUrl}/api/v2/frontpage`)
                         .then((response) => {
                             this.playlists = response.data;
                             if (this.$parent.selectedPlaylist === null) {
@@ -83,7 +83,7 @@ import { Carousel, Slide } from 'vue-carousel';
                         })
                 },
             getAllUserPlaylists: function () {
-                this.$apiClient.get(`http://0.0.0.0:4540/api/playlists?username=joeri`)
+                this.$apiClient.get(`${this.$proxyUrl}/api/playlists?username=joeri`)
                     .then((response) => {
                         this.playlists = response.data;
                         if (this.$parent.selectedPlaylist === null) {

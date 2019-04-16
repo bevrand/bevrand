@@ -39,7 +39,7 @@
         <button
                 id="signUpButton"
                 class="signupbutton"
-                :disabled="!hasError">Sign Up</button>
+                :disabled="hasError">Sign Up</button>
       </section>
     </form>
   </div>
@@ -94,7 +94,7 @@ export default {
     signUp: function() {
       this.$apiClient({
         method: "post",
-        url: "http://0.0.0.0:4540/api/register",
+        url: `${this.$proxyUrl}/api/register`,
         //this should become username and password after refactor
         data: {
             "userName": this.username,
@@ -103,7 +103,19 @@ export default {
         }
       })
         .then(response => {
-            this.$router.push({ name: 'reroutePage', params: { username: this.username } });
+            this.$apiClient({
+              method: 'post',
+              url: `${this.$proxyUrl}/api/login`,
+              data: {
+                "emailAddress" : this.email,
+                "passWord": this.password,
+                "userName": this.username
+              }
+            }).then(response => {
+              this.token = response.data['token'];
+              this.$store.commit('setToken', response.data);
+              this.$router.push({ name: 'reroutePage', params: { username: this.username } });
+            })
         })
         .catch(e => {
           let errorText = 'Something went wrong';
@@ -126,7 +138,7 @@ export default {
         });
     },
     alert: function(text) {
-      this.$swal("Error!", text, "error")
+      this.$swal("Something went wrong", text, "error")
     }
   }
 };
