@@ -24,7 +24,7 @@ context('Beverage Randomizer Test', () => {
             });
         });
 
-        describe('Randomize functionality works', function () {
+        describe('RandomizeDrinks functionality works', function () {
             it('Should be able to randomize my drinks', function () {
                 cy.get('#letsGetStartedButton').click();
                 cy.get('#page-wrapper > section.carousel > div > article:nth-child(1) > a > img').click();
@@ -69,8 +69,8 @@ context('Beverage Randomizer Test', () => {
                 cy.visit('http://0.0.0.0/#banner');
                 cy.get('#page-wrapper > section.carousel > div > article:nth-child(4) > header > h3 > a').click();
                 cy.get('#randomizebutton').then(($buttonText) => {
-                    expect($buttonText.text()).not.to.eq('Randomize from this list again?');
-                    expect($buttonText.text()).to.eq('Randomize!')
+                    expect($buttonText.text()).not.to.eq('RandomizeDrinks from this list again?');
+                    expect($buttonText.text()).to.eq('RandomizeDrinks!')
                 })
             });
             it('Should be able to randomize my drinks twice', function () {
@@ -82,7 +82,7 @@ context('Beverage Randomizer Test', () => {
                 cy.wait(3500);
                 cy.get('#randomizebutton').should('be.visible');
                 cy.get('#randomizebutton').then(($buttonText) => {
-                    expect($buttonText.text()).to.eq('Randomize from this list again?');
+                    expect($buttonText.text()).to.eq('RandomizeDrinks from this list again?');
                 });
                 cy.get('#randomizedDrink').then(($randomizedOutput) => {
                     expect($randomizedOutput.text()).not.to.eq(' ');
@@ -94,7 +94,7 @@ context('Beverage Randomizer Test', () => {
                 cy.wait(3500);
                 cy.get('#randomizebutton').should('be.visible');
                 cy.get('#randomizebutton').then(($buttonText) => {
-                    expect($buttonText.text()).to.eq('Randomize from this list again?');
+                    expect($buttonText.text()).to.eq('RandomizeDrinks from this list again?');
                 });
                 cy.get('#randomizedDrink').then(($randomizedOutput) => {
                     expect($randomizedOutput.text()).not.to.eq(' ');
