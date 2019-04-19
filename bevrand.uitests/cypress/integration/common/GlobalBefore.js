@@ -1,0 +1,30 @@
+before(() => {
+
+    cy.request('http://localhost:4550/api/v1/private/testuser').then((response) => {
+        let playlists = response.body['result'];
+        playlists.forEach(function(playlist) {
+            cy.request('DELETE', `http://localhost:4550/api/v1/private/testuser/${playlist}`)
+        });
+    });
+
+    cy.request('http://localhost:4570/api/Users').then((response) => {
+        let users = response.body['allUsers'];
+        users.forEach(function(user) {
+            cy.request('DELETE', `http://localhost:4570/api/Users?id=${user.id}`)
+        });
+    });
+
+    cy.fixture('standarduser.json')
+        .then((credentials) => {
+        cy
+            .request('POST', 'http://localhost:4570/api/Users', {
+                'username': credentials.username,
+                'emailAddress': credentials.emailAddress,
+                'password': credentials.password
+            })
+            .then((response) => {
+                // response.body is automatically serialized into JSON
+                expect(response.body).to.have.property('username', credentials.username)
+            })
+    })
+});

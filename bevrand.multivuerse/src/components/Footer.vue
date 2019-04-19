@@ -5,7 +5,7 @@
                 <h3>Wanna reach out?</h3>
             </header>
             <p>Our project is open source so feel free to clone from our github.</p>
-            <a href="https://www.github.com/bevrand/bevrand" class="icon fa-github"><span class="label">Github</span></a>
+            <a href="https://www.github.com/bevrand/bevrand"><font-awesome-icon icon="code-branch" class="icons"/><span class="label"> Github</span></a>
         <!-- Copyright -->
         <div class="copyright">
             <a>&copy; Copyright (c) 2017 bevrand</a><br>

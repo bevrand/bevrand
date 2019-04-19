@@ -4,7 +4,6 @@ Feature: Playlist Selection
   I want to be able to choose playlists
   So that I do not have to think about my beverage choices
 
-  @focus
   Scenario Outline: Selecting a frontend playlist with <device>
     Given I am a new user using <device>
     When I select the first playlist by image
@@ -16,7 +15,6 @@ Feature: Playlist Selection
     | ipad-2     |
     | macbook-15 |
 
-  @focus
   Scenario Outline: Switching playlists with <device>
     Given I am a new user using <device>
     When I select the first playlist by image
@@ -27,10 +25,8 @@ Feature: Playlist Selection
     Examples:
       | device     |
       | iphone-6   |
-      | ipad-2     |
       | macbook-15 |
 
-  @focus
   Scenario Outline: Pagination changes on <device>
     Given I am a new user using <device>
     When I swipe to the next page
@@ -39,10 +35,8 @@ Feature: Playlist Selection
     Examples:
       | device     |
       | iphone-6   |
-      | ipad-2     |
       | macbook-15 |
 
-  @focus
   Scenario Outline: Last playlist leads to login page on <device>
     Given I am a new user using <device>
     When I select the last playlist

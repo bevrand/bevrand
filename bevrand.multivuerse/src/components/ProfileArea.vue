@@ -15,7 +15,7 @@
 
         <br>
 
-        <a class="hover-add"><font-awesome-icon v-on:click="addNewPlaylist" icon="plus-circle" size="2x"/><br>
+        <a class="hover-add"><font-awesome-icon v-on:click="addNewPlaylist" icon="plus-circle" size="2x" id='addPlayList'/><br>
         <span class="playlistaddition">Create Playlist</span></a><br>
         <br>
         <span v-for="(playlist, index) in playlists" :key="index" class="playlistcollapisble">

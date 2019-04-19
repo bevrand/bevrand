@@ -176,7 +176,7 @@
                         "displayName": this.displayName,
                         "imageUrl": this.imageUrl,
                         "list": this.normalizedPlayListName,
-                        "user": "joeri"
+                        "user": this.username
                     }})
                     .then(response => {
                         this.$swal("Well done", `Playlist ${this.displayName} has been created`, "success").then(() => {

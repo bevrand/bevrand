@@ -25,7 +25,7 @@ import { FulfillingSquareSpinner } from 'epic-spinners'
         data() {
             return {
                 username: this.$route.params.username,
-                count: 5,
+                count: 3,
                 animate: false
             };
         },

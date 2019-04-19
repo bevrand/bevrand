@@ -9,10 +9,10 @@ import VueCarousel from 'vue-carousel';
 import vueSmoothScroll from 'vue2-smooth-scroll';
 import VueSwal from 'vue-swal'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faPencilAlt, faTrash, faPlusCircle, faDice, faGlassMartini } from '@fortawesome/free-solid-svg-icons'
+import { faPencilAlt, faTrash, faPlusCircle, faDice, faGlassMartini, faCodeBranch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faPencilAlt, faTrash, faPlusCircle, faDice, faGlassMartini );
+library.add(faPencilAlt, faTrash, faPlusCircle, faDice, faGlassMartini, faCodeBranch );
 
 Vue.config.productionTip = false;
 

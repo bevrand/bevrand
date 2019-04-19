@@ -11,20 +11,6 @@ When(`I select the first playlist by image`,  () => {
     cy.wait(750)
 });
 
-When(`I select another playlist by image`,  () => {
-    cy.visit('/#playlistCarousel');
-    cy.wait(500);
-    cy.get('#playlistCarousel > div.VueCarousel-wrapper > div').children().then(($playlists) => {
-        let randomNumber = getRandomNumber(2, $playlists.length - 2);
-        cy.get(`#playlistCarousel > div.VueCarousel-wrapper > div > div:nth-child(${randomNumber})`).within(() => {
-            cy.get('#playlistName > h3')
-                .as('secondPlaylist');
-            cy.get('> span > a.image.featured > img').click();
-        });
-    });
-    cy.wait(750);
-});
-
 When(`I select the last playlist`,  () => {
     cy.get('#LoginAndRegister').click()
 });
@@ -78,7 +64,3 @@ Then(`The active first slide should not be the active slide` ,() => {
 Then(`I should be rerouted to the login page` ,() => {
     cy.url().should('include', '/login');
 });
-
-function getRandomNumber(low, high) {
-    return Math.floor(Math.random() * (high - low + 1)) + low;
-}

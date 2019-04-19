@@ -90,13 +90,14 @@ import { Slide } from 'vue-burger-menu'
     }
 
     .bm-burger-button {
-        position: absolute;
+        position: fixed;
         width: 36px;
         height: 30px;
-        left: 36px;
-        top: 16px;
+        left: 16px !important;
+        top: 16px !important;
         cursor: pointer;
     }
+
     .bm-burger-bars {
         background-color: #373a47;
     }

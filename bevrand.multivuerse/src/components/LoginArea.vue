@@ -59,7 +59,7 @@
                 username: '',
                 token: '',
                 loggingIn: false,
-                count: 3
+                count: 2
             }
         },
         components: {
@@ -72,7 +72,7 @@
                 }
                 else {
                     this.loggingIn = true;
-                    this.count = 3;
+                    this.count = 2;
                     this.login()
                 }
                 e.preventDefault();

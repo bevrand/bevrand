@@ -4,7 +4,6 @@ Feature: Randomizer Functions
   I want to be able to Randomize beverages
   Since that is what the site is called
 
-  @focus
   Scenario Outline: Selecting any list with <device> and press Randomize
     Given I am a new user using <device>
     When I select any playlist
@@ -17,7 +16,6 @@ Feature: Randomizer Functions
       | ipad-2     |
       | macbook-15 |
 
-  @focus
   Scenario Outline: Randomized drink should be in the selected playlist
     Given I am a new user using <device>
     When I select any playlist
@@ -30,8 +28,7 @@ Feature: Randomizer Functions
       | ipad-2     |
       | macbook-15 |
 
-  @focus
-  Scenario Outline: Randomized drink should be in the selected playlist
+  Scenario Outline: Randomized drink should be in the selected playlist after switching
     Given I am a new user using <device>
     When I select any playlist
     And I randomize a drink

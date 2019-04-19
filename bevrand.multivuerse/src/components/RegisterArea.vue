@@ -39,7 +39,7 @@
         <button
                 id="signUpButton"
                 class="signupbutton"
-                :disabled="hasError">Sign Up</button>
+                >Sign Up</button>
       </section>
     </form>
   </div>
@@ -61,27 +61,20 @@ export default {
   components: {
   },
   computed: {
-    hasError() {
-      return this.password !== this.confirmPassword;
-    },
-    emailValidation() {
-      let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      return re.test(this.email);
-    },
-    usernameValidation() {
-      return this.username.length < 3 || this.username.length > 21;
-    }
   },
   methods: {
     checkForm: function(e) {
+      let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       if (!this.username) {
         this.alert("Username is required");
       } else if (this.username.length < 4 || this.username.length > 21) {
         this.alert("Username should be between 3 and 20 characters");
       } else if (!this.email) {
         this.alert("Email is required");
+      } else if(!re.test(this.email)) {
+        this.alert(`${this.email} is not a valid emailaddres`);
       } else if (this.password.length < 4 || this.password.length > 29) {
-        this.alert("Password must be between 3 and 28 characters");
+        this.alert("Password should be between 3 and 28 characters");
       } else if (this.password !== this.confirmPassword) {
         this.alert("Passwords do not match");
       } else {

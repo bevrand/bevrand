@@ -77,7 +77,7 @@ services:
     image: "bevrand/multivuerse:${CIRCLE_SHA1}"
     environment:
     - NODE_ENV=production
-    - PROXY_API_URL=http://localhost:4540
+    - PROXY_API_URL=http://0.0.0.0:4540
     ports:
     - 3001:80
     depends_on:
