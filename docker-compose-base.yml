@@ -310,8 +310,6 @@ services:
     container_name: dockernginx
     image: "bevrand/dockernginx:${CIRCLE_SHA1}"
     build: ./deployment/nginx
-    volumes:
-      - /mnt/datavolumedocker/config/nginx.conf.d/:/etc/nginx/conf.d/:ro
     links:
       - frontendapi
     ports:
