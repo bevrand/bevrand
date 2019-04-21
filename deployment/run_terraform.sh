@@ -10,18 +10,13 @@ set -e
 ../terraform apply -auto-approve outfile
 
 export IP_ADDRESS_DROPLET=`../terraform output droplet_ip`
-printenv IP_ADDRESS_DROPLET
 export SSH_KEY_DEPLOY=`../terraform output private_ssh_key`
-printenv SSH_KEY_DEPLOY
 
 echo "Finished terraform run"
 
 sleep 30
 
 echo "Starting Ansible run"
-
-printenv IP_ADDRESS_DROPLET
-printenv SSH_KEY_DEPLOY
 
 ip=$IP_ADDRESS_DROPLET
 ssh_key=$SSH_KEY_DEPLOY
