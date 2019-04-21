@@ -3,6 +3,9 @@
 ip=printenv IP_ADDRESS_DROPLET
 ssh_key=printenv SSH_KEY_DEPLOY
 
+printenv IP_ADDRESS_DROPLET
+printenv SSH_KEY_DEPLOY
+
 echo "Setting IP in ansible hosts to: [${ip}]"
 
 echo "\n${ip}" >> ../ansible/hosts
