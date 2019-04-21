@@ -300,7 +300,7 @@ jobs:
      - run: "python create_docker_compose.py --profile prod"
      - run: "pwd && ls -lha"
      - run: "cd ./deployment && sh ./init_terraform.sh"
-     - run: "cd ./deployment/terraform_scripts && pwd && ls -lha && bash ../run_terraform.sh && bash ../run_ansible.sh"
+     - run: "cd ./deployment/terraform_scripts && pwd && ls -lha && bash ../run_terraform.sh"
 
   resume_uptimerobot:
     machine: true
