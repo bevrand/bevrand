@@ -75,9 +75,9 @@
       enabled: yes
     become: yes
 
-  - name: Add user vagrant to docker group
+  - name: Add user developer to docker group
     user:
-      name: vagrant
+      name: developer
       groups: docker
       append: yes
     become: yes
@@ -90,7 +90,7 @@
 
   - name: Download and install Docker Compose
     get_url:
-      url: https://github.com/docker/compose/releases/download/1.21.2/docker-compose-Linux-x86_64
+      url: https://github.com/docker/compose/releases/download/1.24.0/docker-compose-Linux-x86_64
       dest: /usr/bin/docker-compose
       mode: 0755
     when:

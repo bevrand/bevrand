@@ -8,3 +8,6 @@ set -e
 # Any subsequent(*) commands which fail will cause the shell script to exit immediately
 ../terraform plan -out outfile
 ../terraform apply -auto-approve outfile
+
+export IP_ADDRESS_DROPLET=terraform output droplet_ip
+export SSH_KEY_DEPLOY=terraform output private_ssh_key

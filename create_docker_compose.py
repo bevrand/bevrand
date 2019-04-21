@@ -115,6 +115,7 @@ if PROFILE == 'prod':
     tag_action_arg.default = 'production'
     exclude_jaeger_arg.default = True
     use_volume_arg.default = True
+    pass_generation_arg.default = False
 
 USE_STDOUT = args.stdout
 if USE_STDOUT:
