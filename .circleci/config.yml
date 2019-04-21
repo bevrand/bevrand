@@ -296,6 +296,7 @@ jobs:
     steps:
      - checkout
      - run: "pip install PyYAML"
+     - run: "pip install ansible"
      - run: "python create_docker_compose.py --profile prod"
      - run: "pwd && ls -lha"
      - run: "cd ./deployment && sh ./init_terraform.sh"
