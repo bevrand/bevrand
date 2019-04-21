@@ -3,7 +3,7 @@
 ip=${IP_ADDRESS_DROPLET}
 ssh_key=${SSH_KEY_DEPLOY}
 
-echo ${ip}
+echo "Setting IP in ansible hosts to: [${ip}]"
 
 echo "\n${ip}" >> ./deployment/ansible/hosts
 echo 'Done setting ip in hosts'
