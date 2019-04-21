@@ -20,7 +20,7 @@
     register: changes_made
 
   - name: Create directory for mount
-    file: path=mnt/datavolumedocker state=directory
+    file: path=/mnt/datavolumedocker state=directory
     register: datavolume
 
   - name: Upload docker-compose for host
@@ -103,7 +103,11 @@
       - docker_compose_check.msg.find('No such file or directory') != -1
 
   - name: Mount datavolume
-    command: mount -o discard,defaults /dev/disk/by-id/scsi-0DO_Volume_datavolumedocker /mnt/datavolumedocker
+    mount:
+      path: /mnt/datavolumedocker
+      src: /dev/disk/by-id/scsi-0DO_Volume_datavolumedocker
+      opts: discard,default
+      state: present
     ignore_errors: no
 
   - command: "docker-compose -f /home/terraformuser/docker/docker-compose-created.yml up -d"
