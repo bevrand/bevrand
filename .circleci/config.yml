@@ -411,7 +411,7 @@ workflows:
          context: BeverageRandomizerPROD
          filters:
             branches:
-              only: 
+              only:
               - master
          requires:
            - create_production_images
@@ -420,7 +420,7 @@ workflows:
          context: BeverageRandomizerPROD
          filters:
             branches:
-              only: 
+              only:
               - master
          requires:
            #- acceptance_test_1
@@ -429,7 +429,7 @@ workflows:
          context: BeverageRandomizerPROD
          filters:
             branches:
-              only: 
+              only:
               - master
          requires:
            - deploy
