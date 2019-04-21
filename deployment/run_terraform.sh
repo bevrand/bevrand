@@ -32,6 +32,7 @@ echo "${ip}" >> ../ansible/hosts
 echo 'Done setting ip in hosts'
 
 echo "${ssh_key}" > id_rsa.pem
+chmod 400 ./id_rsa.pem
 
 ansible-playbook ../ansible/droplet_provision_centos.yml -i ../ansible/hosts --private-key=./id_rsa.pem --user terraformuser
 
