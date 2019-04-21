@@ -108,7 +108,7 @@
       src: /dev/disk/by-id/scsi-0DO_Volume_datavolumedocker
       opts: discard,defaults,noatime
       fstype: ext4
-      state: present
+      state: mounted
     ignore_errors: no
 
   - command: "docker-compose -f /home/terraformuser/docker/docker-compose-created.yml up -d"
