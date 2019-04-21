@@ -1,20 +1,9 @@
-# - name: Wait 300 seconds, but only start checking after 10 seconds
-#   wait_for_connection:
-#     delay: 10
-#     timeout: 300
-
 - hosts: do
   remote_user: terraformuser
   gather_facts: False
   become: yes
 
   tasks:
-  # - name: Set authorized key took from file
-  #   authorized_key:
-  #     user: terraformuser
-  #     state: present
-  #     key: "{{ ansible_ssh_private_key_file }}"
-
   - name: Create directory
     file: path=/home/terraformuser/docker state=directory
     register: changes_made
@@ -36,13 +25,8 @@
 
   - name: remove possible old versions
     yum:
-      name: "{{ item }}"
+      name: ['docker', 'docker-engine', 'docker.io']
       state: absent
-    with_items:
-      - docker
-      - docker-engine
-      - docker.io
-    become: true
     when: changes_made.changed
 
   - name: Install yum utils
@@ -64,13 +48,11 @@
     get_url:
       url: https://download.docker.com/linux/centos/docker-ce.repo
       dest: /etc/yum.repos.d/docer-ce.repo
-    become: yes
 
   - name: Install Docker
     package:
       name: docker-ce
       state: latest
-    become: yes
     when: changes_made.changed
 
   - name: Start Docker service
@@ -78,14 +60,12 @@
       name: docker
       state: started
       enabled: yes
-    become: yes
 
   - name: Add user developer to docker group
     user:
       name: developer
       groups: docker
       append: yes
-    become: yes
     when: changes_made.changed    
 
   - name: Check if Docker Compose is installed

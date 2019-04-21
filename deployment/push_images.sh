@@ -11,8 +11,3 @@ for image in $DOCKERIMAGES; do
     $(docker tag $image $PUSH_IMAGE:latest)
     echo $(docker push $PUSH_IMAGE:latest)
 done
-
-
-
-
-
