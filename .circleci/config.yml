@@ -313,93 +313,51 @@ workflows:
     jobs:
      - unittest_randomizer:
          context: BeverageRandomizerPROD
-         filters:
-            branches:
-               ignore: feature/ansibleintegration
      - unittest_proxy:
          context: BeverageRandomizerPROD
-         filters:
-            branches:
-               ignore: feature/ansibleintegration
      - unittest_playlist:
          context: BeverageRandomizerPROD
-         filters:
-            branches:
-               ignore: feature/ansibleintegration
      - unittest_authentication:
          context: BeverageRandomizerPROD
-         filters:
-            branches:
-               ignore: feature/ansibleintegration
      - unittest_highscore:
          context: BeverageRandomizerPROD
-         filters:
-            branches:
-               ignore: feature/ansibleintegration
      - unittest_recommendation:
          context: BeverageRandomizerPROD
-         filters:
-            branches:
-               ignore: feature/ansibleintegration
 
      - build_python:
          context: BeverageRandomizerPROD
          requires:
           - unittest_randomizer
           - unittest_playlist
-         filters:
-            branches:
-               ignore: feature/ansibleintegration
      - build_node:
          context: BeverageRandomizerPROD
          requires:
           - unittest_proxy
-         filters:
-            branches:
-               ignore: feature/ansibleintegration
      - build_dotnet:
          context: BeverageRandomizerPROD
          requires:
           - unittest_authentication
-         filters:
-            branches:
-               ignore: feature/ansibleintegration
      - build_golang:
          context: BeverageRandomizerPROD
          requires:
           - unittest_highscore
           - unittest_recommendation
-         filters:
-            branches:
-               ignore: feature/ansibleintegration
      - build_dockergres:
          context: BeverageRandomizerPROD
          requires:
           - unittest_authentication
-         filters:
-            branches:
-               ignore: feature/ansibleintegration
      - build_frontend:
          context: BeverageRandomizerPROD
          requires:
           - unittest_proxy
-         filters:
-            branches:
-               ignore: feature/ansibleintegration
      - build_databases:
          context: BeverageRandomizerPROD
          requires:
          - unittest_proxy
-         filters:
-            branches:
-               ignore: feature/ansibleintegration
      - build_ruby:
          context: BeverageRandomizerPROD
          requires:
          - unittest_proxy
-         filters:
-            branches:
-               ignore: feature/ansibleintegration
      - component_tests:
          context: BeverageRandomizerPROD
          requires:
@@ -410,9 +368,6 @@ workflows:
            - build_dockergres
            - build_frontend
            - build_databases
-         filters:
-            branches:
-               ignore: feature/ansibleintegration
      - system_tests:
          context: BeverageRandomizerPROD
          requires:
@@ -424,9 +379,6 @@ workflows:
            - build_frontend
            - build_databases
            - build_ruby
-         filters:
-            branches:
-               ignore: feature/ansibleintegration
      - ui_tests:
           context: BeverageRandomizerPROD
           requires:
@@ -439,7 +391,9 @@ workflows:
            - build_databases
           filters:
             branches:
-               ignore: feature/ansibleintegration
+              only:
+              - master
+              - develop
      #TODO Sonar-scanner
      #- acceptance_test_1:
      #    requires:
@@ -471,13 +425,6 @@ workflows:
          requires:
            #- acceptance_test_1
            - pause_uptimerobot
-     - deploy:
-         #TODO Get from artifacts
-         context: BeverageRandomizerPROD
-         filters:
-            branches:
-              only: 
-              - feature/ansibleintegration
      - resume_uptimerobot:
          context: BeverageRandomizerPROD
          filters:
