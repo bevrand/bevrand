@@ -106,7 +106,7 @@
     mount:
       path: /mnt/datavolumedocker
       src: /dev/disk/by-id/scsi-0DO_Volume_datavolumedocker
-      opts: discard,default
+      opts: discard,defaults,noatime
       fstype: ext4
       state: present
     ignore_errors: no
