@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 ip=$IP_ADDRESS_DROPLET
 ssh_key=$SSH_KEY_DEPLOY

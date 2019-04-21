@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 
 ../terraform init -backend-config="storage_account_name=$storage_account_name" -backend-config="access_key=$access_key"
@@ -10,6 +10,6 @@ set -e
 ../terraform apply -auto-approve outfile
 
 export IP_ADDRESS_DROPLET=`../terraform output droplet_ip`
-export SSH_KEY_DEPLOY=`../terraform output private_ssh_key`
 printenv IP_ADDRESS_DROPLET
+export SSH_KEY_DEPLOY=`../terraform output private_ssh_key`
 printenv SSH_KEY_DEPLOY
