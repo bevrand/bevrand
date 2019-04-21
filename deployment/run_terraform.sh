@@ -25,7 +25,7 @@ ssh_key=$SSH_KEY_DEPLOY
 
 echo "Setting IP in ansible hosts to: [${ip}]"
 
-echo "\n${ip}" >> ../ansible/hosts
+echo "${ip}" >> ../ansible/hosts
 echo 'Done setting ip in hosts'
 
 ansible-playbook ../ansible/droplet_provision_centos.yml -i ../ansible/hosts --extra-vars "ssh_key=${ssh_key}"
