@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 
-ip=$IP_ADDRESS_DROPLET
-ssh_key=$SSH_KEY_DEPLOY
+echo "Starting Ansible run"
 
 printenv IP_ADDRESS_DROPLET
 printenv SSH_KEY_DEPLOY
+
+ip=$IP_ADDRESS_DROPLET
+ssh_key=$SSH_KEY_DEPLOY
 
 echo "Setting IP in ansible hosts to: [${ip}]"
 

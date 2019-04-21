@@ -13,3 +13,5 @@ export IP_ADDRESS_DROPLET=`../terraform output droplet_ip`
 printenv IP_ADDRESS_DROPLET
 export SSH_KEY_DEPLOY=`../terraform output private_ssh_key`
 printenv SSH_KEY_DEPLOY
+
+echo "Finished terraform run"
