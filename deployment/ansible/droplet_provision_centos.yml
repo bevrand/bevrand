@@ -1,6 +1,6 @@
 ---
 - hosts: do
-  remote_user: root
+  remote_user: terraformuser
   gather_facts: False
   become: yes
 
