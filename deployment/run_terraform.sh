@@ -28,7 +28,6 @@ echo "Setting IP in ansible hosts to: [${ip}]"
 echo "\n${ip}" >> ../ansible/hosts
 echo 'Done setting ip in hosts'
 
-inventory = 
 ansible-playbook ../ansible/droplet_provision_centos.yml -i ../ansible/hosts --extra-vars "ssh_key=${ssh_key}"
 
 echo 'Time to randomize'
