@@ -31,6 +31,8 @@ echo "Setting IP in ansible hosts to: [${ip}]"
 echo "${ip}" >> ../ansible/hosts
 echo 'Done setting ip in hosts'
 
-ansible-playbook ../ansible/droplet_provision_centos.yml -i ../ansible/hosts --extra-vars "ssh_key=${ssh_key}"
+echo "${ssh_key}" > id_rsa.pem
+
+ansible-playbook ../ansible/droplet_provision_centos.yml -i ../ansible/hosts --private-key=./id_rsa.pem --user terraformuser
 
 echo 'Time to randomize'

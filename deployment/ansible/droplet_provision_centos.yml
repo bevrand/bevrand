@@ -8,15 +8,12 @@
   gather_facts: False
   become: yes
 
-  vars:
-    ssh_key: "{{ ssh_key }}"
-
   tasks:
-  - name: Set authorized key took from file
-    authorized_key:
-      user: terraformuser
-      state: present
-      key: "{{ ssh_key }}"
+  # - name: Set authorized key took from file
+  #   authorized_key:
+  #     user: terraformuser
+  #     state: present
+  #     key: "{{ ansible_ssh_private_key_file }}"
 
   - name: Create directory
     file: path=/home/terraformuser/docker state=directory
