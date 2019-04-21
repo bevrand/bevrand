@@ -458,7 +458,6 @@ workflows:
             branches:
               only: 
               - master
-              - feature/ansibleintegration
          requires:
            - create_production_images
      - deploy:
@@ -468,10 +467,16 @@ workflows:
             branches:
               only: 
               - master
-              - feature/ansibleintegration
          requires:
            #- acceptance_test_1
            - pause_uptimerobot
+     - deploy:
+         #TODO Get from artifacts
+         context: BeverageRandomizerPROD
+         filters:
+            branches:
+              only: 
+              - feature/ansibleintegration
      - resume_uptimerobot:
          context: BeverageRandomizerPROD
          filters:
