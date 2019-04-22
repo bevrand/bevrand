@@ -121,7 +121,7 @@ $("#successButton").click(function ()  {
 function postDrinkToBackEnd(randomizeList) {
     $.ajax({
         type: "POST",
-        url: `${config.proxyHostname}/playlist-api/v1/${username}/${normalizedPlayListName}`,
+        url: `${config.proxyHostname}/playlist-api/v1/private/${username}/${normalizedPlayListName}`,
         data: randomizeList,
         contentType: "application/json",
         success: function () {
