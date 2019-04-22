@@ -4,34 +4,20 @@ import (
 	"bevrand.recommendationapi/jaeger"
 	"context"
 	"fmt"
+	bolt "github.com/johnnadratowski/golang-neo4j-bolt-driver"
 	"github.com/joho/godotenv"
 	"github.com/opentracing/opentracing-go"
 	"github.com/uber/jaeger-client-go/config"
 	"github.com/urfave/negroni"
-	"log"
 	"os"
 )
 
-var (
-	// Neo4jURL is the connection string for neo4j
-	Neo4jURL = "bolt://localhost:7687"
-)
-
-func init() {
-	env := os.Getenv("GO_ENV")
-	println(env)
-
-	err := godotenv.Load(".env." + env)
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	if os.Getenv("NEO4J_URL") != "" {
-		Neo4jURL = os.Getenv("NEO4J_URL")
-	}
-}
+var db bolt.Conn
 
 func main() {
+	getEnvFile()
+	createConnection()
+
 	jaegerURL := os.Getenv("JAEGER_AGENT_HOST")
 	jaegerPort := os.Getenv("JAEGER_AGENT_PORT")
 	jaegerConfig := jaegerURL + ":" + jaegerPort
@@ -55,11 +41,6 @@ func main() {
 	defer closer.Close()
 	opentracing.SetGlobalTracer(tracer)
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "3220"
-	}
-
 	span := tracer.StartSpan("StartingServer")
 	span.SetTag("event", "Starting MUX")
 	defer span.Finish()
@@ -67,7 +48,7 @@ func main() {
 	ctx := context.Background()
 	ctx = opentracing.ContextWithSpan(ctx, span)
 
-	logValue := fmt.Sprintf("Starting server on port %s with neo4j %s", port, Neo4jURL)
+	logValue := fmt.Sprintf("Starting server on port with neo4j")
 	jaeger.PrintServerInfo(ctx, logValue)
 	span.Finish()
 
@@ -76,4 +57,31 @@ func main() {
 	n := negroni.Classic()
 	n.UseHandler(serveMux)
 	n.Run(":5000")
+}
+
+// GetEnvFile sets env files entries to environment
+func getEnvFile() {
+	env := os.Getenv("GO_ENV")
+	if "" == env {
+		env = "development"
+	}
+
+	err := godotenv.Load(".env." + env)
+	handleError(err)
+}
+
+func createConnection() {
+	var err error
+	neo4jUrl := os.Getenv("NEO4J_URL")
+	driver, err := bolt.NewDriverPool(neo4jUrl, 10)
+	db, err = driver.OpenPool()
+	handleError(err)
+}
+
+// simple function to handle errors
+// should be rewritten to throw 502
+func handleError(err error) {
+	if err != nil {
+		panic(err)
+	}
 }

@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	driver "github.com/johnnadratowski/golang-neo4j-bolt-driver"
 	"github.com/opentracing/opentracing-go"
 	openlog "github.com/opentracing/opentracing-go/log"
 	"log"
@@ -42,18 +41,6 @@ func CategorieHandler(w http.ResponseWriter, req *http.Request) {
 	cypher := `
 	MATCH (drink:Beverage)-[:KIND_OF]->(group:BevGroup) WHERE group.name =~ {kindOf} return drink.name, drink.perc, drink.type, drink.country
 	`
-
-	db, err := driver.NewDriver().OpenNeo(Neo4jURL)
-	if err != nil {
-		span.LogFields(
-			openlog.String("http_status_code", "500"),
-			openlog.String("body", "error connecting to neo4j"),
-		)
-		w.WriteHeader(500)
-		w.Write([]byte("An error occurred connecting to the DB"))
-		return
-	}
-	defer db.Close()
 
 	data, _, _, err := db.QueryNeoAll(cypher, map[string]interface{}{"kindOf": "(?i)" + kindQuery})
 	if err != nil {
@@ -142,18 +129,6 @@ func BeverageHandler(w http.ResponseWriter, req *http.Request) {
 
 	cypher := `MATCH (n:Beverage) RETURN n.name, n.perc, n.type, n.country LIMIT {limit}`
 
-	db, err := driver.NewDriver().OpenNeo(Neo4jURL)
-	if err != nil {
-		span.LogFields(
-			openlog.String("http_status_code", "500"),
-			openlog.String("body", "error connecting to neo4j"),
-		)
-		w.WriteHeader(500)
-		w.Write([]byte("An error occurred connecting to the DB"))
-		return
-	}
-	defer db.Close()
-
 	data, _, _, err := db.QueryNeoAll(cypher, map[string]interface{}{"limit": limit})
 	if err != nil {
 		span.LogFields(
@@ -225,18 +200,6 @@ func BeverageGroupHandler(w http.ResponseWriter, req *http.Request) {
 	cypher := `
 	MATCH (n:BevGroup) RETURN n.name
 	`
-
-	db, err := driver.NewDriver().OpenNeo(Neo4jURL)
-	if err != nil {
-		span.LogFields(
-			openlog.String("http_status_code", "500"),
-			openlog.String("body", "error connecting to neo4j"),
-		)
-		w.WriteHeader(500)
-		w.Write([]byte("An error occurred connecting to the DB"))
-		return
-	}
-	defer db.Close()
 
 	stmt, err := db.PrepareNeo(cypher)
 	if err != nil {
@@ -343,28 +306,18 @@ func CocktailHandler(w http.ResponseWriter, req *http.Request) {
 		neoMap = map[string]interface{}{"name": "(?i)" + include, "secondName": "(?i)" + secondDrink}
 	}
 
-	db, err := driver.NewDriver().OpenNeo(Neo4jURL)
 	data, _, _, err := db.QueryNeoAll(cypher, neoMap)
 	if err != nil {
 		span.LogFields(
-			openlog.String("http_status_code", "500"),
+			openlog.String("http_status_code", "502"),
 			openlog.String("body", "error connecting to neo4j"),
 		)
-		w.WriteHeader(500)
+		w.WriteHeader(502)
 		w.Write([]byte("An error occurred connecting to the DB"))
 		return
 	}
-	defer db.Close()
 
-	if err != nil {
-		span.LogFields(
-			openlog.String("http_status_code", "500"),
-			openlog.String("body", "error querying search:"),
-		)
-		w.WriteHeader(500)
-		w.Write([]byte("An error occurred querying the DB"))
-		return
-	} else if len(data) == 0 {
+	if len(data) == 0 {
 		span.LogFields(
 			openlog.String("http_status_code", "404"),
 		)

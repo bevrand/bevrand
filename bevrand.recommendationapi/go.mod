@@ -2,7 +2,6 @@ module bevrand.recommendationapi
 
 require (
 	github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd // indirect
-	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/johnnadratowski/golang-neo4j-bolt-driver v0.0.0-20181101021923-6b24c0085aae
 	github.com/joho/godotenv v1.3.0
 	github.com/opentracing/opentracing-go v1.1.0
@@ -16,4 +15,5 @@ require (
 	golang.org/x/lint v0.0.0-20181217174547-8f45f776aaf1 // indirect
 	golang.org/x/net v0.0.0-20190125091013-d26f9f9a57f3 // indirect
 	golang.org/x/tools v0.0.0-20190208222737-3744606dbb67 // indirect
+	gopkg.in/oauth2.v3 v3.10.0 // indirect
 )
