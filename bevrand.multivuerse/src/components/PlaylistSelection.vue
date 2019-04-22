@@ -8,14 +8,16 @@
                 <a class="image featured" href="#main" v-smooth-scroll="{ duration: 1000 }" v-on:click="setPlaylistToParent(playlist)"><img :src="playlist.imageUrl" ></a>
                 <a class="playlistselector" href="#main" v-smooth-scroll="{ duration: 1000 }" v-on:click="setPlaylistToParent(playlist)" id="playlistName"><h3>{{ playlist.displayName }}</h3>  </a>
                 <ul id="beverageList">
-                    <li v-for="beverage of playlist.beverages" >
+                    <li v-for="beverage of playlist.beverages.slice(0, 6)" >
                         {{ beverage }}
                     </li>
                     <li>
                     <router-link
                         tag="button"
                         id="linkToAllDrinks"
-                        :to="{ name: 'profilePage' }">
+                        class="showAllButton"
+                        :to="{ name: 'playlistDetailPage', params: {
+                                                playlistDetail: playlist }}">
                     Show me all drinks!
                     </router-link>
                     </li>

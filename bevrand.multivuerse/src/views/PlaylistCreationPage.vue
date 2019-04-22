@@ -4,9 +4,49 @@
         <div id="creationArea" class="creationfield">
             <span class="label">
                 <a class="image featured" ><img :src="imageUrl" ></a><br>
-                <button v-on:click="setImage"> Change Image</button>
+                <button v-on:click="setImage" class="submitbutton"> Change Image</button>
                 <a class="playlistselector" id="playlistName"><h3> Playlist: {{ displayName }}</h3>  </a>
                 <h3 style="margin-bottom: 0.5em">Beverages:</h3><br>
+                <div v-if="expandPopularCocktails">
+
+                <button class="circledbutton"
+                        v-for="(item, index) in popularCocktails"
+                        :key="index"
+                        style="background-color: orange"
+                        v-on:click="() => setPopularDrink(item)">
+                    <span>{{item}}</span>
+                </button>
+
+            </div>
+
+            <div v-if="expandPopularBeer">
+
+                <button class="circledbutton"
+                        v-for="(item, index) in popularBeers"
+                        :key="index"
+                        style="background-color: orange"
+                        v-on:click="() => setPopularDrink(item)">
+                    <span>{{item}}</span>
+                </button>
+
+            </div>
+
+            <div v-if="expandPopularWhiskey">
+
+                <button class="circledbutton"
+                        v-for="(item, index) in popularWhiskeys"
+                        :key="index"
+                        style="background-color: orange"
+                        v-on:click="() => setPopularDrink(item)">
+                    <span>{{item}}</span>
+                </button>
+
+            </div>
+
+            <a v-if="!expandPopularDrinks" class="hover-popular"><font-awesome-icon v-on:click="showPopularCockails" icon="glass-martini" size="2x" style="margin-right: 0.25em"/></a>
+            <a v-if="!expandPopularDrinks" class="hover-popular"><font-awesome-icon v-on:click="showPopularBeers" icon="beer" size="2x" style="margin-right: 0.25em"/></a>
+            <a v-if="!expandPopularDrinks" class="hover-popular"><font-awesome-icon v-on:click="showPopularWhiskeys" icon="glass-whiskey" size="2x" style="margin-right: 0.25em"/>
+                <br>Show popular Drinks</a>
                 <ul id="beverageList">
                     <li v-for="(beverage, index) in beverages" :key="index" >
                         {{ beverage }}
@@ -19,21 +59,6 @@
                     </li>
                 </ul>
                 </span>
-
-            <div v-if="expandPopularDrinks">
-
-                <button class="circledbutton"
-                        v-for="(item, index) in popularDrinks"
-                        :key="index"
-                        style="background-color: orange"
-                        v-on:click="() => setPopularDrink(item)">
-                    <span>{{item}}</span>
-                </button>
-
-            </div>
-
-            <a v-if="!expandPopularDrinks" class="hover-popular"><font-awesome-icon v-on:click="showPopularDrinks" icon="glass-martini" size="2x"/>
-                <br>Show popular Drinks</a>
 
             <div>
                 <input
@@ -71,8 +96,13 @@
                 normalizedPlayListName: '',
                 username: this.$store.state.username,
                 imageUrl: 'https://static.beveragerandomizer.com/file/beveragerandomizer/images/users/standardimage.png',
-                popularDrinks: ['Beer', 'Red Wine', 'White Wine', 'Vodka', 'Whiskey', 'Tequila'],
-                expandPopularDrinks: false,
+                popularBeers: ['Beer', 'TripleBeer', 'Ipa', 'Guinnesses', 'Blonde', 'Double', 'Radler'],
+                popularCocktails: ['Gin Martini', 'Vesper', 'Daiquiri', 'Cosmopolitan', 'Margarita', 'Caipirinha', 'Long Island Icetea'],
+                popularWhiskeys: ['Bunnahabhain', 'Jamesson', 'Lagavulin', 'Bourbon', 'Talisker', 'Glenfiddich', 'Glenmorangie'],
+                expandPopularCocktails: false,
+                expandPopularBeer: false,
+                expandPopularWhiskey: false,
+                expandPopularDrinks: false
             };
         },
         mounted() {
@@ -188,14 +218,31 @@
                     })
                 },
                 setPopularDrink (beverage) {
-                    if (!this.beverages.indexOf(beverage) < 1) {
+                    if (this.beverages.indexOf(beverage) > -1){
+                        this.$swal('Selected drink is already in this playlist')
+                    }
+                    else {
                         this.beverages.push(beverage);
                     }
-                    this.expandPopularDrinks = !this.expandPopularDrinks;
+                    this.expandPopularCocktails = false;
+                    this.expandPopularBeer = false;
+                    this.expandPopularWhiskey = false;
                 },
 
-                showPopularDrinks () {
-                    this.expandPopularDrinks = !this.expandPopularDrinks;
+                showPopularCockails () {
+                    this.expandPopularCocktails = !this.expandPopularCocktails;
+                    this.expandPopularBeer = false;
+                    this.expandPopularWhiskey = false;
+                },
+                showPopularBeers () {
+                    this.expandPopularBeer = !this.expandPopularBeer;
+                    this.expandPopularCocktails = false;
+                    this.expandPopularWhiskey = false;
+                },
+                showPopularWhiskeys () {
+                    this.expandPopularWhiskey = !this.expandPopularWhiskey;
+                    this.expandPopularBeer = false;
+                    this.expandPopularCocktails = false;
                 }
             },
     };
@@ -238,8 +285,31 @@
 
     .label .image {
         position: relative;
-        width: auto;
+        width: 65%;
+        height: auto;
+        margin-top: 2em;
+        margin-left: 37%;
         margin-bottom: 1em;
+    }
+
+    @media screen and (max-width: 1366px) {
+        .label .image {
+            position: relative;
+            width: 75%;
+            height: auto;
+            margin-top: 2em;
+            margin-left: 30%;
+            margin-bottom: 0.5em;
+        }
+    }
+
+    @media screen and (max-width: 650px) {
+        .label .image {
+            position: relative;
+            margin-top: 1em;
+            margin-left: 30%;
+            margin-bottom: 0.25em;
+        }
     }
 
     .label h3 {
@@ -288,7 +358,7 @@
         height: 3em;
         margin-left: 0.5em;
         margin-bottom: 0.5em;
-        width: 9em;
+        width: 12em;
         font-size:13px;
         font-family:arial, helvetica, sans-serif;
         padding: 10px 10px 10px 10px;

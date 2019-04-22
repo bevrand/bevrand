@@ -36,5 +36,21 @@ export default new Router({
             name: 'playlistCreationPage',
             component: () => import("../views/PlaylistCreationPage")
         },
+        {
+            path: '/editplaylist/',
+            name: 'editPlaylistPage',
+            component: () => import("../views/EditPlaylist"),
+            props: {
+                playlist: true
+            }
+        },
+        {
+            path: '/playlistdetails/',
+            name: 'playlistDetailPage',
+            component: () => import("../views/PlaylistDetail"),
+            props: {
+                playlist: true
+            }
+        },
     ]
 })

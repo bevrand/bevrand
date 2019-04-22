@@ -6,15 +6,6 @@
         <h3> Personal info</h3>
         <h4 id="usernamePersonal"> Username: {{username}}</h4><br>
 
-        <label for="site-search">Filter playlists: </label>
-        <input v-model="searchTerm" type="search" id="site-search" name="q"
-               aria-label="Search through site content">
-        <br>
-        <a>Filtering on: {{ searchTerm }}</a>
-        <button v-on:click="filterList(searchTerm)">Filter</button>
-
-        <br>
-
         <a class="hover-add"><font-awesome-icon v-on:click="addNewPlaylist" icon="plus-circle" size="2x" id='addPlayList'/><br>
         <span class="playlistaddition">Create Playlist</span></a><br>
         <br>
@@ -41,12 +32,10 @@
             return {
                 username: this.$store.state.username,
                 playlists: [],
-                filteredList: [],
                 showItems: false,
                 validName: false,
                 validNameError: '',
                 createdPlaylist: '',
-                searchTerm: ''
             }
         },
 
@@ -80,19 +69,8 @@
             },
 
             editPlaylist: function (playlist) {
-                this.$router.push({name: 'editPage', params: {info: playlist}});
-            },
-
-            filterList: function (term) {
-                let templist = []
-                this.playlists.forEach(function(playlist) {
-                    let matched = RegExp(`aa*`).test(playlist.displayName)
-                    if (matched) {
-                        console.log(playlist)
-                        templist.push(playlist)
-                    }
-                });
-                this.playlists = templist
+                this.$router.push({name: 'editPlaylistPage', params: {
+                        playlistDetail: playlist }});
             },
 
             deletePlaylist: function (index) {

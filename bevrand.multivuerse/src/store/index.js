@@ -11,7 +11,7 @@ export default new Vuex.Store({
         id: "",
         email: "",
         jwtData: null,
-        proxyUrl: document.location.origin
+        proxyUrl: "http://localhost:4540"
     },
     mutations: {
         setToken : (state, authResponse) => {
