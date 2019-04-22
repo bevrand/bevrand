@@ -28,8 +28,6 @@ app.use(cookieParser());
 
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// TODO: CORS needed for routes, in case of local testing?
-
 /**
  * API routes
  */

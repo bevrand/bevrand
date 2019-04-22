@@ -3,6 +3,10 @@ const config = require('../../config');
 
 // Old method: validateJwtTokenMiddleware function (req, res, next) { requestJwtToken = req.body.jwttoken, delete req.body.jwtheader, req.body.jwttoken }
 
+function validateJwtHeader(jwtHeader) {
+  return jwt.verify(jwtHeader, config.authenticationSecret);
+}
+
 function validateSignedPayload(signedPayload) {
   const tokenToValidate = signedPayload.jwttoken;
   let signedItem = jwt.sign(signedPayload, config.frontendJwtSecret);
@@ -70,4 +74,9 @@ function signObject(object) {
   return object;
 }
 
-module.exports = { validateSignedPayload, validateSignedPayloadImproved, signObject };
+module.exports = {
+  validateSignedPayload,
+  validateSignedPayloadImproved,
+  validateJwtHeader,
+  signObject,
+};

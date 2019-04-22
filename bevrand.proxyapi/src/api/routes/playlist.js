@@ -2,21 +2,18 @@ const express = require('express');
 const controller = require('../controllers/playlist');
 const { reRouteTo } = require('../middlewares/reRouteRequest');
 const { playlistApi } = require('../../config');
+const { checkAuthorization } = require('../middlewares/authorization');
 const { validateJwtHeader } = require('../middlewares/jwt');
 
 const router = express.Router();
 
-//TODO: add param validation
-
 router.get('/v2/frontpage', controller.frontpage);
-
-// TODO: only reroute requests with public path to playlistApi
-// router.get(/public/, reRouteTo(playlistApi));
 
 // prettier-ignore
 router.route(/private/)
   .all(validateJwtHeader)
-  .get(controller.playlists)
+  .all(checkAuthorization)
+  .get(reRouteTo(playlistApi, 'playlist-api'))
   .post(reRouteTo(playlistApi, 'playlist-api'))
   .put(reRouteTo(playlistApi, 'playlist-api'))
   .delete(reRouteTo(playlistApi, 'playlist-api'));

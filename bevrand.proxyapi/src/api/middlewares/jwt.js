@@ -1,4 +1,4 @@
-const { validateSignedPayloadImproved } = require('../services/jwtTokens');
+const { validateSignedPayloadImproved, validateJwtHeader } = require('../services/jwtTokens');
 
 exports.validateJwtInBody = (req, res, next) => {
   try {
@@ -15,6 +15,20 @@ exports.validateJwtInBody = (req, res, next) => {
 };
 
 exports.validateJwtHeader = (req, res, next) => {
-  // TODO: do validation
-  next();
+  if (!req.header('x-api-token')) {
+    const err = new Error('No authentication token present');
+    err.status = 401;
+
+    next(err);
+  }
+
+  try {
+    res.locals.user = validateJwtHeader(req.headers);
+    next();
+  } catch (decodingError) {
+    let err = new Error('Invalid authentication token present');
+    err.status = 401;
+
+    next(err);
+  }
 };

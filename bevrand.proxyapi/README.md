@@ -4,6 +4,8 @@ The proxy-api aims to provide a gateway to the different microservices of the Be
 
 ## Routes
 
+Protected routes should be called with a x-api-token header, that should contain a valid JWT token, issued by the login route.
+
 |                   | path                           | Protected | Methods             |
 | ----------------- | ------------------------------ | --------- | ------------------- |
 | Login             | `/authentication-api/login`    | false     | POST                |

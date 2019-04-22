@@ -1,5 +1,4 @@
 const config = require('../../config');
-const playlistService = require('../services/playlists');
 const tracer = require('../utils/tracing/tracerClass');
 const { Tags } = require('opentracing');
 const { httpRequest } = require('../utils/tracing/httpRequestWithTracing');
@@ -35,33 +34,6 @@ exports.frontpage = async (req, res, next) => {
 
     span.finish();
     return res.send(newResult);
-  } catch (err) {
-    span.setTag(Tags.ERROR, true);
-    span.setTag(Tags.HTTP_STATUS_CODE, err.statusCode || 500);
-    span.finish();
-    return next(err);
-  }
-};
-
-exports.playlists = async (req, res, next) => {
-  const span = tracer.startSpan('playlists-request');
-
-  span.log({
-    event: 'playlists-query-parameters',
-    result: req.query,
-  });
-
-  try {
-    // TODO: move to seperate validation
-    if (!req.query.username) {
-      const invalidParamsError = new Error('Username parameter is missing');
-      invalidParamsError.statusCode = 400;
-    }
-
-    const playlists = await playlistService.getAllPlaylists(req.query.username, span);
-    res.send(playlists);
-
-    span.finish();
   } catch (err) {
     span.setTag(Tags.ERROR, true);
     span.setTag(Tags.HTTP_STATUS_CODE, err.statusCode || 500);
