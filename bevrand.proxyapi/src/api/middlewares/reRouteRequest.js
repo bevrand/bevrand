@@ -1,28 +1,22 @@
 const request = require('request');
 
-const requestPath = (apiName, path) => {
-  let testje = apiName ? path.replace(apiName, 'api') : path
-  console.log(testje)
-  return testje
-};
-
 /**
  * Util to pipe requests to another endpoint
  * @param {string} reRouteEndpoint
  */
-const reRouteGetTo = (reRouteEndpoint, apiName) => {
+const reRouteGetTo = reRouteEndpoint => {
   return (req, res) => {
-    const url = reRouteEndpoint + requestPath(apiName, req.path);
+    const url = `${reRouteEndpoint}/api${req.path}`;
     console.log(`# Rereouting to ${url}`);
     req.pipe(request({ qs: req.query, uri: url })).pipe(res);
   };
 };
 
-const reRouteTo = (reRouteEndpoint, apiName) => {
+const reRouteTo = reRouteEndpoint => {
   return (req, res) => {
-    console.log(`# Rereouting to ${reRouteEndpoint}${req.path}`);
+    console.log(`# Rereouting to ${reRouteEndpoint}/api${req.path}`);
     const options = {
-      uri: reRouteEndpoint + requestPath(apiName, req.path),
+      uri: `${reRouteEndpoint}/api${req.path}`,
       method: req.method,
       qs: req.query,
     };
