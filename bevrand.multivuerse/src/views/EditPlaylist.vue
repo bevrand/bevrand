@@ -1,5 +1,5 @@
 <template>
-    <div id="playlistCreationArea" class="playlistcreation">
+    <div id="editPlaylistArea" class="playlistcreation">
         <navbar></navbar>
         <div id="creationArea" class="creationfield">
             <span class="label">

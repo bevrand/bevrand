@@ -6,14 +6,14 @@
                 <a class="image featured" ><img :src="imageUrl" ></a><br>
                 <a class="playlistselector" id="playlistName"><h3> Playlist: {{ displayName }}</h3>  </a>
                 <h3 style="margin-bottom: 0.5em">Beverages:</h3><br>
-                <ul id="beverageList">
+                <ul id="detailedBeverages">
                     <li v-for="beverage of beverages" >
                         {{ beverage }}
                     </li>
                     <li>
                     <router-link
                             tag="button"
-                            id="linkToAllDrinks"
+                            id="linkToHomepage"
                             class="showAllButton"
                             :to="{ name: 'homepage'}">
                     Sure now Randomize!

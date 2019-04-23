@@ -51,10 +51,13 @@
             },
 
             validateEnteredPlaylist: function(playlistName) {
-                return this.$apiClient.get(`${this.$proxyUrl}/api/playlists?username=joeri&list=${playlistName}`)
+                let normalizedName = playlistName.replace(/[^a-zA-Z0-9]/g, "");
+                console.log(normalizedName);
+                return this.$apiClient.get(`${this.$proxyUrl}/api/playlists?username=${this.username}`)
                     .then((response) => {
                         response['data'].forEach(function(resp) {
-                            if (resp.displayName.toLowerCase() === playlistName.toLowerCase()) {
+                            if (resp.displayName.toLowerCase() === playlistName.toLowerCase() ||
+                                resp.list.toLowerCase() === normalizedName) {
                                 this.validName = false;
                                 this.validNameError = 'Playlistname already exists'
                             }

@@ -12,11 +12,6 @@ When(/^I click (.+)$/,(button) => {
     if (button === 'create') {
         cy.get('body > div.swal-overlay.swal-overlay--show-modal > div > div.swal-footer > div:nth-child(2) > button')
             .click();
-        cy.get('body > div.swal-overlay.swal-overlay--show-modal > div > div.swal-text').then(($validationText) => {
-            expect($validationText.text()).to.contain('Time to get some')});
-
-        cy.get('body > div.swal-overlay.swal-overlay--show-modal > div > div.swal-footer > div > button')
-            .click();
     }
     else {
         cy.get('body > div.swal-overlay.swal-overlay--show-modal > div > div.swal-footer > div:nth-child(1) > button')
@@ -24,6 +19,24 @@ When(/^I click (.+)$/,(button) => {
     }
 });
 
+When(/^I get the time to get some drinks alert when pressing (.+)$/,(button) => {
+    if (button === 'create') {
+        cy.get('body > div.swal-overlay.swal-overlay--show-modal > div > div.swal-text').then(($validationText) => {
+            expect($validationText.text()).to.contain('Time to get some')
+        });
+
+        cy.get('body > div.swal-overlay.swal-overlay--show-modal > div > div.swal-footer > div > button')
+            .click();
+    }
+});
+
+When(/^I choose add the preseeded playlist$/,() => {
+    cy.fixture('sampleplaylist.json')
+        .then((playlist) => {
+            cy.get('body > div.swal-overlay.swal-overlay--show-modal > div > div.swal-content > input')
+                .type(playlist.displayName);
+        })
+});
 
 When(/^I add a few valid drinks in the playlistcreation screen$/,() => {
     cy.get('#creationArea > div > input').type('beer');
@@ -59,3 +72,10 @@ Then(/^My new playlist should be visible$/,() => {
             .should('be.gt', 1)
     ))}
 );
+
+Then(/^I should get an error with the text (.+)$/, (errorText) => {
+    cy.get("body > div.swal-overlay.swal-overlay--show-modal > div > div.swal-text").then(($error) => {
+        cy.log(errorText)
+        expect($error.text()).to.contain(errorText);
+    });
+});

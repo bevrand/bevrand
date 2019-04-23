@@ -16,3 +16,4 @@ Feature: Footer
       | iphone-6   | profile                 |
       | ipad-2     | reroute/test            |
       | macbook-15 | playlistcreation/Asfasf |
+      | macbook-15 | playlistdetails         |

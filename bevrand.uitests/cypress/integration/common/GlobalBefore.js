@@ -26,5 +26,15 @@ before(() => {
                 // response.body is automatically serialized into JSON
                 expect(response.body).to.have.property('username', credentials.username)
             })
-    })
+    });
+
+    cy.fixture('sampleplaylist.json')
+        .then((playlist) => {
+            cy
+                .request('POST', `http://localhost:4550/api/v1/private/${playlist.username}/${playlist.playlistName}`, {
+                    "beverages": playlist.beverages,
+                    "displayName": playlist.displayName,
+                    "imageUrl": playlist.imageUrl
+                })
+        });
 });

@@ -1,9 +1,9 @@
-import {When} from "cypress-cucumber-preprocessor/steps";
+import { When } from "cypress-cucumber-preprocessor/steps";
 
 When(/^I choose a random name as my playlist name$/,(text) => {
     let randomPlaylist = "CAPS" + createRandomString(15);
     cy.get('body > div.swal-overlay.swal-overlay--show-modal > div > div.swal-content > input')
-        .type(randomPlaylist)
+        .type(randomPlaylist);
     cy.get('body > div.swal-overlay.swal-overlay--show-modal > div > div.swal-content > input')
         .invoke('val')
         .as('playlistname');
@@ -25,17 +25,6 @@ When(`I register myself as a new user`,  () => {
 
     cy.get('#signUpButton').click()
 });
-
-
-function createRandomString(numberOfChars) {
-    let text = "";
-    let possible = "abcdefghijklmnopqrstuvwxyz0123456789";
-
-    for (let i = 0; i < numberOfChars; i++)
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-    return text;
-
-}
 
 When(`I select any playlist`,  () => {
     cy.visit('/#playlistCarousel');
@@ -64,4 +53,13 @@ When(`I select another playlist by image`,  () => {
 
 function getRandomNumber(low, high) {
     return Math.floor(Math.random() * (high - low + 1)) + low;
+}
+
+function createRandomString(numberOfChars) {
+    let text = "";
+    let possible = "abcdefghijklmnopqrstuvwxyz0123456789";
+
+    for (let i = 0; i < numberOfChars; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    return text;
 }

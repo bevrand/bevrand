@@ -18,25 +18,22 @@ Feature: Randomizer Functions
 
   Scenario Outline: Randomized drink should be in the selected playlist
     Given I am a new user using <device>
-    When I select any playlist
+    When I select a playlist and view the detail page
     And I randomize a drink
-    Then the result should be in the selected playlist
+    Then the result should be in the beveragelist from the detail page
 
     Examples:
       | device     |
       | iphone-6   |
-      | ipad-2     |
-      | macbook-15 |
 
   Scenario Outline: Randomized drink should be in the selected playlist after switching
     Given I am a new user using <device>
-    When I select any playlist
+    When I select a playlist and view the detail page
     And I randomize a drink
-    And I randomize a drink a second time
-    Then the result should be in the selected playlist
+    And I select a playlist and view the detail page
+    And I randomize a drink
+    Then the result should be in the beveragelist from the detail page
 
     Examples:
       | device     |
-      | iphone-6   |
-      | ipad-2     |
       | macbook-15 |
