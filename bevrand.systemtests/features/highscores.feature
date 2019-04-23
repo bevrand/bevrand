@@ -19,12 +19,12 @@ Feature: Highscores
       | frontpage | girlsnightout |
 
   Scenario Outline: Getting user highscores
-    Given <user> does not exist
+    Given <user> with <email> does not exist
     When we create a <user> user based <playlist>
     And we randomize as <user> for <playlist>
     And we query the <user> and <playlist> highscore
     Then we should get a result of '200'
     Examples:
-      | user      | playlist      |
-      | bevrand   | bevrand       |
+      | user      | email                 | playlist |
+      | bevrand   | bevrand@systemtest.nl | bevrand  |
 
