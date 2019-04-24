@@ -56,11 +56,13 @@ class FixtureData
       auth_url_delete = "#{auth_url}/?id=#{user_id}"
       begin
         RestClient.delete playlist_url_delete
-      rescue
+      rescue RestClient::ExceptionWithResponse => e
+        print e
       end
       begin
         RestClient.delete auth_url_delete, { content_type: :json, accept: :json }
-      rescue
+      rescue RestClient::ExceptionWithResponse => e
+        print e
       end
     end
 
@@ -73,7 +75,8 @@ class FixtureData
     register_url = "#{@proxy_register}"
     begin
       RestClient.post register_url, user.to_json, { content_type: :json, accept: :json }
-    rescue
+    rescue RestClient::ExceptionWithResponse => e
+      print e
     end
 
     login_url = "#{@proxy_login}"
@@ -81,7 +84,8 @@ class FixtureData
       response = RestClient.post login_url, user.to_json, { content_type: :json, accept: :json }
       json_response = JSON.parse(response)
       @token = json_response['token']
-    rescue
+    rescue RestClient::ExceptionWithResponse => e
+      print e
     end
   end
 
