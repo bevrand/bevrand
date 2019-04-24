@@ -23,7 +23,7 @@ exports.validateJwtHeader = (req, res, next) => {
   }
 
   try {
-    res.locals.user = validateJwtHeader(req.headers);
+    res.locals.user = validateJwtHeader(req.header('x-api-token'));
     next();
   } catch (decodingError) {
     let err = new Error('Invalid authentication token present');
