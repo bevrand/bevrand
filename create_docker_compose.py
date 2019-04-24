@@ -111,9 +111,12 @@ if PROFILE == 'ui-tests':
 # For production environment
 if PROFILE == 'prod':
     dataseeder_arg.default = False
-    image_action_arg.default = 'build'
-    tag_action_arg.default = os.environ.get('CIRCLE_SHA1')
+    image_action_arg.default = 'pull'
+    tag_action_arg.default = 'production'
+    # We exclude jaeger for now, as the 1 GB droplet can not handle the database requirements
+    exclude_jaeger_arg.default = True
     use_volume_arg.default = True
+    pass_generation_arg.default = False
 
 USE_STDOUT = args.stdout
 if USE_STDOUT:

@@ -15,7 +15,7 @@ services:
     volumes:
       - /mnt/datavolumedocker/data/mongo:/data/db
     environment:
-      - AWESOME_NUMBER = 42
+      - AWESOME_NUMBER=42
 
   dockergres:
      container_name: dockergres
