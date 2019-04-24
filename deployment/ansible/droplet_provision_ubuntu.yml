@@ -98,5 +98,11 @@
 
   - command: "docker-compose -f /home/terraformuser/docker/docker-compose-created.yml up -d"
     register: compose_up
+    notify:
+    - restart sshd
 
   - debug: msg="{{ compose_up }}"
+
+  handlers:
+    - name: restart sshd
+      service: name=sshd state=restarted
