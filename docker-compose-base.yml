@@ -58,19 +58,6 @@ services:
     ports:
       - 4580:5000
 
-  frontendapi:
-    container_name: frontend
-    build: ./bevrand.frontend
-    image: "bevrand/frontend:${CIRCLE_SHA1}"
-    ports:
-      - 4541:80
-    depends_on:
-    - randomizerapi
-    - playlistapi
-    - authenticationapi
-    - proxyapi
-    - highscoreapi
-
   multivuerse:
     container_name: multivuerse
     build: ./bevrand.multivuerse
@@ -81,9 +68,6 @@ services:
     ports:
     - 3001:80
     depends_on:
-    - randomizerapi
-    - playlistapi
-    - authenticationapi
     - proxyapi
 
   randomizerapi:
@@ -125,6 +109,7 @@ services:
       - randomizerapi
       - playlistapi
       - authenticationapi
+      - highscoreapi
       - jaeger-agent
     environment:
       - NODE_ENV=development
