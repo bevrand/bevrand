@@ -105,12 +105,6 @@ services:
     image: "bevrand/proxyapi:${CIRCLE_SHA1}"
     ports:
       - 4540:5000
-    depends_on:
-      - randomizerapi
-      - playlistapi
-      - authenticationapi
-      - highscoreapi
-      - jaeger-agent
     environment:
       - NODE_ENV=development
       - JAEGER_AGENT_HOST=jaeger-agent
@@ -286,8 +280,6 @@ services:
     container_name: dockernginx
     image: "bevrand/dockernginx:${CIRCLE_SHA1}"
     build: ./deployment/nginx
-    links:
-      - frontendapi
     ports:
       - "80:5000"
 
