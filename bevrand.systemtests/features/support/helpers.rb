@@ -72,14 +72,14 @@ class FixtureData
              'emailAddress' => email,
              'password' => @password,
         }
-    register_url = "#{@proxy_register}"
+    register_url = @proxy_register.to_s
     begin
       RestClient.post register_url, user.to_json, { content_type: :json, accept: :json }
     rescue RestClient::ExceptionWithResponse => e
       print e
     end
 
-    login_url = "#{@proxy_login}"
+    login_url = @proxy_login.to_s
     begin
       response = RestClient.post login_url, user.to_json, { content_type: :json, accept: :json }
       json_response = JSON.parse(response)
