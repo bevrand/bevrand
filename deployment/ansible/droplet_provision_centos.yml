@@ -95,3 +95,7 @@
     register: compose_up
 
   - debug: msg="{{ compose_up }}"
+
+  handlers:
+    - name: restart sshd
+      service: name=sshd state=restarted
