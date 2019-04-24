@@ -31,8 +31,8 @@ class TestFixture(unittest.TestCase):
     validation_missing_fields = "Required fields are missing"
     data_seeded_user = 'marvin'
 
-    email = 'test@test.nl'
-    password = 'testfortesting'
+    email = 'marvin@marvin.nl'
+    password = 'marvin'
 
     token = ''
 
@@ -61,7 +61,7 @@ class TestFixture(unittest.TestCase):
 
     def get_with_auth_header(self, url):
         self.login_user_and_set_token()
-        headers = {'x-api-token': 'Bearer ' + self.token}
+        headers = {'x-api-token': self.token}
         response = requests.get(url, headers=headers)
         return response
 
@@ -101,4 +101,3 @@ class TestFixture(unittest.TestCase):
         url = self.proxy_url + self.proxy_endpoints.login
         response = self.post_without_auth_header(url=url, body=user).json()
         self.token = response['token']
-

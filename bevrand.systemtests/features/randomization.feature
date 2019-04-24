@@ -3,7 +3,6 @@ Feature: Randomizations
   I want to verify the randomize functionality
   So that we can safely deploy
 
-
   Scenario: Any drink from a random list
     Given we have a test environment
     When we request a random drink from the proxy

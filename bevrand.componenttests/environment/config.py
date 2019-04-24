@@ -1,11 +1,11 @@
 class Proxy:
     login = '/authentication-api/login'
     register = '/authentication-api/register'
-    highscore = '/highscore-api/highscore'
+    highscore = '/highscore-api/v1/highscore'
     playlist_public = '/playlist-api/v2/frontpage'
-    playlist_private = '/playlist-api/private'
+    playlist_private = '/playlist-api/v1/private'
     randomize = '/randomize-api/v2/randomize'
-    recommendation = '/recommendation-api/'
+    recommendation = '/recommendation-api/v1'
 
 
 class BaseConfig:

@@ -8,42 +8,80 @@ module Fixture
     else
       Dotenv.load('.env.local')
     end
-    url = ENV['proxyapi']
-    FixtureData.new(url)
+    proxy_url = ENV['proxyapi']
+    authenticationapi_url = ENV['authenticationapi']
+    playlistapi_url = ENV['playlistapi']
+    FixtureData.new(proxy_url, authenticationapi_url, playlistapi_url)
   end
 end
 
 class FixtureData
-  def initialize(url)
-    @url = url
+  def initialize(proxy_url, authenticationapi_url, playlistapi_url)
+    @proxy_url = proxy_url
+    @authenticationapi_url = authenticationapi_url
+    @playlistapi_url = playlistapi_url
     @token = ''
-    @user = "testusersystem"
-    @email = "testsystememail@test.nl"
-    @password = "testuserpassword"
+    @user = 'testusersystem'
+    @email = 'testsystememail@test.nl'
+    @password = 'testuserpassword'
+    @proxy_login = proxy_url + '/authentication-api/login'
+    @proxy_register = proxy_url + '/authentication-api/register'
+    @proxy_highscore = proxy_url + '/highscore-api/v1/highscore'
+    @proxy_playlist_public = proxy_url + '/playlist-api/v2/frontpage'
+    @proxy_playlist_private = proxy_url + '/playlist-api/v1/private'
+    @proxy_randomize = proxy_url + '/randomize-api/v2/randomize'
+    @proxy_recommendation = proxy_url + '/recommendation-api/v1'
   end
-  attr_reader :url
+  attr_reader :proxy_url
+  attr_reader :authenticationapi_url
+  attr_reader :playlistapi_url
   attr_reader :token
+  attr_reader :proxy_login
+  attr_reader :proxy_register
+  attr_reader :proxy_highscore
+  attr_reader :proxy_playlist_public
+  attr_reader :proxy_playlist_private
+  attr_reader :proxy_randomize
+  attr_reader :proxy_recommendation
 
+
+  def clean_up_before_run
+    auth_url = "#{@authenticationapi_url}/api/Users"
+    response = JSON.parse(RestClient.get(auth_url, { content_type: :json, accept: :json }))
+    users = response['allUsers']
+    for user in users
+      user_name = user['username']
+      user_id = user['id'].to_i
+      playlist_url_delete = "#{@playlistapi_url}/api/v1/private/#{user_name}"
+      auth_url_delete = "#{auth_url}/?id=#{user_id}"
+      begin
+        RestClient.delete playlist_url_delete
+      rescue
+      end
+      begin
+        RestClient.delete auth_url_delete, { content_type: :json, accept: :json }
+      rescue
+      end
+    end
+
+  end
   def create_and_login_user(user, email)
     user = { 'username' => user,
              'emailAddress' => email,
              'password' => @password,
         }
-    register_url = "#{@url}/authentication-api/register"
+    register_url = "#{@proxy_register}"
     begin
       RestClient.post register_url, user.to_json, { content_type: :json, accept: :json }
-    rescue RestClient::ExceptionWithResponse => e
-      puts e.response
+    rescue
     end
 
-    login_url = "#{@url}/authentication-api/login"
+    login_url = "#{@proxy_login}"
     begin
       response = RestClient.post login_url, user.to_json, { content_type: :json, accept: :json }
       json_response = JSON.parse(response)
       @token = json_response['token']
-      print @token
-    rescue RestClient::ExceptionWithResponse => e
-      puts e.response
+    rescue
     end
   end
 
@@ -76,6 +114,13 @@ class FixtureData
     }
   end
 
+  def create_update_playlist
+    {
+        "displayName": "I am no longer so depressed",
+        "imageUrl": "http://whatever.nl",
+        "beverages": %w(beer wine coke whiskey)
+    }
+  end
 end
 
 World(Fixture)

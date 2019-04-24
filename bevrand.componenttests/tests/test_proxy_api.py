@@ -29,7 +29,7 @@ class ProxyApiTestsPlaylistsPublic(test_setup_fixture.TestFixture):
 
 
 class ProxyApiTestsPlaylistsPrivate(test_setup_fixture.TestFixture):
-    def test_should_be_able_to_retrieve_a_user_playlist(self):
+    def test_should_not_be_able_to_retrieve_a_user_playlist_that_does_not_exist(self):
         self.create_new_user()
         sut = f'{self.proxy_url}{self.proxy_endpoints.playlist_private}/{self.data_seeded_user}'
         response = self.get_with_auth_header(sut)

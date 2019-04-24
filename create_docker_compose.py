@@ -81,10 +81,11 @@ if PROFILE == 'database-only':
     DATABASE_ONLY = True
 # For local development
 if PROFILE == 'dev':
-    dataseeder_arg.default = False
+    dataseeder_arg.default = True
     run_component_arg.default = True
     run_system_arg.default = True
     pass_generation_arg.default = True
+    image_action_arg.default = 'build'
 # For Circle component tests environment
 if PROFILE == 'component-tests':
     dataseeder_arg.default = True
@@ -114,6 +115,7 @@ if PROFILE == 'prod':
     image_action_arg.default = 'build'
     tag_action_arg.default = os.environ.get('CIRCLE_SHA1')
     use_volume_arg.default = True
+    exclude_jaeger_arg.default = True
 
 USE_STDOUT = args.stdout
 if USE_STDOUT:
