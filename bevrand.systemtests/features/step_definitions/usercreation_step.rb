@@ -12,6 +12,7 @@ When /^we create a new user$/ do
   @result = RestClient.post sut, user.to_json, { content_type: :json, accept: :json }
 end
 
-Then /^we should get a result of (.+)$/ do |code|
+Then /^we should get a result of '(.*)'$/ do |code|
+  puts code
   expect(@result.code).to be code.to_i
 end

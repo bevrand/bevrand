@@ -16,13 +16,41 @@ end
 class FixtureData
   def initialize(url)
     @url = url
+    @token = ''
+    @user = "testusersystem"
+    @email = "testsystememail@test.nl"
+    @password = "testuserpassword"
   end
   attr_reader :url
+  attr_reader :token
+
+  def create_and_login_user(user, email)
+    user = { 'username' => user,
+             'emailAddress' => email,
+             'password' => @password,
+        }
+    register_url = "#{@url}/authentication-api/register"
+    begin
+      RestClient.post register_url, user.to_json, { content_type: :json, accept: :json }
+    rescue RestClient::ExceptionWithResponse => e
+      puts e.response
+    end
+
+    login_url = "#{@url}/authentication-api/login"
+    begin
+      response = RestClient.post login_url, user.to_json, { content_type: :json, accept: :json }
+      json_response = JSON.parse(response)
+      @token = json_response['token']
+      print @token
+    rescue RestClient::ExceptionWithResponse => e
+      puts e.response
+    end
+  end
 
   def create_new_user
-    { 'username' => @fixture.create_random_user(15),
-      'emailAddress' => @fixture.create_random_email(),
-      'password' => @fixture.create_random_password(10)
+    { 'username' => self.create_random_user(15),
+      'emailAddress' => self.create_random_email(),
+      'password' => self.create_random_password(10)
     }
   end
 

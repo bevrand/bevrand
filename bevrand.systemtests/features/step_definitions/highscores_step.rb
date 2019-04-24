@@ -15,9 +15,9 @@ Given /^we have randomized a few times$/ do
   end
 end
 
-Given /^we randomize as (.+) for (.+)$/ do |user, playlist|
+When /^we randomize as (.+) for (.+)$/ do |user, playlist|
   userPlaylist = "#{@fixture.url}/playlist-api/api/v1/private/#{user}/#{playlist}"
-  response = JSON.parse(RestClient.get(userPlaylist).body)
+  response = JSON.parse(RestClient.get(url=userPlaylist, { content_type: :json, accept: :json, 'x-api-token' => 'Bearer ' + @fixture.token }).body)
   sut = "#{@fixture.url}/randomize-api/v2/randomize"
   5.times do
     RestClient.post sut, response[0].to_json, { content_type: :json, accept: :json }
@@ -25,11 +25,11 @@ Given /^we randomize as (.+) for (.+)$/ do |user, playlist|
 end
 
 When /^we query the global highscore$/ do
-  sut = "#{@fixture.url}/highscore-api/api/v1/highscores/"
+  sut = "#{@fixture.url}/highscore-api/v1/highscores/"
   @result = RestClient.get sut, { content_type: :json, accept: :json }
 end
 
 When /^we query the (.+) and (.+) highscore$/ do |frontpage, playlist|
-  sut = "#{@fixture.url}/highscore-api/api/v1/highscores/#{frontpage}/#{playlist}"
+  sut = "#{@fixture.url}/highscore-api/v1/highscores/#{frontpage}/#{playlist}"
   @result = RestClient.get sut, { content_type: :json, accept: :json }
 end
