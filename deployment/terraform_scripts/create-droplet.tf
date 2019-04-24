@@ -131,26 +131,6 @@ resource "digitalocean_droplet" "docker" {
     user        = "terraformuser"
     private_key = "${tls_private_key.terraformusersshkey.private_key_pem}"
   }
-
-  # provisioner "remote-exec" {
-  #   inline = [
-  #     "sudo mkdir -p /mnt/datavolumedocker",
-  #     "sudo mount -o discard,defaults /dev/disk/by-id/scsi-0DO_Volume_datavolumedocker /mnt/datavolumedocker",
-  #     "sudo echo /dev/disk/by-id/scsi-0DO_Volume_datavolumedocker /mnt/datavolumedocker ext4 defaults,nofail,discard 0 0 | sudo tee -a /etc/fstab",
-  #     "sudo curl -fsSL get.docker.com -o get-docker.sh",
-  #     "sleep 300.0",
-  #     "while fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do sleep 5.0; done",
-  #     "sudo sh get-docker.sh",
-  #     "sudo docker run docker/whalesay cowsay Hello Bevrand on Ubuntu 18.04",
-  #     "sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose",
-  #     "sudo chmod +x /usr/local/bin/docker-compose",
-  #     "docker-compose --version",
-  #     "sudo usermod -aG docker $USER",
-  #     "cd /mnt/datavolumedocker/deployment/",
-  #     "sudo docker-compose -p bevrand up -d",
-  #     "sudo service ssh restart",                                                                                                                        #because we have the AllowUsers only on developer, this will permanently lock us out. Only do as the last thing
-  #   ]
-  # }
 }
 output "private_ssh_key" {
   value = "${tls_private_key.terraformusersshkey.private_key_pem}"
