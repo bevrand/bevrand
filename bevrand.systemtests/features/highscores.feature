@@ -3,28 +3,31 @@ Feature: Highscores
   I want to to be able to receive highscores
   So that I can join the global community
 
-  Scenario: Getting global highscores
+  Scenario Outline: Getting global highscores
     Given we have randomized a few times
     When we query the global highscore
-    Then we should get a result of '200'
+    Then we should get a result of <code>
+    Examples:
+    | code |
+    | 200  |
 
   Scenario Outline: Getting frontpage highscores
     Given we have randomized a few times
     When we query the <frontpage> and <playlist> highscore
-    Then we should get a result of '200'
+    Then we should get a result of <code>
     Examples:
-      | frontpage | playlist      |
-      | frontpage | tgif          |
-      | frontpage | officemadness |
-      | frontpage | girlsnightout |
+      | frontpage | playlist      | code |
+      | frontpage | tgif          | 200  |
+      | frontpage | officemadness | 200  |
+      | frontpage | girlsnightout | 200  |
 
   Scenario Outline: Getting user highscores
-    Given <user> with <email> does not exist
+    Given We create <user> with <email>
     When we create a <user> user based <playlist>
     And we randomize as <user> for <playlist>
     And we query the <user> and <playlist> highscore
-    Then we should get a result of '200'
+    Then we should get a result of <code>
     Examples:
-      | user      | email                 | playlist |
-      | bevrand   | bevrand@systemtest.nl | bevrand  |
+      | user              | email                           | playlist | code |
+      | bevrandhighscorer | bevrandhighscorer@systemtest.nl | bevrand  | 200  |
 

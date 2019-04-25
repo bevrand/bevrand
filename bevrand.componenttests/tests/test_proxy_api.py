@@ -47,6 +47,11 @@ class ProxyApiTestsRandomizeValidations(test_setup_fixture.TestFixture):
         sut = self.proxy_url + self.proxy_endpoints.randomize
         front_page_url = self.proxy_url + self.proxy_endpoints.playlist_public
         response = self.get_without_auth_header(front_page_url).json()
+
+        # just to check we can send one list
+        resp = self.post_without_auth_header(sut, response[0])
+        self.assertEqual(200, resp.status_code)
+
         for playlist in response:
             unsorted_playlist = playlist.copy()
             del unsorted_playlist['displayName']

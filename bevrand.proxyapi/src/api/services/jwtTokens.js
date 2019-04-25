@@ -25,7 +25,8 @@ function validateSignedPayload(signedPayload) {
 function validateSignedPayloadImproved(signedPayload) {
   let requestJwtHeader = signedPayload.jwtheader;
   let requestJwtToken = signedPayload.jwttoken;
-  // delete req.body.jwttoken;
+  delete signedPayload.jwttoken;
+  delete signedPayload.jwtheader;
   let requestJwtIssuedAtTime = signedPayload.iat;
   let requestPayload = signedPayload;
   let headerString = JSON.stringify(requestJwtHeader);
@@ -48,21 +49,25 @@ function validateSignedPayloadImproved(signedPayload) {
   let buffer2 = new Buffer(payloadString);
   let base64requestPayload = buffer2.toString('base64');
 
-  let jwtString =
-    base64requestJwtHeader.replace(new RegExp('=', 'g'), '') +
-    '.' +
-    base64requestPayload.replace(new RegExp('=', 'g'), '') +
-    '.' +
-    requestJwtToken;
+  let jwtString = base64requestJwtHeader
+      .replace(new RegExp("=", 'g'), "") + "." + base64requestPayload
+      .replace(new RegExp("=", 'g'), "") + "." + requestJwtToken;
 
-  return jwt.verify(jwtString, config.frontendJwtSecret);
+  try {
+    return jwt.verify(jwtString, config.frontendJwtSecret);
+  }
+  catch(err) {
+    const error = new Error('JWT Token does not validate');
+    error.name = 'InvalidJwtToken';
+    throw error;
+  }
 }
 
 function signObject(object) {
   //Add issued at time:
   object.iat = Math.floor(new Date().getTime() / 1000);
 
-  // This sorts the object when serializing it, allowing other libarries (such as GSON)
+  // This sorts the object when serializing it, allowing other libraries (such as GSON)
   // to call the API with the properties in "wrong" order.
   let stringifiedObject = JSON.stringify(object, Object.keys(object).sort());
 
@@ -70,7 +75,6 @@ function signObject(object) {
   //object.iat = JSON.parse(Buffer.from(signedItem.split('.')[1], 'base64').toString("ascii")).iat;
   object.jwtheader = JSON.parse(Buffer.from(signedItem.split('.')[0], 'base64').toString('ascii'));
   object.jwttoken = signedItem.split('.')[2];
-
   return object;
 }
 

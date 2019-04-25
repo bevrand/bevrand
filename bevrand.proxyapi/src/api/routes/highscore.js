@@ -1,8 +1,9 @@
 const express = require('express');
-const controller = require('../controllers/highscore');
+const { reRouteTo } = require('../middlewares/reRouteRequest');
+const { highscoreApi } = require('../../config');
 
 const router = express.Router();
 
-router.get('/highscores', controller.handleHighscore);
+router.use(reRouteTo(highscoreApi, 'highscore-api'));
 
 module.exports = router;

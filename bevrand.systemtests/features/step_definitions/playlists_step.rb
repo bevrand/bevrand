@@ -52,3 +52,7 @@ end
 Then /^the (.+) should be updated to (.+)$/ do |field, updated|
   expect(JSON.parse(@json_response)['result'][0][field]).to eq updated
 end
+
+Then /^we should get a result of (.+)$/ do |code|
+  expect(@result.code).to be code.to_i
+end

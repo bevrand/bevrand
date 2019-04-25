@@ -26,10 +26,11 @@ class FixtureData
     @password = 'testuserpassword'
     @proxy_login = proxy_url + '/authentication-api/login'
     @proxy_register = proxy_url + '/authentication-api/register'
-    @proxy_highscore = proxy_url + '/highscore-api/v1/highscore'
+    @proxy_highscore = proxy_url + '/highscore-api/v1/highscores'
     @proxy_playlist_public = proxy_url + '/playlist-api/v2/frontpage'
     @proxy_playlist_private = proxy_url + '/playlist-api/v1/private'
     @proxy_randomize = proxy_url + '/randomize-api/v2/randomize'
+    @proxy_randomize_user = proxy_url + '/randomize-api/v1/randomize'
     @proxy_recommendation = proxy_url + '/recommendation-api/v1'
   end
   attr_reader :proxy_url
@@ -42,6 +43,7 @@ class FixtureData
   attr_reader :proxy_playlist_public
   attr_reader :proxy_playlist_private
   attr_reader :proxy_randomize
+  attr_reader :proxy_randomize_user
   attr_reader :proxy_recommendation
 
 

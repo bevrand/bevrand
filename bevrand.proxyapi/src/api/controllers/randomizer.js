@@ -10,7 +10,6 @@ const tracer = require('../utils/tracing/tracerClass');
 const requestRandomizePost = endpoint => {
   return (req, res, next) => {
     const { user, list, beverages } = req.body;
-
     const span = tracer.startSpan('randomize-request');
 
     span.log({

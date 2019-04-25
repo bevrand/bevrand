@@ -7,7 +7,6 @@ exports.validateJwtInBody = (req, res, next) => {
     // Remove jwttoken before sending it to randomize api
     delete req.body.jwtheader;
     delete req.body.jwttoken;
-
     next();
   } catch (err) {
     next(err);
