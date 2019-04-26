@@ -19,7 +19,7 @@ When /^we request a random drink from the proxy$/ do
   @result = RestClient.post sut, response[0].to_json, { content_type: :json, accept: :json }
 end
 
-Then /^we should get a status of '(.*)' with a random drink$/ do |code|
+Then /^we should get a status of (.+) with a random drink$/ do |code|
   expect(@result.code).to be code.to_i
 end
 
@@ -28,7 +28,7 @@ When /^we request all playlists$/ do
   @json_response = RestClient.get(front_page_url).body
 end
 
-And /^we randomize from '(.*)'$/ do |playlistName|
+And /^we randomize from (.+)$/ do |playlistName|
   playlists = JSON.parse(@json_response)
   playlists.each do |playlist|
     if playlist['list'] == playlistName
@@ -57,8 +57,9 @@ When /^I randomize from these playlists$/ do
   end
 end
 
-Then /^all playlists should give a result of '(.*)'$/ do |code|
+Then /^all playlists should give a result of (.+)$/ do |code|
   for statusCode in @results
     expect(statusCode).to be code.to_i
   end
 end
+

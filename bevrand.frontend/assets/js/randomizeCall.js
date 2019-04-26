@@ -29,8 +29,8 @@ $(document).ready(function () {
             $('#navlinkRegister').hide();
             $('#navlinkLogout').show();
             $('#navlinkProfile').show();
-            setGlobalVariables(userPlaylists);
-            appendPlaylistsToCarrousel(userPlaylists);
+            setGlobalVariables(userPlaylists['result']);
+            appendPlaylistsToCarrousel(userPlaylists['result']);
         });
     }
     else {
@@ -81,6 +81,28 @@ function changePlayList(playlistName) {
 
 $("#randomizebutton").click(function () {
     $('#navbar').hide();
+    if (token) {
+        $.ajax({
+            type: "POST",
+            headers: {"x-api-token": token },
+            url: `${config.proxyHostname}/randomize-api/v1/randomize`,
+            data: JSON.stringify(randomizeList),
+            contentType: "application/json",
+            success: function (data) {
+                window.setTimeout(function () {
+                    $('#randomizedDrink')
+                        .text(data.result)
+                })
+            },
+            error: function () {
+                window.setTimeout(function () {
+                    $('#randomizedDrink')
+                        .text("Could not get a drink, we are sorry :(")
+                });
+            }
+        })
+    }
+    else {
     $.ajax({
         type: "POST",
         url: `${config.proxyHostname}/randomize-api/v2/randomize`,
@@ -98,7 +120,7 @@ $("#randomizebutton").click(function () {
                     .text("Could not get a drink, we are sorry :(")
             });
         }
-    })
+    })}
 });
 
 function getAllLists(callback) {
@@ -114,6 +136,7 @@ function getAllLists(callback) {
 function getUserPlaylist(callback) {
     $.ajax({
         type: "GET",
+        headers: {"x-api-token": token },
         url: `${config.proxyHostname}/playlist-api/v1/private/${username}`,
         success: function (data) {
             callback(data);

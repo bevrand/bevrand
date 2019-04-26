@@ -1,7 +1,7 @@
 var id = '';
 
 var config = {
-    proxyHostname: 'https:' == document.location.protocol ? '' : 'http://localhost:4540'
+    proxyHostname: 'https:' == document.location.protocol ? '' : 'http://localhost'
 };
 
 $(document).ready(function () {

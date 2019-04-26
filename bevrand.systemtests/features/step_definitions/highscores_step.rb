@@ -21,9 +21,10 @@ When /^we randomize as (.+) for (.+)$/ do |user, playlist|
   response = JSON.parse(RestClient.get(url=userPlaylist, { content_type: :json, accept: :json, 'x-api-token' => @fixture.token }).body)
   sut = (@fixture.proxy_randomize_user).to_s
   body_to_post = response['result']
-  print body_to_post
+  @results = []
   5.times do
-    RestClient.post sut, body_to_post.to_json, { content_type: :json, accept: :json, 'x-api-token' => @fixture.token}
+    result = RestClient.post sut, body_to_post.to_json, { content_type: :json, accept: :json, 'x-api-token' => @fixture.token}
+    @results.push(result.code)
   end
 end
 

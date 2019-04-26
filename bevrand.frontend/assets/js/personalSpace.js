@@ -2,11 +2,12 @@ var username = '';
 var token = '';
 
 var config = {
-    proxyHostname: 'https:' == document.location.protocol ? '' : 'http://localhost:4540'
+    proxyHostname: 'https:' == document.location.protocol ? '' : 'http://localhost'
 };
 
 $(document).ready(function () {
     token = localStorage.getItem("jwt");
+    console.log(token);
     var jwtDecoded = parseJwt(token);
     username = jwtDecoded['username'];
     var emailAddress = "place@holder.nl"
@@ -26,7 +27,8 @@ $(document).ready(function () {
         .text("Username: " + username);
 
     getPersonalPlaylists(username, function (playlists) {
-        appendPlaylistToWorkspace(playlists);
+        console.log(playlists)
+        appendPlaylistToWorkspace(playlists['result']);
     });
 
     localStorage.setItem("username", username);
@@ -37,7 +39,6 @@ function appendPlaylistToWorkspace(playlists = []) {
         var playlist = playlists[i];
         var playlistHtml = addPlaylistsToPersonalSpace(playlist);
         $('#personalPlaylists').append(playlistHtml);
-
 
         var coll = document.getElementsByClassName("collapsible");
         coll[i].addEventListener("click", function() {
@@ -65,15 +66,8 @@ function addPlaylistsToPersonalSpace(playlist) {
 function getPersonalPlaylists(username, callback) {
     $.ajax({
         type: "GET",
+        headers: {"x-api-token": token },
         url: `${config.proxyHostname}/playlist-api/v1/private/${username}`,
-        success: callback
-    });
-}
-
-function getPersonalPlaylist(username, playlistName, callback) {
-    $.ajax({
-        type: "GET",
-        url: `${config.proxyHostname}/playlist-api/private/${username}/${playlistName}`,
         success: callback
     });
 }
@@ -95,10 +89,10 @@ $("#okPlayListCreation").click(function () {
     var normalizedName = document.getElementById("playListCreationField").value
         .replace(/[^a-zA-Z0-9]/g, "")
         .toLowerCase();
-    getPersonalPlaylist(username, normalizedName, function (playlist) {
+    getPersonalPlaylists(username, function (playlist) {
         var nameIsNewList = true;
-        for (var i = 0; i < playlist.length; i++) {
-            if (playlist[i]['list'] === normalizedName) {
+        for (var i = 0; i < playlist['result'].length; i++) {
+            if (playlist['result'][i]['list'] === normalizedName) {
                 nameIsNewList = false;
             }
         }

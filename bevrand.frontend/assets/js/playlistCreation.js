@@ -5,7 +5,7 @@ var username = '';
 var imageUrl = 'https://static.beveragerandomizer.com/file/beveragerandomizer/images/users/standardimage.png';
 
 var config = {
-    proxyHostname: 'https:' == document.location.protocol ? '' : 'http://localhost:4540'
+    proxyHostname: 'https:' == document.location.protocol ? '' : 'http://localhost'
 };
 
 $(document).ready(function () {
@@ -123,6 +123,7 @@ function postDrinkToBackEnd(randomizeList) {
         type: "POST",
         url: `${config.proxyHostname}/playlist-api/v1/private/${username}/${normalizedPlayListName}`,
         data: randomizeList,
+        headers: {"x-api-token": token },
         contentType: "application/json",
         success: function () {
             $('#beverageAdditionField').hide();
