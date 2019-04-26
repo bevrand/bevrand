@@ -83,7 +83,8 @@ func RouteIncrementHighscore(c *gin.Context) {
 
 	var po PostObject
 	decoder := json.NewDecoder(c.Request.Body)
-	if err := decoder.Decode(&po); err != nil {
+	err := decoder.Decode(&po)
+	if err != nil {
 		localUUID := createGUID()
 		decodingError := ErrorModel{
 			Message:    err.Error(),
