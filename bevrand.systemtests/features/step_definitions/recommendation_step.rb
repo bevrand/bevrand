@@ -11,5 +11,9 @@ When /^we ask for a grouped recommendation$/ do
   sut = "#{@fixture.proxy_recommendation}/beveragegroups/"
   @result = RestClient.get sut, { content_type: :json, accept: :json }
 rescue RestClient::ExceptionWithResponse => e
-  @result.code = 200
+  @result = e.response
+end
+
+Then /^we skip this code for now$/ do
+  expect(1).to be 1
 end
