@@ -8,7 +8,7 @@ Before do
 end
 
 When /^we ask for a grouped recommendation$/ do
-  sleep(2)
+  sleep(10)
   sut = "#{@fixture.proxy_recommendation}/beveragegroups/"
   @result = RestClient.get sut, { content_type: :json, accept: :json }
 end
