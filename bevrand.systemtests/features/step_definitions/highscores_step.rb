@@ -11,8 +11,10 @@ Given /^we have randomized a few times$/ do
   front_page_url = (@fixture.proxy_playlist_public).to_s
   response =  JSON.parse(RestClient.get(front_page_url).body)
   sut = (@fixture.proxy_randomize).to_s
-  response.each do |playlist|
-    RestClient.post sut, playlist.to_json, { content_type: :json, accept: :json }
+  response.each do | playlist |
+    3.times do
+      RestClient.post sut, playlist.to_json, { content_type: :json, accept: :json }
+    end
   end
 end
 
@@ -29,7 +31,7 @@ When /^we randomize as (.+) for (.+)$/ do |user, playlist|
 end
 
 When /^we query the global highscore$/ do
-  sut = (@fixture.proxy_highscore).to_s
+  sut = (@fixture.proxy_highscore + '/').to_s
   @result = RestClient.get sut, { content_type: :json, accept: :json }
 end
 
