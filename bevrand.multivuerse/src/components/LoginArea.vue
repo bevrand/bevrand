@@ -81,11 +81,11 @@
             login: function () {
                 this.$apiClient({
                     method: 'post',
-                    url: `${this.$proxyUrl}/api/login`,
+                    url: `${this.$proxyUrl}/authentication-api/login`,
                     data: {
                         "emailAddress" : this.emailAddress,
-                        "passWord": this.password,
-                        "userName": this.username
+                        "password": this.password,
+                        "username": this.username
                     }
                 })
                     .then((response) => {

@@ -11,9 +11,9 @@
         <br>
         <span v-for="(playlist, index) in playlists" :key="index" class="playlistcollapisble">
                 <a class="collapsible" v-on:click="showItems = index"> {{playlist.displayName}}
-                    <a class="hover-edit"><font-awesome-icon icon="pencil-alt" class="icons" v-on:click="editPlaylist(playlist)"/></a>
+                    <a class="hover-edit"><font-awesome-icon icon="pencil-alt" class="icons" v-on:click="editPlaylist(index)"/></a>
                     <a class="hover-delete"><font-awesome-icon icon="trash" class="icons" v-on:click="deletePlaylist(index)" /></a>
-                    <a class="hover-play"><font-awesome-icon icon="dice" class="icons"/></a>
+                    <a class="hover-play"><font-awesome-icon icon="dice" class="icons" v-on:click="playPlaylist(index)"/></a>
                 </a>
                 <ul id="beverageList" v-show="showItems === index">
                     <li v-for="beverage of playlist.beverages" >
@@ -36,26 +36,28 @@
                 validName: false,
                 validNameError: '',
                 createdPlaylist: '',
+                token: this.$store.state.token,
             }
         },
 
         methods: {
             getAllUserPlaylists: function () {
-                this.$apiClient.get(`${this.$proxyUrl}/api/playlists?username=${this.username}`)
-                    .then((response) => {
-                        this.playlists = response.data;
-                    })
-                    .catch(e => {
-                        this.errors.push(e)
-                    })
+                return this.$apiClient.get(`${this.$proxyUrl}/playlist-api/v1/private/${this.username}`,
+                    { headers: {"x-api-token": this.token} })
+                .then((response) => {
+                    this.playlists = response.data.result;
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                })
             },
 
             validateEnteredPlaylist: function(playlistName) {
                 let normalizedName = playlistName.replace(/[^a-zA-Z0-9]/g, "");
-                console.log(normalizedName);
-                return this.$apiClient.get(`${this.$proxyUrl}/api/playlists?username=${this.username}`)
+                return this.$apiClient.get(`${this.$proxyUrl}/playlist-api/v1/private/${this.username}`,
+                    { headers: {"x-api-token": this.token} })
                     .then((response) => {
-                        response['data'].forEach(function(resp) {
+                        response.data.result.forEach(function(resp) {
                             if (resp.displayName.toLowerCase() === playlistName.toLowerCase() ||
                                 resp.list.toLowerCase() === normalizedName) {
                                 this.validName = false;
@@ -70,14 +72,46 @@
                         this.validNameError = 'This playlist already exists'
                     })
             },
-
-            editPlaylist: function (playlist) {
+            setPlaylistToParent: function (selectedPlayList) {
+                this.$emit("setPlaylistToParent", selectedPlayList);
+            },
+            editPlaylist: function (index) {
                 this.$router.push({name: 'editPlaylistPage', params: {
-                        playlistDetail: playlist }});
+                        playlistDetail: this.playlists[index] }});
             },
 
             deletePlaylist: function (index) {
-                this.playlists.splice(index, 1);
+                this.$swal({
+                    title: `Deleting ${this.playlists[index].displayName}`,
+                    text: `Are you sure you want to delete ${this.playlists[index].displayName}?`,
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                 })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            this.$apiClient({
+                                method: "delete",
+                                headers: {"x-api-token": this.token},
+                                url: `${this.$proxyUrl}/playlist-api/v1/private/${this.username}/${this.playlists[index].list}`,
+                                })
+                                .then(response => {
+                                    this.$swal(`${this.playlists[index].displayName} has been deleted`, {
+                                        icon: "success",
+                                    });
+                                    this.playlists.splice(index, 1);
+                                })
+                                .catch(e => {
+                                    this.$swal("Error", "Something went wrong", "error")
+                                })
+                        } else {
+                            this.$swal(`Playlist ${this.playlists[index].displayName} was not deleted`);
+                        }
+                    });
+            },
+            playPlaylist: function (index) {
+                this.setPlaylistToParent(this.playlists[index]);
+                this.$router.push({name: 'homepage'})
             },
             async addNewPlaylist () {
                 this.$swal({
@@ -89,7 +123,7 @@
                         confirm: {
                             text: "Create!",
                             closeModal: true,
-                        },
+                            },
                         },
                     })
                 .then(async value => {
@@ -99,7 +133,7 @@
                     }
                     else if (value.trim() === '') {
                         this.validName = false;
-                        this.validNameError = 'Playlistname is empty or whitespace'
+                        this.validNameError = 'Playlistname is empty or whitespace';
                         this.$swal(this.validNameError).then(() => {
                             this.addNewPlaylist()
                         })

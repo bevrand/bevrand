@@ -65,7 +65,8 @@ import { Carousel, Slide } from 'vue-carousel';
                 playlists: [],
                 errors: [],
                 username: this.$store.state.username,
-                loggedIn: this.$store.state.loggedIn
+                loggedIn: this.$store.state.loggedIn,
+                token: this.$store.state.token,
             }
         },
         created() {
@@ -73,7 +74,7 @@ import { Carousel, Slide } from 'vue-carousel';
         },
         methods: {
             getAllPlaylists: function () {
-                this.$apiClient.get(`${this.$proxyUrl}/api/v2/frontpage`)
+                this.$apiClient.get(`${this.$proxyUrl}/playlist-api/v2/frontpage`)
                         .then((response) => {
                             this.playlists = response.data;
                             if (this.$parent.selectedPlaylist === null) {
@@ -85,11 +86,12 @@ import { Carousel, Slide } from 'vue-carousel';
                         })
                 },
             getAllUserPlaylists: function () {
-                this.$apiClient.get(`${this.$proxyUrl}/api/playlists?username=joeri`)
+                this.$apiClient.get(`${this.$proxyUrl}/playlist-api/v1/private/${this.username}`,
+                    { headers: {"x-api-token": this.token} })
                     .then((response) => {
-                        this.playlists = response.data;
+                        this.playlists = response.data.result;
                         if (this.$parent.selectedPlaylist === null) {
-                            this.setPlaylistToParent(response.data[0])
+                            this.setPlaylistToParent(response.data.result[0])
                         }
                     })
                     .catch(e => {

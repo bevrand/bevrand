@@ -102,7 +102,8 @@
                 expandPopularCocktails: false,
                 expandPopularBeer: false,
                 expandPopularWhiskey: false,
-                expandPopularDrinks: false
+                expandPopularDrinks: false,
+                token: this.$store.state.token,
             };
         },
         mounted() {
@@ -200,13 +201,12 @@
             createNewPlaylist () {
                 this.$apiClient({
                     method: "post",
-                    url: `${this.$proxyUrl}/api/user`,
+                    headers: { "x-api-token": this.token },
+                    url: `${this.$proxyUrl}/playlist-api/v1/private/${this.username}/${this.normalizedPlayListName}`,
                     data: {
                         "beverages": this.beverages,
                         "displayName": this.displayName,
                         "imageUrl": this.imageUrl,
-                        "list": this.normalizedPlayListName,
-                        "user": this.username
                     }})
                     .then(response => {
                         this.$swal("Well done", `Playlist ${this.displayName} has been created`, "success").then(() => {

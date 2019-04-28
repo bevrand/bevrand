@@ -70,7 +70,7 @@
                 />
                 <a class="hover-add"><font-awesome-icon v-on:click="addBeverage()" icon="plus-circle" size="lg"/></a>
                 <br>
-                <button v-on:click="createNewPlaylist()"
+                <button v-on:click="editPlaylist()"
                         v-if="beverages.length >= 2"
                         id="submitButton"
                         class="submitbutton">Save this playlist</button>
@@ -93,7 +93,7 @@
                 beverages:this.$route.params.playlistDetail.beverages,
                 drink: '',
                 errors: [],
-                normalizedPlayListName: '',
+                playlistname:  this.$route.params.playlistDetail.list,
                 username: this.$route.params.playlistDetail.user,
                 imageUrl: this.$route.params.playlistDetail.imageUrl,
                 popularBeers: ['Beer', 'TripleBeer', 'Ipa', 'Guinnesses', 'Blonde', 'Double', 'Radler'],
@@ -102,11 +102,9 @@
                 expandPopularCocktails: false,
                 expandPopularBeer: false,
                 expandPopularWhiskey: false,
-                expandPopularDrinks: false
+                expandPopularDrinks: false,
+                token: this.$store.state.token,
             };
-        },
-        mounted() {
-            this.normalizeName();
         },
         created() {
         },
@@ -116,11 +114,6 @@
             'foot': Footer,
         },
         methods: {
-            normalizeName: function () {
-                this.normalizedPlayListName = this.displayName.replace(/[^a-zA-Z0-9]/g, "")
-                    .toLowerCase();
-            },
-
             setImage() {
                 this.$swal({
                     text: 'Enter an image url',
@@ -197,19 +190,18 @@
                             }
                         }
                     })},
-            createNewPlaylist () {
+            editPlaylist () {
                 this.$apiClient({
                     method: "put",
-                    url: `${this.$proxyUrl}/api/user`,
+                    headers: {"x-api-token": this.token},
+                    url: `${this.$proxyUrl}/playlist-api/v1/private/${this.username}/${this.playlistname}`,
                     data: {
                         "beverages": this.beverages,
                         "displayName": this.displayName,
                         "imageUrl": this.imageUrl,
-                        "list": this.normalizedPlayListName,
-                        "user": this.username
                     }})
                     .then(response => {
-                        this.$swal("Well done", `Playlist ${this.displayName} has been created`, "success").then(() => {
+                        this.$swal("Well done", `Playlist ${this.displayName} has been updated`, "success").then(() => {
                             this.$router.push({ name: 'profilePage' });
                         });
                     })

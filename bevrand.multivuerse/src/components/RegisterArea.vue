@@ -87,22 +87,22 @@ export default {
     signUp: function() {
       this.$apiClient({
         method: "post",
-        url: `${this.$proxyUrl}/api/register`,
+        url: `${this.$proxyUrl}/authentication-api/register`,
         //this should become username and password after refactor
         data: {
-            "userName": this.username,
+            "username": this.username,
             "emailAddress": this.email,
-            "passWord": this.password
+            "password": this.password
         }
       })
         .then(response => {
             this.$apiClient({
               method: 'post',
-              url: `${this.$proxyUrl}/api/login`,
+              url: `${this.$proxyUrl}/authentication-api/login`,
               data: {
                 "emailAddress" : this.email,
-                "passWord": this.password,
-                "userName": this.username
+                "password": this.password,
+                "username": this.username
               }
             }).then(response => {
               this.token = response.data['token'];

@@ -50,12 +50,18 @@ let $ = JQuery;
             return {
                 isHidden: false,
                 drink: "Press Randomize Button!",
+                token: this.$store.state.token,
             }
         },
         methods: {
             randomizeDrink: function() {
             this.isHidden = true;
-            this.drink = this.randomize();
+            if (!this.$store.state.loggedIn){
+                this.drink = this.randomize();
+            }
+            else{
+                this.drink = this.randomizePrivate();
+            }
             $('.pour').css({
                 height: '0px',
                 marginTop: '0px'});
@@ -102,7 +108,7 @@ let $ = JQuery;
         randomize: function () {
             this.$apiClient({
                 method: 'post',
-                url: `${this.$proxyUrl}/api/v2/randomize`,
+                url: `${this.$proxyUrl}/randomize-api/v2/randomize`,
                 data: this.$parent.selectedPlaylist
 
             })
@@ -112,6 +118,21 @@ let $ = JQuery;
             .catch(e => {
                 this.errors.push(e)
             })
+        },
+        randomizePrivate: function () {
+            this.$apiClient({
+                method: 'post',
+                headers: {"x-api-token": this.token },
+                url: `${this.$proxyUrl}/randomize-api/v1/randomize`,
+                data: this.$parent.selectedPlaylist
+
+            })
+                .then((response) => {
+                    this.drink = response.data['result'];
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                })
         },
     }
 }
