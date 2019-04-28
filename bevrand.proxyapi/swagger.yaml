@@ -1,125 +1,165 @@
-swagger: "2.0"
+swagger: '2.0'
 info:
-  description: "This is a sample server Petstore server.  You can find out more about     Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).      For this sample, you can use the api key `special-key` to test the authorization     filters."
-  version: "1.0.0"
-  title: "Swagger Petstore"
-  termsOfService: "http://swagger.io/terms/"
+  description: >-
+    This is the Beverage Randomizer Proxy API. It powers the website hosted at: http://beveragerandomizer.com/ 
+    and reroutes requests to the other microservice API's
+  version: '1.0.0'
+  title: 'Beverage Randomizer | Proxy Api'
   contact:
-    email: "apiteam@swagger.io"
-  license:
-    name: "Apache 2.0"
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "localhost:5000"
-basePath: "/api"
+    email: 'admin@beveragerandomizer.com'
+basePath: '/api'
 tags:
-- name: "frontpage"
-  description: "Everything about your Pets"
-  externalDocs:
-    description: "Find out more"
-    url: "http://swagger.io"
+  - name: 'frontpage'
+    description: 'Frontpage endpoints'
+  - name: 'randomize'
+    description: 'Randomize API endpoints'
 schemes:
-- "http"
-- "https"
+  - 'http'
+  - 'https'
 paths:
-  /v2/frontpage/:
+  /v2/frontpage:
     get:
       tags:
-      - "frontpage"
-      summary: "Gets the frontend playlist with JWT"
-      description: "Multiple status values can be provided with comma separated strings"
-      operationId: "findPetsByStatus"
+        - 'frontpage'
+      summary: 'Gets the frontend playlist with JWT'
+      description: 'Retrieves the playlists for the frontpage with jwtokens for validating the playlists when randomizing'
+      operationId: 'findPetsByStatus'
       produces:
-      - "application/json"
+        - 'application/json'
       responses:
         200:
-          description: "successful operation"
+          description: 'successful operation'
           schema:
-            type: "array"
+            type: 'array'
             items:
-              $ref: "#/definitions/Pet"
+              $ref: '#/definitions/Playlist'
         400:
-          description: "Invalid status value"
+          description: 'Invalid status value'
   /v2/randomize/:
     post:
       tags:
-        - "randomize"
-      summary: "Gets a random, validated, drink"
+        - 'randomize'
+      summary: 'Returns a randomized drink'
       produces:
-        - "application/json"
+        - 'application/json'
       parameters:
-      - in: "body"
-        name: "body"
-        description: "Pet object that needs to be added to the store"
-        required: true
-        schema:
-          $ref: "#/definitions/Pet"
+        - in: 'body'
+          name: 'body'
+          description: 'Playlist that needs to be randomized, requires valid JWTToken to be present'
+          required: true
+          schema:
+            $ref: '#/definitions/Playlist'
       responses:
         200:
-          description: "successful operation"
+          description: 'successful operation'
           schema:
-            type: "array"
+            type: 'array'
             items:
-              $ref: "#/definitions/Pet"
+              $ref: '#/definitions/Playlist'
         400:
-          description: "Invalid status value"
-definitions:
-  Category:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      name:
-        type: "string"
-    xml:
-      name: "Category"
-  Tag:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      name:
-        type: "string"
-    xml:
-      name: "Tag"
-  Pet:
-    type: "object"
-    required:
-    - "name"
-    - "photoUrls"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      category:
-        $ref: "#/definitions/Category"
-      name:
-        type: "string"
-        example: "doggie"
-      photoUrls:
-        type: "array"
-        xml:
-          name: "photoUrl"
-          wrapped: true
-        items:
-          type: "string"
+          description: 'Invalid/No playlist given in POST body, jwt token does not validate'
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /playlists:
+    get:
       tags:
-        type: "array"
-        xml:
-          name: "tag"
-          wrapped: true
+        - 'playlists'
+      summary: 'Returns the playlist for the specified user'
+      produces:
+        - 'application/json'
+      parameters:
+        - name: 'username'
+          in: 'query'
+          description: 'The username for which playlists get retrieved'
+          required: true
+          type: 'string'
+      responses:
+        200:
+          description: 'successful operation'
+          schema:
+            type: 'array'
+            items:
+              $ref: '#/definitions/Playlist'
+  /v1/private/{username}:
+    get:
+      tags:
+        - 'playlists'
+      summary: 'Returns the playlist for the specified user, same as /playlists'
+      produces:
+        - 'application/json'
+      parameters:
+        - name: 'username'
+          in: 'path'
+          description: 'Username for which playlists get retrieved'
+          required: true
+          type: 'string'
+      responses:
+        200:
+          description: 'successful operation'
+          schema:
+            type: 'array'
+            items:
+              $ref: '#/definitions/Playlist'
+  /user:
+    post:
+      tags:
+        - 'user'
+      summary: 'Add new playlist to a user'
+      produces:
+        - 'application/json'
+      parameters:
+        - name: 'body'
+          in: 'body'
+          description: 'Playlist that should be created'
+          required: true
+          schema:
+            $ref: '#/definitions/Playlist'
+      responses:
+        200:
+          description: 'Succesfully added new playlist'
+          schema:
+            $ref: '#/definitions/Playlist'
+definitions:
+  Playlist:
+    type: 'object'
+    properties:
+      beverages:
+        type: 'array'
         items:
-          $ref: "#/definitions/Tag"
-      status:
-        type: "string"
-        description: "pet status in the store"
-        enum:
-        - "available"
-        - "pending"
-        - "sold"
-    xml:
-      name: "Pet"
+          type: 'string'
+      displayName:
+        type: 'string'
+        example: "Thank God It's Friday!"
+      id:
+        type: 'string'
+        example: '5c3a20ded964b50008dc1794'
+      imageUrl:
+        type: 'string'
+      list:
+        type: 'string'
+      user:
+        type: 'string'
+      iat:
+        type: 'integer'
+        format: 'int64'
+      jwtheader:
+        type: object
+        properties:
+          alg:
+            type: 'string'
+          type:
+            type: 'string'
+      jwttoken:
+        type: string
+  ErrorMessage:
+    type: object
+    properties:
+      result:
+        type: string
+      message:
+        type: string
+      httpstatus:
+        type: integer
 externalDocs:
-  description: "Find out more about Swagger"
-  url: "http://swagger.io"
+  description: 'Find out more about Swagger'
+  url: 'http://swagger.io'

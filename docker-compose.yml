@@ -66,6 +66,16 @@ services:
     environment:
       - NODE_ENV=development
 
+  recommendationapi:
+    container_name: recommendationapi
+    build: ./bevrand.recommendationapi
+    ports:
+      - 4590:5000
+    depends_on:
+      - neo4j
+    environment:
+      - GO_ENV=docker
+
   highscoreapi:
     container_name: highscoreapi
     build: ./bevrand.highscoreapi
@@ -102,9 +112,22 @@ services:
     - authenticationapi
     - proxyapi
 
+<<<<<<< HEAD
   dataseeder:
     container_name: dataseeder
     build: ./bevrand.dataseeder
     depends_on:
        - dockermongo
        - dockergres
+=======
+  neo4j:
+    container_name: neo4j
+    build: ./deployment/neo4j
+    ports:
+    - "7474:7474"
+    - "7687:7687"
+
+
+
+      
+>>>>>>> feature/proxy-api-rewrite
