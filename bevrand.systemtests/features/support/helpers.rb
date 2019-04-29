@@ -21,6 +21,7 @@ class FixtureData
     @authenticationapi_url = authenticationapi_url
     @playlistapi_url = playlistapi_url
     @token = ''
+    @auth_header = 'x-api-token'
     @user = 'testusersystem'
     @email = 'testsystememail@test.nl'
     @password = 'testuserpassword'
@@ -37,6 +38,7 @@ class FixtureData
   attr_reader :authenticationapi_url
   attr_reader :playlistapi_url
   attr_reader :token
+  attr_reader :auth_header
   attr_reader :proxy_login
   attr_reader :proxy_register
   attr_reader :proxy_highscore
@@ -45,7 +47,7 @@ class FixtureData
   attr_reader :proxy_randomize
   attr_reader :proxy_randomize_user
   attr_reader :proxy_recommendation
-
+  
 
   def clean_up_before_run
     auth_url = "#{@authenticationapi_url}/api/Users"

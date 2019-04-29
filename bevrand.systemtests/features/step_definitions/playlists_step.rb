@@ -15,7 +15,7 @@ When /^we create a (.+) user based (.+)$/ do |user, playlist|
   playlistToPost = @fixture.create_new_playlist
   begin
     sut = "#{@fixture.proxy_playlist_private}/#{user}/#{playlist}"
-    @result = RestClient.post sut, playlistToPost.to_json, { content_type: :json, accept: :json, 'x-api-token' => @fixture.token }
+    @result = RestClient.post sut, playlistToPost.to_json, { content_type: :json, accept: :json, @fixture.auth_header => @fixture.token }
   rescue RestClient::ExceptionWithResponse => e
     @result = e.response
   end
@@ -25,7 +25,7 @@ When /^we update a (.+) user based (.+)$/ do |user, playlist|
   playlistToUpdate = @fixture.create_update_playlist
   begin
     sut = "#{@fixture.proxy_playlist_private}/#{user}/#{playlist}"
-    @result = RestClient.put sut, playlistToUpdate.to_json, { content_type: :json, accept: :json, 'x-api-token' => @fixture.token }
+    @result = RestClient.put sut, playlistToUpdate.to_json, { content_type: :json, accept: :json, @fixture.auth_header => @fixture.token }
   rescue RestClient::ExceptionWithResponse => e
     @result = e.response
   end
@@ -34,7 +34,7 @@ end
 When /^we delete all playlists for (.+)$/ do |user|
   sut = "#{@fixture.proxy_playlist_private}/#{user}"
   begin
-    @result = RestClient.delete sut, { content_type: :json, accept: :json, 'x-api-token' => @fixture.token }
+    @result = RestClient.delete sut, { content_type: :json, accept: :json, @fixture.auth_header => @fixture.token }
   rescue RestClient::ExceptionWithResponse => e
     @result = e.response
   end
@@ -42,7 +42,7 @@ end
 
 Then /^we should be able to retrieve (.+) playlists$/ do |user|
   sut = "#{@fixture.proxy_playlist_private}/#{user}"
-  @json_response = RestClient.get(sut, { content_type: :json, accept: :json, 'x-api-token' => @fixture.token }).body
+  @json_response = RestClient.get(sut, { content_type: :json, accept: :json, @fixture.auth_header => @fixture.token }).body
 end
 
 Then /^the number of returned playlists should be (.+)$/ do |numberoflists|
