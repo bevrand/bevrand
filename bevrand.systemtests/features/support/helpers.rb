@@ -47,7 +47,7 @@ class FixtureData
   attr_reader :proxy_randomize
   attr_reader :proxy_randomize_user
   attr_reader :proxy_recommendation
-  
+
 
   def clean_up_before_run
     auth_url = "#{@authenticationapi_url}/api/Users"
