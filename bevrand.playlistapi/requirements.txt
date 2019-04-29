@@ -17,7 +17,7 @@ future==0.17.1
 gunicorn==19.9.0
 idna==2.8
 itsdangerous==1.1.0
-jaeger-client==3.13.0
+jaeger-client==4.0.0
 Jinja2==2.10.1
 jsonschema==3.0.1
 MarkupSafe==1.1.1
