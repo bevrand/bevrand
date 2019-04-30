@@ -9,10 +9,21 @@ import VueCarousel from 'vue-carousel';
 import vueSmoothScroll from 'vue2-smooth-scroll';
 import VueSwal from 'vue-swal'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faPencilAlt, faTrash, faPlusCircle, faDice, faGlassMartini, faGlassWhiskey, faBeer, faCodeBranch } from '@fortawesome/free-solid-svg-icons'
+import {
+  faPencilAlt,
+  faTrash,
+  faPlusCircle,
+  faDice,
+  faGlassMartini,
+  faGlassWhiskey,
+  faBeer,
+  faCodeBranch,
+  faArrowAltCircleDown,
+  faArrowAltCircleUp
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faPencilAlt, faTrash, faPlusCircle, faDice, faGlassMartini, faCodeBranch, faGlassWhiskey, faBeer);
+library.add(faPencilAlt, faTrash, faPlusCircle, faDice, faGlassMartini, faCodeBranch, faGlassWhiskey, faBeer, faArrowAltCircleDown, faArrowAltCircleUp);
 
 Vue.config.productionTip = false;
 

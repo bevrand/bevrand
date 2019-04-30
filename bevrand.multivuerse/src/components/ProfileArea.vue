@@ -9,19 +9,30 @@
         <a class="hover-add"><font-awesome-icon v-on:click="addNewPlaylist" icon="plus-circle" size="2x" id='addPlayList'/><br>
         <span class="playlistaddition">Create Playlist</span></a><br>
         <br>
-        <span v-for="(playlist, index) in playlists" :key="index" class="playlistcollapisble">
-                <a class="collapsible" v-on:click="showItems = index"> {{playlist.displayName}}
+
+        <div v-for="(playlist, index) in playlists" :key="index" class="playlistcollapisble">
+                <div class="collapsible"> {{ playlist.displayName }}
                     <a class="hover-edit"><font-awesome-icon icon="pencil-alt" class="icons" v-on:click="editPlaylist(index)"/></a>
                     <a class="hover-delete"><font-awesome-icon icon="trash" class="icons" v-on:click="deletePlaylist(index)" /></a>
                     <a class="hover-play"><font-awesome-icon icon="dice" class="icons" v-on:click="playPlaylist(index)"/></a>
-                </a>
-                <ul id="beverageList" v-show="showItems === index">
+                    <a v-show="!playlists[index]['open']" class="hover-play">
+                        <font-awesome-icon icon="arrow-alt-circle-down"
+                         class="icons"
+                         style="margin-left: 1em"
+                         v-on:click="playlists[index]['open'] = !playlists[index]['open']"/></a>
+
+                    <a v-show="playlists[index]['open']" class="hover-play">
+                        <font-awesome-icon icon="arrow-alt-circle-up"
+                            class="icons"
+                            style="margin-left: 1em"
+                            v-on:click="playlists[index]['open'] = !playlists[index]['open']"/></a>
+                </div>
+                <ul v-show="playlists[index]['open']">
                     <li v-for="beverage of playlist.beverages" >
                         {{ beverage }}
                     </li>
                 </ul>
-        </span>
-
+        </div>
     </div>
 </template>
 
@@ -32,7 +43,6 @@
             return {
                 username: this.$store.state.username,
                 playlists: [],
-                showItems: false,
                 validName: false,
                 validNameError: '',
                 createdPlaylist: '',
@@ -45,7 +55,12 @@
                 return this.$apiClient.get(`${this.$proxyUrl}/playlist-api/v1/private/${this.username}`,
                     { headers: {"x-api-token": this.token} })
                 .then((response) => {
-                    this.playlists = response.data.result;
+                    let playlistArray = [];
+                    response.data.result.forEach(function(resp) {
+                        resp['open'] = false;
+                        playlistArray.push(resp)
+                    });
+                    this.playlists = playlistArray;
                 })
                 .catch(e => {
                     this.errors.push(e)
