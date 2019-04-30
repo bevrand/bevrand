@@ -62,13 +62,13 @@ services:
     container_name: multivuerse
     build: ./bevrand.multivuerse
     image: "bevrand/multivuerse:${CIRCLE_SHA1}"
-    environment:
-    - NODE_ENV=production
-    - PROXY_API_URL=http://0.0.0.0:4540
-    ports:
-    - 3001:80
     depends_on:
     - proxyapi
+    - dockernginx
+    environment:
+    - NODE_ENV=production
+    ports:
+    - 3001:3000
 
   randomizerapi:
     container_name: randomizerapi
@@ -280,6 +280,8 @@ services:
     container_name: dockernginx
     image: "bevrand/dockernginx:${CIRCLE_SHA1}"
     build: ./deployment/nginx
+    depends_on:
+    - proxyapi
     ports:
       - "80:5000"
 
