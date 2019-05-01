@@ -5,7 +5,7 @@ var username = '';
 var imageUrl = 'https://static.beveragerandomizer.com/file/beveragerandomizer/images/users/standardimage.png';
 
 var config = {
-    proxyHostname: 'https:' == document.location.protocol ? '' : 'http://localhost:4540'
+    proxyHostname: 'https:' == document.location.protocol ? '' : 'http://localhost'
 };
 
 $(document).ready(function () {
@@ -98,7 +98,7 @@ function addDrinksToPlaylist(beverage) {
 }
 
 $("#createPlayList").click(function () {
-    var randomizeList = mapDrinksToJson();
+    var playlistToPost = mapDrinksToJson();
     if (beverages.length <= 1) {
         document.getElementById("notifyType").textContent = "You need at least two drinks in your list";
         $(".notify").toggleClass("active");
@@ -110,7 +110,7 @@ $("#createPlayList").click(function () {
         },2000);
         return
     }
-    postDrinkToBackEnd(randomizeList);
+    postDrinkToBackEnd(playlistToPost);
 
 });
 
@@ -121,8 +121,9 @@ $("#successButton").click(function ()  {
 function postDrinkToBackEnd(randomizeList) {
     $.ajax({
         type: "POST",
-        url: `${config.proxyHostname}/api/user`,
+        url: `${config.proxyHostname}/playlist-api/v1/private/${username}/${normalizedPlayListName}`,
         data: randomizeList,
+        headers: {"x-api-token": token },
         contentType: "application/json",
         success: function () {
             $('#beverageAdditionField').hide();
@@ -165,8 +166,6 @@ function mapDrinksToJson() {
         beverages: beverages,
         displayName: displayName,
         imageUrl: imageUrl,
-        list: normalizedPlayListName,
-        user: username
     });
 
     return playlist

@@ -166,6 +166,7 @@ services:
     - authenticationapi
     - proxyapi
     - highscoreapi
+    - recommendationapi
     - dataseeder
     links:
     - randomizerapi
@@ -186,6 +187,7 @@ services:
     - authenticationapi
     - proxyapi
     - highscoreapi
+    - recommendationapi
     - dataseeder
     links:
     - randomizerapi

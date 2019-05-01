@@ -81,10 +81,11 @@ if PROFILE == 'database-only':
     DATABASE_ONLY = True
 # For local development
 if PROFILE == 'dev':
-    dataseeder_arg.default = False
+    dataseeder_arg.default = True
     run_component_arg.default = True
     run_system_arg.default = True
     pass_generation_arg.default = True
+    image_action_arg.default = 'build'
 # For Circle component tests environment
 if PROFILE == 'component-tests':
     dataseeder_arg.default = True
@@ -116,6 +117,7 @@ if PROFILE == 'prod':
     # We exclude jaeger for now, as the 1 GB droplet can not handle the database requirements
     exclude_jaeger_arg.default = True
     use_volume_arg.default = True
+    exclude_jaeger_arg.default = True
     pass_generation_arg.default = False
 
 USE_STDOUT = args.stdout

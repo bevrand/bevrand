@@ -1,6 +1,6 @@
 
 var config = {
-    proxyHostname: 'https:' == document.location.protocol ? '' : 'http://localhost:4540'
+    proxyHostname: 'https:' == document.location.protocol ? '' : 'http://localhost'
 };
 
 var token = "";
@@ -32,7 +32,7 @@ $("#loginForm").submit(function( event ) {
 function loginUser(userList) {
      $.ajax({
         type: "POST",
-        url: `${config.proxyHostname}/api/login`,
+        url: `${config.proxyHostname}/authentication-api/login`,
         data: userList,
         contentType: "application/json",
         success: function (data) {
@@ -92,8 +92,8 @@ function toggleLoginFields() {
 
 function mapUsertoJson(username, email, password) {
     return JSON.stringify({
-        "userName": username,
+        "username": username,
         "emailAddress": email,
-        "passWord": password,
+        "password": password,
     });
 }

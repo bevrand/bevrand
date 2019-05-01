@@ -1,7 +1,7 @@
 var id = '';
 
 var config = {
-    proxyHostname: 'https:' == document.location.protocol ? '' : 'http://localhost:4540'
+    proxyHostname: 'https:' == document.location.protocol ? '' : 'http://localhost'
 };
 
 $(document).ready(function () {
@@ -106,7 +106,7 @@ function validatePasswordsAreEqual(password, checkPassword){
 function registerUser(userList) {
     $.ajax({
         type: "POST",
-        url: `${config.proxyHostname}/api/register`,
+        url: `${config.proxyHostname}/authentication-api/register`,
         data: userList,
         contentType: "application/json",
         success: function (data) {

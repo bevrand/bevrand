@@ -10,12 +10,14 @@ class UsersDb:
         self.db = database.client.bevrand
         self.users = database.client.bevrand.users
 
-    def get_all_user_lists(self, user_name):
+    def get_all_user_lists(self, username):
         description_lists = []
         try:
-            query = self.users.find({'user': user_name})
-            for desc_list in query:
-                description_lists.append(desc_list['list'])
+            query = self.users.find({'user': username})
+            mapper = CursorMapper()
+            for result in query:
+                res = mapper.map_cursor_to_object(result, username)
+                description_lists.append(res)
             return description_lists
         except errors.ConnectionFailure:
             raise InvalidUsage('Could not connect to mongo', status_code=503)

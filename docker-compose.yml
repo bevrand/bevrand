@@ -77,6 +77,16 @@ services:
       - playlistapi
       - authenticationapi
 
+  recommendationapi:
+    container_name: recommendationapi
+    build: ./bevrand.recommendationapi
+    ports:
+      - 4590:5000
+    depends_on:
+      - neo4j
+    environment:
+      - GO_ENV=docker
+
   highscoreapi:
     container_name: highscoreapi
     build: ./bevrand.highscoreapi
@@ -132,6 +142,9 @@ services:
     environment:
     - PYTHON_ENV=Test
 
-
-
-      
+  neo4j:
+    container_name: neo4j
+    build: ./deployment/neo4j
+    ports:
+    - "7474:7474"
+    - "7687:7687"
