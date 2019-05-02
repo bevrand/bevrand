@@ -5,7 +5,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        token : "",
+        token : null,
         loggedIn: false,
         username: "",
         id: "",
@@ -26,14 +26,15 @@ export default new Vuex.Store({
         },
 
         getTokenFromStorage: (state) => {
-            if (localStorage.getItem("token") === null) {
-                let token = localStorage.getItem('token');
-                state.token = token;
-                state.jwtData =  JSON.parse(atob(token.split('.')[1]));
-                state.username = state.jwtData.username;
-                state.id = state.jwtData.id;
-                state.loggedIn = true;
+            if (localStorage.getItem("token") === null || localStorage.getItem("token") === 'null') {
+                return
             }
+            let token = localStorage.getItem('token');
+            state.token = token;
+            state.jwtData =  JSON.parse(atob(token.split('.')[1]));
+            state.username = state.jwtData.username;
+            state.id = state.jwtData.id;
+            state.loggedIn = true;
         },
 
         logOut: (state) => {
