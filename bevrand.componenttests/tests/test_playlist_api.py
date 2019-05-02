@@ -93,7 +93,6 @@ class PlayListApiPrivateTests(test_setup_fixture.TestFixture):
         self.assertIsNotNone(error_message)
         self.assertTrue(self.validate_string_contains(error_message, "already exists"))
 
-
     def test_should_not_be_able_to_post_a_playlist_with_one_drink(self):
         new_user = HelperClass.random_word_letters_only(25)
         new_playlist = HelperClass.random_word_letters_only(25)
