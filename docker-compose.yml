@@ -44,6 +44,7 @@ services:
     container_name: dockernginx
     depends_on:
     - proxyapi
+    - multivuerse
     ports:
     - 80:5000
   highscoreapi:
@@ -95,7 +96,6 @@ services:
     container_name: multivuerse
     depends_on:
     - proxyapi
-    - dockernginx
     environment:
     - NODE_ENV=production
     ports:

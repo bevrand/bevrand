@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node server.js",
+    "start": "node ./src/server.js",
+    "dev": "nodemon ./src/server.js",
     "lint": "eslint .",
     "test": "jest --coverage"
   },
@@ -29,7 +30,11 @@
   },
   "devDependencies": {
     "eslint": "^5.16.0",
-    "jest": "^24.7.1"
+    "eslint-config-prettier": "^4.0.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "jest": "^24.7.1",
+    "nodemon": "^1.18.10",
+    "prettier": "^1.16.3"
   },
   "eslintConfig": {
     "extends": "eslint:recommended",
