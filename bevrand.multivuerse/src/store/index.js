@@ -26,8 +26,8 @@ export default new Vuex.Store({
         },
 
         getTokenFromStorage: (state) => {
-            let token = localStorage.getItem('token');
-            if (token !== "null" || token == null) {
+            if (localStorage.getItem("token") === null) {
+                let token = localStorage.getItem('token');
                 state.token = token;
                 state.jwtData =  JSON.parse(atob(token.split('.')[1]));
                 state.username = state.jwtData.username;
