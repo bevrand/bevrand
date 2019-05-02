@@ -64,7 +64,6 @@ services:
     image: "bevrand/multivuerse:${CIRCLE_SHA1}"
     depends_on:
     - proxyapi
-    - dockernginx
     environment:
     - NODE_ENV=production
     ports:
@@ -282,6 +281,7 @@ services:
     build: ./deployment/nginx
     depends_on:
     - proxyapi
+    - multivuerse
     ports:
       - "80:5000"
 
