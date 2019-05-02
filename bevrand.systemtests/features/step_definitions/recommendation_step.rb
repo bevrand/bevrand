@@ -16,8 +16,4 @@ end
 
 Then /^we skip this code for now$/ do
   expect(1).to be 1
-<<<<<<< HEAD
 end
-=======
-end
->>>>>>> develop

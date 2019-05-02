@@ -2,8 +2,4 @@ tabWidth = 2
 singleQuote = true
 trailingComma = "es5"
 arrowParens = "avoid"
-<<<<<<< HEAD
 printWidth = 100
-=======
-printWidth = 100
->>>>>>> develop
