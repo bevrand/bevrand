@@ -20,7 +20,6 @@ Feature: Profile
       | ipad-2     | create | playlistcreation |
       | macbook-15 | cancel | profile          |
 
-  @focus
   Scenario Outline: Creating a playlist complete flow happy path on <device>
     Given I am a registered user logging in using <device>
     When I enter my credentials and login

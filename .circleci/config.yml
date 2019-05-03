@@ -394,7 +394,6 @@ workflows:
               only:
               - master
               - develop
-              - feature/vuejspoc
      #TODO Sonar-scanner
      #- acceptance_test_1:
      #    requires:
