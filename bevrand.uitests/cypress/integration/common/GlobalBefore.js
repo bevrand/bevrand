@@ -1,9 +1,10 @@
 before(() => {
-
-    cy.request('http://localhost:4550/api/v1/private/testuser').then((response) => {
-        let playlists = response.body['result'];
-        playlists.forEach(function(playlist) {
-            cy.request('DELETE', `http://localhost:4550/api/v1/private/testuser/${playlist}`)
+    cy.request({
+        url: 'http://localhost:4550/api/v1/private/testuser'
+        }).then((response) => {
+            let playlists = response.body['result'];
+            playlists.forEach(function(playlist) {
+                cy.request('DELETE', `http://localhost:4550/api/v1/private/testuser/${playlist.list}`)
         });
     });
 
