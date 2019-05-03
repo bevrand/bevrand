@@ -66,7 +66,7 @@ Then(/^I should get a validation of success$/,() => {
 
 Then(/^My new playlist should be visible$/,() => {
     cy.get('@playlistname').then(($text =>
-        cy.get('#readablemain > div.loginarea > span')
+        cy.get('#readablemain > div.loginarea > div')
             .children()
             .its('length')
             .should('be.gt', 1)
