@@ -95,9 +95,9 @@ jobs:
       - checkout
      # build the application image
       - run: |
-         docker build -t bevrand/frontend:$CIRCLE_SHA1 ./bevrand.frontend
+         docker build -t bevrand/multivuerse:$CIRCLE_SHA1 ./bevrand.multivuerse
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker push bevrand/frontend:$CIRCLE_SHA1
+         docker push bevrand/multivuerse:$CIRCLE_SHA1
       - run: |
           docker build -t bevrand/dockernginx:$CIRCLE_SHA1 ./deployment/nginx
           docker login -u $DOCKERUSER -p $DOCKERPASSWORD
@@ -252,9 +252,9 @@ jobs:
          docker push bevrand/dockergres:production
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker pull bevrand/frontend:$CIRCLE_SHA1
-         docker tag bevrand/frontend:$CIRCLE_SHA1 bevrand/frontend:production
-         docker push bevrand/frontend:production
+         docker pull bevrand/multivuerse:$CIRCLE_SHA1
+         docker tag bevrand/multivuerse:$CIRCLE_SHA1 bevrand/multivuerse:production
+         docker push bevrand/multivuerse:production
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker pull bevrand/dockerels:$CIRCLE_SHA1

@@ -1,150 +1,102 @@
-version: "2"
+version: '3.1'
+
 services:
-
-  redis:
-    container_name: redis
-    image: redis
-    ports: #6379
-      - 6379:6379
-
+  authenticationapi:
+    build: ./bevrand.authenticationapi/bevrand.authenticationapi
+    container_name: authenticationapi
+    depends_on:
+    - dockergres
+    environment:
+    - ConnectionStrings:PostGres=Host=dockergres;Port=5432;Database=bevrand;Uid=Jt6YiwS0D3AnTx8;Pwd=XkND32hL1ASyIj8!Js7oiYBpc;
+    - ASPNETCORE_ENVIRONMENT="Production"
+    ports:
+    - 4570:5000
+  dataseeder:
+    build: ./bevrand.dataseeder
+    container_name: dataseeder
+    depends_on:
+    - dockermongo
+    - dockergres
+    environment:
+    - MONGO_URL=mongodb://Jt6YiwS0D3AnTx8:XkND32hL1ASyIj8!Js7oiYBpc@dockermongo:27017/admin
+    links:
+    - dockermongo
+    - dockergres
+  dockergres:
+    build: ./bevrand.dataseeder/db
+    container_name: dockergres
+    environment:
+    - POSTGRES_PASSWORD=XkND32hL1ASyIj8!Js7oiYBpc
+    - POSTGRES_USER=Jt6YiwS0D3AnTx8
+    ports:
+    - 5434:5432
   dockermongo:
     container_name: dockermongo
-    image: mongo:3.6
-    ports:
-       - 27017:27017
-
-  dockergres:
-     container_name: dockergres
-     build: ./bevrand.dataseeder/db
-     ports:
-       - 5434:5432
-     environment:
-       - POSTGRES_PASSWORD=postgres
-       - POSTGRES_USER=postgres
-
-  authenticationapi:
-    container_name: authenticationapi
-    build: ./bevrand.authenticationapi/bevrand.authenticationapi
-    ports:
-      - 4570:5000
-    depends_on:
-      - dockergres
-    links:
-      - dockergres
     environment:
-      - ASPNETCORE_ENVIRONMENT="Development"
-
-  randomizerapi:
-    container_name: randomizerapi
-    build: ./bevrand.randomizerapi
+    - AWESOME_NUMBER = 42
+    - MONGO_INITDB_ROOT_USERNAME=Jt6YiwS0D3AnTx8
+    - MONGO_INITDB_ROOT_PASSWORD=XkND32hL1ASyIj8!Js7oiYBpc
+    image: mongo:4.0
     ports:
-       - 4560:5000 # expose ports - HOST:CONTAINER
+    - 27017:27017
+  dockernginx:
+    build: ./deployment/nginx
+    container_name: dockernginx
     depends_on:
-       - playlistapi
-    links:
-       - playlistapi
-       - highscoreapi
-    environment:
-       - APP_SETTINGS=Coverage
-       - HIGHSCORE_API=http://highscoreapi:5000/api/v1/
-
-  playlistapi:
-    container_name: playlistapi
-    build: ./bevrand.playlistapi
+    - proxyapi
+    - multivuerse
     ports:
-       - 4550:5000  # expose ports - HOST:CONTAINER
-    depends_on:
-       - dockermongo
-    links:
-       - dockermongo
-    environment:
-       - APP_SETTINGS=Coverage
-       - MONGO_URL=mongodb://dockermongo:27017/admin
-
-  proxyapi:
-    container_name: proxyapi
-    build: ./bevrand.proxyapi
-    ports:
-      - 4540:5000
-    depends_on:
-      - randomizerapi
-      - playlistapi
-      - authenticationapi
-    environment:
-      - NODE_ENV=development
-    links:
-      - randomizerapi
-      - playlistapi
-      - authenticationapi
-
-  recommendationapi:
-    container_name: recommendationapi
-    build: ./bevrand.recommendationapi
-    ports:
-      - 4590:5000
-    depends_on:
-      - neo4j
-    environment:
-      - GO_ENV=docker
-
+    - 80:5000
   highscoreapi:
-    container_name: highscoreapi
     build: ./bevrand.highscoreapi
+    container_name: highscoreapi
+    depends_on:
+    - redis
     environment:
     - GO_ENV=docker
     - GIN_MODE=release
-    depends_on:
-    - redis
-    links:
-    - redis
     ports:
     - 4580:5000
-
-  frontendapi:
-    container_name: frontend
-    build: ./bevrand.frontend
-    ports:
-    - 80:80
+  playlistapi:
+    build: ./bevrand.playlistapi
+    container_name: playlistapi
     depends_on:
-    - randomizerapi
-    - playlistapi
-    - authenticationapi
-    - proxyapi
-    links:
-    - proxyapi
-
-  dataseeder:
-    container_name: dataseeder
-    build: ./bevrand.dataseeder
-    depends_on:
-       - dockermongo
-       - dockergres
-    links:
-       - dockermongo
-       - dockergres
-
-  componenttest:
-    container_name: component_tests
-    build: ./bevrand.componenttests
-    depends_on:
-    - randomizerapi
-    - playlistapi
-    - authenticationapi
-    - proxyapi
-    - highscoreapi
-    - dataseeder
-    links:
-    - randomizerapi
-    - playlistapi
-    - authenticationapi
-    - proxyapi
-    - highscoreapi
+    - dockermongo
     environment:
-    - PYTHON_ENV=Test
-
-  neo4j:
-    container_name: neo4j
-    build: ./deployment/neo4j
+    - APP_SETTINGS=Production
+    - MONGO_URL=mongodb://Jt6YiwS0D3AnTx8:XkND32hL1ASyIj8!Js7oiYBpc@dockermongo:27017/admin
     ports:
-    - "7474:7474"
-    - "7687:7687"
+    - 4550:5000
+  proxyapi:
+    build: ./bevrand.proxyapi
+    container_name: proxyapi
+    depends_on:
+    - randomizerapi
+    - playlistapi
+    - authenticationapi
+    environment:
+    - NODE_ENV=development
+    ports:
+    - 4540:5000
+  randomizerapi:
+    build: ./bevrand.randomizerapi
+    container_name: randomizerapi
+    environment:
+    - APP_SETTINGS=Production
+    - HIGHSCORE_API=http://highscoreapi:5000/api/v1/
+    ports:
+    - 4560:5000
+  redis:
+    container_name: redis
+    image: redis
+    ports:
+    - 6379:6379
+  multivuerse:
+    build: ./bevrand.multivuerse
+    container_name: multivuerse
+    depends_on:
+    - proxyapi
+    environment:
+    - NODE_ENV=production
+    ports:
+    - 3001:3000

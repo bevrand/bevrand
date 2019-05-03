@@ -82,10 +82,9 @@ if PROFILE == 'database-only':
 # For local development
 if PROFILE == 'dev':
     dataseeder_arg.default = True
-    run_component_arg.default = True
-    run_system_arg.default = True
-    pass_generation_arg.default = True
     image_action_arg.default = 'build'
+    exclude_jaeger_arg.default = True
+    pass_generation_arg.default = True
 # For Circle component tests environment
 if PROFILE == 'component-tests':
     dataseeder_arg.default = True
@@ -113,12 +112,11 @@ if PROFILE == 'ui-tests':
 if PROFILE == 'prod':
     dataseeder_arg.default = False
     image_action_arg.default = 'pull'
-    tag_action_arg.default = 'production'
-    # We exclude jaeger for now, as the 1 GB droplet can not handle the database requirements
-    exclude_jaeger_arg.default = True
+    tag_action_arg.default = os.environ.get('CIRCLE_SHA1')
     use_volume_arg.default = True
     exclude_jaeger_arg.default = True
-    pass_generation_arg.default = False
+    tag_action_arg.default = 'production'
+    # We exclude jaeger for now, as the 1 GB droplet can not handle the database requirements
 
 USE_STDOUT = args.stdout
 if USE_STDOUT:
@@ -146,8 +144,8 @@ service_yaml_file = {}
 databases_services = ['dockergres', 'dockermongo', 'redis', 'neo4j']
 test_services = ['componenttest']
 systemtest_services = ['systemtest']
-api_services = ['authenticationapi', 'highscoreapi', 'randomizerapi', 'recommendationapi', 'playlistapi', 
-                'proxyapi', 'frontendapi', 'dockernginx']
+api_services = ['authenticationapi', 'highscoreapi', 'randomizerapi', 'playlistapi', 
+                'proxyapi', 'dockernginx', 'multivuerse', 'recommendationapi']
 data_seeder_service = ['dataseeder']
 password_services = {'authenticationapi': 'dockergres', 'playlistapi': 'dockermongo'}
 volume_services = ['dockermongo', 'dockergres']
