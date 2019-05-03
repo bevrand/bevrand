@@ -84,6 +84,7 @@ if PROFILE == 'dev':
     dataseeder_arg.default = True
     image_action_arg.default = 'build'
     exclude_jaeger_arg.default = True
+    pass_generation_arg.default = True
 # For Circle component tests environment
 if PROFILE == 'component-tests':
     dataseeder_arg.default = True

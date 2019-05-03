@@ -1,5 +1,7 @@
 import { Then } from "cypress-cucumber-preprocessor/steps";
 
+const homepageText = 'Bevrand';
+
 When(/^I open the navbar menu$/,() => {
     cy.get('#page-wrap > div > div > div.bm-burger-button').click();
     cy.wait(500);
@@ -15,16 +17,14 @@ When(/^I press logout on the navbar$/,() => {
 
 Then(/^The navbar should be visible and usable$/,() => {
     cy.get('#page-wrap > div > div > div.bm-menu');
-    cy.get('#headerLink').then(($navbarText) => {
-        expect($navbarText.text()).to.contain('Bevrand')
-    });
+
+    headerLinkContainsText(homepageText);
 });
 
 Then(/^The logged off status should be shown$/,() => {
     cy.get('#page-wrap > div > div > div.bm-menu');
-    cy.get('#headerLink').then(($navbarText) => {
-        expect($navbarText.text()).to.contain('Bevrand')
-    });
+
+    headerLinkContainsText(homepageText);
 
     cy.get('#headerLink')
         .should('have.attr', 'href').and('include', '/');
@@ -41,9 +41,7 @@ Then(/^The logged on status should be shown$/,() => {
     cy.wait(500);
 
     cy.get('#page-wrap > div > div > div.bm-menu');
-    cy.get('#headerLink').then(($navbarText) => {
-        expect($navbarText.text()).to.contain('Bevrand')
-    });
+    headerLinkContainsText(homepageText);
 
     cy.get('#headerLink')
         .should('have.attr', 'href').and('include', '/');
@@ -57,3 +55,9 @@ Then(/^The logged on status should be shown$/,() => {
 Then(`I should be rerouted to the login page`,() => {
     cy.url().should('include', '/login')
 });
+
+function headerLinkContainsText(assertText) {
+    cy.get('#headerLink').then(($navbarText) => {
+        expect($navbarText.text()).to.contain(assertText)
+    });
+}
