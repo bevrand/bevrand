@@ -15,6 +15,7 @@ Feature: Playlist Selection
     | ipad-2     |
     | macbook-15 |
 
+    @focus
   Scenario Outline: Switching playlists with <device>
     Given I am a new user using <device>
     When I select the first playlist by image
