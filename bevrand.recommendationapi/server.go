@@ -16,7 +16,8 @@ var db bolt.Conn
 
 func main() {
 	getEnvFile()
-	createConnection()
+	CreateConnection()
+	SeedDataBaseOnStartUp()
 
 	jaegerURL := os.Getenv("JAEGER_AGENT_HOST")
 	jaegerPort := os.Getenv("JAEGER_AGENT_PORT")
@@ -67,14 +68,6 @@ func getEnvFile() {
 	}
 
 	err := godotenv.Load(".env." + env)
-	handleError(err)
-}
-
-func createConnection() {
-	var err error
-	neo4jUrl := os.Getenv("NEO4J_URL")
-	driver, err := bolt.NewDriverPool(neo4jUrl, 10)
-	db, err = driver.OpenPool()
 	handleError(err)
 }
 

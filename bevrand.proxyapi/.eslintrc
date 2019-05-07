@@ -1,11 +1,17 @@
 {
   "extends": "eslint:recommended",
+  "plugins": ["prettier"],
   "env": {
     "node": true,
     "jest": true
   },
   "parserOptions": { "ecmaVersion": 2018 },
   "rules": {
-    "no-console": "warn"
+    "no-console": "warn",
+    "indent": ["warn", 2],
+    "no-use-before-define": ["error", {
+      "functions": false,
+      "classes": true
+    }]
   }
 }

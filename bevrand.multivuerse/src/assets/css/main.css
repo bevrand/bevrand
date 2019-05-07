@@ -1,0 +1,257 @@
+@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300italic,400,400italic,600");
+
+html,
+body,
+div,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a,
+em,
+img,
+strong,
+ol,
+ul,
+li,
+form,
+label,
+table,
+caption,
+tr,
+th,
+td,
+article,
+footer,
+header,
+section {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font: inherit;
+    font-size: 100%;
+    vertical-align: baseline;
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+section {
+    display: block;
+}
+
+body {
+    -webkit-text-size-adjust: none;
+    background: #ffffff;
+    color: #f1ebeb;
+    font-size: 16pt;
+    line-height: 1.85em;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 300;
+}
+
+ol,
+ul {
+    list-style: none;
+}
+
+input::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
+input,
+select,
+textarea {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    font-size: 15pt;
+    line-height: 1.85em;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 300;
+}
+
+/* Basic */
+.active {
+    overflow: hidden;
+}
+
+html {
+    box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+body.is-preload *,
+body.is-preload *:before,
+body.is-preload *:after {
+    -moz-animation: none !important;
+    -webkit-animation: none !important;
+    -ms-animation: none !important;
+    animation: none !important;
+    -moz-transition: none !important;
+    -webkit-transition: none !important;
+    -ms-transition: none !important;
+    transition: none !important;
+}
+
+h4 {
+    font-size: 1em;
+    margin: 0 0 0.25em 0;
+}
+
+strong,
+b {
+    font-weight: 600;
+    color: #eee2f0;
+}
+
+em,
+i {
+    font-style: italic;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+    -moz-transition: background-color 0.35s ease-in-out, color 0.35s ease-in-out, border-bottom-color 0.35s ease-in-out;
+    -webkit-transition: background-color 0.35s ease-in-out, color 0.35s ease-in-out, border-bottom-color 0.35s ease-in-out;
+    -ms-transition: background-color 0.35s ease-in-out, color 0.35s ease-in-out, border-bottom-color 0.35s ease-in-out;
+    transition: background-color 0.35s ease-in-out, color 0.35s ease-in-out, border-bottom-color 0.35s ease-in-out;
+}
+
+
+p,
+ul,
+ol,
+dl,
+table {
+    margin-bottom: 1em;
+}
+
+p {
+    text-align: justify;
+}
+
+br.clear {
+    clear: both;
+}
+
+hr {
+    position: relative;
+    display: block;
+    border: 0;
+    top: 4.5em;
+    margin-bottom: 9em;
+    height: 6px;
+    border-top: solid 1px rgba(128, 128, 128, 0.2);
+    border-bottom: solid 1px rgba(128, 128, 128, 0.2);
+}
+
+hr:before,
+hr:after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    display: block;
+    width: 1px;
+    height: 21px;
+    background: rgba(128, 128, 128, 0.2);
+}
+
+hr:before {
+    left: -1px;
+}
+
+hr:after {
+    right: -1px;
+}
+
+/* Container */
+
+.container {
+    margin: 0 auto;
+    max-width: 100%;
+    width: 1400px;
+}
+
+header {
+    margin: 0 0 1em 0;
+}
+
+header>p {
+    display: block;
+    font-size: 1.5em;
+    margin: 1em 0 2em 0;
+    line-height: 1.5em;
+    text-align: inherit;
+}
+
+footer {
+    margin: 2.5em 0 0 0;
+}
+
+
+/* Actions */
+
+ul.actions {
+    margin: 3em 0 0 0;
+    list-style: none;
+    padding-left: 0;
+}
+
+form ul.actions {
+    margin-top: 0;
+}
+
+ul.actions li {
+    display: inline-block;
+    margin: 0 0.75em 0 0.75em;
+    padding-left: 0;
+}
+
+ul.actions li:first-child {
+    margin-left: 0;
+}
+
+ul.actions li:last-child {
+    margin-right: 0;
+}
+
+/* Icons */
+
+.icon {
+    text-decoration: none;
+}
+
+.icon:before {
+    display: inline-block;
+    font-family: FontAwesome, sans-serif;
+    font-size: 1.25em;
+    text-decoration: none;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon>.label {
+    display: none;
+}
+

@@ -15,7 +15,7 @@ services:
     volumes:
       - /mnt/datavolumedocker/data/mongo:/data/db
     environment:
-      - AWESOME_NUMBER = 42
+      - AWESOME_NUMBER=42
 
   dockergres:
      container_name: dockergres
@@ -38,8 +38,6 @@ services:
     depends_on:
       - dockergres
       - jaeger-agent
-    links:
-      - dockergres
     environment:
       - ASPNETCORE_ENVIRONMENT="Development"
       - JAEGER_AGENT_HOST=jaeger-agent
@@ -57,25 +55,19 @@ services:
     depends_on:
       - redis
       - jaeger-agent
-    links:
-      - redis
     ports:
       - 4580:5000
 
-  frontendapi:
-    container_name: frontend
-    build: ./bevrand.frontend
-    image: "bevrand/frontend:${CIRCLE_SHA1}"
-    ports:
-      - 4541:80
+  multivuerse:
+    container_name: multivuerse
+    build: ./bevrand.multivuerse
+    image: "bevrand/multivuerse:${CIRCLE_SHA1}"
     depends_on:
-    - randomizerapi
-    - playlistapi
-    - authenticationapi
     - proxyapi
-    - highscoreapi
-    links:
-    - proxyapi
+    environment:
+    - NODE_ENV=production
+    ports:
+    - 3001:3000
 
   randomizerapi:
     container_name: randomizerapi
@@ -83,8 +75,6 @@ services:
     image: "bevrand/randomizerapi:${CIRCLE_SHA1}"
     ports:
        - 4560:5000 # expose ports - HOST:CONTAINER
-    links:
-       - highscoreapi
     depends_on:
        - jaeger-agent
     environment:
@@ -102,8 +92,6 @@ services:
     depends_on:
        - dockermongo
        - jaeger-agent
-    links:
-       - dockermongo
     environment:
        - APP_SETTINGS=Production
        - MONGO_URL=mongodb://dockermongo:27017/admin
@@ -116,19 +104,10 @@ services:
     image: "bevrand/proxyapi:${CIRCLE_SHA1}"
     ports:
       - 4540:5000
-    depends_on:
-      - randomizerapi
-      - playlistapi
-      - authenticationapi
-      - jaeger-agent
     environment:
       - NODE_ENV=development
       - JAEGER_AGENT_HOST=jaeger-agent
       - JAEGER_AGENT_PORT=6831
-    links:
-      - randomizerapi
-      - playlistapi
-      - authenticationapi
 
   recommendationapi:
     container_name: recommendationapi
@@ -142,6 +121,7 @@ services:
       - jaeger-agent
     environment:
       - GO_ENV=docker
+      - NEO4J_URL=bolt://neo4j:placeholder@neo4j:7687
 
   dataseeder:
     container_name: dataseeder
@@ -166,13 +146,8 @@ services:
     - authenticationapi
     - proxyapi
     - highscoreapi
+    - recommendationapi
     - dataseeder
-    links:
-    - randomizerapi
-    - playlistapi
-    - authenticationapi
-    - proxyapi
-    - highscoreapi
     environment:
     - PYTHON_ENV=Test
 
@@ -186,13 +161,8 @@ services:
     - authenticationapi
     - proxyapi
     - highscoreapi
+    - recommendationapi
     - dataseeder
-    links:
-    - randomizerapi
-    - playlistapi
-    - authenticationapi
-    - proxyapi
-    - highscoreapi
     environment:
     - RUBY_ENV=Docker
 
@@ -310,15 +280,17 @@ services:
     container_name: dockernginx
     image: "bevrand/dockernginx:${CIRCLE_SHA1}"
     build: ./deployment/nginx
-    links:
-      - frontendapi
+    depends_on:
+    - proxyapi
+    - multivuerse
     ports:
       - "80:5000"
 
   neo4j:
+    image: neo4j:3.5.4
     container_name: neo4j
-    image: "bevrand/dockerneo:${CIRCLE_SHA1}"
-    build: ./deployment/neo4j
+    environment:
+      - NEO4J_AUTH=neo4j/anewpassthatishard
     ports:
       - "7474:7474"
       - "7687:7687"

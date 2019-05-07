@@ -1,29 +1,34 @@
 {
-    "name": "bevrand-circle-ci-with-cypress",
-    "version": "1.0.0",
-    "description": "Cypress + Docker + CircleCI = ❤️",
-    "main": "index.js",
-    "private": true,
-    "scripts": {
-      "test-junit": "cypress run --reporter junit --reporter-options 'mochaFile=junit-results/my-test-output.xml'",
-      "test-multiple": "cypress run --reporter mocha-multi-reporters --reporter-options configFile=./config.json"
-    },
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/bevrand/bevrand.git"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "MIT",
-    "bugs": {
-      "url": "https://github.com/bevrand/bevrand/issues"
-    },
-    "homepage": "https://www.beveragerandomizer.com",
-    "devDependencies": {
-      "cypress": "^3.1.5",
-      "mocha": "^5.2.0",
-      "mocha-junit-reporter": "^1.18.0",
-      "mocha-multi-reporters": "^1.1.7"
-    }
+  "name": "bevrand-circle-ci-with-cypress",
+  "version": "1.0.0",
+  "description": "Cypress + Docker + CircleCI = ❤️",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test-junit": "cypress run --reporter junit --reporter-options 'mochaFile=junit-results/my-test-output.xml'",
+    "test-multiple": "cypress run --reporter mocha-multi-reporters --reporter-options configFile=./config.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bevrand/bevrand.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bevrand/bevrand/issues"
+  },
+  "homepage": "https://www.beveragerandomizer.com",
+  "dependencies": {
+    "cypress": "3.2.0",
+    "cypress-cucumber-preprocessor": "^1.11.0"
+  },
+  "cypress-cucumber-preprocessor": {
+    "nonGlobalStepDefinitions": true
+  },
+  "devDependencies": {
+    "mocha": "^5.2.0",
+    "mocha-junit-reporter": "^1.18.0",
+    "mocha-multi-reporters": "^1.1.7"
+  }
 }
-  

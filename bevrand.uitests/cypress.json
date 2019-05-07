@@ -1,1 +1,4 @@
-{}
+{
+  "baseUrl": "http://localhost",
+  "ignoreTestFiles": "*.js"
+}

@@ -87,12 +87,7 @@ func CategorieHandler(w http.ResponseWriter, req *http.Request) {
 
 	err = json.NewEncoder(w).Encode(results)
 	if err != nil {
-		span.LogFields(
-			openlog.String("http_status_code", "500"),
-			openlog.String("body", "error writing search response:"),
-		)
-		w.WriteHeader(500)
-		w.Write([]byte("An error occurred writing response"))
+		RespondWithAnError(400, err.Error(), w, ctx)
 	}
 }
 
@@ -118,12 +113,7 @@ func BeverageHandler(w http.ResponseWriter, req *http.Request) {
 	if len(limits) > 0 {
 		limit, err = strconv.Atoi(limits)
 		if err != nil {
-			span.LogFields(
-				openlog.String("http_status_code", "400"),
-				openlog.String("body", "Limit must be an integer"),
-			)
-			w.WriteHeader(400)
-			w.Write([]byte("Limit must be an integer"))
+			RespondWithAnError(400, "Limit must be an integer", w, ctx)
 		}
 	}
 
@@ -174,12 +164,7 @@ func BeverageHandler(w http.ResponseWriter, req *http.Request) {
 
 	err = json.NewEncoder(w).Encode(results)
 	if err != nil {
-		span.LogFields(
-			openlog.String("http_status_code", "500"),
-			openlog.String("body", "error writing search response:"),
-		)
-		w.WriteHeader(500)
-		w.Write([]byte("An error occurred writing response"))
+		RespondWithAnError(500, "An error occurred writing response", w, ctx)
 	}
 }
 
