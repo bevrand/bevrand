@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: recommendationapi
+  labels:
+    app.kubernetes.io/name: {{ include "bevrand.name" . }}-recommendationapi
+    helm.sh/chart: {{ include "bevrand.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  ports:
+    - port: {{ .Values.service.port }}
+  selector:
+    app.kubernetes.io/name: {{ include "bevrand.name" . }}-recommendationapi
+    app.kubernetes.io/instance: {{ .Release.Name }}

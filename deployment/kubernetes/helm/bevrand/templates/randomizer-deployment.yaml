@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "bevrand.name" . }}-randomizerapi
+  labels:
+    app.kubernetes.io/name: {{ include "bevrand.name" . }}-randomizerapi
+    helm.sh/chart: {{ include "bevrand.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "bevrand.name" . }}-randomizerapi
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "bevrand.name" . }}-randomizerapi
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+      - env:
+        - name: APP_SETTINGS
+          value: Production
+        - name: HIGHSCORE_API
+          value: http://highscoreapi:5000/api/v1/
+        image: bevrand/randomizerapi:production
+        imagePullPolicy: Always
+        name: {{ include "bevrand.name" . }}-randomizerapi
+        ports:
+        - containerPort: 5000
+        resources: {}
+        restartPolicy: Always
+status: {}

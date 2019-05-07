@@ -3,12 +3,13 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node server.js",
+    "start": "node ./src/server.js",
+    "dev": "nodemon ./src/server.js",
     "lint": "eslint .",
     "test": "jest --coverage"
   },
   "dependencies": {
-    "bluebird": "^3.5.3",
+    "bluebird": "^3.5.4",
     "body-parser": "~1.18.3",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
@@ -16,7 +17,7 @@
     "dotenv": "^7.0.0",
     "express": "^4.16.4",
     "express-jwt": "^5.3.1",
-    "into-stream": "^5.0.0",
+    "into-stream": "^5.1.0",
     "jaeger-client": "^3.14.4",
     "joi": "^14.3.1",
     "jsonwebtoken": "^8.5.1",
@@ -28,8 +29,12 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "eslint": "^5.15.3",
-    "jest": "^24.5.0"
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.0.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "jest": "^24.8.0",
+    "nodemon": "^1.18.10",
+    "prettier": "^1.17.0"
   },
   "eslintConfig": {
     "extends": "eslint:recommended",

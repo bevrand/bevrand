@@ -95,9 +95,9 @@ jobs:
       - checkout
      # build the application image
       - run: |
-         docker build -t bevrand/frontend:$CIRCLE_SHA1 ./bevrand.frontend
+         docker build -t bevrand/multivuerse:$CIRCLE_SHA1 ./bevrand.multivuerse
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker push bevrand/frontend:$CIRCLE_SHA1
+         docker push bevrand/multivuerse:$CIRCLE_SHA1
       - run: |
           docker build -t bevrand/dockernginx:$CIRCLE_SHA1 ./deployment/nginx
           docker login -u $DOCKERUSER -p $DOCKERPASSWORD
@@ -252,9 +252,9 @@ jobs:
          docker push bevrand/dockergres:production
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker pull bevrand/frontend:$CIRCLE_SHA1
-         docker tag bevrand/frontend:$CIRCLE_SHA1 bevrand/frontend:production
-         docker push bevrand/frontend:production
+         docker pull bevrand/multivuerse:$CIRCLE_SHA1
+         docker tag bevrand/multivuerse:$CIRCLE_SHA1 bevrand/multivuerse:production
+         docker push bevrand/multivuerse:production
       - run: |
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker pull bevrand/dockerels:$CIRCLE_SHA1
@@ -295,9 +295,12 @@ jobs:
     machine: true
     steps:
      - checkout
+     - run: "pip install PyYAML"
+     - run: "pip install ansible"
+     - run: "python create_docker_compose.py --profile prod"
      - run: "pwd && ls -lha"
      - run: "cd ./deployment && sh ./init_terraform.sh"
-     - run: "cd ./deployment/terraform_scripts && pwd && ls -lha && sh ../run_terraform.sh"
+     - run: "cd ./deployment/terraform_scripts && pwd && ls -lha && bash ../run_deployment.sh"
 
   resume_uptimerobot:
     machine: true
@@ -309,30 +312,30 @@ workflows:
   build_accept_deploy:
     jobs:
      - unittest_randomizer:
-        context: BeverageRandomizerPROD
+         context: BeverageRandomizerPROD
      - unittest_proxy:
-        context: BeverageRandomizerPROD
+         context: BeverageRandomizerPROD
      - unittest_playlist:
-        context: BeverageRandomizerPROD
+         context: BeverageRandomizerPROD
      - unittest_authentication:
-        context: BeverageRandomizerPROD
+         context: BeverageRandomizerPROD
      - unittest_highscore:
-        context: BeverageRandomizerPROD
+         context: BeverageRandomizerPROD
      - unittest_recommendation:
-        context: BeverageRandomizerPROD
+         context: BeverageRandomizerPROD
 
      - build_python:
-        context: BeverageRandomizerPROD
-        requires:
+         context: BeverageRandomizerPROD
+         requires:
           - unittest_randomizer
           - unittest_playlist
      - build_node:
-        context: BeverageRandomizerPROD
-        requires:
+         context: BeverageRandomizerPROD
+         requires:
           - unittest_proxy
      - build_dotnet:
-        context: BeverageRandomizerPROD
-        requires:
+         context: BeverageRandomizerPROD
+         requires:
           - unittest_authentication
      - build_golang:
          context: BeverageRandomizerPROD
@@ -408,7 +411,8 @@ workflows:
          context: BeverageRandomizerPROD
          filters:
             branches:
-              only: master
+              only:
+              - master
          requires:
            - create_production_images
      - deploy:
@@ -416,7 +420,8 @@ workflows:
          context: BeverageRandomizerPROD
          filters:
             branches:
-              only: master
+              only:
+              - master
          requires:
            #- acceptance_test_1
            - pause_uptimerobot
@@ -424,6 +429,7 @@ workflows:
          context: BeverageRandomizerPROD
          filters:
             branches:
-              only: master
+              only:
+              - master
          requires:
            - deploy

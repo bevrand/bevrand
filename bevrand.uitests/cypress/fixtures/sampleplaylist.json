@@ -1,0 +1,10 @@
+{
+  "beverages": [
+    "beer",
+    "wine"
+  ],
+  "displayName": "I am so depressed",
+  "imageUrl": "http://whatever.com",
+  "username": "testuser",
+  "playlistName": "testuserplaylist"
+}

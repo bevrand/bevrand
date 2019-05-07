@@ -1,31 +1,15 @@
 from tests import test_setup_fixture
-from environment import config
 from helpers.random_name_generator import HelperClass
 from helpers.models import AuthenticationModel
 import pytest
-import os
 import requests
 
-url = None
 
-
-@pytest.fixture(scope="module")
-def setup_config():
-    env = os.environ.get('PYTHON_ENV')
-    if env == 'Test':
-        env_setting = config.Test()
-    else:  # If local or other
-        env_setting = config.Local()
-    global url
-    url = env_setting.authentication_url
-
-
-@pytest.mark.usefixtures("setup_config")
 @pytest.mark.order1
 class AuthenticationPostApiTests(test_setup_fixture.TestFixture):
 
     def test_should_be_able_to_create_a_new_user(self):
-        sut = url + '/Users'
+        sut = self.authentication_url + '/Users'
         user = HelperClass.random_word_letters_only(25)
         email = HelperClass.create_random_email()
         password = HelperClass.random_word_special_signs_included(25)
@@ -34,7 +18,7 @@ class AuthenticationPostApiTests(test_setup_fixture.TestFixture):
         self.assertEqual(201, response.status_code)
 
     def test_should_not_be_able_to_post_an_empty_body(self):
-        sut = url + '/Users'
+        sut = self.authentication_url + '/Users'
         body = {}
         response = self.post_without_auth_header(sut, body)
         error_message = response.json()['Error']
@@ -44,7 +28,7 @@ class AuthenticationPostApiTests(test_setup_fixture.TestFixture):
         self.assertIsNotNone(meta_message)
 
     def test_should_not_be_able_to_create_a_new_user_with_missing_username(self):
-        sut = url + '/Users'
+        sut = self.authentication_url + '/Users'
         email = HelperClass.create_random_email()
         password = HelperClass.random_word_special_signs_included(25)
         body = {"emailAddress": email, "passWord": password}
@@ -57,7 +41,7 @@ class AuthenticationPostApiTests(test_setup_fixture.TestFixture):
         self.assertTrue(self.validate_string_contains(error_message, "You have to provide a user"))
 
     def test_should_not_be_able_to_create_a_new_user_with_missing_email(self):
-        sut = url + '/Users'
+        sut = self.authentication_url + '/Users'
         user = HelperClass.random_word_letters_only(25)
         password = HelperClass.random_word_special_signs_included(25)
         body = {"userName": user, "passWord": password}
@@ -70,7 +54,7 @@ class AuthenticationPostApiTests(test_setup_fixture.TestFixture):
         self.assertTrue(self.validate_string_contains(error_message, "You have to provide an email"))
 
     def test_should_not_be_able_to_create_a_new_user_with_missing_password(self):
-        sut = url + '/Users'
+        sut = self.authentication_url + '/Users'
         user = HelperClass.random_word_letters_only(25)
         email = HelperClass.create_random_email()
         body = {"userName": user, "emailAddress": email}
@@ -83,7 +67,7 @@ class AuthenticationPostApiTests(test_setup_fixture.TestFixture):
         self.assertTrue(self.validate_string_contains(error_message, "You have to provide a valid password"))
 
     def test_should_not_be_able_to_create_a_new_user_with_faulty_email(self):
-        sut = url + '/Users'
+        sut = self.authentication_url + '/Users'
         user = HelperClass.random_word_letters_only(25)
         email = HelperClass.random_word_letters_only(10)
         password = HelperClass.random_word_special_signs_included(25)
@@ -97,7 +81,7 @@ class AuthenticationPostApiTests(test_setup_fixture.TestFixture):
         self.assertTrue(self.validate_string_contains(error_message, "was not a valid mailaddress"))
 
     def test_should_not_be_able_to_post_a_user_twice(self):
-        sut = url + '/Users'
+        sut = self.authentication_url + '/Users'
         user = HelperClass.random_word_letters_only(25)
         email = HelperClass.create_random_email()
         password = HelperClass.random_word_special_signs_included(25)
@@ -108,14 +92,14 @@ class AuthenticationPostApiTests(test_setup_fixture.TestFixture):
         self.assertEqual(400, resp.status_code)
 
 
-@pytest.mark.usefixtures("setup_config", "post_a_new_user")
+@pytest.mark.usefixtures("post_a_new_user")
 @pytest.mark.order2
 class AuthenticationGetApiTests(test_setup_fixture.TestFixture):
     scoped_user = None
 
     @pytest.fixture
     def post_a_new_user(self):
-        sut = url + '/Users'
+        sut = self.authentication_url + '/Users'
         user = HelperClass.random_word_letters_only(25)
         email = HelperClass.create_random_email()
         password = HelperClass.random_word_special_signs_included(25)
@@ -126,53 +110,53 @@ class AuthenticationGetApiTests(test_setup_fixture.TestFixture):
         self.scoped_user.password = password
 
     def test_should_be_able_to_retrieve_a_list_of_users(self):
-        sut = f'{url}/Users'
+        sut = f'{self.authentication_url}/Users'
         response = self.get_without_auth_header(sut)
         self.assertEqual(200, response.status_code)
         self.assertTrue(len(response.json()) >= 1)
 
     def test_should_be_able_to_retrieve_a_posted_user_by_id(self):
-        sut = f'{url}/Users/{self.scoped_user.id}'
+        sut = f'{self.authentication_url}/Users/{self.scoped_user.id}'
         response = self.get_without_auth_header(sut)
         self.assertEqual(200, response.status_code)
 
     def test_should_be_able_to_retrieve_a_posted_user_by_username(self):
-        sut = f'{url}/Users/by-username/{self.scoped_user.username}'
+        sut = f'{self.authentication_url}/Users/by-username/{self.scoped_user.username}'
         response = self.get_without_auth_header(sut)
         self.assertEqual(200, response.status_code)
 
     def test_should_be_able_to_retrieve_a_posted_user_by_email(self):
-        sut = f'{url}/Users/by-email/{self.scoped_user.email_address}'
+        sut = f'{self.authentication_url}/Users/by-email/{self.scoped_user.email_address}'
         response = self.get_without_auth_header(sut)
         self.assertEqual(200, response.status_code)
 
     def test_should_not_be_able_to_retrieve_a_non_existent_user_by_id(self):
         local_id = self.unknown_id
-        sut = f'{url}/Users/{local_id}'
+        sut = f'{self.authentication_url}/Users/{local_id}'
         response = self.get_without_auth_header(sut)
         self.assertEqual(404, response.status_code)
 
     def test_should_not_be_able_to_retrieve_a_non_existent_user_by_user(self):
         username = HelperClass.random_word_letters_only(20)
-        sut = f'{url}/Users/by-username/{username}'
+        sut = f'{self.authentication_url}/Users/by-username/{username}'
         response = self.get_without_auth_header(sut)
         self.assertEqual(404, response.status_code)
 
     def test_should_not_be_able_to_retrieve_a_non_existent_user_by_email(self):
         email = HelperClass.create_random_email()
-        sut = f'{url}/Users/by-email/{email}'
+        sut = f'{self.authentication_url}/Users/by-email/{email}'
         response = self.get_without_auth_header(sut)
         self.assertEqual(404, response.status_code)
 
 
-@pytest.mark.usefixtures("setup_config", "post_a_new_user")
+@pytest.mark.usefixtures("post_a_new_user")
 @pytest.mark.order3
 class AuthenticationPutApiTests(test_setup_fixture.TestFixture):
     scoped_user = None
 
     @pytest.fixture
     def post_a_new_user(self):
-        sut = url + '/Users'
+        sut = self.authentication_url + '/Users'
         user = HelperClass.random_word_letters_only(25)
         email = HelperClass.create_random_email()
         password = HelperClass.random_word_special_signs_included(25)
@@ -183,36 +167,36 @@ class AuthenticationPutApiTests(test_setup_fixture.TestFixture):
         self.scoped_user.password = password
 
     def test_should_be_able_to_update_a_username(self):
-        get_url = f'{url}/Users/{self.scoped_user.id}'
+        get_url = f'{self.authentication_url}/Users/{self.scoped_user.id}'
         user_name_before = self.get_without_auth_header(get_url).json()['username']
         body = {
             "username": HelperClass.random_word_letters_only(20),
         }
-        sut = f'{url}/Users?id={self.scoped_user.id}'
+        sut = f'{self.authentication_url}/Users?id={self.scoped_user.id}'
         resp = self.put_without_auth_header(sut, body)
         self.assertEqual(204, resp.status_code)
         user_name_after = self.get_without_auth_header(get_url).json()['username']
         self.assertNotEqual(user_name_before, user_name_after)
 
     def test_should_be_able_to_update_an_email(self):
-        get_url = f'{url}/Users/{self.scoped_user.id}'
+        get_url = f'{self.authentication_url}/Users/{self.scoped_user.id}'
         user_name_before = self.get_without_auth_header(get_url).json()['emailAddress']
         body = {
             "emailAddress": HelperClass.create_random_email(),
         }
-        sut = f'{url}/Users?id={self.scoped_user.id}'
+        sut = f'{self.authentication_url}/Users?id={self.scoped_user.id}'
         resp = self.put_without_auth_header(sut, body)
         self.assertEqual(204, resp.status_code)
         user_name_after = self.get_without_auth_header(get_url).json()['emailAddress']
         self.assertNotEqual(user_name_before, user_name_after)
 
     def test__should_not_be_able_to_update_an_email_to_an_invalid_mail(self):
-        get_url = f'{url}/Users/{self.scoped_user.id}'
+        get_url = f'{self.authentication_url}/Users/{self.scoped_user.id}'
         user_name_before = self.get_without_auth_header(get_url).json()['emailAddress']
         body = {
             "emailAddress": HelperClass.random_word_letters_only(15),
         }
-        sut = f'{url}/Users?id={self.scoped_user.id}'
+        sut = f'{self.authentication_url}/Users?id={self.scoped_user.id}'
         resp = self.put_without_auth_header(sut, body)
         error_message = resp.json()['Error']
         meta_message = resp.json()['ErrorId']
@@ -224,24 +208,24 @@ class AuthenticationPutApiTests(test_setup_fixture.TestFixture):
         self.assertEqual(user_name_before, user_name_after)
 
     def test_should_be_able_to_update_deactvice_a_user(self):
-        get_url = f'{url}/Users/{self.scoped_user.id}'
+        get_url = f'{self.authentication_url}/Users/{self.scoped_user.id}'
         body = {
             "active": False,
         }
-        sut = f'{url}/Users?id={self.scoped_user.id}'
+        sut = f'{self.authentication_url}/Users?id={self.scoped_user.id}'
         resp = self.put_without_auth_header(sut, body)
         self.assertEqual(204, resp.status_code)
         user_name_after = self.get_without_auth_header(get_url).json()['active']
         self.assertFalse(user_name_after)
 
     def test_should_be_able_to_update_all_fields_at_once(self):
-        get_url = f'{url}/Users/{self.scoped_user.id}'
+        get_url = f'{self.authentication_url}/Users/{self.scoped_user.id}'
         body = {
             "username": HelperClass.random_word_letters_only(20),
             "emailAddress": HelperClass.create_random_email(),
             "active": False,
         }
-        sut = f'{url}/Users?id={self.scoped_user.id}'
+        sut = f'{self.authentication_url}/Users?id={self.scoped_user.id}'
         resp = self.put_without_auth_header(sut, body)
         self.assertEqual(204, resp.status_code)
         response = self.get_without_auth_header(get_url).json()
@@ -255,10 +239,10 @@ class AuthenticationPutApiTests(test_setup_fixture.TestFixture):
         body = {
             "password": new_password,
         }
-        sut = f'{url}/Users?id={self.scoped_user.id}'
+        sut = f'{self.authentication_url}/Users?id={self.scoped_user.id}'
         resp = self.put_without_auth_header(sut, body)
         self.assertEqual(204, resp.status_code)
-        validate_url = f'{url}/Validate'
+        validate_url = f'{self.authentication_url}/Validate'
         body = {
             "userName": self.scoped_user.username,
             "emailAddress": self.scoped_user.username,
@@ -268,14 +252,14 @@ class AuthenticationPutApiTests(test_setup_fixture.TestFixture):
         self.assertFalse(validation)
 
 
-@pytest.mark.usefixtures("setup_config", "post_a_new_user")
+@pytest.mark.usefixtures("post_a_new_user")
 @pytest.mark.order4
 class AuthenticationDeleteApiTests(test_setup_fixture.TestFixture):
     scoped_user = None
 
     @pytest.fixture
     def post_a_new_user(self):
-        sut = url + '/Users'
+        sut = self.authentication_url + '/Users'
         user = HelperClass.random_word_letters_only(25)
         email = HelperClass.create_random_email()
         password = HelperClass.random_word_special_signs_included(25)
@@ -286,18 +270,18 @@ class AuthenticationDeleteApiTests(test_setup_fixture.TestFixture):
         self.scoped_user.password = password
 
     def test_should_be_able_to_delete_a_user(self):
-        sut = f'{url}/Users?id={self.scoped_user.id}'
+        sut = f'{self.authentication_url}/Users?id={self.scoped_user.id}'
         response = self.delete_without_auth_header(sut)
         self.assertEqual(204, response.status_code)
 
     def test_should_not_be_able_to_delete_a_user_that_does_not_exist(self):
         local_id = self.unknown_id
-        sut = f'{url}/Users?id={local_id}'
+        sut = f'{self.authentication_url}/Users?id={local_id}'
         response = self.delete_without_auth_header(sut)
         self.assertEqual(404, response.status_code)
 
     def test_should_not_be_able_to_delete_a_user_twice(self):
-        sut = url + '/Users'
+        sut = self.authentication_url + '/Users'
         user = HelperClass.random_word_letters_only(25)
         email = HelperClass.create_random_email()
         password = HelperClass.random_word_special_signs_included(25)
@@ -305,21 +289,21 @@ class AuthenticationDeleteApiTests(test_setup_fixture.TestFixture):
         headers = {'Content-type': 'application/json'}
         response = requests.post(url=sut, json=body, headers=headers).json()
         local_id = response['id']
-        sut = f'{url}/Users?id={local_id}'
+        sut = f'{self.authentication_url}/Users?id={local_id}'
         response = self.delete_without_auth_header(sut)
         self.assertEqual(204, response.status_code)
         resp = self.delete_without_auth_header(sut)
         self.assertEqual(404, resp.status_code)
 
 
-@pytest.mark.usefixtures("setup_config", "post_a_new_user")
+@pytest.mark.usefixtures("post_a_new_user")
 @pytest.mark.order5
 class AuthenticationValidateApiTests(test_setup_fixture.TestFixture):
     scoped_user = None
 
     @pytest.fixture
     def post_a_new_user(self):
-        sut = url + '/Users'
+        sut = self.authentication_url + '/Users'
         user = HelperClass.random_word_letters_only(25)
         email = HelperClass.create_random_email()
         password = HelperClass.random_word_special_signs_included(25)
@@ -330,7 +314,7 @@ class AuthenticationValidateApiTests(test_setup_fixture.TestFixture):
         self.scoped_user.password = password
 
     def test_should_be_able_to_validate_a_password(self):
-        validate_url = f'{url}/Validate'
+        validate_url = f'{self.authentication_url}/Validate'
         body = {
             "userName": self.scoped_user.username,
             "emailAddress": self.scoped_user.email_address,
@@ -340,7 +324,7 @@ class AuthenticationValidateApiTests(test_setup_fixture.TestFixture):
         self.assertTrue(validation)
 
     def test_should_be_able_to_validate_a_password_to_false(self):
-        validate_url = f'{url}/Validate'
+        validate_url = f'{self.authentication_url}/Validate'
         body = {
             "userName": self.scoped_user.username,
             "emailAddress": self.scoped_user.email_address,
@@ -350,7 +334,7 @@ class AuthenticationValidateApiTests(test_setup_fixture.TestFixture):
         self.assertFalse(validation)
 
     def test_should_be_able_to_update_a_password_using_validation_endpooint(self):
-        sut = url + '/Users'
+        sut = self.authentication_url + '/Users'
         user = HelperClass.random_word_letters_only(25)
         email = HelperClass.create_random_email()
         password = HelperClass.random_word_special_signs_included(25)
@@ -359,7 +343,7 @@ class AuthenticationValidateApiTests(test_setup_fixture.TestFixture):
         response = requests.post(url=sut, json=body, headers=headers).json()
         local_id = response['id']
 
-        sut = f'{url}/Validate?id={local_id}'
+        sut = f'{self.authentication_url}/Validate?id={local_id}'
         new_password = HelperClass.random_word_special_signs_included(14)
         body = {
             "oldPassWord": password,
@@ -369,7 +353,7 @@ class AuthenticationValidateApiTests(test_setup_fixture.TestFixture):
         self.assertEqual(200, response.status_code)
 
     def test_should_not_be_able_to_update_password_using_wrong_password(self):
-        sut = f'{url}/Validate?id={self.scoped_user.id}'
+        sut = f'{self.authentication_url}/Validate?id={self.scoped_user.id}'
         new_password = HelperClass.random_word_special_signs_included(14)
         body = {
             "oldPassWord": HelperClass.random_word_special_signs_included(14),
@@ -384,7 +368,7 @@ class AuthenticationValidateApiTests(test_setup_fixture.TestFixture):
         self.assertTrue(self.validate_string_contains(error_message, "Password provided is not valid"))
 
     def test_should_be_able_to_update_a_password_and_validate_with_new_credentials(self):
-        sut = url + '/Users'
+        sut = self.authentication_url + '/Users'
         user = HelperClass.random_word_letters_only(25)
         email = HelperClass.create_random_email()
         password = HelperClass.random_word_special_signs_included(25)
@@ -393,7 +377,7 @@ class AuthenticationValidateApiTests(test_setup_fixture.TestFixture):
         response = requests.post(url=sut, json=body, headers=headers).json()
         local_id = response['id']
 
-        sut = f'{url}/Validate?id={local_id}'
+        sut = f'{self.authentication_url}/Validate?id={local_id}'
         new_password = HelperClass.random_word_special_signs_included(14)
         body = {
             "oldPassWord": password,
@@ -402,7 +386,7 @@ class AuthenticationValidateApiTests(test_setup_fixture.TestFixture):
         response = self.put_without_auth_header(sut, body)
         self.assertEqual(200, response.status_code)
 
-        validate_url = f'{url}/Validate'
+        validate_url = f'{self.authentication_url}/Validate'
         body = {
             "userName": user,
             "emailAddress": email,
@@ -412,7 +396,7 @@ class AuthenticationValidateApiTests(test_setup_fixture.TestFixture):
         self.assertTrue(validation)
 
     def test_should_not_be_able_to_update_a_password_and_validate_with_old_credentials(self):
-        sut = url + '/Users'
+        sut = self.authentication_url + '/Users'
         user = HelperClass.random_word_letters_only(25)
         email = HelperClass.create_random_email()
         password = HelperClass.random_word_special_signs_included(25)
@@ -421,7 +405,7 @@ class AuthenticationValidateApiTests(test_setup_fixture.TestFixture):
         response = requests.post(url=sut, json=body, headers=headers).json()
         local_id = response['id']
 
-        sut = f'{url}/Validate?id={local_id}'
+        sut = f'{self.authentication_url}/Validate?id={local_id}'
         new_password = HelperClass.random_word_special_signs_included(14)
         body = {
             "oldPassWord": password,
@@ -430,7 +414,7 @@ class AuthenticationValidateApiTests(test_setup_fixture.TestFixture):
         response = self.put_without_auth_header(sut, body)
         self.assertEqual(200, response.status_code)
 
-        validate_url = f'{url}/Validate'
+        validate_url = f'{self.authentication_url}/Validate'
         body = {
             "userName": user,
             "emailAddress": email,

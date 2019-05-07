@@ -1,39 +1,32 @@
----
 - hosts: do
-  remote_user: root
+  remote_user: terraformuser
   gather_facts: False
+  become: yes
 
   tasks:
-  - name: Creates directory
-    file: path=/root/docker state=directory
+  - name: Create directory
+    file: path=/home/terraformuser/docker state=directory
     register: changes_made
 
-  - name: Set authorized key took from file
-    authorized_key:
-      user: root
-      state: present
-      key: "{{ lookup('file', '/home/joerivrij/.ssh/id_rsa.pub') }}"
+  - name: Create directory for mount
+    file: path=/mnt/datavolumedocker state=directory
+    register: datavolume
 
-  - name: Upload first docker-compose for host
+  - name: Upload docker-compose for host
     copy:
       src=../../docker-compose-created.yml
-      dest=/root/docker
+      dest=/home/terraformuser/docker
       mode=0644
 
-  - command: "ls -lha /root/docker/"
+  - command: "ls -lha /home/terraformuser/docker"
     register: dir_out
 
   - debug: msg="{{ dir_out.stdout_lines }}"
 
   - name: remove possible old versions
     yum:
-      name: "{{ item }}"
+      name: ['docker', 'docker-engine', 'docker.io']
       state: absent
-    with_items:
-      - docker
-      - docker-engine
-      - docker.io
-    become: true
     when: changes_made.changed
 
   - name: Install yum utils
@@ -55,13 +48,11 @@
     get_url:
       url: https://download.docker.com/linux/centos/docker-ce.repo
       dest: /etc/yum.repos.d/docer-ce.repo
-    become: yes
 
   - name: Install Docker
     package:
       name: docker-ce
       state: latest
-    become: yes
     when: changes_made.changed
 
   - name: Start Docker service
@@ -69,14 +60,12 @@
       name: docker
       state: started
       enabled: yes
-    become: yes
 
-  - name: Add user vagrant to docker group
+  - name: Add user developer to docker group
     user:
-      name: vagrant
+      name: developer
       groups: docker
       append: yes
-    become: yes
     when: changes_made.changed    
 
   - name: Check if Docker Compose is installed
@@ -86,14 +75,29 @@
 
   - name: Download and install Docker Compose
     get_url:
-      url: https://github.com/docker/compose/releases/download/1.21.2/docker-compose-Linux-x86_64
+      url: https://github.com/docker/compose/releases/download/1.24.0/docker-compose-Linux-x86_64
       dest: /usr/bin/docker-compose
       mode: 0755
     when:
       - docker_compose_check.msg is defined
       - docker_compose_check.msg.find('No such file or directory') != -1
 
-  - command: "docker-compose -f /root/docker/docker-compose-created.yml up -d"
+  - name: Mount datavolume
+    mount:
+      path: /mnt/datavolumedocker
+      src: /dev/disk/by-id/scsi-0DO_Volume_datavolumedocker
+      opts: discard,defaults,noatime
+      fstype: ext4
+      state: mounted
+    ignore_errors: no
+
+  - command: "docker-compose -f /home/terraformuser/docker/docker-compose-created.yml up -d"
     register: compose_up
+    notify:
+    - restart sshd
 
   - debug: msg="{{ compose_up }}"
+
+  handlers:
+    - name: restart sshd
+      service: name=sshd state=restarted
