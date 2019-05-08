@@ -6,7 +6,7 @@ require (
 	github.com/appleboy/gofight v2.0.0+incompatible
 	github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd // indirect
 	github.com/gin-contrib/sse v0.0.0-20170109093832-22d885f9ecc7 // indirect
-	github.com/gin-gonic/gin v1.3.0
+	github.com/gin-gonic/gin v1.4.0
 	github.com/gomodule/redigo v2.0.0+incompatible // indirect
 	github.com/joho/godotenv v1.3.0
 	github.com/json-iterator/go v1.1.5 // indirect
