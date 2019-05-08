@@ -75,7 +75,7 @@ Then(/^My new playlist should be visible$/,() => {
 
 Then(/^I should get an error with the text (.+)$/, (errorText) => {
     cy.get("body > div.swal-overlay.swal-overlay--show-modal > div > div.swal-text").then(($error) => {
-        cy.log(errorText)
+        cy.log(errorText);
         expect($error.text()).to.contain(errorText);
     });
 });

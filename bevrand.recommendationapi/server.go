@@ -1,4 +1,4 @@
-package main
+package recommendation
 
 import (
 	"bevrand.recommendationapi/jaeger"

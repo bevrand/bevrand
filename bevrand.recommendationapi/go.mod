@@ -1,6 +1,7 @@
 module bevrand.recommendationapi
 
 require (
+	github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd // indirect
 	github.com/johnnadratowski/golang-neo4j-bolt-driver v0.0.0-20181101021923-6b24c0085aae
 	github.com/joho/godotenv v1.3.0
 	github.com/opentracing/opentracing-go v1.1.0

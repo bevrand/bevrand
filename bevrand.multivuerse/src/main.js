@@ -30,7 +30,7 @@ Vue.config.productionTip = false;
 Vue.http = Vue.prototype.$apiClient = axios;
 Vue.prototype.$proxyUrl = store.state.proxyUrl;
 
-Vue.component('font-awesome-icon', FontAwesomeIcon)
+Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.use(vueSmoothScroll);
 Vue.use(VueSwal);
 

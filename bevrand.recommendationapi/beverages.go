@@ -1,4 +1,4 @@
-package main
+package recommendation
 
 // BeverageResult is the result of beverages when searching
 type BeverageResult struct {

@@ -1,4 +1,4 @@
-package main
+package recommendation
 
 // ErrorModel is the model used for handling errors
 type ErrorModel struct {

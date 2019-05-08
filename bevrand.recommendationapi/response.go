@@ -1,4 +1,4 @@
-package main
+package recommendation
 
 import (
 	"context"
@@ -24,6 +24,7 @@ func createGUID() string {
 	return uuid
 }
 
+// can be used to send an error response
 func RespondWithAnError(status int, errorMessage string, w http.ResponseWriter, ctx context.Context) {
 	localUUID := createGUID()
 	error := ErrorModel{
@@ -49,6 +50,3 @@ func respondWithJSON(ctx context.Context, w http.ResponseWriter, code int, paylo
 	)
 	defer span.Finish()
 }
-
-
-

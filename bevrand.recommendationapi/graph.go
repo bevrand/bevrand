@@ -1,10 +1,10 @@
-package main
+package recommendation
 
 import (
 	"fmt"
+	bolt "github.com/johnnadratowski/golang-neo4j-bolt-driver"
 	"io/ioutil"
 	"os"
-	bolt "github.com/johnnadratowski/golang-neo4j-bolt-driver"
 )
 
 // Creates the connection to neo4j

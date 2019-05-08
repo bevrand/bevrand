@@ -44,4 +44,4 @@ const requestRandomizePost = endpoint => {
   };
 };
 
-module.exports = { requestRandomizePost }
+module.exports = { requestRandomizePost };

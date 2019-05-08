@@ -1,35 +1,24 @@
-package main
+package recommendation
 
 import (
-	"context"
-	"encoding/json"
-	"github.com/opentracing/opentracing-go"
-	openlog "github.com/opentracing/opentracing-go/log"
+	"bevrand.recommendationapi/jaeger"
 	"log"
 	"net/http"
 	"strconv"
 	"strings"
 )
 
+const notFoundMessage = "No results found for query"
+
 // PingPong pongs the ping
 func PingPong(w http.ResponseWriter, req *http.Request) {
-	w.WriteHeader(200)
-	w.Write([]byte("pong"))
+	ctx := jaeger.TraceHandler(req, "PingPong", "PingPongHandler")
+	respondWithJSON(ctx, w, 200, "pong")
 }
 
 // CategorieHandler handles routes for categories of drinks takes a param named kind
 func CategorieHandler(w http.ResponseWriter, req *http.Request) {
-	tracer := opentracing.GlobalTracer()
-	span := tracer.StartSpan("CategorieHandler")
-	span.SetTag("Method", "Categories")
-	span.LogFields(
-		openlog.String("method", req.Method),
-		openlog.String("path", req.URL.Path),
-		openlog.String("host", req.Host),
-	)
-	ctx := context.Background()
-	ctx = opentracing.ContextWithSpan(ctx, span)
-	defer span.Finish()
+	ctx := jaeger.TraceHandler(req, "Categories", "CategorieHandler")
 
 	v := req.URL.Query()
 	kindQuery := v.Get("kind")
@@ -44,19 +33,10 @@ func CategorieHandler(w http.ResponseWriter, req *http.Request) {
 
 	data, _, _, err := db.QueryNeoAll(cypher, map[string]interface{}{"kindOf": "(?i)" + kindQuery})
 	if err != nil {
-		span.LogFields(
-			openlog.String("http_status_code", "500"),
-			openlog.String("body", "error querying search:"),
-		)
-		w.WriteHeader(500)
-		w.Write([]byte("An error occurred querying the DB"))
+		RespondWithAnError(502, err.Error(), w, ctx)
 		return
 	} else if len(data) == 0 {
-		span.LogFields(
-			openlog.String("http_status_code", "404"),
-		)
-		w.WriteHeader(404)
-		w.Write([]byte("No results found for query"))
+		RespondWithAnError(404, notFoundMessage, w, ctx)
 		return
 	}
 
@@ -76,34 +56,12 @@ func CategorieHandler(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	body, err := json.MarshalIndent(results, "", "    ")
-	if err != nil {
-		log.Println(err)
-	}
-	span.LogFields(
-		openlog.String("http_status_code", "200"),
-		openlog.String("body", string(body)),
-	)
-
-	err = json.NewEncoder(w).Encode(results)
-	if err != nil {
-		RespondWithAnError(400, err.Error(), w, ctx)
-	}
+	respondWithJSON(ctx, w, 200, results)
 }
 
 // BeverageHandler handles routes for beverages only takes a limit for now
 func BeverageHandler(w http.ResponseWriter, req *http.Request) {
-	tracer := opentracing.GlobalTracer()
-	span := tracer.StartSpan("Beverages")
-	span.SetTag("Method", "Beverages")
-	span.LogFields(
-		openlog.String("method", req.Method),
-		openlog.String("path", req.URL.Path),
-		openlog.String("host", req.Host),
-	)
-	ctx := context.Background()
-	ctx = opentracing.ContextWithSpan(ctx, span)
-	defer span.Finish()
+	ctx := jaeger.TraceHandler(req, "Beverages", "BeverageHandler")
 
 	v := req.URL.Query()
 
@@ -121,19 +79,10 @@ func BeverageHandler(w http.ResponseWriter, req *http.Request) {
 
 	data, _, _, err := db.QueryNeoAll(cypher, map[string]interface{}{"limit": limit})
 	if err != nil {
-		span.LogFields(
-			openlog.String("http_status_code", "500"),
-			openlog.String("body", "error querying search:"),
-		)
-		w.WriteHeader(500)
-		w.Write([]byte("An error occurred querying the DB"))
+		RespondWithAnError(502, err.Error(), w, ctx)
 		return
 	} else if len(data) == 0 {
-		span.LogFields(
-			openlog.String("http_status_code", "404"),
-		)
-		w.WriteHeader(404)
-		w.Write([]byte("No results found for query"))
+		RespondWithAnError(404, notFoundMessage, w, ctx)
 		return
 	}
 
@@ -153,34 +102,12 @@ func BeverageHandler(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	body, err := json.MarshalIndent(results, "", "    ")
-	if err != nil {
-		log.Println(err)
-	}
-	span.LogFields(
-		openlog.String("http_status_code", "200"),
-		openlog.String("body", string(body)),
-	)
-
-	err = json.NewEncoder(w).Encode(results)
-	if err != nil {
-		RespondWithAnError(500, "An error occurred writing response", w, ctx)
-	}
+	respondWithJSON(ctx, w, 200, results)
 }
 
 // BeverageGroupHandler handles routes for groups of drinks that have subsets of drinks
 func BeverageGroupHandler(w http.ResponseWriter, req *http.Request) {
-	tracer := opentracing.GlobalTracer()
-	span := tracer.StartSpan("BeverageGroups")
-	span.SetTag("Method", "BeverageGroups")
-	span.LogFields(
-		openlog.String("method", req.Method),
-		openlog.String("path", req.URL.Path),
-		openlog.String("host", req.Host),
-	)
-	ctx := context.Background()
-	ctx = opentracing.ContextWithSpan(ctx, span)
-	defer span.Finish()
+	ctx := jaeger.TraceHandler(req, "BeverageGroups", "BeverageGroupHandler")
 
 	cypher := `
 	MATCH (n:BevGroup) RETURN n.name
@@ -188,47 +115,33 @@ func BeverageGroupHandler(w http.ResponseWriter, req *http.Request) {
 
 	stmt, err := db.PrepareNeo(cypher)
 	if err != nil {
-
-		w.WriteHeader(500)
-		w.Write([]byte("An error occurred querying the DB"))
+		RespondWithAnError(502, err.Error(), w, ctx)
 		return
 	}
 	defer stmt.Close()
 
 	rows, err := stmt.QueryNeo(map[string]interface{}{})
 	if err != nil {
-
-		w.WriteHeader(500)
-		w.Write([]byte("An error occurred querying the DB"))
+		RespondWithAnError(502, err.Error(), w, ctx)
 		return
 	}
 
-	d3Resp := D3BevGroupResponse{}
+	results := D3BevGroupResponse{}
 	row, _, err := rows.NextNeo()
 	for row != nil && err == nil {
 		title := row[0].(string)
 		println(row)
-		d3Resp.Nodes = append(d3Resp.Nodes, Node{Title: title, Label: "Group"})
+		results.Nodes = append(results.Nodes, Node{Title: title, Label: "Group"})
 
 		row, _, err = rows.NextNeo()
 	}
 
-	err = json.NewEncoder(w).Encode(d3Resp)
+	respondWithJSON(ctx, w, 200, results)
 }
 
 // CocktailHandler handles routes for cocktails ingredients can be in and excluded
 func CocktailHandler(w http.ResponseWriter, req *http.Request) {
-	tracer := opentracing.GlobalTracer()
-	span := tracer.StartSpan("CocktailHandler")
-	span.SetTag("Method", "Cocktails")
-	span.LogFields(
-		openlog.String("method", req.Method),
-		openlog.String("path", req.URL.Path),
-		openlog.String("host", req.Host),
-	)
-	ctx := context.Background()
-	ctx = opentracing.ContextWithSpan(ctx, span)
-	defer span.Finish()
+	ctx := jaeger.TraceHandler(req, "Cocktails", "CocktailHandler")
 
 	v := req.URL.Query()
 
@@ -293,21 +206,12 @@ func CocktailHandler(w http.ResponseWriter, req *http.Request) {
 
 	data, _, _, err := db.QueryNeoAll(cypher, neoMap)
 	if err != nil {
-		span.LogFields(
-			openlog.String("http_status_code", "502"),
-			openlog.String("body", "error connecting to neo4j"),
-		)
-		w.WriteHeader(502)
-		w.Write([]byte("An error occurred connecting to the DB"))
+		RespondWithAnError(502, err.Error(), w, ctx)
 		return
 	}
 
 	if len(data) == 0 {
-		span.LogFields(
-			openlog.String("http_status_code", "404"),
-		)
-		w.WriteHeader(404)
-		w.Write([]byte("No results found for query"))
+		RespondWithAnError(404, notFoundMessage, w, ctx)
 		return
 	}
 
@@ -321,22 +225,5 @@ func CocktailHandler(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	body, err := json.MarshalIndent(results, "", "    ")
-	if err != nil {
-		log.Println(err)
-	}
-	span.LogFields(
-		openlog.String("http_status_code", "200"),
-		openlog.String("body", string(body)),
-	)
-
-	err = json.NewEncoder(w).Encode(results)
-	if err != nil {
-		span.LogFields(
-			openlog.String("http_status_code", "500"),
-			openlog.String("body", "error writing search response:"),
-		)
-		w.WriteHeader(500)
-		w.Write([]byte("An error occurred writing response"))
-	}
+	respondWithJSON(ctx, w, 200, results)
 }

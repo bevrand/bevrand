@@ -1,4 +1,4 @@
-package main
+package recommendation
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -6,10 +6,16 @@ import (
 	"testing"
 )
 
-func TestEnvSetting(t *testing.T) {
-	env := os.Getenv("GO_ENV")
+const neo4jURL = "bolt://neo4j:anewpassthatishard@localhost:7687"
 
-	assert.Equal(t, "development", env)
-	neoURL := os.Getenv("NEO4J_URL")
-	assert.Equal(t, "bolt://neo4j:neo4jadmin@localhost:7687", neoURL)
+func TestEnvSetting(t *testing.T) {
+	err := os.Setenv("GO_ENV", "")
+	if err != nil {
+		assert.Fail(t, err.Error(), "Failed setting env")
+	}
+
+	getEnvFile()
+	expectedURL := os.Getenv("NEO4J_URL")
+
+	assert.Equal(t, neo4jURL, expectedURL)
 }
