@@ -10,7 +10,11 @@
   },
   "dependencies": {
     "bluebird": "^3.5.4",
+<<<<<<< HEAD
     "body-parser": "~1.19.0",
+=======
+    "body-parser": "~1.18.3",
+>>>>>>> master
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
     "debug": "~4.1.1",
@@ -30,10 +34,17 @@
   },
   "devDependencies": {
     "eslint": "^5.16.0",
+<<<<<<< HEAD
     "eslint-config-prettier": "^4.2.0",
     "eslint-plugin-prettier": "^3.0.1",
     "jest": "^24.8.0",
     "nodemon": "^1.19.0",
+=======
+    "eslint-config-prettier": "^4.0.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "jest": "^24.8.0",
+    "nodemon": "^1.18.10",
+>>>>>>> master
     "prettier": "^1.17.0"
   },
   "eslintConfig": {
