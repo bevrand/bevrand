@@ -3,14 +3,6 @@
         <h2>Welcome!</h2>
         <form id="loginForm" @submit="checkLoginForm">
             <section class="inputarea">
-                <input
-                    type="text"
-                    placeholder="Username"
-                    class="inputfield"
-                    v-model="username"
-                    id="username"
-                />
-                <br />
                 <input type="email"
                        v-model="email"
                        placeholder="Email"
@@ -77,37 +69,37 @@
                 }
                 e.preventDefault();
             },
-
             login: function () {
                 this.$apiClient({
                     method: 'post',
                     url: `${this.$proxyUrl}/authentication-api/login`,
                     data: {
-                        "emailAddress" : this.emailAddress,
+                        "emailAddress" : this.email,
                         "password": this.password,
-                        "username": this.username
                     }
                 })
-                    .then((response) => {
-                        this.token = response.data['token'];
-                        this.$store.commit('setToken', response.data);
-                        window.setInterval(() => {
-                            if (this.count === 0) {
-                                this.loggingIn = false;
-                                this.$router.push({name: 'profilePage', params: {username: this.username}});
-                            }
-                            this.count--;
-                        }, 1000);
-                    })
-                    .catch(e => {
-                        window.setInterval(() => {
-                            if (this.count === 0) {
-                                this.loggingIn = false;
-                                this.alert("Login failed")
-                            }
-                            this.count--;
-                        }, 1000);
-                    })
+                .then((response) => {
+                    console.log(response);
+                    this.token = response.data['token'];
+                    this.$store.commit('setToken', response.data);
+                    this.username = this.$store.state.username;
+                    window.setInterval(() => {
+                        if (this.count === 0) {
+                            this.loggingIn = false;
+                            this.$router.push({name: 'profilePage', params: {username: this.username}});
+                        }
+                        this.count--;
+                    }, 1000);
+                })
+                .catch(e => {
+                    window.setInterval(() => {
+                        if (this.count === 0) {
+                            this.loggingIn = false;
+                            this.alert("Login failed")
+                        }
+                        this.count--;
+                    }, 1000);
+                })
             },
             alert: function(text){
                 this.$swal("Something went wrong", text, "error")

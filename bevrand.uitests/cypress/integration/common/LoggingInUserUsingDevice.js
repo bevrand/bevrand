@@ -11,8 +11,6 @@ Given(/^I am a registered user logging in using (.*?)$/, (device) => {
 When(/^I enter my credentials and login$/,() => {
     cy.fixture('standarduser.json')
         .then((credentials) => {
-            cy.get('#username')
-                .type(credentials.username);
             cy.get('#email')
                 .type(credentials.emailAddress);
             cy.get('#password')
