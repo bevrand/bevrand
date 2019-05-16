@@ -1,8 +1,6 @@
 import {Then, When} from "cypress-cucumber-preprocessor/steps";
 
-When(/^I log myself in using (.+) and (.+) and (.+)$/,(username, email, password ) => {
-    cy.get('#username')
-        .type(username);
+When(/^I log myself in using (.+) and (.+)$/,(email, password ) => {
     cy.get('#email')
         .type(email);
     cy.get('#password')

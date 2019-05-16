@@ -88,7 +88,6 @@ export default {
       this.$apiClient({
         method: "post",
         url: `${this.$proxyUrl}/authentication-api/register`,
-        //this should become username and password after refactor
         data: {
             "username": this.username,
             "emailAddress": this.email,
