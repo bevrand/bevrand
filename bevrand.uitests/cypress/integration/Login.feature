@@ -19,11 +19,11 @@ Feature: Login Functions
   Scenario Outline: Logging in with bad credentials on <device> leads to a <errorText>
     # there is a bug here, email is not checked when logging in
     Given I am a registered user logging in using <device>
-    When I log myself in using <username> and <email> and <password>
+    When I log myself in using <email> and <password>
     Then I should get an error with the term <message> and <errorText>
 
     Examples:
-      | device     | username    | email             | password    | message    | errorText    |
-      | iphone-6   | nottestuser | test@admin.nl     | testuser    | went wrong | Login failed |
-      | ipad-2     | ntestuser    | nottest@admin.nl | testuser    | went wrong | Login failed |
-      | macbook-15 | testuser    | test@admin.nl     | nottestuser | went wrong | Login failed |
+      | device     | email            | password    | message    | errorText    |
+      | iphone-6   | nottest@admin.nl | nottestuser | went wrong | Login failed |
+      | ipad-2     | nottest@admin.nl | testuser    | went wrong | Login failed |
+      | macbook-15 | test@admin.nl    | nottestuser | went wrong | Login failed |
