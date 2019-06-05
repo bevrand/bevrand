@@ -3,9 +3,20 @@ from helpers.random_name_generator import HelperClass
 from helpers.models import AuthenticationModel
 import pytest
 import requests
+from time import sleep
 
 
 class AuthenticationPostApiTests(test_setup_fixture.TestFixture):
+
+    def test_should_be_able_to_create_a_new_user(self):
+        sleep(2)
+        sut = self.authentication_url + '/Users'
+        user = HelperClass.random_word_letters_only(25)
+        email = HelperClass.create_random_email()
+        password = HelperClass.random_word_special_signs_included(25)
+        body = {"userName": user, "emailAddress": email, "passWord": password}
+        response = self.post_without_auth_header(sut, body)
+        self.assertEqual(201, response.status_code)
 
     def test_should_not_be_able_to_post_an_empty_body(self):
         sut = self.authentication_url + '/Users'
@@ -69,15 +80,6 @@ class AuthenticationPostApiTests(test_setup_fixture.TestFixture):
         self.assertIsNotNone(error_message)
         self.assertIsNotNone(meta_message)
         self.assertTrue(self.validate_string_contains(error_message, "was not a valid mailaddress"))
-
-    def test_should_be_able_to_create_a_new_user(self):
-        sut = self.authentication_url + '/Users'
-        user = HelperClass.random_word_letters_only(25)
-        email = HelperClass.create_random_email()
-        password = HelperClass.random_word_special_signs_included(25)
-        body = {"userName": user, "emailAddress": email, "passWord": password}
-        response = self.post_without_auth_header(sut, body)
-        self.assertEqual(201, response.status_code)
 
     def test_should_not_be_able_to_post_a_user_twice(self):
         sut = self.authentication_url + '/Users'
