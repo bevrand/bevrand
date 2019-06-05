@@ -29,5 +29,5 @@ Feature: Highscores
     Then we should get a result of <code>
     Examples:
       | user              | email                           | playlist | code |
-      | bevrandhighscorer | bevrandhighscorer@systemtest.nl | bevrand  | 666  |
+      | bevrandhighscorer | bevrandhighscorer@systemtest.nl | bevrand  | 200  |
 
