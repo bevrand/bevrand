@@ -149,6 +149,7 @@ services:
     - dataseeder
     environment:
     - PYTHON_ENV=Test
+    command: tail -f /dev/null
 
   systemtest:
     container_name: system_tests
@@ -164,6 +165,8 @@ services:
     - dataseeder
     environment:
     - RUBY_ENV=Docker
+    command: tail -f /dev/null
+
 
   els:
     image: "bevrand/dockerels:$CIRCLE_SHA1"

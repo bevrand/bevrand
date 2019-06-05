@@ -5,7 +5,6 @@ import pytest
 import requests
 
 
-@pytest.mark.order1
 class AuthenticationPostApiTests(test_setup_fixture.TestFixture):
 
     def test_should_be_able_to_create_a_new_user(self):
@@ -93,7 +92,6 @@ class AuthenticationPostApiTests(test_setup_fixture.TestFixture):
 
 
 @pytest.mark.usefixtures("post_a_new_user")
-@pytest.mark.order2
 class AuthenticationGetApiTests(test_setup_fixture.TestFixture):
     scoped_user = None
 
@@ -150,7 +148,6 @@ class AuthenticationGetApiTests(test_setup_fixture.TestFixture):
 
 
 @pytest.mark.usefixtures("post_a_new_user")
-@pytest.mark.order3
 class AuthenticationPutApiTests(test_setup_fixture.TestFixture):
     scoped_user = None
 
@@ -253,7 +250,6 @@ class AuthenticationPutApiTests(test_setup_fixture.TestFixture):
 
 
 @pytest.mark.usefixtures("post_a_new_user")
-@pytest.mark.order4
 class AuthenticationDeleteApiTests(test_setup_fixture.TestFixture):
     scoped_user = None
 
@@ -297,7 +293,6 @@ class AuthenticationDeleteApiTests(test_setup_fixture.TestFixture):
 
 
 @pytest.mark.usefixtures("post_a_new_user")
-@pytest.mark.order5
 class AuthenticationValidateApiTests(test_setup_fixture.TestFixture):
     scoped_user = None
 
