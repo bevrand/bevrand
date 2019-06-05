@@ -51,11 +51,10 @@ before_install:
   - docker images
   - docker-compose -f ./docker-compose-created.yml up -d
   - docker ps -a
+  - docker exec component_tests pytest /usr/src/app/tests
 
 script:
   - sonar-scanner
-  - cd ./deployment
-  - python3 validate_backend_test_results.py
  # - cd ../bevrand.uitests
  # - npm run cypress:run
 

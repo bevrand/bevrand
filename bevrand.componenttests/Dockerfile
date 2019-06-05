@@ -12,6 +12,3 @@ RUN pip install -r requirements.txt
 
 # add app
 ADD . /usr/src/app
-
-# run server
-CMD pytest ./tests

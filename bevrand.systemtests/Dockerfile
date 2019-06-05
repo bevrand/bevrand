@@ -18,5 +18,3 @@ RUN bundle install -j 8
 ADD . .
 
 ENV RUBY_ENV Docker
-
-CMD ["rake", "features"]
