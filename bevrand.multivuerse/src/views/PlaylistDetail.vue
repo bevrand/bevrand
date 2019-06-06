@@ -10,16 +10,8 @@
                     <li v-for="beverage of beverages" >
                         {{ beverage }}
                     </li>
-                    <li>
-                    <router-link
-                            tag="button"
-                            id="linkToHomepage"
-                            class="showAllButton"
-                            :to="{ name: 'homepage'}">
-                    Sure now Randomize!
-                    </router-link>
-                    </li>
                 </ul>
+                 <a class="hover-play" id="dicebutton"><font-awesome-icon  icon="dice" class="icons" size="2x" v-on:click="playPlaylist()"/></a>
             </span>
         <foot></foot>
     </div>
@@ -44,7 +36,15 @@
         },
         created() {
         },
-
+        methods: {
+            playPlaylist: function () {
+                this.setPlaylistToParent(this.$route.params.playlistDetail);
+                this.$router.push({name: 'homepage'})
+            },
+            setPlaylistToParent: function (selectedPlayList) {
+                this.$emit("setPlaylistToParent", selectedPlayList);
+            },
+        },
         components: {
             'navbar': Navbar,
             'foot': Footer,
@@ -124,37 +124,12 @@
         text-align: center;
     }
 
-    .hover-add {
-        margin-left: 1em;
-    }
-
-    .hover-add:hover {
-        color: #68ff27;
-    }
-
-    .hover-popular {
-        color: #ff9500;
-    }
-
-    .hover-delete {
+    .hover-play {
         margin-left: 0.5em;
     }
 
-    .hover-delete:hover {
-        color: #ff271a;
-    }
-
-    .hover-edit {
-        margin-left: 0.5em;
-    }
-
-    .hover-edit:hover {
-        color: #3cfaff;
-    }
-
-    .adddrink {
-        margin-bottom: 2em;
-        font-family: "Ubuntu", sans-serif;
+    .hover-play:hover {
+        color: #FF9500;
     }
 
     .circledbutton{
