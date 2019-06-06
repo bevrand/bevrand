@@ -3,12 +3,13 @@ from helpers.random_name_generator import HelperClass
 from helpers.models import AuthenticationModel
 import pytest
 import requests
+from time import sleep
 
 
-@pytest.mark.order1
 class AuthenticationPostApiTests(test_setup_fixture.TestFixture):
 
     def test_should_be_able_to_create_a_new_user(self):
+        sleep(2)
         sut = self.authentication_url + '/Users'
         user = HelperClass.random_word_letters_only(25)
         email = HelperClass.create_random_email()
@@ -93,7 +94,6 @@ class AuthenticationPostApiTests(test_setup_fixture.TestFixture):
 
 
 @pytest.mark.usefixtures("post_a_new_user")
-@pytest.mark.order2
 class AuthenticationGetApiTests(test_setup_fixture.TestFixture):
     scoped_user = None
 
@@ -150,7 +150,6 @@ class AuthenticationGetApiTests(test_setup_fixture.TestFixture):
 
 
 @pytest.mark.usefixtures("post_a_new_user")
-@pytest.mark.order3
 class AuthenticationPutApiTests(test_setup_fixture.TestFixture):
     scoped_user = None
 
@@ -253,7 +252,6 @@ class AuthenticationPutApiTests(test_setup_fixture.TestFixture):
 
 
 @pytest.mark.usefixtures("post_a_new_user")
-@pytest.mark.order4
 class AuthenticationDeleteApiTests(test_setup_fixture.TestFixture):
     scoped_user = None
 
@@ -297,7 +295,6 @@ class AuthenticationDeleteApiTests(test_setup_fixture.TestFixture):
 
 
 @pytest.mark.usefixtures("post_a_new_user")
-@pytest.mark.order5
 class AuthenticationValidateApiTests(test_setup_fixture.TestFixture):
     scoped_user = None
 

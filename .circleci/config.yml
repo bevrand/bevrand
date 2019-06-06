@@ -163,9 +163,7 @@ jobs:
          docker-compose -f ./docker-compose-created.yml up -d
          docker images
          docker ps -a
-
-     #verify the results of the component test
-      - run: "cd ./deployment && python validate_backend_test_results.py"
+         docker exec component_tests pytest /usr/src/app/tests
 
   system_tests:
     machine: true
@@ -179,9 +177,7 @@ jobs:
          docker-compose -f ./docker-compose-created.yml up -d
          docker images
          docker ps -a
-
-     #verify the results of the system test
-      - run: "cd ./deployment && python validate_backend_test_results.py --tests system_tests"
+         docker exec system_tests rake features
 
   ui_tests:
     machine: true
@@ -394,6 +390,7 @@ workflows:
               only:
               - master
               - develop
+              - /dependabot/.*/bevrand.uitests/.*/
      #TODO Sonar-scanner
      #- acceptance_test_1:
      #    requires:
