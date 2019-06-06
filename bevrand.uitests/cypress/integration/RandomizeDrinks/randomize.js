@@ -24,7 +24,7 @@ When(`I select a playlist and view the detail page`,  () => {
             .each(($el) => {
                 beverageArray.push($el.text())
             });
-        cy.get('#linkToHomepage').click();
+        cy.get('#dicebutton').click();
 
         cy.get(`#playlistCarousel > div.VueCarousel-wrapper > div > div:nth-child(${randomNumber}) > span > a.image.featured > img`)
             .click();

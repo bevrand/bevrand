@@ -7,7 +7,8 @@
                 <span class="label">
                 <a class="image featured" href="#main" v-smooth-scroll="{ duration: 1000 }" v-on:click="setPlaylistToParent(playlist)"><img :src="playlist.imageUrl" ></a>
                 <a class="playlistselector" href="#main" v-smooth-scroll="{ duration: 1000 }" v-on:click="setPlaylistToParent(playlist)" id="playlistName"><h3>{{ playlist.displayName }}</h3>  </a>
-                <ul id="beverageList">
+                <a class="hover-play" id="dicebutton" href="#main" v-smooth-scroll="{ duration: 1000 }"><font-awesome-icon  icon="dice" class="icons" size="2x" v-on:click="setPlaylistToParent(playlist)"/></a>
+                    <ul id="beverageList">
                     <li v-for="beverage of playlist.beverages.slice(0, 6)" >
                         {{ beverage }}
                     </li>
@@ -191,6 +192,14 @@ import { Carousel, Slide } from 'vue-carousel';
         cursor: pointer;
         font-weight: bold;
         text-align: center;
+    }
+
+    .hover-play {
+        margin-left: 0.5em;
+    }
+
+    .hover-play:hover {
+        color: #7A2F9E;
     }
 
 
