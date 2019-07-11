@@ -20,7 +20,7 @@ for i in {1..30}; do
 
 	success=true && break || sleep 2; done
 
-if [[ success = false ]] ; then
+if [[ $success = false ]] ; then
     echo "After 30 tries services are still unavailable"
     exit 1
 fi
