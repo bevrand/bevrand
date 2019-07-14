@@ -10,7 +10,7 @@ from api.services.frontpage_service import FrontPageService
 public_blueprint = Blueprint('public', __name__, )
 
 
-@public_blueprint.route('/ping', methods=['GET'])
+@public_blueprint.route('ping', methods=['GET'])
 def ping_pong():
     return jsonify({
         'status': 'success',

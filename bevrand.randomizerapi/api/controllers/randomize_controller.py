@@ -11,7 +11,7 @@ randomize_blueprint = Blueprint('randomize', __name__,)
 tracer = tracing.init_tracer("RandomizerApi")
 
 
-@randomize_blueprint.route('/ping', methods=['GET'])
+@randomize_blueprint.route('ping', methods=['GET'])
 def ping_pong():
     return jsonify({
         'status': 'success',
