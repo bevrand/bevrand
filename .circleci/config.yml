@@ -163,6 +163,7 @@ jobs:
          docker-compose -f ./docker-compose-created.yml up -d
          docker images
          docker ps -a
+         cd ./deployment && sh ./wait_for_service_response.sh
          docker exec component_tests pytest /usr/src/app/tests
 
   system_tests:
@@ -177,6 +178,7 @@ jobs:
          docker-compose -f ./docker-compose-created.yml up -d
          docker images
          docker ps -a
+         cd ./deployment && sh ./wait_for_service_response.sh
          docker exec system_tests rake features
 
   ui_tests:
