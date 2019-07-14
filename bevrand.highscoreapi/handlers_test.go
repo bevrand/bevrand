@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"github.com/alicebob/miniredis"
-	"github.com/appleboy/gofight"
+	"github.com/appleboy/gofight/v2"
 	"github.com/mediocregopher/radix.v2/pool"
 	"github.com/stretchr/testify/assert"
 	"log"
