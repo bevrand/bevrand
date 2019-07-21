@@ -27,22 +27,26 @@
     yum:
       name: ['docker', 'docker-engine', 'docker.io']
       state: absent
+      lock_timeout: 180
     when: changes_made.changed
 
   - name: Install yum utils
     yum:
       name: yum-utils
       state: latest
+      lock_timeout: 180
 
   - name: Install device-mapper-persistent-data
     yum:
       name: device-mapper-persistent-data
       state: latest
+      lock_timeout: 180
 
   - name: Install lvm2
     yum:
       name: lvm2
       state: latest
+      lock_timeout: 180
 
   - name: Add Docker repo
     get_url:
@@ -53,6 +57,7 @@
     package:
       name: docker-ce
       state: latest
+      lock_timeout: 180
     when: changes_made.changed
 
   - name: Start Docker service
