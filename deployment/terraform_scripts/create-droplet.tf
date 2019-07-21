@@ -134,6 +134,7 @@ resource "digitalocean_droplet" "docker" {
 }
 output "private_ssh_key" {
   value = "${tls_private_key.terraformusersshkey.private_key_pem}"
+  sensitive   = true
 }
 
 output "droplet_ip" {
