@@ -390,7 +390,7 @@ workflows:
               only:
               - master
               - develop
-              - /hotfix/.*
+              - /hotfix/.*/
               - /dependabot/.*/bevrand.uitests/.*/
      #TODO Sonar-scanner
      #- acceptance_test_1:
@@ -402,7 +402,7 @@ workflows:
              branches:
                only:
                - master
-               - /hotfix/.*
+               - /hotfix/.*/
           requires:
             - ui_tests
             - component_tests
@@ -412,7 +412,7 @@ workflows:
             branches:
               only:
               - master
-              - /hotfix/.*
+              - /hotfix/.*/
          requires:
            - create_production_images
      - deploy:
@@ -422,7 +422,7 @@ workflows:
             branches:
               only:
               - master
-              - /hotfix/.*
+              - /hotfix/.*/
          requires:
            #- acceptance_test_1
            - pause_uptimerobot
@@ -432,6 +432,6 @@ workflows:
             branches:
               only:
               - master
-              - /hotfix/.*
+              - /hotfix/.*/
          requires:
            - deploy
