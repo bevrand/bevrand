@@ -18,5 +18,5 @@ require (
 	golang.org/x/lint v0.0.0-20181217174547-8f45f776aaf1 // indirect
 	golang.org/x/tools v0.0.0-20190111214448-fc1d57b08d7b // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1
-	gopkg.in/oauth2.v3 v3.10.0
+	gopkg.in/oauth2.v3 v3.10.1
 )
