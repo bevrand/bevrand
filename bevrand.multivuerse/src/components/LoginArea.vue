@@ -79,7 +79,6 @@
                     }
                 })
                 .then((response) => {
-                    console.log(response);
                     this.token = response.data['token'];
                     this.$store.commit('setToken', response.data);
                     this.username = this.$store.state.username;

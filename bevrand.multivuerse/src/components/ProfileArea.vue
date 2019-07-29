@@ -125,8 +125,7 @@
                     });
             },
             playPlaylist: function (index) {
-                this.setPlaylistToParent(this.playlists[index]);
-                this.$router.push({name: 'homepage'})
+                this.$router.push({name: 'homepage', params: {playlist: this.playlists[index]}});
             },
             async addNewPlaylist () {
                 this.$swal({

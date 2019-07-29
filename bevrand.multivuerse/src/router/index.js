@@ -7,7 +7,7 @@ export default new Router({
     mode: 'history',
     routes: [
         {
-            path: '/',
+            path: '/:playlist?/',
             name: 'homepage',
             component: () => import("../views/HomePage")
         },
@@ -53,4 +53,5 @@ export default new Router({
             }
         },
     ]
+
 })
