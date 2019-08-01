@@ -38,11 +38,7 @@
         },
         methods: {
             playPlaylist: function () {
-                this.setPlaylistToParent(this.$route.params.playlistDetail);
-                this.$router.push({name: 'homepage'})
-            },
-            setPlaylistToParent: function (selectedPlayList) {
-                this.$emit("setPlaylistToParent", selectedPlayList);
+                this.$router.push({name: 'homepage', params: {playlist: this.$route.params.playlistDetail}});
             },
         },
         components: {

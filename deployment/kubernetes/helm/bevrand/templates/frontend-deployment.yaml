@@ -22,12 +22,12 @@ spec:
       containers:
       - env:
         - name: NODE_ENV
-          value: development
-        image: bevrand/frontend:production
+          value: production
+        image: bevrand/multivuerse:production
         imagePullPolicy: Always
         name: {{ include "bevrand.name" . }}-frontend
         ports:
-        - containerPort: 5000
+        - containerPort: 3000
         resources: {}
         restartPolicy: Always
 status: {}
