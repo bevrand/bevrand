@@ -51,6 +51,10 @@ When(/^I save this playlist$/,() => {
     cy.get('#submitButton').click()
 });
 
+When(/^I select the dice to play the playlist$/,() => {
+    cy.get('#dicebutton').click()
+});
+
 Then(/^I should be rerouted to the (.+) page$/,(page) => {
     cy.url().should('include', '/' + page)
 });

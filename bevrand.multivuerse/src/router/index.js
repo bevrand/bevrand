@@ -7,9 +7,12 @@ export default new Router({
     mode: 'history',
     routes: [
         {
-            path: '/:playlist?/',
+            path: '/',
             name: 'homepage',
-            component: () => import("../views/HomePage")
+            component: () => import("../views/HomePage"),
+            props: {
+                playlist: true
+            }
         },
         {
             path: '/login/',
