@@ -397,6 +397,9 @@ workflows:
               - master
               - develop
               - /dependabot/.*/bevrand.uitests/.*/
+              - feature/*uitests*
+            tags:
+              only: /ui*/
      #TODO Sonar-scanner
      #- acceptance_test_1:
      #    requires:
