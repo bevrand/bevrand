@@ -20,4 +20,3 @@ Then(`I should be rerouted to the details page`,() => {
 Then(/^I should see a list with (.+) drinks$/,(numberOfDrinks) => {
     cy.get('#detailedBeverages > li').should('have.length', numberOfDrinks)
 });
-

@@ -41,6 +41,3 @@ Feature: Register Functions
     Examples:
       | device   | username         | email                | password      | repeatpassword |
       | iphone-6 | thisisavaliduser | thisisavalidemail.nl | validpassword | validpassword  |
-
-
-

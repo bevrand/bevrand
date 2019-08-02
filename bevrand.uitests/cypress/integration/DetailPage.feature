@@ -18,9 +18,9 @@ Feature: Detail page
   Scenario Outline: A playlist can be selected using the detail page on <device>
     Given I am a new user using <device>
     When I click on more details for the playlist with position <position>
-     And I click the dice icon to select the playlist
+    And I click the dice icon to select the playlist
     Then I should be rerouted to the homepage with anchor <anchor>
-     And the selected playlist should be <name>
+    And the selected playlist should be <name>
     Examples:
       | device     | anchor | position | name           |
       | iphone-6   | main   | 3        | Mancave Mayhem |
