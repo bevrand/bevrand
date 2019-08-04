@@ -10,11 +10,11 @@
         <span class="playlistaddition">Create Playlist</span></a><br>
         <br>
 
-        <div v-for="(playlist, index) in playlists" :key="index" class="playlistcollapisble">
+        <div v-for="(playlist, index) in playlists" :key="index" class="playlistcollapisble" id="playlists">
                 <div class="collapsible"> {{ playlist.displayName }}
-                    <a class="hover-edit"><font-awesome-icon icon="pencil-alt" class="icons" v-on:click="editPlaylist(index)"/></a>
-                    <a class="hover-delete"><font-awesome-icon icon="trash" class="icons" v-on:click="deletePlaylist(index)" /></a>
-                    <a class="hover-play"><font-awesome-icon icon="dice" class="icons" v-on:click="playPlaylist(index)"/></a>
+                    <a class="hover-edit" id="pencilbutton"><font-awesome-icon icon="pencil-alt" class="icons" v-on:click="editPlaylist(index)"/></a>
+                    <a class="hover-delete" id="trashbutton"><font-awesome-icon icon="trash" class="icons" v-on:click="deletePlaylist(index)" /></a>
+                    <a class="hover-play" id="dicebutton"><font-awesome-icon icon="dice" class="icons" v-on:click="playPlaylist(index)"/></a>
                     <a v-show="!playlists[index]['open']" class="hover-play">
                         <font-awesome-icon icon="arrow-alt-circle-down"
                          class="icons"

@@ -114,10 +114,9 @@ import { Carousel, Slide } from 'vue-carousel';
                 this.getAllPlaylists()
             }
             if (typeof this.$route.params.playlist !== 'undefined') {
-                this.setPlaylistToParent(this.$route.params.playlist)
+                this.setPlaylistToParent(this.$route.params.playlist);
                 this.scrollTo("#main")
             }
-
         },
         components: {
             Carousel,

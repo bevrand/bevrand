@@ -17,7 +17,7 @@ Feature: Login Functions
       | macbook-15 |
 
   Scenario Outline: Logging in with bad credentials on <device> leads to a <errorText>
-    # there is a bug here, email is not checked when logging in
+  # there is a bug here, email is not checked when logging in
     Given I am a registered user logging in using <device>
     When I log myself in using <email> and <password>
     Then I should get an error with the term <message> and <errorText>

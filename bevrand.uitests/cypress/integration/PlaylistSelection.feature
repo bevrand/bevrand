@@ -10,17 +10,17 @@ Feature: Playlist Selection
     Then The headertext matches the selected playlist
 
     Examples:
-    | device     |
-    | iphone-6   |
-    | ipad-2     |
-    | macbook-15 |
+      | device     |
+      | iphone-6   |
+      | ipad-2     |
+      | macbook-15 |
 
   Scenario Outline: Switching playlists with <device>
     Given I am a new user using <device>
     When I select the first playlist by image
-     And I select another playlist by image
+    And I select another playlist by image
     Then The headertext matches the secondly selected playlist
-     And The headertext does not match the first selected playlist
+    And The headertext does not match the first selected playlist
 
     Examples:
       | device     |
