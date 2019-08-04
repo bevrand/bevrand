@@ -1,0 +1,52 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: bevrand-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  labels:
+    name: bevrand-ingress
+spec:
+  rules:
+    - http:
+        paths:
+          - backend:
+              serviceName: authenticationapi
+              servicePort: 5000
+            path: /swagger
+    - http:
+        paths:
+          - backend:
+              serviceName: proxyapi
+              servicePort: 5000
+            path: /playlist-api/
+    - http:
+        paths:
+          - backend:
+              serviceName: proxyapi
+              servicePort: 5000
+            path: /randomize-api/
+    - http:
+        paths:
+          - backend:
+              serviceName: proxyapi
+              servicePort: 5000
+            path: /highscore-api/
+    - http:
+        paths:
+          - backend:
+              serviceName: proxyapi
+              servicePort: 5000
+            path: /authentication-api/
+    - http:
+        paths:
+          - backend:
+              serviceName: proxyapi
+              servicePort: 5000
+            path: /recommendation-api/
+    - http:
+        paths:
+          - backend:
+              serviceName: frontend
+              servicePort: 3000
+            path: /
