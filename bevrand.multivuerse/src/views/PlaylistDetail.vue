@@ -11,7 +11,44 @@
                         {{ beverage }}
                     </li>
                 </ul>
-                 <a class="hover-play" id="dicebutton"><font-awesome-icon  icon="dice" class="icons" size="2x" v-on:click="playPlaylist()"/></a>
+                 <a class="hover-play" id="dicebutton"><font-awesome-icon  icon="dice" class="icons" size="2x"
+                                                                           v-on:click="playPlaylist()"/></a>
+                 <a class="hover-edit" id="pencilbutton"><font-awesome-icon icon="pencil-alt" class="icons" size="2x"
+                                                                            v-if="loggedIn" v-on:click="editPlaylist()"/></a>
+            </span>
+            <span class="highscores">
+            <h3 style="margin-bottom: 0.5em" v-if="globalHighScores.length > 2">Global Highscore:</h3>
+                <table>
+                    <tbody id="globalHighscore" v-if="globalHighScores.length > 2">
+                        <tr>
+                            <th><strong>Rank</strong></th>
+                            <th><strong>Beverage</strong></th>
+                            <th><strong>Rolled</strong></th>
+                        </tr>
+                        <tr v-for="(highscore, index) in globalHighScores"
+                            :key="index" >
+                            <td>{{ index + 1 }}</td>
+                            <td>{{ highscore.drink }}</td>
+                            <td>{{ highscore.rolled }}</td>
+                        </tr>
+                  </tbody>
+                </table>
+            <h3 style="margin-bottom: 0.5em" v-if="playlistHighScores.length > 2">Playlist Highscore:</h3>
+                <table>
+                    <tbody id="playlistHighscore"  v-if="playlistHighScores.length > 2">
+                        <tr>
+                            <th><strong>Rank</strong></th>
+                            <th><strong>Beverage</strong></th>
+                            <th><strong>Rolled</strong></th>
+                        </tr>
+                        <tr v-for="(highscore, index) in playlistHighScores"
+                            :key="index" >
+                            <td> {{ index + 1 }}</td>
+                            <td>{{ highscore.drink }}</td>
+                            <td>{{ highscore.rolled }}</td>
+                        </tr>
+                  </tbody>
+                </table>
             </span>
         <foot></foot>
     </div>
@@ -27,18 +64,60 @@
         name: 'PlaylistDetail',
         data() {
             return {
+                loggedIn: this.$store.state.loggedIn,
+                errors: [],
+                globalHighScores: [],
+                playlistHighScores: [],
                 displayName: this.$route.params.playlistDetail.displayName,
                 beverages:this.$route.params.playlistDetail.beverages,
                 imageUrl: this.$route.params.playlistDetail.imageUrl,
+                playlistName: this.$route.params.playlistDetail.list,
+                username: this.$route.params.playlistDetail.user,
             };
         },
         mounted() {
+            window.scrollTo(0,0);
+            this.getHighScores();
         },
         created() {
         },
         methods: {
             playPlaylist: function () {
                 this.$router.push({name: 'homepage', params: {playlist: this.$route.params.playlistDetail}});
+            },
+            editPlaylist: function () {
+                this.$router.push({name: 'editPlaylistPage', params: {
+                        playlistDetail: this.$route.params.playlistDetail }});
+            },
+            getHighScores: function () {
+                this.$apiClient.get(`${this.$proxyUrl}/highscore-api/v1/highscores`)
+                    .then((response) => {
+                        let highscores = 0;
+                        if(response.data.length > 3) {
+                            highscores = response.data.slice(0, 3)
+                        }
+                        else {
+                            highscores = response.data
+                        }
+                        this.globalHighScores = highscores;
+                    })
+                    .catch(e => {
+                        this.errors.push(e)
+                    });
+                this.$apiClient.get(`${this.$proxyUrl}/highscore-api/v1/highscores/${this.username}/${this.playlistName}`)
+                    .then((response) => {
+                        let highscores = 0;
+                        if(response.data.length > 3) {
+                            highscores = response.data.slice(0, 3)
+                        }
+                        else {
+                            highscores = response.data
+                        }
+                        this.playlistHighScores = highscores;
+                    })
+                    .catch(e => {
+                        this.errors.push(e)
+                    });
             },
         },
         components: {
@@ -128,6 +207,71 @@
         color: #FF9500;
     }
 
+    .highscores h3 {
+        margin-top: 0.5em;
+        margin-bottom: 1em;
+        font-size: 1.5em;
+        cursor: pointer;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .highscores table {
+        color: white;
+        border-radius: 10px;
+        border-spacing: 0;
+        position: relative;
+        width: auto;
+        height: auto;
+        margin-top: 2em;
+        margin-left: 40%;
+        margin-bottom: 1.5em;
+    }
+
+    @media screen and (max-width: 1366px) {
+        .highscores table {
+            position: relative;
+            width: 60%;
+            height: auto;
+            margin-top: 2em;
+            margin-left: 20%;
+            margin-bottom: 1em;
+        }
+    }
+
+    @media screen and (max-width: 400px) {
+        .highscores table {
+            position: relative;
+            font-size: medium;
+            width: 40%;
+            margin-left: 12%;
+            margin-top: 2em;
+            margin-bottom: 1em;
+        }
+    }
+
+    .highscores tr:first-child{
+        background-color: #20b2aa;
+    }
+
+    .highscores tr:nth-child(2) > td{
+        background-color: #ff9500;
+        border-top-width: 0;
+    }
+    .highscores tr:nth-child(3) > td{
+        background-color: #ffa01a;
+        border-top-width: 0;
+    }
+    .highscores tr:nth-child(4) > td{
+        background-color: #ffab34;
+        border-top-width: 0;
+    }
+
+    .highscores th, td{
+        padding: .5em 1.5em;
+        text-align: center;
+        border-style: solid;
+    }
     .circledbutton{
         position: relative;
         height: 3em;
