@@ -17,7 +17,6 @@ Feature: Navbar
       | iphone-6   | profile                 |
       | ipad-2     | reroute/test            |
       | macbook-15 | playlistcreation/Asfasf |
-      | macbook-15 | playlistdetails         |
 
   Scenario: Logged off status is shown
     Given I am a new user using macbook-15
