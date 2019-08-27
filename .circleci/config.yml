@@ -166,6 +166,7 @@ jobs:
          cd ./deployment && sh ./wait_for_service_response.sh
          docker exec component_tests pytest /usr/src/app/tests
 
+
   system_tests:
     machine: true
     steps:
@@ -180,6 +181,7 @@ jobs:
          docker ps -a
          cd ./deployment && sh ./wait_for_service_response.sh
          docker exec system_tests rake features
+
 
   ui_tests:
     machine: true
@@ -283,6 +285,7 @@ jobs:
          docker pull bevrand/systemtests:$CIRCLE_SHA1
          docker tag bevrand/systemtests:$CIRCLE_SHA1 bevrand/systemtests:production
          docker push bevrand/systemtests:production
+
 
   deploy:
     machine: true
@@ -396,6 +399,7 @@ workflows:
               only:
               - master
               - develop
+              - /hotfix/.*/
               - /dependabot/.*/bevrand.uitests/.*/
               - /feature/.*uitests.*/
      #TODO Sonar-scanner
@@ -408,9 +412,13 @@ workflows:
              branches:
                only:
                - master
+               - /hotfix/.*/
           requires:
             - ui_tests
             - component_tests
+
+              - /hotfix/.*/
+
      - deploy:
          #TODO Get from artifacts
          context: BeverageRandomizerPROD
@@ -418,6 +426,10 @@ workflows:
             branches:
               only:
               - master
+              - /hotfix/.*/
          requires:
            #- acceptance_test_1
            - create_production_images
+
+              - /hotfix/.*/
+
