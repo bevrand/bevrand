@@ -417,7 +417,7 @@ workflows:
             - ui_tests
             - component_tests
 
-            - /hotfix/.*/
+
 
      - deploy:
          #TODO Get from artifacts
@@ -431,5 +431,5 @@ workflows:
            #- acceptance_test_1
            - create_production_images
 
-           - /hotfix/.*/
+
 
