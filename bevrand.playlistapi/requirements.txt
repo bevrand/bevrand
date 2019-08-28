@@ -24,7 +24,7 @@ MarkupSafe==1.1.1
 mistune==0.8.4
 more-itertools==7.2.0
 opentracing==2.2.0
-opentracing-instrumentation==3.0.1
+opentracing-instrumentation==3.1.1
 pluggy==0.12.0
 py==1.8.0
 pymongo==3.9.0
