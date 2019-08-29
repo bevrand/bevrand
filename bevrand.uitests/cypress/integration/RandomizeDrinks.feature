@@ -23,8 +23,8 @@ Feature: Randomizer Functions
     Then the result should be in the beveragelist from the detail page
 
     Examples:
-      | device     |
-      | iphone-6   |
+      | device   |
+      | iphone-6 |
 
   Scenario Outline: Randomized drink should be in the selected playlist after switching
     Given I am a new user using <device>

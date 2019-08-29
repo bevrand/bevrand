@@ -163,7 +163,9 @@ jobs:
          docker-compose -f ./docker-compose-created.yml up -d
          docker images
          docker ps -a
+         cd ./deployment && sh ./wait_for_service_response.sh
          docker exec component_tests pytest /usr/src/app/tests
+
 
   system_tests:
     machine: true
@@ -177,7 +179,9 @@ jobs:
          docker-compose -f ./docker-compose-created.yml up -d
          docker images
          docker ps -a
+         cd ./deployment && sh ./wait_for_service_response.sh
          docker exec system_tests rake features
+
 
   ui_tests:
     machine: true
@@ -282,26 +286,31 @@ jobs:
          docker tag bevrand/systemtests:$CIRCLE_SHA1 bevrand/systemtests:production
          docker push bevrand/systemtests:production
 
-  pause_uptimerobot:
-    machine: true
-    steps:
-     - run: "curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479363&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479359&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460902&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460904&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\""
 
   deploy:
     machine: true
     steps:
      - checkout
-     - run: "pip install PyYAML"
-     - run: "pip install ansible"
-     - run: "python create_docker_compose.py --profile prod"
-     - run: "pwd && ls -lha"
-     - run: "cd ./deployment && sh ./init_terraform.sh"
-     - run: "cd ./deployment/terraform_scripts && pwd && ls -lha && bash ../run_deployment.sh"
-
-  resume_uptimerobot:
-    machine: true
-    steps:
-     - run: "curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479363&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479359&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460902&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460904&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\""
+     - run:
+        # The free plan for Uptime Robot does not support Maintenance Windows, so instead we pause and unpause the monitors
+        name: Pause Uptime Robot
+        command: "curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479363&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479359&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460902&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460904&status=0\" \"https://api.uptimerobot.com/v2/editMonitor\""
+     - run:
+        name: PIP install packages
+        command: "pip install PyYAML ansible"
+     - run:
+        name: Generate production Docker compose file
+        command: "python create_docker_compose.py --profile prod"
+     - run:
+        name: Initialize Terraform with backend
+        command: "cd ./deployment && sh ./init_terraform.sh"
+     - run:
+        name: Deploy new infra and latest Production-tagged application
+        command: "cd ./deployment/terraform_scripts && bash ../run_deployment.sh"
+     - run:
+        name: Resume Uptime Robot
+        command: "curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479363&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780479359&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460902&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\" && curl -X POST -H \"Cache-Control: no-cache\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"api_key=$UptimeRobotApiKey&format=json&id=780460904&status=1\" \"https://api.uptimerobot.com/v2/editMonitor\""
+        when: always
 
 workflows:
   version: 2
@@ -392,6 +401,7 @@ workflows:
               - develop
               - /hotfix/.*/
               - /dependabot/.*/bevrand.uitests/.*/
+              - /feature/.*uitests.*/
      #TODO Sonar-scanner
      #- acceptance_test_1:
      #    requires:
@@ -406,15 +416,9 @@ workflows:
           requires:
             - ui_tests
             - component_tests
-     - pause_uptimerobot:
-         context: BeverageRandomizerPROD
-         filters:
-            branches:
-              only:
-              - master
-              - /hotfix/.*/
-         requires:
-           - create_production_images
+
+
+
      - deploy:
          #TODO Get from artifacts
          context: BeverageRandomizerPROD
@@ -425,13 +429,7 @@ workflows:
               - /hotfix/.*/
          requires:
            #- acceptance_test_1
-           - pause_uptimerobot
-     - resume_uptimerobot:
-         context: BeverageRandomizerPROD
-         filters:
-            branches:
-              only:
-              - master
-              - /hotfix/.*/
-         requires:
-           - deploy
+           - create_production_images
+
+
+
