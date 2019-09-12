@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
@@ -100,80 +99,6 @@ func TestRouteShowHighScore(t *testing.T) {
 	for _, resp := range response {
 		assert.Contains(t, drinkList, resp.Drink)
 	}
-}
-
-func TestRouteIncrementHighscore(t *testing.T) {
-	createMockDatabase()
-
-	router := InitRoutes()
-
-	drink := PostObject{drink}
-	body, err := json.Marshal(drink)
-	if err != nil {
-		panic(err)
-	}
-	req, _ := http.NewRequest("POST", marvinURL, bytes.NewBuffer(body))
-	w := httptest.NewRecorder()
-	router.ServeHTTP(w, req)
-	assert.Equal(t, http.StatusCreated, w.Code)
-}
-
-func TestRouteIncrementHighscoreWithBadBody(t *testing.T) {
-	createMockDatabase()
-
-	router := InitRoutes()
-
-	errorDrink := ErrorModel{drink, "someuniquecode"}
-	body, err := json.Marshal(errorDrink)
-	if err != nil {
-		panic(err)
-	}
-	req, _ := http.NewRequest("POST", marvinURL, bytes.NewBuffer(body))
-	w := httptest.NewRecorder()
-	router.ServeHTTP(w, req)
-	assert.Equal(t, http.StatusBadRequest, w.Code)
-
-	var response ErrorModel
-	err = json.Unmarshal([]byte(w.Body.String()), &response)
-	assert.Contains(t, response.Message, "have to provide a body")
-}
-
-func TestRouteIncrementHighscoreWithNilBody(t *testing.T) {
-	createMockDatabase()
-
-	router := InitRoutes()
-
-	req, _ := http.NewRequest("POST", marvinURL, bytes.NewBuffer(nil))
-	w := httptest.NewRecorder()
-	router.ServeHTTP(w, req)
-	assert.Equal(t, http.StatusBadRequest, w.Code)
-
-	var response ErrorModel
-	err := json.Unmarshal([]byte(w.Body.String()), &response)
-	if err != nil {
-		panic(err)
-	}
-	assert.Contains(t, response.Message, "EOF")
-}
-
-func TestRouteIncrementHighscoreGlobalUser(t *testing.T) {
-	createMockDatabase()
-
-	router := InitRoutes()
-
-	errorDrink := PostObject{drink}
-	body, err := json.Marshal(errorDrink)
-	if err != nil {
-		panic(err)
-	}
-	req, _ := http.NewRequest("POST", prefixURL+"global/paranoid/", bytes.NewBuffer(body))
-	w := httptest.NewRecorder()
-	router.ServeHTTP(w, req)
-	assert.Equal(t, http.StatusBadRequest, w.Code)
-
-	var response ErrorModel
-	err = json.Unmarshal([]byte(w.Body.String()), &response)
-	assert.Contains(t, response.Message, "is a restricted user")
 }
 
 func performRequest(r http.Handler, method, path string) *httptest.ResponseRecorder {

@@ -11,6 +11,12 @@ type PostObject struct {
 	Drink string `json:"drink"`
 }
 
+type HighScoreObject struct {
+	Playlist string `json:"playlist"`
+	Username string `json:"username"`
+	Result string `json:"result"`
+}
+
 // Score is the return struct for highscores
 type Score struct {
 	Drink  string `json:"drink"`

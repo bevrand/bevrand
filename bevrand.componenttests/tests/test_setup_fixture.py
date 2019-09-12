@@ -28,7 +28,6 @@ class TestFixture(unittest.TestCase):
     reserved_user_error = "is a reserved username and cannot be used for creation or deletion"
     attribute_validation_error = "Errors occured when validating"
     unknown_id = HelperClass.random_int_generator(40)
-    validation_missing_fields = "Required fields are missing"
     data_seeded_user = 'marvin'
 
     email = 'marvin@marvin.nl'

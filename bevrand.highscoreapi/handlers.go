@@ -78,25 +78,17 @@ func ShowHighScores(ctx context.Context, user string, playlist string, c *gin.Co
 }
 
 // CreateNewHighScore creates a new highscore for a user and playlist combination
-func CreateNewHighScore(ctx context.Context, user string, playlist string, drink string) {
-	span, _ := opentracing.StartSpanFromContext(ctx, "CreateNewHighScore")
-	span.SetTag(method, "IncreaseHighScore")
-
-	defer span.Finish()
+func CreateNewHighScore(user string, playlist string, drink string) {
 	key := user + ":" + playlist
 
 	exists := keyExistsInRedis(key)
 
 	if !exists {
-		span.LogFields(
-			openlog.String(statusCode, "200"),
-			openlog.String(spanBody, "New entry, setting new key: "+key),
-		)
 		err := db.Cmd(keySet, key, drink, 1).Err
 		if err != nil {
 			log.Fatal(err)
 		}
-		IncreaseGlobalCount(ctx, drink)
+		IncreaseGlobalCount(drink)
 		return
 	}
 
@@ -104,30 +96,18 @@ func CreateNewHighScore(ctx context.Context, user string, playlist string, drink
 	if err != nil {
 		log.Fatal(err)
 	}
-	span.LogFields(
-		openlog.String(statusCode, "200"),
-		openlog.String(spanBody, "Increased "+drink+" by 1"),
-	)
 
-	IncreaseGlobalCount(ctx, drink)
+	go IncreaseGlobalCount(drink)
 	return
 }
 
 // IncreaseGlobalCount global should be increased with every normal increase
-func IncreaseGlobalCount(ctx context.Context, drink string) {
-	span, _ := opentracing.StartSpanFromContext(ctx, "IncreaseGlobalCount")
-	span.SetTag(method, "GlobalHighscore")
-
-	defer span.Finish()
+func IncreaseGlobalCount(drink string) {
 	key := GLOBALNAME + ":" + GLOBALLIST
 
 	exists := keyExistsInRedis(key)
 
 	if !exists {
-		span.LogFields(
-			openlog.String(statusCode, "200"),
-			openlog.String(spanBody, "New entry, setting new key: "+key),
-		)
 		err := db.Cmd(keySet, key, drink, 1).Err
 		if err != nil {
 			log.Fatal(err)
@@ -139,11 +119,45 @@ func IncreaseGlobalCount(ctx context.Context, drink string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	span.LogFields(
-		openlog.String(statusCode, "200"),
-		openlog.String(spanBody, "Increased "+drink+" by 1"),
-	)
 	return
+}
+
+func ReadQueue() {
+	ch, _ := rabbitConn.Channel()
+
+	q, _ := ch.QueueDeclare(
+		"highscores", // name
+		false,   // durable
+		false,   // delete when unused
+		false,   // exclusive
+		false,   // no-wait
+		nil,     // arguments
+	)
+
+	msgs, _ := ch.Consume(
+		q.Name, // queue
+		"",     // consumer
+		true,   // auto-ack
+		false,  // exclusive
+		false,  // no-local
+		false,  // no-wait
+		nil,    // args
+	)
+
+	forever := make(chan bool)
+
+	go func() {
+		for msg := range msgs {
+			var highscore HighScoreObject
+			err := json.Unmarshal(msg.Body, &highscore)
+			if err != nil {
+				print(err)
+			}
+			go CreateNewHighScore(highscore.Username, highscore.Playlist, highscore.Result)
+		}
+	}()
+
+	<-forever
 }
 
 func createGUID() string {
