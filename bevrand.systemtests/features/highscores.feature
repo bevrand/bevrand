@@ -30,4 +30,3 @@ Feature: Highscores
     Examples:
       | user              | email                           | playlist | code |
       | bevrandhighscorer | bevrandhighscorer@systemtest.nl | bevrand  | 200  |
-

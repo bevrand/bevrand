@@ -147,7 +147,7 @@ systemtest_services = ['systemtest']
 api_services = ['authenticationapi', 'highscoreapi', 'randomizerapi', 'playlistapi', 
                 'proxyapi', 'dockernginx', 'multivuerse', 'recommendationapi', 'rabbitmq']
 data_seeder_service = ['dataseeder']
-password_services = {'authenticationapi': 'dockergres', 'playlistapi': 'dockermongo'}
+password_services = {'authenticationapi': 'dockergres', 'playlistapi': 'dockermongo', 'highscoreapi': 'rabbitmq', 'randomizerapi': 'rabbitmq'}
 volume_services = ['dockermongo', 'dockergres']
 jaeger_services_cas = ['jaeger-collector-cas', 'jaeger-query-cas', 'jaeger-agent-cas', 'cassandra', 'cassandra-schema']
 jaeger_services_es = ['els', 'kibana', 'jaeger-collector-els', 'jaeger-agent-els', 'jaeger-query-els']
@@ -314,6 +314,16 @@ def set_passwords(client, server, user_name, password):
         password_placeholder = password_placeholder.replace("PLACEHOLDER_USER", user_name)
         mon_str.append(password_placeholder)
 
+    rabapi_str = password_object.rabbitapi
+    rabapi_str = play_str.replace("PLACEHOLDER_PASS", password)
+    rabapi_str = play_str.replace("PLACEHOLDER_USER", user_name)
+
+    rab_str = []
+    for password_placeholder in password_object.rabbiturl:
+        password_placeholder = password_placeholder.replace("PLACEHOLDER_PASS", password)
+        password_placeholder = password_placeholder.replace("PLACEHOLDER_USER", user_name)
+        rab_str.append(password_placeholder)
+
     if client == 'authenticationapi':
         service_yaml_file[client]['environment'].append(auth_str)
         for field in service_yaml_file[client]['environment']:
@@ -332,6 +342,9 @@ def set_passwords(client, server, user_name, password):
             service_yaml_file['dataseeder']['environment'].append(play_str)
         for environment in mon_str:
             service_yaml_file[server]['environment'].append(environment)
+    elif client == 'highscoreapi' or client == 'randomizerapi':
+        service_yaml_file[client]['environment'].remove('MONGO_URL=mongodb://dockermongo:27017/admin')
+        service_yaml_file[client]['environment'].append(play_str)
 
 
 def remove_volumes():
@@ -351,6 +364,8 @@ class PassWordObjects(object):
     dockergres = ['POSTGRES_PASSWORD=PLACEHOLDER_PASS', 'POSTGRES_USER=PLACEHOLDER_USER']
     dockermongo = ['MONGO_INITDB_ROOT_USERNAME=PLACEHOLDER_USER', 'MONGO_INITDB_ROOT_PASSWORD=PLACEHOLDER_PASS']
     playlistapi = 'MONGO_URL=mongodb://PLACEHOLDER_USER:PLACEHOLDER_PASS@dockermongo:27017/admin'
+    rabbiturl = ['RABBITMQ_DEFAULT_USER=PLACEHOLDER_USER;', 'RABBITMQ_DEFAULT_PASS=PLACEHOLDER_PASS']
+    rabbitapi = 'RABBIT_URL=amqp://rabbitmq:PLACEHOLDER_USER@PLACEHOLDER_PASS:5672/' 
 
 
 print_values_at_startup()
