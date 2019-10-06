@@ -19,11 +19,10 @@ jobs:
 
   unittest_randomizer:
     docker:
-      - image: circleci/python:3.6.1
+      - image: circleci/golang:1.11
     steps:
       - checkout
-      - run: "cd ./bevrand.randomizerapi && sudo pip install -r requirements.txt"
-      - run: "cd ./bevrand.randomizerapi/api/tests && sudo pytest --cov-report term --cov=api"
+      - run: "cd ./bevrand.randomizerapi && go test -v -cover"
 
   unittest_authentication:
     docker:
@@ -56,10 +55,6 @@ jobs:
          docker build -t bevrand/playlistapi:$CIRCLE_SHA1 ./bevrand.playlistapi
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/playlistapi:$CIRCLE_SHA1
-      - run: |
-         docker build -t bevrand/randomizerapi:$CIRCLE_SHA1 ./bevrand.randomizerapi
-         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
-         docker push bevrand/randomizerapi:$CIRCLE_SHA1
       - run: |
          docker build -t bevrand/componenttests:$CIRCLE_SHA1 ./bevrand.componenttests
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
@@ -140,6 +135,10 @@ jobs:
          docker build -t bevrand/recommendationapi:$CIRCLE_SHA1 ./bevrand.recommendationapi
          docker login -u $DOCKERUSER -p $DOCKERPASSWORD
          docker push bevrand/recommendationapi:$CIRCLE_SHA1
+      - run: |
+         docker build -t bevrand/randomizerapi:$CIRCLE_SHA1 ./bevrand.randomizerapi
+         docker login -u $DOCKERUSER -p $DOCKERPASSWORD
+         docker push bevrand/randomizerapi:$CIRCLE_SHA1
 
   build_dockergres:
     machine: true
@@ -180,6 +179,8 @@ jobs:
          docker images
          docker ps -a
          cd ./deployment && sh ./wait_for_service_response.sh
+         sleep 30
+         docker exec system_tests wget http://proxyapi:5000/playlist-api/v2/frontpage
          docker exec system_tests rake features
 
 
@@ -285,7 +286,6 @@ jobs:
          docker pull bevrand/systemtests:$CIRCLE_SHA1
          docker tag bevrand/systemtests:$CIRCLE_SHA1 bevrand/systemtests:production
          docker push bevrand/systemtests:production
-
 
   deploy:
     machine: true
@@ -430,6 +430,3 @@ workflows:
          requires:
            #- acceptance_test_1
            - create_production_images
-
-
-

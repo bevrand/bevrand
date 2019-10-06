@@ -9,6 +9,7 @@ end
 
 Given /^we have a test environment$/ do
   response = RestClient.get((@fixture.proxy_playlist_public).to_s)
+  print response.code
   expect(response.code).to be 200
 end
 

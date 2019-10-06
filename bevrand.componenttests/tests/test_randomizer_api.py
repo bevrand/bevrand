@@ -28,21 +28,26 @@ class RandomizerValidationChecks(test_setup_fixture.TestFixture):
         sut = self.randomizer_url + '/v1/randomize'
         body = {}
         response = self.post_without_auth_header(sut, body)
-        error_message = response.json()['Error']
-        meta_message = response.json()['Meta']
+        error_message = response.json()['errorModel']
+        code = response.json()['uniqueCode']
         self.assertEqual(400, response.status_code)
-        self.assertTrue(self.validate_string_contains(error_message, self.validation_missing_fields))
-        self.assertTrue(self.validate_string_contains(meta_message, "user"))
+        self.assertIsNotNone(code)
+        self.assertTrue(len(error_message) == 3)
 
     def test_should_not_be_able_to_make_call_without_beverages(self):
         sut = self.randomizer_url + '/v1/randomize'
-        body = { "list": "tgif", "user": "frontpage"}
+        body = {"list": "tgif", "user": "frontpage"}
         response = self.post_without_auth_header(sut, body)
-        error_message = response.json()['Error']
-        meta_message = response.json()['Meta']
+        error_message = response.json()['errorModel']
+        code = response.json()['uniqueCode']
         self.assertEqual(400, response.status_code)
-        self.assertTrue(self.validate_string_contains(error_message, self.validation_missing_fields))
-        self.assertTrue(self.validate_string_contains(meta_message, "beverages"))
+        self.assertIsNotNone(code)
+        self.assertTrue(len(error_message) == 1)
+        for key, value in error_message[0].items():
+            if key == "validationField":
+                self.assertTrue(self.validate_string_contains(value, "beverages"))
+            else:
+                self.assertTrue(self.validate_string_contains(value, "beveragelist"))
 
     def test_should_not_be_able_to_make_call_without_user(self):
         sut = self.randomizer_url + '/v1/randomize'
@@ -52,11 +57,16 @@ class RandomizerValidationChecks(test_setup_fixture.TestFixture):
                             "whiskey"
                           ],"list": "frontpage"}
         response = self.post_without_auth_header(sut, body)
-        error_message = response.json()['Error']
-        meta_message = response.json()['Meta']
+        error_message = response.json()['errorModel']
+        code = response.json()['uniqueCode']
         self.assertEqual(400, response.status_code)
-        self.assertTrue(self.validate_string_contains(error_message, self.validation_missing_fields))
-        self.assertTrue(self.validate_string_contains(meta_message, "user"))
+        self.assertIsNotNone(code)
+        self.assertTrue(len(error_message) == 1)
+        for key, value in error_message[0].items():
+            if key == "validationField":
+                self.assertTrue(self.validate_string_contains(value, "user"))
+            else:
+                self.assertTrue(self.validate_string_contains(value, "short"))
 
     def test_should_not_be_able_to_make_call_without_playlist(self):
         sut = self.randomizer_url + '/v1/randomize'
@@ -66,11 +76,16 @@ class RandomizerValidationChecks(test_setup_fixture.TestFixture):
                             "whiskey"
                           ],"user": "frontpage"}
         response = self.post_without_auth_header(sut, body)
-        error_message = response.json()['Error']
-        meta_message = response.json()['Meta']
+        error_message = response.json()['errorModel']
+        code = response.json()['uniqueCode']
         self.assertEqual(400, response.status_code)
-        self.assertTrue(self.validate_string_contains(error_message, self.validation_missing_fields))
-        self.assertTrue(self.validate_string_contains(meta_message, "list"))
+        self.assertIsNotNone(code)
+        self.assertTrue(len(error_message) == 1)
+        for key, value in error_message[0].items():
+            if key == "validationField":
+                self.assertTrue(self.validate_string_contains(value, "playlist"))
+            else:
+                self.assertTrue(self.validate_string_contains(value, "short"))
 
     def test_should_be_able_to_include_extra_json_fields(self):
         sut = self.randomizer_url + '/v1/randomize'
@@ -101,12 +116,18 @@ class RandomizerValidationChecks(test_setup_fixture.TestFixture):
         }
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(400, response.status_code)
-        meta_message = response.json()['Meta']
-        self.assertTrue(meta_message['playlist'])
-        message = meta_message['playlist'][0]
-        self.assertEqual(message, "min length is 2")
+        error_message = response.json()['errorModel']
+        code = response.json()['uniqueCode']
+        self.assertEqual(400, response.status_code)
+        self.assertIsNotNone(code)
+        self.assertTrue(len(error_message) == 1)
+        for key, value in error_message[0].items():
+            if key == "validationField":
+                self.assertTrue(self.validate_string_contains(value, "playlist"))
+            else:
+                self.assertTrue(self.validate_string_contains(value, "short"))
 
-    '''users should be at least three chars long'''
+    '''users should be at least two chars long'''
     def test_should_not_be_able_to_randomize_with_invalid_user(self):
         sut = self.randomizer_url + '/v1/randomize'
         body = {
@@ -116,14 +137,19 @@ class RandomizerValidationChecks(test_setup_fixture.TestFixture):
                 "whiskey"
             ],
             "list": "tgif",
-            "user": "fr",
+            "user": "f",
         }
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(400, response.status_code)
-        meta_message = response.json()['Meta']
-        self.assertTrue(meta_message['user'])
-        message = meta_message['user'][0]
-        self.assertEqual(message, "min length is 3")
+        error_message = response.json()['errorModel']
+        code = response.json()['uniqueCode']
+        self.assertIsNotNone(code)
+        self.assertTrue(len(error_message) == 1)
+        for key, value in error_message[0].items():
+            if key == "validationField":
+                self.assertTrue(self.validate_string_contains(value, "user"))
+            else:
+                self.assertTrue(self.validate_string_contains(value, "short"))
 
     '''beverages list should be at least two beverages long'''
     def test_should_not_be_able_to_randomize_with_invalid_beverage_list(self):
@@ -137,28 +163,13 @@ class RandomizerValidationChecks(test_setup_fixture.TestFixture):
         }
         response = self.post_without_auth_header(sut, body)
         self.assertEqual(400, response.status_code)
-        meta_message = response.json()['Meta']
-        self.assertTrue(meta_message['beverages'])
-        message = meta_message['beverages'][0]
-        self.assertEqual(message, "min length is 2")
-
-    '''beverages in the list should be at least 2 chars long '''
-    def test_should_not_be_able_to_randomize_with_invalid_beverages(self):
-        sut = self.randomizer_url + '/v1/randomize'
-        body = {
-            "beverages": [
-                "b",
-                "w",
-                "2"
-            ],
-            "list": "tgif",
-            "user": "frontpage",
-        }
-        response = self.post_without_auth_header(sut, body)
+        error_message = response.json()['errorModel']
+        code = response.json()['uniqueCode']
         self.assertEqual(400, response.status_code)
-        meta_message = response.json()['Meta']
-        self.assertTrue(meta_message['beverages'])
-        messages = meta_message['beverages'][0]
-        self.assertEqual(len(messages), 3)
-        message = messages['1'][0]
-        self.assertEqual(message, "min length is 2")
+        self.assertIsNotNone(code)
+        self.assertTrue(len(error_message) == 1)
+        for key, value in error_message[0].items():
+            if key == "validationField":
+                self.assertTrue(self.validate_string_contains(value, "beverages"))
+            else:
+                self.assertTrue(self.validate_string_contains(value, "beveragelist"))

@@ -42,7 +42,7 @@ func TestIncreaseCountExists(t *testing.T) {
 	setDrinksInRedis(userKey, drink)
 
 	// post drink to user url
-	postHandler(marvinURL, drink, t)
+	CreateNewHighScore(user, playlistUser, drink)
 
 	// get scores after post
 	scores := getHandler(marvinURL, t)
@@ -60,7 +60,7 @@ func TestIncreaseGlobalCountExists(t *testing.T) {
 	setDrinksInRedis(userKey, drink)
 
 	// post drink to user url
-	postHandler(marvinURL, drink, t)
+	IncreaseGlobalCount(drink)
 
 	// get scores after post
 	scores := getHandler(prefixURL, t)
@@ -72,7 +72,7 @@ func TestIncreaseCountDoesNotExist(t *testing.T) {
 	createMockDatabase()
 
 	// post drink to user url
-	postHandler(marvinURL, drink, t)
+	CreateNewHighScore(user, playlistUser, drink)
 
 	// get scores after post
 	scores := getHandler(marvinURL, t)
@@ -85,7 +85,7 @@ func TestIncreaseGlobalCountDoesNotExist(t *testing.T) {
 	createMockDatabase()
 
 	// post drink to user url
-	postHandler(marvinURL, drink, t)
+	IncreaseGlobalCount(drink)
 
 	// get scores after post
 	scores := getHandler(prefixURL, t)

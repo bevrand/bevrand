@@ -3,15 +3,24 @@ package main
 import (
 	"bevrand.highscoreapi/jaeger"
 	"context"
+	"flag"
 	"fmt"
 	"github.com/joho/godotenv"
 	"github.com/mediocregopher/radix.v2/pool"
 	"github.com/opentracing/opentracing-go"
+	"github.com/streadway/amqp"
 	"log"
 	"os"
+	"time"
 )
 
 var db *pool.Pool
+var amqpUri = flag.String("r", "amqp://rabbitmq:rabbitmq@localhost:5672/", "If rabbit url is not set")
+
+var (
+	rabbitConn       *amqp.Connection
+	rabbitCloseError chan *amqp.Error
+)
 
 // GLOBALNAME is the user name for the global count
 var GLOBALNAME = "global"
@@ -42,6 +51,42 @@ func ConnectRedis() {
 	}
 }
 
+// Connect to rabbitmq with a retry
+func connectToRabbitMQ(rabbitUrl string) *amqp.Connection {
+	for {
+		conn, err := amqp.Dial(rabbitUrl)
+
+		if err == nil {
+			return conn
+		}
+
+		time.Sleep(500 * time.Millisecond)
+	}
+}
+
+// re-establish the connection to RabbitMQ in case
+// the connection has died
+//
+func rabbitConnector(uri string) {
+	var rabbitErr *amqp.Error
+
+	for {
+		rabbitErr = <-rabbitCloseError
+		if rabbitErr != nil {
+			rabbitUrl := os.Getenv("RABBIT_URL")
+			if rabbitUrl == "" {
+				rabbitUrl = uri
+			}
+
+			rabbitConn = connectToRabbitMQ(rabbitUrl)
+			// start reading Queue
+			go ReadQueue()
+			rabbitCloseError = make(chan *amqp.Error)
+			rabbitConn.NotifyClose(rabbitCloseError)
+		}
+	}
+}
+
 func main() {
 	GetEnvFile()
 	ConnectRedis()
@@ -66,6 +111,18 @@ func main() {
 	jaeger.PrintServerInfo(ctx, logValue)
 	span.Finish()
 
+	flag.Parse()
+
+	// create the rabbitmq error channel
+	rabbitCloseError = make(chan *amqp.Error)
+
+	// goroutine to connect to rabbit
+	go rabbitConnector(*amqpUri)
+
+	// establish the rabbitmq connection by sending
+	// an error and thus calling the error callback
+	rabbitCloseError <- amqp.ErrClosed
+
 	//init router
 	r := InitRoutes()
 	r.Run(":5000")
@@ -83,3 +140,4 @@ func GetEnvFile() {
 		log.Panic(err)
 	}
 }
+

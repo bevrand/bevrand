@@ -51,6 +51,8 @@ before_install:
   - docker images
   - docker-compose -f ./docker-compose-created.yml up -d
   - docker ps -a
+  - sh ./deployment/wait_for_service_response.sh
+  - sleep 30
   - docker exec component_tests pytest /usr/src/app/tests
 
 script:
