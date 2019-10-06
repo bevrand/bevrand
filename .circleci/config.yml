@@ -179,6 +179,8 @@ jobs:
          docker images
          docker ps -a
          cd ./deployment && sh ./wait_for_service_response.sh
+         sleep 30
+         docker exec system_tests wget http://proxyapi:5000/playlist-api/v2/frontpage
          docker exec system_tests rake features
 
 

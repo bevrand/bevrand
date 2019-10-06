@@ -173,4 +173,3 @@ class RandomizerValidationChecks(test_setup_fixture.TestFixture):
                 self.assertTrue(self.validate_string_contains(value, "beverages"))
             else:
                 self.assertTrue(self.validate_string_contains(value, "beveragelist"))
-

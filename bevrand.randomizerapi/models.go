@@ -47,5 +47,3 @@ type MethodError struct {
 	ErrorModel
 	Messages   []MethodMessages `json:"errorModel"`
 }
-
-

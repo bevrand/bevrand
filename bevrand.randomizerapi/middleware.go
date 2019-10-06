@@ -114,4 +114,3 @@ func CreateGUID() string {
 
 	return uuid
 }
-

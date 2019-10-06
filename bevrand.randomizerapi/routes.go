@@ -34,4 +34,3 @@ func Adapt(h http.HandlerFunc, adapters ...Adapter) http.HandlerFunc {
 	}
 	return h
 }
-
