@@ -50,10 +50,12 @@ services:
     environment:
       - GO_ENV=docker
       - GIN_MODE=release
+      - RABBIT_URL=amqp://rabbitmq:rabbitmq@rabbitmq:5672/
       - JAEGER_AGENT_HOST=jaeger-agent
       - JAEGER_AGENT_PORT=6831
     depends_on:
       - redis
+      - rabbitmq
       - jaeger-agent
     ports:
       - 4580:5000
@@ -77,11 +79,11 @@ services:
        - 4560:5000 # expose ports - HOST:CONTAINER
     depends_on:
        - jaeger-agent
+       - rabbitmq
     environment:
-       - APP_SETTINGS=Production
        - JAEGER_AGENT_HOST=jaeger-agent
        - JAEGER_AGENT_PORT=6831
-       - HIGHSCORE_API=http://highscoreapi:5000/api/v1/
+       - RABBIT_URL=amqp://rabbitmq:rabbitmq@rabbitmq:5672/
 
   playlistapi:
     container_name: playlistapi
@@ -167,6 +169,17 @@ services:
     - RUBY_ENV=Docker
     command: tail -f /dev/null
 
+  rabbitmq:
+    image: "rabbitmq:3.7-alpine"
+    container_name: rabbitmq
+    environment:
+      # RABBITMQ_ERLANG_COOKIE=SWQOKODSQALRPCLNMEQG
+      - RABBITMQ_DEFAULT_USER=rabbitmq
+      - RABBITMQ_DEFAULT_PASS=rabbitmq
+      - RABBITMQ_DEFAULT_VHOST=/
+    ports:
+      - "15672:15672"
+      - "5672:5672"
 
   els:
     image: "bevrand/dockerels:$CIRCLE_SHA1"

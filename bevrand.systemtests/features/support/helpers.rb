@@ -9,8 +9,11 @@ module Fixture
       Dotenv.load('.env.local')
     end
     proxy_url = ENV['proxyapi']
+    print proxy_url
     authenticationapi_url = ENV['authenticationapi']
+    print authenticationapi_url
     playlistapi_url = ENV['playlistapi']
+    print playlistapi_url
     FixtureData.new(proxy_url, authenticationapi_url, playlistapi_url)
   end
 end

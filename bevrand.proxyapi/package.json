@@ -9,7 +9,7 @@
     "test": "jest --coverage"
   },
   "dependencies": {
-    "bluebird": "^3.5.5",
+    "bluebird": "^3.7.0",
     "body-parser": "~1.19.0",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
@@ -17,23 +17,23 @@
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
     "express-jwt": "^5.3.1",
-    "into-stream": "^5.1.0",
-    "jaeger-client": "^3.15.0",
+    "into-stream": "^5.1.1",
+    "jaeger-client": "^3.17.0",
     "joi": "^14.3.1",
     "jsonwebtoken": "^8.5.1",
     "morgan": "~1.9.1",
     "opentracing": "^0.14.4",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
-    "swagger-ui-express": "^4.0.7",
+    "swagger-ui-express": "^4.1.1",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "eslint": "^6.2.2",
-    "eslint-config-prettier": "^6.1.0",
-    "eslint-plugin-prettier": "^3.1.0",
+    "eslint": "^6.5.1",
+    "eslint-config-prettier": "^6.3.0",
+    "eslint-plugin-prettier": "^3.1.1",
     "jest": "^24.9.0",
-    "nodemon": "^1.19.1",
+    "nodemon": "^1.19.3",
     "prettier": "^1.18.2"
   },
   "eslintConfig": {

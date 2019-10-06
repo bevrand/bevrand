@@ -1,22 +1,23 @@
-FROM python:3.7.3-alpine3.8
+FROM golang:1.11.11-alpine3.8 as build-env
 
-RUN apk update && apk add git
+#STEP 1 build the image
+RUN apk --no-cache add git
+ENV GO111MODULE=on
+RUN mkdir /app
+WORKDIR /app
+COPY go.mod .
+COPY go.sum .
 
-# set working directory
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+# Get dependenciesgo
+RUN go mod download
+# COPY the source code as the last step
+COPY . .
 
-# add requirements (to leverage Docker cache)
-ADD ./requirements.txt /usr/src/app/requirements.txt
+# Build the binary
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o randomizerapi
 
-# install requirements
-RUN pip install -r requirements.txt
-
-EXPOSE 5000
-
-# add app
-ADD . /usr/src/app
-
-# run server
-#CMD python manage.py runserver -h 0.0.0.0
-CMD gunicorn -w 1 -b 0.0.0.0:5000 manage:app
+# STEP 2 copy to a small image
+FROM alpine:3.10.2
+RUN apk --no-cache add ca-certificates
+COPY --from=build-env /app/randomizerapi /
+CMD ["/randomizerapi"]
