@@ -17,6 +17,7 @@ class TestFixture(unittest.TestCase):
     authentication_url = env_setting.authentication_url
     highscore_url = env_setting.highscore_url
     playlist_url = env_setting.playlist_url
+    ocr_url = env_setting.ocr_url
     proxy_url = env_setting.proxy_url
     proxy_endpoints = env_setting.proxy_endpoints
     randomizer_url = env_setting.randomize_url

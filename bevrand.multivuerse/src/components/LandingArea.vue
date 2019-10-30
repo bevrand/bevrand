@@ -14,7 +14,7 @@
             </p>
 
             <a id="scrollToPlaylists" href="#playlistCarousel" v-smooth-scroll="{ duration: 1000 }"><font-awesome-icon  icon="arrow-alt-circle-down" class="icons" size="3x"/></a>
-        </div>d
+        </div>
     </div>
 
 </template>

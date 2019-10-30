@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.use('/authentication-api', require('./authentication'));
 router.use('/highscore-api', require('./highscore'));
+router.use('/ocr-api', require('./ocr'));
 router.use('/playlist-api', require('./playlist'));
 router.use('/randomize-api', require('./randomizer'));
 router.use('/recommendation-api', require('./recommendation'));

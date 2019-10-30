@@ -19,11 +19,14 @@ import {
   faBeer,
   faCodeBranch,
   faArrowAltCircleDown,
-  faArrowAltCircleUp
+  faArrowAltCircleUp,
+  faCamera,
+  faQuestion
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faPencilAlt, faTrash, faPlusCircle, faDice, faGlassMartini, faCodeBranch, faGlassWhiskey, faBeer, faArrowAltCircleDown, faArrowAltCircleUp);
+library.add(faPencilAlt, faTrash, faPlusCircle, faDice, faGlassMartini, faCodeBranch, faGlassWhiskey,
+    faBeer, faArrowAltCircleDown, faArrowAltCircleUp, faQuestion, faCamera);
 
 Vue.config.productionTip = false;
 

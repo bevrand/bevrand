@@ -1,7 +1,5 @@
 FROM python:3.7.3-alpine3.8
 CMD apk add curl
-HEALTHCHECK --timeout=1s --interval=30s --retries=3 \
-  CMD curl -s --fail http://playlistapi:5000/api/v1/public/ping || exit 1
 # set working directory
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app

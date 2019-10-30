@@ -1,7 +1,16 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from '../store';
 
 Vue.use(Router);
+
+function guard(to, from, next){
+    if(store.state.loggedIn) {
+        next(); // allow to enter route
+    } else{
+        next('/login'); // go to '/login';
+    }
+}
 
 export default new Router({
     mode: 'history',
@@ -31,8 +40,15 @@ export default new Router({
         },
         {
             path: '/reroute/:username',
+            beforeEnter: guard,
             name: 'reroutePage',
             component: () => import("../views/ReRoutePage")
+        },
+        {
+            path: '/pictures',
+            beforeEnter: guard,
+            name: 'picturePage',
+            component: () => import("../views/Pictures"),
         },
         {
             path: '/playlistcreation/:displayName',
