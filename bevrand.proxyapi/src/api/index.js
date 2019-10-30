@@ -22,7 +22,7 @@ app.use((req, res, next) => {
 app.options('*', cors());
 
 app.use(logger('dev'));
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '25mb'}));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 

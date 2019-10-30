@@ -4,12 +4,10 @@
         <div class="banner">
             <p>
             <h1>Want to randomize from your favourite menu? </h1><br>
-            <h2>Image recognization baby!</h2>
-                <br>
                 <strong>Step 1:</strong> Take a picture of the menu items you would like to upload <br>
                 <strong>Step 2:</strong> Review picture in the preview (this might be cropped)<br>
                 <strong>Step 3:</strong> Upload image using the <button class="randomizeButtonIcon"></button> upload button <br>
-                <strong>Step 4:</strong> Add the beverages you would like to use during playlist creation<br>
+                <strong>Step 4:</strong> Remove any unwanted suggestions using the <font-awesome-icon icon="trash" size="s"/> icon<br>
                 <strong>Step 5:</strong> Add these beverages to your playlist<br>
             </p>
         </div>
@@ -42,15 +40,10 @@
                 <a class="hover-delete">
                     <font-awesome-icon icon="trash" class="icons" v-on:click="removeDrink(index)" />
                 </a>
-                <a class="hover-add"><font-awesome-icon v-on:click="addBeverage(index)" icon="plus-circle" size="lg"/></a><br>
             </li>
         </ul>
         <ul id="drinkToAdd" v-if="drinksFromPicture.length > 0 && !uploading">
-            <button class="randomizeButton" v-on:click="addAllBeverages()" v-if="drinksFromPicture.length > 0 && !uploading">Add all beverages</button>
-            <button class="randomizeButton" v-on:click="sendDrinksToPlaylistCreation()">Use these drinks</button>
-            <li v-for="(beverage, index) in drinksToAddToPlaylist" :key="index" >
-                {{ beverage }}
-            </li>
+            <button class="randomizeButton" v-on:click="sendDrinksToPlaylistCreation()" v-if="drinksFromPicture.length > 0 && !uploading">Add all beverages</button>
         </ul>
         <foot></foot>
     </div>
@@ -70,7 +63,6 @@ import { CirclesToRhombusesSpinner } from 'epic-spinners'
                 token: this.$store.state.token,
                 image: '',
                 drinksFromPicture: '',
-                drinksToAddToPlaylist: [],
                 errors: '',
                 uploading: false,
                 count: 5
@@ -116,17 +108,11 @@ import { CirclesToRhombusesSpinner } from 'epic-spinners'
                         this.errors.push(e)
                     })
             },
-            addBeverage : function (index) {
-                this.drinksToAddToPlaylist.push(this.drinksFromPicture[index])
-            },
-            addAllBeverages : function () {
-                this.drinksToAddToPlaylist = this.drinksFromPicture
-            },
             removeDrink (index) {
                 this.drinksFromPicture.splice(index, 1)
             },
             sendDrinksToPlaylistCreation : function () {
-                this.$store.commit('setDrinksFromPicture', this.drinksToAddToPlaylist);
+                this.$store.commit('setDrinksFromPicture', this.drinksFromPicture);
                 this.$router.push({ name: 'playlistCreationPage', params: { displayName: this.displayName} })
             }
         }
@@ -151,12 +137,6 @@ import { CirclesToRhombusesSpinner } from 'epic-spinners'
 
     ul {
         list-style-type: none;
-        padding: 0;
-    }
-
-    li {
-        display: inline-block;
-        margin: 0 10px;
     }
 
     a {

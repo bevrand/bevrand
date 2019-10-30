@@ -2,31 +2,28 @@
     <div id="playlistCreationArea" class="playlistcreation">
         <navbar></navbar>
         <div id="creationArea" class="creationfield">
-            <p>
-            <h3>Create your own playlist </h3>
-            <br>
-            <strong>Step 1:</strong> Provide a URL to use another picture
-            <br>
-            <strong>Step 2:</strong> You can upload an image using the
-            <font-awesome-icon icon="camera" size="s"/> icon. This will take you to a new page where you can
-            upload a jpg or png and return your beverages!
-            <br>
-            <strong>Step 3:</strong> Get suggestions by pressing the icons
-            <font-awesome-icon icon="beer" size="s"/> shows popular beers
-            <br>
-            <strong>Step 4:</strong> Add the beverages you would like to use during playlist creation
-            <br>
-            <strong>Step 5:</strong> You can always delete or edit beverages using the
-            <font-awesome-icon icon="pencil-alt" size="s"/>
-            <font-awesome-icon icon="trash" size="s"/> icons
-            <br>
-            </p>
-            <span class="label">
-                <a class="image featured" ><img :src="imageUrl" ></a><br>
-                <button v-on:click="setImage" class="submitbutton"> Change Image</button>
-                <a class="playlistselector" id="playlistName"><h3> Playlist: {{ displayName }}</h3></a>
 
-                <a class="hover-popular"><font-awesome-icon id="ocrlink" icon="camera" size="2x" v-on:click="rerouteToOcrPage()"/></a><br>
+            <span class="label">
+
+                <a class="playlistselector" id="playlistName"><h3 style="margin-top: 0.5em"> Playlistname: {{ displayName }}</h3></a>
+
+                <h3 style="margin-bottom: 0.5em" v-if="beverages.length === 0">Start adding beverages!</h3>
+                        <ul id="beverageList">
+            <li v-for="(beverage, index) in beverages" :key="index">
+                {{ beverage }}
+                <a class="hover-edit">
+                    <font-awesome-icon icon="pencil-alt" class="icons" v-on:click="editDrink(index)"/>
+                </a>
+                <a class="hover-delete">
+                    <font-awesome-icon icon="trash" class="icons" v-on:click="removeDrink(index)"/>
+                </a>
+            </li>
+        </ul>
+
+                <input v-model="drink" placeholder="Custom beverage" type="text" class="adddrink" value=""/>
+                <a class="hover-add">
+                    <font-awesome-icon v-on:click="addBeverage()" icon="plus-circle" size="lg"/></a>
+                <br>
 
             <div v-if="expandPopularCocktails">
 
@@ -61,7 +58,6 @@
             <h3>Feature Coming Soon!</h3>
 
         </div>
-
         <a v-if="!expandPopularDrinks" class="hover-popular">
             <font-awesome-icon v-on:click="showPopularCockails" icon="glass-martini" size="2x" style="margin-right: 0.25em" /></a>
         <a v-if="!expandPopularDrinks" class="hover-popular">
@@ -70,29 +66,15 @@
             <font-awesome-icon v-on:click="showPopularWhiskeys" icon="glass-whiskey" size="2x" style="margin-right: 0.25em" /></a>
         <a v-if="!expandPopularDrinks" class="hover-popular">
             <font-awesome-icon v-on:click="showRecommendation" id="recommendations" icon="question" size="2x" style="margin-right: 0.25em" /></a>
-        <h3 style="margin-bottom: 0.5em">Beverages:</h3>
         <br>
+        <a>Click the Camera for Instafamous Menu recognization!</a><br>
+        <a class="hover-popular"><font-awesome-icon id="ocrlink" icon="camera" size="2x" v-on:click="rerouteToOcrPage()"/></a><br>
+        <button v-on:click="createNewPlaylist()" v-if="beverages.length >= 2" id="submitButton" class="submitbutton">Save this playlist</button>
 
-        <ul id="beverageList">
-            <li v-for="(beverage, index) in beverages" :key="index">
-                {{ beverage }}
-                <a class="hover-edit">
-                    <font-awesome-icon icon="pencil-alt" class="icons" v-on:click="editDrink(index)" />
-                </a>
-                <a class="hover-delete">
-                    <font-awesome-icon icon="trash" class="icons" v-on:click="removeDrink(index)" />
-                </a>
-            </li>
-        </ul>
+        <a class="image featured"><img :src="imageUrl"></a>
+        <br>
+        <button v-on:click="setImage" class="submitbutton"> Change Image</button>
         </span>
-
-            <div>
-                <input v-model="drink" placeholder="Drink you want to add" type="text" class="adddrink" value="" />
-                <a class="hover-add">
-                    <font-awesome-icon v-on:click="addBeverage()" icon="plus-circle" size="lg" /></a>
-                <br>
-                <button v-on:click="createNewPlaylist()" v-if="beverages.length >= 2" id="submitButton" class="submitbutton">Save this playlist</button>
-            </div>
         </div>
         <foot></foot>
     </div>
