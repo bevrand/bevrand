@@ -31,7 +31,7 @@ class Test(BaseConfig):
     """Docker configuration"""
     authentication_url = "http://authenticationapi:5000/api"
     playlist_url = "http://playlistapi:5000/api/v1"
-    ocr_url = "http://ocrapi:4600/api/v1"
+    ocr_url = "http://ocrapi:5000/api/v1"
     randomize_url = "http://randomizerapi:5000/api"
     proxy_url = "http://proxyapi:5000"
     proxy_endpoints = Proxy()
