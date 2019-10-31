@@ -71,7 +71,7 @@
         <a class="hover-popular"><font-awesome-icon id="ocrlink" icon="camera" size="2x" v-on:click="rerouteToOcrPage()"/></a><br>
         <button v-on:click="createNewPlaylist()" v-if="beverages.length >= 2" id="submitButton" class="submitbutton">Save this playlist</button>
 
-        <a class="image featured"><img :src="imageUrl"></a>
+        <a class="image featured"><img alt="Profile Picture" :src="imageUrl"></a>
         <br>
         <button v-on:click="setImage" class="submitbutton"> Change Image</button>
         </span>

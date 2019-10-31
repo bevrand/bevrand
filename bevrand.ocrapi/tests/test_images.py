@@ -67,11 +67,11 @@ class ServiceTests(unittest.TestCase):
 
     def test_not_able_to_index_base64(self):
         with pytest.raises(testapi.InvalidUsage):
-            filename = testapi.create_local_image("notbase64")
+            testapi.create_local_image("notbase64")
 
     def test_invalid_base64(self):
         with pytest.raises(testapi.InvalidUsage):
-            filename = testapi.create_local_image("data:image/png;base64,notbase64")
+            testapi.create_local_image("data:image/png;base64,notbase64")
 
 
 if __name__ == "__main__":
