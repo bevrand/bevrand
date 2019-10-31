@@ -4,19 +4,19 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
                           # Pillow dependencies on Alpine
-RUN apk update && apk add gcc \
-                          python3-dev \
-                          musl-dev \
-                          jpeg-dev \
-                          zlib-dev \
-                          freetype-dev \
-                          lcms2-dev \
-                          openjpeg-dev \
-                          tiff-dev \
-                          tk-dev \
-                          tcl-dev \
-                          # tesseract dependencies
-                          tesseract-ocr
+RUN apk --no-cache add gcc \
+                   python3-dev \
+                   musl-dev \
+                   jpeg-dev \
+                   zlib-dev \
+                   freetype-dev \
+                   lcms2-dev \
+                   openjpeg-dev \
+                   tiff-dev \
+                   tk-dev \
+                   tcl-dev \
+                   # tesseract dependencies
+                   tesseract-ocr
 
 # add requirements (to leverage Docker cache)
 ADD ./requirements.txt /usr/src/app/requirements.txt

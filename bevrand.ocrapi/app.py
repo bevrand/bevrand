@@ -46,10 +46,7 @@ def get_colour_of_top_left_picture(image):
 
     avg = pixel_colours / 3
 
-    if avg < 80:
-        return True
-    else:
-        return False
+    return bool(avg < 80)
 
 
 def grey_scale_image(image):
@@ -75,11 +72,9 @@ def create_local_image(base64_string):
         base64_base_string = base64_string.split(',')[1]
     except IndexError:
         raise InvalidUsage('Not a valid base64 string', status_code=400, meta=base64_string)
-        return
     if re.match("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$",
                 base64_base_string) is None:
         raise InvalidUsage('Not a valid base64 string', status_code=400, meta=base64_base_string)
-        return
     image_data = base64.b64decode(base64_base_string)
     if base64_string.startswith('data:image/png;base64,'):
         filename = "{}.png".format(os.getpid())
@@ -101,4 +96,3 @@ def handle_invalid_usage(error):
 
 if __name__ == '__main__':
     application.run()
-
