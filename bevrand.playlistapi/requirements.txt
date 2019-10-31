@@ -9,7 +9,7 @@ coverage==4.5.4
 DateTime==4.3
 flasgger==0.9.3
 Flask==1.1.1
-Flask-OpenTracing==0.2.0
+Flask-OpenTracing==1.1.0
 Flask-PyMongo==2.3.0
 Flask-Script==2.0.6
 Flask-Testing==0.7.1
