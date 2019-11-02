@@ -336,7 +336,7 @@ workflows:
   weekly-automatic-deploy:
    triggers:
       - schedule:
-          cron: "0 13 * * 7"
+          cron: "0 13 * * 0"
           filters:
             branches:
                only:
