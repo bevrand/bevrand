@@ -336,13 +336,11 @@ workflows:
   weekly-automatic-deploy:
    triggers:
       - schedule:
-         #  cron: "0 13 * * 7"
-          cron: "40 * * * *"
+          cron: "0 13 * * 7"
           filters:
             branches:
                only:
                - develop
-               - /feature/automatic-release/
    jobs:
      - deploy:
          context: BeverageRandomizerPROD
