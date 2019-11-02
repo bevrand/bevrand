@@ -5,6 +5,10 @@ import (
 	"strconv"
 )
 
+const beverageField = "beverages"
+const usernameField = "username"
+const playlistField = "playlist"
+
 func ValidateRequest(request RandomizeRequest) (ValidationError, error) {
 	var validationError ValidationError
 	validationError.UniqueCode = CreateGUID()
@@ -34,7 +38,7 @@ func ValidateRequest(request RandomizeRequest) (ValidationError, error) {
 func validateUsername(username string) *ValidationMessages {
 	valid := username != "" && len(username) >= 2
 	if !valid {
-		return &ValidationMessages{"username", "username " + username + " is too short or empty"}
+		return &ValidationMessages{usernameField, "username " + username + " is too short or empty"}
 	}
 	return nil
 }
@@ -42,7 +46,7 @@ func validateUsername(username string) *ValidationMessages {
 func validatePlaylist(playlist string) *ValidationMessages {
 	valid := playlist != "" && len(playlist) >= 2
 	if !valid {
-		return &ValidationMessages{"playlist", "playlist " + playlist + " is too short or empty"}
+		return &ValidationMessages{playlistField, "playlist " + playlist + " is too short or empty"}
 	}
 	return nil
 }
@@ -50,7 +54,7 @@ func validatePlaylist(playlist string) *ValidationMessages {
 func validateBeverages(beverages []string) *ValidationMessages {
 	valid := len(beverages) >= 2
 	if !valid {
-		return &ValidationMessages{"beverages", "beveragelist length " + strconv.Itoa(len(beverages)) + " is too short"}
+		return &ValidationMessages{beverageField, "beveragelist length " + strconv.Itoa(len(beverages)) + " is too short"}
 	}
 	return nil
 }
