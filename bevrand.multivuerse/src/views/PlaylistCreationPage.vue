@@ -22,7 +22,7 @@
 
                 <input v-model="drink" placeholder="Custom beverage" type="text" class="adddrink" value=""/>
                 <a class="hover-add">
-                    <font-awesome-icon v-on:click="addBeverage()" icon="plus-circle" size="lg"/></a>
+                    <font-awesome-icon v-on:click="addBeverage()" icon="plus-circle" size="lg" id="addCustomDrinkToPlaylist"/></a>
                 <br>
 
             <div v-if="expandPopularCocktails">
