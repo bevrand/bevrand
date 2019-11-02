@@ -39,12 +39,12 @@ When(/^I choose add the preseeded playlist$/,() => {
 });
 
 When(/^I add a few valid drinks in the playlistcreation screen$/,() => {
-    cy.get('#creationArea > div > input').type('beer');
-    cy.get('#creationArea > div > a > svg').click();
-    cy.get('#creationArea > div > input').type('red wine');
-    cy.get('#creationArea > div > a > svg').click();
-    cy.get('#creationArea > div > input').type('whiskey');
-    cy.get('#creationArea > div > a > svg').click();
+    cy.get('.adddrink').type('beer');
+    cy.get('#addCustomDrinkToPlaylist').click();
+    cy.get('.adddrink').type('red wine');
+    cy.get('#addCustomDrinkToPlaylist').click();
+    cy.get('.adddrink').type('whiskey');
+    cy.get('#addCustomDrinkToPlaylist').click();
 });
 
 When(/^I save this playlist$/,() => {
