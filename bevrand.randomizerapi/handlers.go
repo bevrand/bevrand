@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+var queueDrinks = true
+
 // RandomizeHandler randomizes a drink and puts it on the queue
 func RandomizeHandler(w http.ResponseWriter, r *http.Request) {
 	var randomizeRequest RandomizeRequest
@@ -19,7 +21,9 @@ func RandomizeHandler(w http.ResponseWriter, r *http.Request) {
 	queue := queueModel{
 		randomizeRequest.Playlist, randomizeRequest.Username, randomizedDrink,
 	}
-	go queueDrink(queue)
+	if queueDrinks{
+		go queueDrink(queue)
+	}
 	ResponseWithJson(r.Context(), w, randomDrink)
 }
 
