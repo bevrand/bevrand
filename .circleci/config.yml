@@ -333,6 +333,18 @@ jobs:
 
 workflows:
   version: 2
+  weekly-automatic-deploy:
+   triggers:
+      - schedule:
+          cron: "0 13 * * 0"
+          filters:
+            branches:
+               only:
+               - develop
+   jobs:
+     - deploy:
+         context: BeverageRandomizerPROD
+
   build_accept_deploy:
     jobs:
      - unittest_randomizer:
@@ -424,25 +436,19 @@ workflows:
               - /hotfix/.*/
               - /dependabot/.*/bevrand.uitests/.*/
               - /feature/.*uitests.*/
-     #TODO Sonar-scanner
-     #- acceptance_test_1:
-     #    requires:
-     #      - ui_tests
      - create_production_images:
           context: BeverageRandomizerPROD
           filters:
              branches:
                only:
+               - develop
                - master
                - /hotfix/.*/
           requires:
             - ui_tests
             - component_tests
 
-
-
      - deploy:
-         #TODO Get from artifacts
          context: BeverageRandomizerPROD
          filters:
             branches:
@@ -452,6 +458,4 @@ workflows:
          requires:
            #- acceptance_test_1
            - create_production_images
-
-
 
