@@ -145,7 +145,7 @@ databases_services = ['dockergres', 'dockermongo', 'redis', 'neo4j']
 test_services = ['componenttest']
 systemtest_services = ['systemtest']
 api_services = ['authenticationapi', 'highscoreapi', 'randomizerapi', 'playlistapi', 
-                'proxyapi', 'dockernginx', 'multivuerse', 'recommendationapi', 'rabbitmq']
+                'proxyapi', 'dockernginx', 'multivuerse', 'recommendationapi', 'rabbitmq', 'ocrapi']
 data_seeder_service = ['dataseeder']
 password_services = {'authenticationapi': 'dockergres', 'playlistapi': 'dockermongo', 'highscoreapi': 'rabbitmq', 'randomizerapi': 'rabbitmq'}
 volume_services = ['dockermongo', 'dockergres']
