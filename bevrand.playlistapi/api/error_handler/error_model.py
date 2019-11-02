@@ -1,4 +1,3 @@
-
 class InvalidUsage(Exception):
     status_code = 400
 
@@ -16,5 +15,3 @@ class InvalidUsage(Exception):
         if self.meta and self.meta is not None:
             rv['Meta'] = self.meta
         return rv
-
-

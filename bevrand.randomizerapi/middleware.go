@@ -11,6 +11,7 @@ import (
 	"strconv"
 )
 
+// key used when setting and getting requests from context
 const ContextKey  = "randomizeRequest"
 
 // middleware to validate proper methods
