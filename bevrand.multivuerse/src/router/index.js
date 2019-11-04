@@ -4,11 +4,28 @@ import store from '../store';
 
 Vue.use(Router);
 
-function guard(to, from, next){
-    if(store.state.loggedIn) {
-        next(); // allow to enter route
-    } else{
-        next('/login'); // go to '/login';
+async function guard(to, from, next) {
+    try {
+        let hasPermission = false;
+        let times = 10;
+        let time = 0;
+
+        while (time < times && !hasPermission) {
+            hasPermission = await store.getters["reRouteIfNotLoggedIn"];
+            time++
+        }
+        if (hasPermission) {
+            next()
+        }
+        else {
+            next({
+                name: "loginPage" // back to safety route //
+            })
+        }
+    } catch (e) {
+        next({
+            name: "homepage" // back to safety route //
+        })
     }
 }
 
@@ -35,6 +52,7 @@ export default new Router({
         },
         {
             path: '/profile/',
+            beforeEnter: guard,
             name: 'profilePage',
             component: () => import("../views/Profile")
         },
@@ -52,11 +70,13 @@ export default new Router({
         },
         {
             path: '/playlistcreation/:displayName',
+            beforeEnter: guard,
             name: 'playlistCreationPage',
             component: () => import("../views/PlaylistCreationPage")
         },
         {
             path: '/editplaylist/',
+            beforeEnter: guard,
             name: 'editPlaylistPage',
             component: () => import("../views/EditPlaylist"),
             props: {
