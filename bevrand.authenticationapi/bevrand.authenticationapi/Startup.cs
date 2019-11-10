@@ -16,7 +16,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Swagger;
-
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
+using Microsoft.Extensions.Hosting;
 
 namespace bevrand.authenticationapi
 {
@@ -50,10 +51,14 @@ namespace bevrand.authenticationapi
     
     public class Startup
     {
-        private static readonly ILoggerFactory LoggerFactory = new LoggerFactory().AddConsole();
-        private static readonly Tracer Tracer = JaegerInitializer.Init("AuthenicationApi", LoggerFactory);
+        private static readonly ILoggerFactory JaegerLoggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddConsole();
+            });
         
-        public Startup(IHostingEnvironment env)
+        private static readonly Tracer Tracer = JaegerInitializer.Init("AuthenicationApi", JaegerLoggerFactory);
+        
+        public Startup(IWebHostEnvironment env)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
@@ -80,7 +85,8 @@ namespace bevrand.authenticationapi
             services.AddScoped<IUsersLogic, UsersLogic>();
             services.AddScoped<IValidationLogic, ValidationLogic>();
   
-            services.AddMvc();
+            services.AddMvc()
+                .AddNewtonsoftJson();
             
             //TODO Reconsider using the "GlobalTracer" / "AddOpenTracing", this is probably the cause of a lot of noise in the tracing.
             GlobalTracer.Register(Tracer);
@@ -100,15 +106,17 @@ namespace bevrand.authenticationapi
         
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseRouting();
+
             app.UseMiddleware(typeof(ErrorHandlingMiddleware));
-          //  app.UseMiddleware(typeof(TracingHandlingMiddleware));
+            // app.UseMiddleware(typeof(TracingHandlingMiddleware));
 
             app.UseSwagger();
 
@@ -118,7 +126,9 @@ namespace bevrand.authenticationapi
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "AuthenticationApi");
             });
 
-            app.UseMvc();
+            app.UseEndpoints(endpoints => {
+                endpoints.MapControllers();
+            });
         }
     }
 }
