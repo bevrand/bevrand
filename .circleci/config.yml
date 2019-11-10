@@ -35,7 +35,7 @@ jobs:
 
   unittest_authentication:
     docker:
-      - image: microsoft/dotnet:2-sdk
+      - image: microsoft/dotnet:3-sdk
     steps:
       - checkout
       - run: "cd bevrand.authenticationapi/bevrand.authenticationapi.tests && dotnet test /p:CollectCoverage=true /p:Exclude=\"[*]*Startup*%2c[*]*Program*%2c[*]*Controller*\""
