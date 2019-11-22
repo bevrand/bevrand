@@ -19,7 +19,7 @@
                 height="1000"
                 margin="8"
                 accept="image/jpeg,image/png"
-                size="12"
+                size="10"
                 :hideChangeButton="true"
                 :customStrings="{
                         drag: 'Select a JPEG or PNG'
@@ -43,8 +43,14 @@
             </li>
         </ul>
         <ul id="drinkToAdd" v-if="drinksFromPicture.length > 0 && !uploading">
-            <button class="randomizeButton" v-on:click="sendDrinksToPlaylistCreation()" v-if="drinksFromPicture.length > 0 && !uploading">Add all beverages</button>
+            <button class="randomizeButton" v-on:click="sendDrinksToPlaylistCreation()" v-if="drinksFromPicture.length > 0 && !uploading">Add Beverages</button>
         </ul>
+        <h2 v-if="drinksFromPicture.length === 0 && !uploading">{{ warningsFromOcr }}</h2>
+        <div v-if="drinksFromPicture.length === 0 && !uploading" style="margin-top: 1em">
+            <strong>Tip 1:</strong> Make sure text has no curvature  <br>
+            <strong>Tip 2:</strong> Sharper images lead to better results<br>
+            <strong>Tip 3:</strong> Crop edges that do not show the menu<br>
+        </div>
         <foot></foot>
     </div>
 </template>
@@ -63,7 +69,7 @@ import { CirclesToRhombusesSpinner } from 'epic-spinners'
                 token: this.$store.state.token,
                 image: '',
                 drinksFromPicture: '',
-                errors: '',
+                warningsFromOcr: 'Upload a picture!',
                 uploading: false,
                 count: 5
             }
@@ -88,24 +94,19 @@ import { CirclesToRhombusesSpinner } from 'epic-spinners'
                     url: `${this.$proxyUrl}/ocr-api/v1/base64`,
                     data: {'base64': this.image},
                     headers: {"x-api-token": this.token}
-                })
+                    })
                     .then((response) => {
-                        window.setInterval(() => {
-                            if (this.count === 0) {
-                                this.uploading = false;
-                            }
-                            this.count--;
-                        }, 1000);
+                        if(response.data['imageText'].length === 0) {
+                            this.warningsFromOcr = "Could not find any text in your picture";
+                        }
+                        this.countDown();
                         this.drinksFromPicture = response.data['imageText'];
                     })
                     .catch(e => {
-                        window.setInterval(() => {
-                            if (this.count === 0) {
-                                this.uploading = false;
-                            }
-                            this.count--;
-                        }, 1000);
-                        this.errors.push(e)
+                        if (e.response.status === 413) {
+                            this.warningsFromOcr = "Image is too large";
+                        }
+                        this.countDown();
                     })
             },
             removeDrink (index) {
@@ -114,6 +115,15 @@ import { CirclesToRhombusesSpinner } from 'epic-spinners'
             sendDrinksToPlaylistCreation : function () {
                 this.$store.commit('setDrinksFromPicture', this.drinksFromPicture);
                 this.$router.push({ name: 'playlistCreationPage', params: { displayName: this.displayName} })
+            },
+            countDown: function() {
+                window.setInterval(() => {
+                    if (this.count === 0) {
+                        this.uploading = false;
+                        return;
+                    }
+                    this.count--;
+                }, 1000);
             }
         }
     }
@@ -147,13 +157,11 @@ import { CirclesToRhombusesSpinner } from 'epic-spinners'
         text-align: center;
     }
 
-    .randomizedtext {
-        font-weight: bold;
-        margin-top: 0.5em;
-        margin-bottom: 0.5em;
-        font-size: 1.5em;
+    .spinner {
+        margin-top: 2em;
+        margin-bottom: 4em;
+        margin-left: 45%;
         text-align: center;
-
     }
 
     .randomizeButton {
@@ -197,14 +205,6 @@ import { CirclesToRhombusesSpinner } from 'epic-spinners'
         -moz-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
         box-shadow: 5px 40px -10px rgba(0,0,0,0.57);
         transition: all 0.4s ease 0s;
-    }
-
-    .hover-add {
-        margin-left: 1em;
-    }
-
-    .hover-add:hover {
-        color: #68ff27;
     }
 
     .hover-delete {

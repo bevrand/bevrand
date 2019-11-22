@@ -61,4 +61,8 @@ export default new Vuex.Store({
           state.creationPlaylistBeverages = [];
         },
     },
+
+    getters : {
+        reRouteIfNotLoggedIn: state => state.loggedIn
+    }
 })
