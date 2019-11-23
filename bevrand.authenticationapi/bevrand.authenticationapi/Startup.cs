@@ -8,7 +8,6 @@ using bevrand.authenticationapi.Services;
 using bevrand.authenticationapi.Services.Interfaces;
 using OpenTracing.Util;
 using Jaeger;
-using Jaeger.Samplers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -16,44 +15,22 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Swagger;
-
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 namespace bevrand.authenticationapi
 {
-    /// <summary>
-    /// Initial configuration for Jaeger Client
-    /// </summary>
-    public static class JaegerInitializer
-    {
-        /// <summary>
-        /// Get configured instance of Jaeger Client 
-        /// </summary>
-        /// <param name="serviceName">Name of service for which Tracer is configured</param>
-        /// <param name="loggerFactory">Logger factory which should be used by Jaeger Client</param>
-        /// <returns> Jaeger Client instance</returns>
-        public static Tracer Init(string serviceName, ILoggerFactory loggerFactory)
-        {
-            var samplerConfiguration = new Configuration.SamplerConfiguration(loggerFactory)
-                .WithType(ConstSampler.Type)
-                .WithParam(1);
-
-            var reporterConfiguration = new Configuration.ReporterConfiguration(loggerFactory)
-                .WithSender(Configuration.SenderConfiguration.FromEnv(loggerFactory))
-                .WithLogSpans(true);
-
-            return (Tracer)new Configuration(serviceName, loggerFactory)
-                .WithSampler(samplerConfiguration)
-                .WithReporter(reporterConfiguration)
-                .GetTracer();
-        }
-    }
-    
     public class Startup
     {
-        private static readonly ILoggerFactory LoggerFactory = new LoggerFactory().AddConsole();
-        private static readonly Tracer Tracer = JaegerInitializer.Init("AuthenicationApi", LoggerFactory);
+        private static readonly ILoggerFactory JaegerLoggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddConsole();
+            });
         
-        public Startup(IHostingEnvironment env)
+        private static readonly Tracer Tracer = JaegerInitializer.Init("AuthenicationApi", JaegerLoggerFactory);
+        
+        public Startup(IWebHostEnvironment env)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
@@ -65,9 +42,7 @@ namespace bevrand.authenticationapi
             Configuration = builder.Build();
         }
         
-
         public IConfiguration Configuration { get; }
-
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -80,7 +55,8 @@ namespace bevrand.authenticationapi
             services.AddScoped<IUsersLogic, UsersLogic>();
             services.AddScoped<IValidationLogic, ValidationLogic>();
   
-            services.AddMvc();
+            services.AddMvc()
+                .AddNewtonsoftJson();
             
             //TODO Reconsider using the "GlobalTracer" / "AddOpenTracing", this is probably the cause of a lot of noise in the tracing.
             GlobalTracer.Register(Tracer);
@@ -93,22 +69,25 @@ namespace bevrand.authenticationapi
                 var commentsFileName = Assembly.GetExecutingAssembly().GetName().Name + ".xml";
                 var commentsFile = Path.Combine(baseDirectory, commentsFileName);
                 
-                c.SwaggerDoc("v1", new Info { Title = "AuthenticationApi", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "AuthenticationApi", Version = "v1" });
                 c.IncludeXmlComments(commentsFile);
             });
         }
-        
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseStaticFiles();
+
+            app.UseRouting();
+
             app.UseMiddleware(typeof(ErrorHandlingMiddleware));
-          //  app.UseMiddleware(typeof(TracingHandlingMiddleware));
+            // app.UseMiddleware(typeof(TracingHandlingMiddleware));
 
             app.UseSwagger();
 
@@ -118,7 +97,9 @@ namespace bevrand.authenticationapi
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "AuthenticationApi");
             });
 
-            app.UseMvc();
+            app.UseEndpoints(endpoints => {
+                endpoints.MapControllers();
+            });
         }
     }
 }

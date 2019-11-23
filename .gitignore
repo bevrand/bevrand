@@ -124,3 +124,8 @@ crash.log
 # Exclude node_modules
 node_modules/
 /docker-compose-created.yml
+
+# Exclude dotnet Core related build artifacts
+*/bin/*
+*/obj/*
+*/coverage.json
