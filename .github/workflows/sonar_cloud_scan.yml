@@ -1,11 +1,6 @@
 name: SonarCloud Scan on PR
 
-on:
-  pull_request:
-  push:
-    branches:
-      - master
-      - develop
+on: [push]
 
 jobs:
   sonarCloudTrigger:
