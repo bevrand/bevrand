@@ -1,7 +1,11 @@
 name: SonarCloud Scan on PR
 
-on: [pull_request, push]
-  # TODO Also include a schedule or on push for master / develop?
+on: 
+  pull_request:
+  push:
+    branches:
+      - master
+      - develop
 
 jobs:
   sonarCloudTrigger:
