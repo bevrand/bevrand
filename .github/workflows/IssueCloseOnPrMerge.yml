@@ -3,7 +3,7 @@ name: Close issues related to a merged pull request.
 on: [pull_request]
 
 jobs:
-  build:
+  closeIssueOnPrMergeTrigger:
 
     runs-on: ubuntu-latest
 
