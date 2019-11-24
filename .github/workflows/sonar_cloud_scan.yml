@@ -1,6 +1,6 @@
 name: SonarCloud Scan on PR
 
-on: 
+on:
   pull_request:
   push:
     branches:
