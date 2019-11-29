@@ -1,0 +1,17 @@
+name: SonarCloud Scan on PR
+
+on: [push]
+
+jobs:
+  sonarCloudTrigger:
+    name: SonarCloud Trigger
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@v1.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
