@@ -33,14 +33,14 @@ variable "dev2_ssh_key_id" {}
 variable "dev3_ssh_key_id" {}
 
 provider "digitalocean" {
-  token = "${var.do_token}"
+  token = var.do_token
 }
 
 module "firewall_inbound_cloudflare" {
   source = "andrewsomething/firewall-cloudflare/digitalocean"
 
   name = "inbound-cloudflare"
-  tags = ["${digitalocean_tag.allow_inbound_cloudflare.name}"]
+  tags = [digitalocean_tag.allow_inbound_cloudflare.name]
 }
 
 resource "digitalocean_tag" "allow_inbound_cloudflare" {
@@ -62,7 +62,7 @@ resource "digitalocean_firewall" "sshmanagementfirewall" {
     },
   ]
 
-  tags = ["${digitalocean_tag.sshmanagement.name}"]
+  tags = [digitalocean_tag.sshmanagement.name]
 }
 
 resource "digitalocean_tag" "outboundall" {
@@ -90,12 +90,12 @@ resource "digitalocean_firewall" "outboundfirewall" {
     },
   ]
 
-  tags = ["${digitalocean_tag.outboundall.name}"]
+  tags = [digitalocean_tag.outboundall.name]
 }
 
 resource "digitalocean_floating_ip" "docker" {
-  droplet_id = "${digitalocean_droplet.docker.id}"
-  region     = "${digitalocean_droplet.docker.region}"
+  droplet_id = digitalocean_droplet.docker.id
+  region     = digitalocean_droplet.docker.region
 }
 
 #resource "null_resource" "generate_ssh_keys" {
@@ -113,30 +113,30 @@ resource "tls_private_key" "terraformusersshkey" {
 # Create a new SSH key
 resource "digitalocean_ssh_key" "default" {
   name       = "terraformuser generated key"
-  public_key = "${tls_private_key.terraformusersshkey.public_key_openssh}"
+  public_key = tls_private_key.terraformusersshkey.public_key_openssh
 }
 
 resource "digitalocean_droplet" "docker" {
-  image      = "${var.droplet_image_name}"
-  name       = "${var.docker_droplet_name}"
-  region     = "${var.droplet_region}"
-  size       = "${var.droplet_size}"
-  ssh_keys   = ["${var.dev1_ssh_key_id}", "${var.dev2_ssh_key_id}", "${var.dev3_ssh_key_id}"]
-  user_data  = "${replace(file("cloud-config.conf"), "__sshkeygoeshere__", tls_private_key.terraformusersshkey.public_key_openssh)}"
+  image      = var.droplet_image_name
+  name       = var.docker_droplet_name
+  region     = var.droplet_region
+  size       = var.droplet_size
+  ssh_keys   = [var.dev1_ssh_key_id, var.dev2_ssh_key_id, var.dev3_ssh_key_id]
+  user_data  = replace(file("cloud-config.conf"), "__sshkeygoeshere__", tls_private_key.terraformusersshkey.public_key_openssh)
   monitoring = true
-  tags       = ["${digitalocean_tag.allow_inbound_cloudflare.name}", "${digitalocean_tag.sshmanagement.name}", "${digitalocean_tag.outboundall.name}"]
-  volume_ids = ["${var.volume_id_data}"]
+  tags       = [digitalocean_tag.allow_inbound_cloudflare.name, digitalocean_tag.sshmanagement.name, digitalocean_tag.outboundall.name]
+  volume_ids = [var.volume_id_data]
 
   connection {
     user        = "terraformuser"
-    private_key = "${tls_private_key.terraformusersshkey.private_key_pem}"
+    private_key = tls_private_key.terraformusersshkey.private_key_pem
   }
 }
 output "private_ssh_key" {
-  value = "${tls_private_key.terraformusersshkey.private_key_pem}"
+  value = tls_private_key.terraformusersshkey.private_key_pem
   sensitive   = true
 }
 
 output "droplet_ip" {
-  value = "${digitalocean_droplet.docker.ipv4_address}"
+  value = digitalocean_droplet.docker.ipv4_address
 }

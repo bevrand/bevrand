@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels:
+    app.kubernetes.io/name: {{ include "frontend.fullname" . }}
+    helm.sh/chart: {{ include "frontend.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.service.port }}
+  selector:
+    app.kubernetes.io/name: {{ include "frontend.fullname" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

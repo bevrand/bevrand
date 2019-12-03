@@ -12,3 +12,5 @@ RUN pip install -r requirements.txt
 
 # add app
 ADD . /usr/src/app
+
+ENTRYPOINT ["/bin/bash", "-c", "while true; do sleep 86400; done"]

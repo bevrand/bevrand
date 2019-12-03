@@ -1,0 +1,55 @@
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "ingress.fullname" . }}
+  labels:
+    {{- include "ingress.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  rules:
+    - http:
+        paths:
+          - backend:
+              serviceName: proxyapi
+              servicePort: 5000
+            path: /playlist-api/
+    - http:
+        paths:
+          - backend:
+              serviceName: proxyapi
+              servicePort: 5000
+            path: /randomize-api/
+    - http:
+        paths:
+          - backend:
+              serviceName: proxyapi
+              servicePort: 5000
+            path: /highscore-api/
+    - http:
+        paths:
+          - backend:
+              serviceName: proxyapi
+              servicePort: 5000
+            path: /authentication-api/
+    - http:
+        paths:
+          - backend:
+              serviceName: proxyapi
+              servicePort: 5000
+            path: /recommendation-api/
+    - http:
+        paths:
+          - backend:
+              serviceName: proxyapi
+              servicePort: 5000
+            path: /ocr-api/
+    - http:
+        paths:
+          - backend:
+              serviceName: frontend
+              servicePort: 3000
+            path: /

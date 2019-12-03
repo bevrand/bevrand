@@ -18,3 +18,5 @@ RUN bundle install -j 8
 ADD . .
 
 ENV RUBY_ENV Docker
+
+ENTRYPOINT ["/bin/bash", "-c", "while true; do sleep 86400; done"]
