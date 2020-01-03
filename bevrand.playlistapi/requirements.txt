@@ -23,7 +23,7 @@ jsonschema==3.2.0
 MarkupSafe==1.1.1
 mistune==0.8.4
 more-itertools==8.0.2
-opentracing==2.2.0
+opentracing==2.3.0
 opentracing-instrumentation==3.0.1
 pluggy==0.13.1
 py==1.8.1
