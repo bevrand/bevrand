@@ -1,6 +1,7 @@
-from tests import test_setup_fixture
 from time import sleep
+
 from helpers.random_name_generator import HelperClass
+from tests import test_setup_fixture
 
 
 class HighScoreApiTests(test_setup_fixture.TestFixture):
