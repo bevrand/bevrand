@@ -40,6 +40,7 @@ class HighScoreApiTests(test_setup_fixture.TestFixture):
         for x in range(5):
             self.post_without_auth_header(sut, body)
         sleep(1)
-        sut = self.highscore_url + f'/{self.test_randomize_body["user"]}/{self.test_randomize_body["list"]}/'
+        sut = self.highscore_url + \
+            f'/{self.test_randomize_body["user"]}/{self.test_randomize_body["list"]}/'
         resp = self.get_without_auth_header(sut)
         self.assertEqual(200, resp.status_code)
