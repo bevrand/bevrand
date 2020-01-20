@@ -11,5 +11,6 @@ require (
 	github.com/uber/jaeger-lib v2.0.0+incompatible // indirect
 	github.com/urfave/negroni v1.0.0
 	go.uber.org/atomic v1.4.0 // indirect
+	golang.org/x/crypto v0.0.0-20200117160349-530e935923ad // indirect
 	gopkg.in/oauth2.v3 v3.10.1
 )
