@@ -1,5 +1,4 @@
 from tests import test_setup_fixture
-from time import sleep
 from helpers.random_name_generator import HelperClass
 
 
@@ -28,7 +27,7 @@ class HighScoreApiTests(test_setup_fixture.TestFixture):
     def test_should_get_user_lists_when_randomizing(self):
         sut = self.randomizer_url + '/v1/randomize'
         body = self.test_randomize_body
-        for x in range(3):
+        for _ in range(3):
             self.post_without_auth_header(sut, body)
         resp = self.get_without_auth_header(self.highscore_url)
         self.assertEqual(200, resp.status_code)
@@ -37,9 +36,12 @@ class HighScoreApiTests(test_setup_fixture.TestFixture):
     def test_should_get_global_lists_when_randomizing(self):
         sut = self.randomizer_url + '/v1/randomize'
         body = self.test_randomize_body
-        for x in range(5):
+        for _ in range(5):
             self.post_without_auth_header(sut, body)
-        sleep(1)
+        not_yet_resolved = True
         sut = self.highscore_url + f'/{self.test_randomize_body["user"]}/{self.test_randomize_body["list"]}/'
-        resp = self.get_without_auth_header(sut)
+        while not_yet_resolved:
+            resp = self.get_without_auth_header(sut)
+            if resp.status_code is 200:
+                not_yet_resolved = False
         self.assertEqual(200, resp.status_code)
