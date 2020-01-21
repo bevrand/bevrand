@@ -9,8 +9,7 @@ class HighScoreApiTests(test_setup_fixture.TestFixture):
         response = self.get_without_auth_header(sut)
         self.assertEqual(200, response.status_code)
 
-    def test_should_get_a_404_for_a_user_and_playlist_that_does_not_exist(
-            self):
+    def test_should_get_a_404_for_a_user_and_playlist_that_does_not_exist(self):
         playlist = HelperClass.random_word_letters_only(25)
         user = HelperClass.random_word_letters_only(25)
         sut = self.highscore_url + f"{user}/{playlist}/"
@@ -39,8 +38,10 @@ class HighScoreApiTests(test_setup_fixture.TestFixture):
         for _ in range(5):
             self.post_without_auth_header(sut, body)
         not_yet_resolved = True
-        sut = self.highscore_url + \
-            f'/{self.test_randomize_body["user"]}/{self.test_randomize_body["list"]}/'
+        sut = (
+            self.highscore_url
+            + f'/{self.test_randomize_body["user"]}/{self.test_randomize_body["list"]}/'
+        )
         while not_yet_resolved:
             resp = self.get_without_auth_header(sut)
             if resp.status_code == 200:
