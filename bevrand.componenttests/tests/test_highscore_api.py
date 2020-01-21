@@ -42,6 +42,6 @@ class HighScoreApiTests(test_setup_fixture.TestFixture):
         sut = self.highscore_url + f'/{self.test_randomize_body["user"]}/{self.test_randomize_body["list"]}/'
         while not_yet_resolved:
             resp = self.get_without_auth_header(sut)
-            if resp.status_code is 200:
+            if resp.status_code == 200:
                 not_yet_resolved = False
         self.assertEqual(200, resp.status_code)
