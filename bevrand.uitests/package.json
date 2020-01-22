@@ -21,7 +21,7 @@
   "homepage": "https://www.beveragerandomizer.com",
   "dependencies": {
     "cypress": "3.4.1",
-    "cypress-cucumber-preprocessor": "^1.11.0"
+    "cypress-cucumber-preprocessor": "^2.0.1"
   },
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
