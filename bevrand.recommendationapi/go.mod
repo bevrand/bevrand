@@ -10,7 +10,7 @@ require (
 	github.com/stretchr/objx v0.1.1 // indirect
 	github.com/stretchr/testify v1.5.1
 	github.com/uber-go/atomic v1.3.2 // indirect
-	github.com/uber/jaeger-client-go v2.14.0+incompatible
+	github.com/uber/jaeger-client-go v2.22.1+incompatible
 	github.com/uber/jaeger-lib v1.5.0 // indirect
 	github.com/urfave/negroni v1.0.0
 	golang.org/x/crypto v0.0.0-20200117160349-530e935923ad // indirect
